@@ -23,6 +23,10 @@ export const invitationWithOrganization = { organization: organizationSummary } 
 
 export type InvitationWithOrganization = Prisma.InvitationGetPayload<{ include: typeof invitationWithOrganization }>;
 
+export const memberWithUser = { organization: organizationSummary, user: { select: { id: true, party: { select: { displayName: true } } } } } satisfies Prisma.MembershipInclude;
+
+export type MemberWithUser = Prisma.MembershipGetPayload<{ include: typeof memberWithUser }>;
+
 @Injectable()
 export class AccessRepository {
   constructor(private readonly txHost: TransactionHost<PrismaTx>) {}
@@ -58,6 +62,30 @@ export class AccessRepository {
       include: membershipWithOrganization,
       orderBy: { createdAt: 'asc' },
     });
+  }
+
+  findLatestMembership(userId: string, context: SessionContext) {
+    return this.txHost.tx.membership.findFirst({ where: { userId, context }, include: membershipWithOrganization, orderBy: { createdAt: 'desc' } });
+  }
+
+  findOrganizationMemberships(userId: string, role: Role) {
+    return this.txHost.tx.membership.findMany({ where: { userId, role, organizationId: { not: null } }, include: membershipWithOrganization });
+  }
+
+  listMembers(where: Prisma.MembershipWhereInput) {
+    return this.txHost.tx.membership.findMany({ where, include: memberWithUser, orderBy: { createdAt: 'asc' } });
+  }
+
+  listOrganizationMembershipIds(organizationId: string, statuses: MembershipStatus[]) {
+    return this.txHost.tx.membership.findMany({ where: { organizationId, status: { in: statuses } }, select: { id: true } });
+  }
+
+  updateOrganizationStatus(id: string, from: OrganizationStatus, to: OrganizationStatus) {
+    return this.txHost.tx.organization.updateMany({ where: { id, status: from }, data: { status: to } });
+  }
+
+  updatePendingMemberships(organizationId: string, data: Prisma.MembershipUncheckedUpdateManyInput) {
+    return this.txHost.tx.membership.updateMany({ where: { organizationId, status: MembershipStatus.pending }, data: { ...data, version: { increment: 1 } } });
   }
 
   findPersonalMembership(userId: string, role: Role) {

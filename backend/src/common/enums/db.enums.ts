@@ -26,6 +26,9 @@ export {
   OrganizationStatus,
   OrganizationType,
   OtpPurpose,
+  PartnerKind,
+  PartnerLevel,
+  PartnerVerificationStatus,
   PartyKind,
   PartyStatus,
   QuestionType,
@@ -33,4 +36,5 @@ export {
   Role,
   SessionContext,
   UserStatus,
+  VerificationDecision,
 } from '../../generated/prisma/enums.js';

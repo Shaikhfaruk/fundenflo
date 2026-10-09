@@ -3,16 +3,16 @@ import { createPrismaAbility } from '@casl/prisma/runtime';
 import { Injectable } from '@nestjs/common';
 
 import type { UserActor } from '../../../common/context/actor.js';
-import { SessionContext } from '../../../common/enums/db.enums.js';
 import type { AppAbility } from '../domain/ability.types.js';
 import { ROLE_GRANTS, SELF_GRANT } from '../domain/permissions.js';
+import { isRoleAllowed } from '../domain/role-rules.js';
 
 @Injectable()
 export class AbilityFactory {
   forActor(actor: UserActor): AppAbility {
     const builder = new AbilityBuilder<AppAbility>(createPrismaAbility);
     SELF_GRANT(builder, actor);
-    if (actor.context === SessionContext.staff && actor.role) ROLE_GRANTS[actor.role]?.(builder, actor);
+    if (actor.role && isRoleAllowed(actor.context, actor.role)) ROLE_GRANTS[actor.role]?.(builder, actor);
     return builder.build();
   }
 }

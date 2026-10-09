@@ -9,6 +9,7 @@ import type {
   Invitation,
   Membership,
   Organization,
+  PartnerProfile,
   Party,
   Prisma,
   Question,
@@ -47,6 +48,7 @@ export type AppSubjects =
       ConfigDocument: ConfigDocument;
       Question: Question;
       ConsentPurpose: ConsentPurpose;
+      PartnerProfile: PartnerProfile;
     }>;
 
 export type AppAbility = Ability<[AppAction, AppSubjects], PrismaQueryOf<Prisma.TypeMap>>;

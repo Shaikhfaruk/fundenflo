@@ -1,0 +1,31 @@
+{
+  "name": "Partner sign-up, two-person verification and firm self-service",
+  "requires": ["staffInvitation", "checkerInvitation"],
+  "steps": [
+    { "request": "01 Auth/01 Request OTP.json", "identity": "partner", "variables": { "loginAs": "ca" } },
+    { "request": "01 Auth/02 Verify OTP.json", "identity": "partner" },
+    { "request": "10 Partner Portal - Onboarding & Team/01 Partner Signup.json", "identity": "partner" },
+    { "request": "01 Auth/06 Accept Staff Invitation.json", "identity": "maker" },
+    { "request": "01 Auth/07 Staff Login.json", "identity": "maker" },
+    { "request": "01 Auth/08 Verify Staff MFA.json", "identity": "maker" },
+    { "request": "43 Admin - Partners/01 List Partners.json", "identity": "maker" },
+    { "request": "43 Admin - Partners/02 Get Partner.json", "identity": "maker" },
+    { "request": "43 Admin - Partners/03 Verify Partner.json", "identity": "maker" },
+    { "request": "01 Auth/06 Accept Staff Invitation.json", "identity": "checker" },
+    { "request": "01 Auth/07 Staff Login.json", "identity": "checker" },
+    { "request": "01 Auth/08 Verify Staff MFA.json", "identity": "checker" },
+    { "request": "43 Admin - Partners/03 Verify Partner.json", "identity": "checker" },
+    { "request": "43 Admin - Partners/04 Set Partner Level.json", "identity": "maker" },
+    { "request": "01 Auth/01 Request OTP.json", "identity": "partner", "variables": { "loginAs": "ca" }, "waitSeconds": 31 },
+    { "request": "01 Auth/02 Verify OTP.json", "identity": "partner" },
+    { "request": "10 Partner Portal - Onboarding & Team/02 Get Partner Profile.json", "identity": "partner" },
+    { "request": "10 Partner Portal - Onboarding & Team/03 Get Capacity.json", "identity": "partner" },
+    { "request": "10 Partner Portal - Onboarding & Team/04 Update Capacity.json", "identity": "partner" },
+    { "request": "10 Partner Portal - Onboarding & Team/05 Get Service Areas.json", "identity": "partner" },
+    { "request": "10 Partner Portal - Onboarding & Team/06 Replace Service Areas.json", "identity": "partner" },
+    { "request": "10 Partner Portal - Onboarding & Team/08 Invite Member.json", "identity": "partner" },
+    { "request": "10 Partner Portal - Onboarding & Team/07 List Members.json", "identity": "partner" },
+    { "request": "43 Admin - Partners/05 Suspend Partner.json", "identity": "maker" },
+    { "request": "43 Admin - Partners/06 Reinstate Partner.json", "identity": "maker" }
+  ]
+}

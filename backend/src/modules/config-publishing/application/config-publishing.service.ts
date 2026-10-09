@@ -6,6 +6,7 @@ import { type CatalogStatus, type ChangeRequestStatus, ChangeRequestStatus as Re
 import { EventName } from '../../../common/events/event-names.js';
 import { AppError } from '../../../common/errors/app-error.js';
 import { ErrorCode } from '../../../common/errors/error-codes.js';
+import { transitionOrThrow } from '../../../common/errors/transition.js';
 import { assertVersion } from '../../../common/http/versioning.js';
 import type { LocalisedText } from '../../../common/i18n/locale.js';
 import { type PageQuery, pageWindow, toPage } from '../../../common/listing/cursor-page.js';
@@ -13,7 +14,6 @@ import { uuidv7 } from '../../../common/ids/uuid-v7.js';
 import { diffJson } from '../../../common/utils/json-diff.js';
 import { stableStringify } from '../../../common/utils/stable-json.js';
 import { parseOrThrow } from '../../../common/validation/zod-validation.pipe.js';
-import { TransitionError } from '../../../engines/state-machines/define-machine.js';
 import { ConfigVersionEvent, configVersionMachine, OPEN_CONFIG_VERSION_STATES } from '../../../engines/state-machines/machines/config-version.machine.js';
 import { Prisma } from '../../../generated/prisma/client.js';
 import { CacheService } from '../../../infrastructure/cache/cache.service.js';
@@ -360,14 +360,7 @@ export class ConfigPublishingService {
   }
 
   private transition(state: ConfigVersionStatus, event: ConfigVersionEvent): ConfigVersionStatus {
-    try {
-      return configVersionMachine.next(state, event);
-    } catch (error) {
-      if (error instanceof TransitionError) {
-        throw new AppError(ErrorCode.INVALID_TRANSITION, { details: { from: state, event, allowed: configVersionMachine.events(state) } });
-      }
-      throw error;
-    }
+    return transitionOrThrow(configVersionMachine, state, event);
   }
 
   private invalid(issues: ConfigIssue[]) {

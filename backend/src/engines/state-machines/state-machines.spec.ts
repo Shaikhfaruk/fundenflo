@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 
 import { defineMachine, TransitionError } from './define-machine.js';
 import { configVersionMachine } from './machines/config-version.machine.js';
+import { organizationMachine } from './machines/organization.machine.js';
+import { partnerVerificationMachine } from './machines/partner-verification.machine.js';
 
 describe('defineMachine', () => {
   const door = defineMachine<'open' | 'closed' | 'locked', 'close' | 'open' | 'lock'>({
@@ -36,5 +38,25 @@ describe('configVersionMachine', () => {
     expect(configVersionMachine.can('draft', 'publish')).toBe(false);
     expect(configVersionMachine.can('retired', 'publish')).toBe(false);
     expect(configVersionMachine.events('retired')).toEqual([]);
+  });
+});
+
+describe('partnerVerificationMachine', () => {
+  it('needs a recommendation before a final decision and keeps decisions final', () => {
+    expect(partnerVerificationMachine.can('pending', 'approve')).toBe(false);
+    expect(partnerVerificationMachine.next('pending', 'recommend')).toBe('in_review');
+    expect(partnerVerificationMachine.next('in_review', 'approve')).toBe('verified');
+    expect(partnerVerificationMachine.next('in_review', 'reject')).toBe('rejected');
+    expect(partnerVerificationMachine.events('verified')).toEqual([]);
+  });
+});
+
+describe('organizationMachine', () => {
+  it('activates once, suspends and reinstates, and closes from any open state', () => {
+    expect(organizationMachine.next('pending', 'activate')).toBe('active');
+    expect(organizationMachine.next('active', 'suspend')).toBe('suspended');
+    expect(organizationMachine.next('suspended', 'reinstate')).toBe('active');
+    expect(organizationMachine.can('active', 'activate')).toBe(false);
+    expect(organizationMachine.events('closed')).toEqual([]);
   });
 });

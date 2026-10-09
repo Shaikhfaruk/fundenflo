@@ -1,0 +1,60 @@
+{
+  "name": "Get Capacity",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/partner/capacity",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "partner",
+        "capacity"
+      ]
+    },
+    "description": "What the firm takes on: maximum open leads, pause switch, working days (1 = Monday) and hours, segments, categories and languages. Lead routing uses it. Partner context (CA, DSA or connector firm members). Reading needs a partner membership; changes need the firm owner."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.collectionVariables.set('partnerCapacityVersion', String(pm.response.json().version));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/partner/capacity",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "capacity"
+          ]
+        },
+        "description": "What the firm takes on: maximum open leads, pause switch, working days (1 = Monday) and hours, segments, categories and languages. Lead routing uses it. Partner context (CA, DSA or connector firm members). Reading needs a partner membership; changes need the firm owner."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"maxOpenLeads\": 25,\n  \"paused\": false,\n  \"workingDays\": [\n    1,\n    2,\n    3,\n    4,\n    5,\n    6\n  ],\n  \"workingHours\": {\n    \"start\": \"09:30\",\n    \"end\": \"18:30\"\n  },\n  \"segments\": [\n    \"msme\"\n  ],\n  \"categories\": [\n    \"business\",\n    \"working-capital\"\n  ],\n  \"languages\": [\n    \"hi\",\n    \"en\"\n  ],\n  \"version\": 2\n}"
+    }
+  ]
+}

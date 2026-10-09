@@ -1,0 +1,150 @@
+{
+  "name": "Update Member",
+  "request": {
+    "method": "PATCH",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/partner/members/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "partner",
+        "members",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{memberMembershipId}}"
+        }
+      ]
+    },
+    "description": "Suspends, reactivates or removes (`revoked`) a staff member; their sessions stop at once. The owner's own membership cannot be changed here. Supports `If-Match`. Owner only. Partner context (CA, DSA or connector firm members). Reading needs a partner membership; changes need the firm owner.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"status\": \"suspended\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/partner/members/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "members",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{memberMembershipId}}"
+            }
+          ]
+        },
+        "description": "Suspends, reactivates or removes (`revoked`) a staff member; their sessions stop at once. The owner's own membership cannot be changed here. Supports `If-Match`. Owner only. Partner context (CA, DSA or connector firm members). Reading needs a partner membership; changes need the firm owner.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"suspended\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a121d0-8192-7da4-95b6-c7d8e9fa0b1c\",\n  \"context\": \"partner\",\n  \"role\": \"partner_agent\",\n  \"status\": \"suspended\",\n  \"organization\": {\n    \"id\": \"01a121d0-2b3c-7d4e-9f50-61728394a5b6\",\n    \"name\": \"Agarwal & Co Chartered Accountants\",\n    \"type\": \"partner\",\n    \"status\": \"active\"\n  },\n  \"version\": 2,\n  \"createdAt\": \"2026-10-09T18:05:00.000Z\"\n}"
+    },
+    {
+      "name": "403 FORBIDDEN",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/partner/members/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "members",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{memberMembershipId}}"
+            }
+          ]
+        },
+        "description": "Suspends, reactivates or removes (`revoked`) a staff member; their sessions stop at once. The owner's own membership cannot be changed here. Supports `If-Match`. Owner only. Partner context (CA, DSA or connector firm members). Reading needs a partner membership; changes need the firm owner.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"suspended\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Forbidden",
+      "code": 403,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"FORBIDDEN\",\n  \"message\": \"You do not have permission to do this.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

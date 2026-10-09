@@ -112,8 +112,9 @@ model GeoState {
   createdAt DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt DateTime      @updatedAt @map("updated_at") @db.Timestamptz(3)
 
-  cities   GeoCity[]
-  pincodes GeoPincode[]
+  cities              GeoCity[]
+  pincodes            GeoPincode[]
+  partnerServiceAreas PartnerServiceArea[]
 
   @@map("geo_states")
 }
@@ -127,8 +128,9 @@ model GeoCity {
   createdAt DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt DateTime      @updatedAt @map("updated_at") @db.Timestamptz(3)
 
-  state    GeoState     @relation(fields: [stateId], references: [id], onDelete: Restrict)
-  pincodes GeoPincode[]
+  state               GeoState             @relation(fields: [stateId], references: [id], onDelete: Restrict)
+  pincodes            GeoPincode[]
+  partnerServiceAreas PartnerServiceArea[]
 
   @@unique([stateId, name])
   @@index([name])

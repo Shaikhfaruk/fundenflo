@@ -182,15 +182,24 @@ Controller: `backend/src/modules/catalog/http/catalog.controller.ts` · Postman:
 | `GET` | `/sync/changes` | sync | any | M1 | `planned` |
 | `WS` | `/v1/realtime` | infrastructure/realtime | any | M1 | `planned` |
 
-## 10 Partner Portal - Leads
+## 10 Partner Portal - Onboarding, Team & Leads
+
+Built in M1.5 (Postman `10 Partner Portal - Onboarding & Team/`). Controllers: `backend/src/modules/partners/http/partner-signup.controller.ts`, `partner-portal.controller.ts`. Reads need any partner membership; writes and members need the firm owner (CASL `PartnerProfile` / `Membership` / `Invitation` scoped to the actor's organization).
 
 | Method | Path | Module | Context | Milestone | Status |
 |---|---|---|---|---|---|
-| `POST` | `/partner/signup` | partners | any | M1 | `planned` |
-| `GET` `PATCH` | `/partner/profile` | partners | partner_owner | M1 | `planned` |
-| `GET` `POST` | `/partner/members` | partners | partner_owner | M1 | `planned` |
-| `GET` `PUT` | `/partner/capacity` | partners | partner_owner | M1 | `planned` |
-| `GET` `PUT` | `/partner/service-areas` | partners | partner_owner | M1 | `planned` |
+| `POST` | `/partner/signup` | partners | none, borrower, partner | M1 | `useful` |
+| `GET` | `/partner/profile` | partners | partner | M1 | `useful` |
+| `GET` `PUT` | `/partner/capacity` | partners | partner (PUT: owner) | M1 | `useful` |
+| `GET` `PUT` | `/partner/service-areas` | partners | partner (PUT: owner) | M1 | `useful` |
+| `GET` `POST` | `/partner/members` | partners | partner_owner | M1 | `useful` |
+| `PATCH` | `/partner/members/:id` | partners | partner_owner | M1 | `useful` |
+
+Planned:
+
+| Method | Path | Module | Context | Milestone | Status |
+|---|---|---|---|---|---|
+| `PATCH` | `/partner/profile` | partners | partner_owner | M7 | `planned` |
 | `GET` | `/partner/dashboard` | partners | partner | M1 | `planned` |
 | `GET` `POST` | `/partner/leads` | leads | partner | M1 | `planned` |
 | `GET` `PATCH` | `/partner/leads/:id` | leads | partner | M1 | `planned` |
@@ -335,17 +344,23 @@ Built in M1.4 (Postman `49 Admin - Consents/`). Controllers: `backend/src/module
 | `POST` | `/admin/consent-templates/:id/versions/:number/publish` | consents | staff | M1 | `useful` |
 | `POST` | `/admin/consent-templates/:id/versions/:number/retire` | consents | staff | M1 | `useful` |
 
+Built in M1.5 (Postman `43 Admin - Partners/`). Controller: `backend/src/modules/partners/http/admin-partners.controller.ts`.
+
+| Method | Path | Module | Context | Milestone | Status |
+|---|---|---|---|---|---|
+| `GET` | `/admin/partners` | partners | staff | M1 | `useful` |
+| `GET` | `/admin/partners/:id` | partners | staff | M1 | `useful` |
+| `POST` | `/admin/partners/:id/verify` | partners | staff | M1 | `useful` |
+| `POST` | `/admin/partners/:id/level` | partners | staff | M1 | `useful` |
+| `POST` | `/admin/partners/:id/suspend` | partners | staff | M1 | `useful` |
+| `POST` | `/admin/partners/:id/reinstate` | partners | staff | M1 | `useful` |
+
 Planned:
 
 | Method | Path | Module | Context | Milestone | Status |
 |---|---|---|---|---|---|
 | `GET` `POST` | `/admin/api-clients` | access | staff | M1 | `planned` |
 | `DELETE` | `/admin/api-clients/:id` | access | staff | M1 | `planned` |
-| `GET` | `/admin/partners` | partners | staff | M1 | `planned` |
-| `GET` | `/admin/partners/:id` | partners | staff | M1 | `planned` |
-| `POST` | `/admin/partners/:id/verify` | partners | staff | M1 | `planned` |
-| `POST` | `/admin/partners/:id/level` | partners | staff | M1 | `planned` |
-| `POST` | `/admin/partners/:id/suspend` | partners | staff | M1 | `planned` |
 | `GET` `POST` | `/admin/notification-templates` | notifications | staff | M1 | `planned` |
 | `PATCH` | `/admin/notification-templates/:id` | notifications | staff | M1 | `planned` |
 | `GET` `POST` | `/admin/document-types` | documents | staff | M2 | `planned` |

@@ -1,4 +1,4 @@
-import type { InvitationWithOrganization, MembershipWithOrganization } from '../infrastructure/access.repository.js';
+import type { InvitationWithOrganization, MemberWithUser, MembershipWithOrganization } from '../infrastructure/access.repository.js';
 
 export type OrganizationSummaryView = {
   id: string;
@@ -55,4 +55,8 @@ export function toInvitationView(invitation: InvitationWithOrganization): Invita
     acceptedAt: invitation.acceptedAt?.toISOString() ?? null,
     createdAt: invitation.createdAt.toISOString(),
   };
+}
+
+export function toMemberView(member: MemberWithUser) {
+  return { ...toMembershipView(member), userId: member.userId, displayName: member.user.party.displayName, approvedAt: member.approvedAt?.toISOString() ?? null };
 }

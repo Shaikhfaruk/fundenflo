@@ -32,8 +32,16 @@ export class PartyService {
     private readonly outbox: OutboxService,
   ) {}
 
-  async createPerson(input: { displayName?: string | null; contact?: ContactInput }) {
-    const party = await this.parties.create({ kind: PartyKind.person, displayName: input.displayName ?? null });
+  createPerson(input: { displayName?: string | null; contact?: ContactInput }) {
+    return this.createParty(PartyKind.person, input);
+  }
+
+  createBusiness(input: { displayName: string; contact?: ContactInput }) {
+    return this.createParty(PartyKind.business, input);
+  }
+
+  private async createParty(kind: PartyKind, input: { displayName?: string | null; contact?: ContactInput }) {
+    const party = await this.parties.create({ kind, displayName: input.displayName ?? null });
     if (input.contact) await this.addContact(party.id, input.contact);
     await this.outbox.publish({ name: EventName.PartyCreated, aggregateType: 'party', aggregateId: party.id, payload: { partyId: party.id, kind: party.kind } });
     return party;

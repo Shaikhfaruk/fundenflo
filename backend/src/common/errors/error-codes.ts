@@ -44,6 +44,7 @@ export const ErrorCode = {
   OPEN_VERSION_EXISTS: 'OPEN_VERSION_EXISTS',
   SELF_APPROVAL_NOT_ALLOWED: 'SELF_APPROVAL_NOT_ALLOWED',
   CONSENT_REQUIRED: 'CONSENT_REQUIRED',
+  PARTNER_ALREADY_REGISTERED: 'PARTNER_ALREADY_REGISTERED',
   SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE',
   INTERNAL_ERROR: 'INTERNAL_ERROR',
 } as const;
@@ -96,6 +97,7 @@ export const ERROR_CATALOG: Record<ErrorCode, { status: number; message: string 
   OPEN_VERSION_EXISTS: { status: 409, message: 'A version is already in progress. Publish or retire it first.' },
   SELF_APPROVAL_NOT_ALLOWED: { status: 403, message: 'A change must be approved by someone other than its maker.' },
   CONSENT_REQUIRED: { status: 403, message: 'Consent for this purpose is needed first.' },
+  PARTNER_ALREADY_REGISTERED: { status: 409, message: 'This account already has a partner registration.' },
   SERVICE_UNAVAILABLE: { status: 503, message: 'The service is temporarily unavailable. Please try again.' },
   INTERNAL_ERROR: { status: 500, message: 'Something went wrong. Please try again.' },
 };

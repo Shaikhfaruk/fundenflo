@@ -47,4 +47,7 @@ These are the places where a second copy is most tempting. Use the one listed.
 | Checking consent or lawful basis before contacting, sharing or processing | `ConsentService.hasConsent()` / `assertConsent()` | Reading `consent_records` directly or boolean consent columns on leads, users or applications |
 | The signed-in user's party id | `MeService.partyIdOf()` | Querying `users` from other modules |
 | Seeding a published config version | `seedPublishedConfig()` in `scripts/seed-data/run-seed.ts` | Hand-built `configDocument.create` calls per resource |
+| Applying a state machine transition in a service | `transitionOrThrow()` | Local try/catch around `machine.next` |
+| Organization lifecycle (pending, active, suspended, closed) and member token revocation | `OrganizationService` | Updating `organizations.status` or revoking memberships from partner, lender or other modules |
+| Normalising an invitation recipient (mobile or email) | `toInvitationRecipient()` | Per-controller normalisation before `InvitationService.create` |
 | Locale handling | `common/i18n/locale.ts` (`localise`, `resolveLocale`, `@RequestLocale()`) | Per-module locale constants |

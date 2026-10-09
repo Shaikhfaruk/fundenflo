@@ -52,6 +52,14 @@ export class GeoService {
     return toPincodeView(found);
   }
 
+  async findActiveStates(gstCodes: string[]) {
+    return gstCodes.length === 0 ? [] : this.geo.findActiveStatesByCodes(gstCodes);
+  }
+
+  async findActiveCities(ids: string[]) {
+    return ids.length === 0 ? [] : (await this.geo.findActiveCitiesByIds(ids)).map(toCityView);
+  }
+
   async findActiveCity(id: string) {
     const city = await this.geo.findCity(id);
     return city && city.status === CatalogStatus.active ? toCityView(city) : null;

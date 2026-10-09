@@ -24,6 +24,14 @@ export class GeoRepository {
     return this.txHost.tx.geoState.findMany({ where: { status: CatalogStatus.active }, orderBy: { name: 'asc' } });
   }
 
+  findActiveStatesByCodes(gstCodes: string[]) {
+    return this.txHost.tx.geoState.findMany({ where: { gstCode: { in: gstCodes }, status: CatalogStatus.active } });
+  }
+
+  findActiveCitiesByIds(ids: string[]) {
+    return this.txHost.tx.geoCity.findMany({ where: { id: { in: ids }, status: CatalogStatus.active }, include: cityInclude });
+  }
+
   findStateByCode(gstCode: string) {
     return this.txHost.tx.geoState.findUnique({ where: { gstCode } });
   }

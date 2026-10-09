@@ -27,6 +27,17 @@ export const EventName = {
   ConsentPurposeChanged: 'consent_purpose.changed',
   ConsentGranted: 'consent.granted',
   ConsentWithdrawn: 'consent.withdrawn',
+  OrganizationCreated: 'organization.created',
+  OrganizationStatusChanged: 'organization.status_changed',
+  PartnerRegistered: 'partner.registered',
+  PartnerVerificationRecommended: 'partner.verification_recommended',
+  PartnerVerified: 'partner.verified',
+  PartnerRejected: 'partner.rejected',
+  PartnerSuspended: 'partner.suspended',
+  PartnerReinstated: 'partner.reinstated',
+  PartnerLevelChanged: 'partner.level_changed',
+  PartnerCapacityChanged: 'partner.capacity_changed',
+  PartnerServiceAreasChanged: 'partner.service_areas_changed',
 } as const;
 
 export type EventName = (typeof EventName)[keyof typeof EventName];

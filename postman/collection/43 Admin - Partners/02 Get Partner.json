@@ -1,0 +1,108 @@
+{
+  "name": "Get Partner",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/partners/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "partners",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{partnerId}}"
+        }
+      ]
+    },
+    "description": "One firm with capacity, service areas and members. Staff only. Reading needs partner read access (partner manager, ops lead, compliance, support); actions need partner update access (partner manager, ops lead, super admin). Every action is audited and published as an event."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/partners/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "partners",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{partnerId}}"
+            }
+          ]
+        },
+        "description": "One firm with capacity, service areas and members. Staff only. Reading needs partner read access (partner manager, ops lead, compliance, support); actions need partner update access (partner manager, ops lead, super admin). Every action is audited and published as an event."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a121d0-1a2b-7c3d-8e4f-5061728394a5\",\n  \"organizationId\": \"01a121d0-2b3c-7d4e-9f50-61728394a5b6\",\n  \"name\": \"Agarwal & Co Chartered Accountants\",\n  \"organizationStatus\": \"active\",\n  \"kind\": \"ca\",\n  \"level\": \"new\",\n  \"membershipNumber\": \"512345\",\n  \"firmRegistrationNumber\": null,\n  \"verification\": {\n    \"status\": \"verified\",\n    \"recommendedDecision\": \"approve\",\n    \"recommendedByUserId\": \"01a121d0-4d5e-7f60-8172-8394a5b6c7d8\",\n    \"recommendationNote\": \"ICAI membership checked on the public register\",\n    \"recommendedAt\": \"2026-10-09T18:05:00.000Z\",\n    \"decidedByUserId\": \"01a121d0-5e6f-7a71-9283-94a5b6c7d8e9\",\n    \"decisionNote\": \"Second check done\",\n    \"decidedAt\": \"2026-10-09T18:05:00.000Z\"\n  },\n  \"capacity\": {\n    \"maxOpenLeads\": null,\n    \"paused\": false,\n    \"workingDays\": [],\n    \"workingHours\": null,\n    \"segments\": [\n      \"msme\"\n    ],\n    \"categories\": [\n      \"business\"\n    ],\n    \"languages\": [\n      \"hi\",\n      \"en\"\n    ],\n    \"version\": 1\n  },\n  \"serviceAreas\": [\n    {\n      \"id\": \"01a121d0-6f70-7b82-a394-a5b6c7d8e9fa\",\n      \"type\": \"state\",\n      \"state\": {\n        \"gstCode\": \"07\",\n        \"name\": \"Delhi\"\n      }\n    },\n    {\n      \"id\": \"01a121d0-7081-7c93-84a5-b6c7d8e9fa0b\",\n      \"type\": \"pincode\",\n      \"pincode\": \"122002\"\n    }\n  ],\n  \"signedUpByUserId\": \"01a121d0-3c4d-7e5f-8061-728394a5b6c7\",\n  \"version\": 3,\n  \"createdAt\": \"2026-10-09T18:05:00.000Z\",\n  \"updatedAt\": \"2026-10-09T18:05:00.000Z\",\n  \"members\": [\n    {\n      \"id\": \"01a121d0-8192-7da4-95b6-c7d8e9fa0b1c\",\n      \"context\": \"partner\",\n      \"role\": \"partner_agent\",\n      \"status\": \"active\",\n      \"organization\": {\n        \"id\": \"01a121d0-2b3c-7d4e-9f50-61728394a5b6\",\n        \"name\": \"Agarwal & Co Chartered Accountants\",\n        \"type\": \"partner\",\n        \"status\": \"active\"\n      },\n      \"version\": 1,\n      \"createdAt\": \"2026-10-09T18:05:00.000Z\",\n      \"userId\": \"01a121d0-3c4d-7e5f-8061-728394a5b6c7\",\n      \"displayName\": \"Neha Gupta\",\n      \"approvedAt\": \"2026-10-09T18:05:00.000Z\"\n    }\n  ]\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/partners/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "partners",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{partnerId}}"
+            }
+          ]
+        },
+        "description": "One firm with capacity, service areas and members. Staff only. Reading needs partner read access (partner manager, ops lead, compliance, support); actions need partner update access (partner manager, ops lead, super admin). Every action is audited and published as an event."
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

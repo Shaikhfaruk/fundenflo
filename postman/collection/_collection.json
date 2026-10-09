@@ -262,6 +262,22 @@
     {
       "key": "partnerOrganizationId",
       "value": ""
+    },
+    {
+      "key": "partnerId",
+      "value": ""
+    },
+    {
+      "key": "partnerCapacityVersion",
+      "value": ""
+    },
+    {
+      "key": "memberMobile",
+      "value": ""
+    },
+    {
+      "key": "memberMembershipId",
+      "value": ""
     }
   ]
 }

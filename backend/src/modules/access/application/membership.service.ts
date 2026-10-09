@@ -1,4 +1,5 @@
 import { subject } from '@casl/ability';
+import { accessibleBy } from '@casl/prisma/runtime';
 import { Transactional } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
 
@@ -23,6 +24,7 @@ import { AppAction, type AppAbility } from '../domain/ability.types.js';
 import { LOGIN_AS_CONTEXT, ORGANIZATION_CONTEXT } from '../domain/access.constants.js';
 import { assertRoleAllowed } from '../domain/role-rules.js';
 import { AccessRepository, type MembershipWithOrganization } from '../infrastructure/access.repository.js';
+import { toMemberView } from './access.views.js';
 import { InvitationService } from './invitation.service.js';
 
 export type ContextTarget = { membershipId: string } | { loginAs: typeof LoginAs.borrower };
@@ -51,6 +53,15 @@ export class MembershipService {
     await this.invitations.acceptPendingForContact(userId, contact.channel, contact.hash, context);
     if (context === SessionContext.borrower) return this.ensureBorrower(userId);
     return this.repository.findFirstActiveMembership(userId, context);
+  }
+
+  latestForContext(userId: string, context: SessionContext) {
+    return this.repository.findLatestMembership(userId, context);
+  }
+
+  async listMembers(organizationId: string, ability: AppAbility) {
+    const rows = await this.repository.listMembers({ AND: [accessibleBy(ability, AppAction.Read).ofType('Membership'), { organizationId }] });
+    return rows.map(toMemberView);
   }
 
   async ensureBorrower(userId: string): Promise<MembershipWithOrganization> {

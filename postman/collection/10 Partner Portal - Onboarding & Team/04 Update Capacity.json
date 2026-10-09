@@ -1,0 +1,188 @@
+{
+  "name": "Update Capacity",
+  "request": {
+    "method": "PUT",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "If-Match",
+        "value": "\"{{partnerCapacityVersion}}\""
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/partner/capacity",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "partner",
+        "capacity"
+      ]
+    },
+    "description": "Sets any of the capacity fields; omitted fields stay as they are, `null` clears `maxOpenLeads` or `workingHours`. Pausing stops new leads without affecting open ones. Owner only. Partner context (CA, DSA or connector firm members). Reading needs a partner membership; changes need the firm owner.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"maxOpenLeads\": 25,\n  \"workingDays\": [\n    1,\n    2,\n    3,\n    4,\n    5,\n    6\n  ],\n  \"workingHours\": {\n    \"start\": \"09:30\",\n    \"end\": \"18:30\"\n  },\n  \"languages\": [\n    \"hi\",\n    \"en\"\n  ]\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.collectionVariables.set('partnerCapacityVersion', String(pm.response.json().version));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{partnerCapacityVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/partner/capacity",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "capacity"
+          ]
+        },
+        "description": "Sets any of the capacity fields; omitted fields stay as they are, `null` clears `maxOpenLeads` or `workingHours`. Pausing stops new leads without affecting open ones. Owner only. Partner context (CA, DSA or connector firm members). Reading needs a partner membership; changes need the firm owner.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"maxOpenLeads\": 25,\n  \"workingDays\": [\n    1,\n    2,\n    3,\n    4,\n    5,\n    6\n  ],\n  \"workingHours\": {\n    \"start\": \"09:30\",\n    \"end\": \"18:30\"\n  },\n  \"languages\": [\n    \"hi\",\n    \"en\"\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"maxOpenLeads\": 25,\n  \"paused\": false,\n  \"workingDays\": [\n    1,\n    2,\n    3,\n    4,\n    5,\n    6\n  ],\n  \"workingHours\": {\n    \"start\": \"09:30\",\n    \"end\": \"18:30\"\n  },\n  \"segments\": [\n    \"msme\"\n  ],\n  \"categories\": [\n    \"business\",\n    \"working-capital\"\n  ],\n  \"languages\": [\n    \"hi\",\n    \"en\"\n  ],\n  \"version\": 2\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{partnerCapacityVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/partner/capacity",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "capacity"
+          ]
+        },
+        "description": "Sets any of the capacity fields; omitted fields stay as they are, `null` clears `maxOpenLeads` or `workingHours`. Pausing stops new leads without affecting open ones. Owner only. Partner context (CA, DSA or connector firm members). Reading needs a partner membership; changes need the firm owner.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"maxOpenLeads\": 25,\n  \"workingDays\": [\n    1,\n    2,\n    3,\n    4,\n    5,\n    6\n  ],\n  \"workingHours\": {\n    \"start\": \"09:30\",\n    \"end\": \"18:30\"\n  },\n  \"languages\": [\n    \"hi\",\n    \"en\"\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"workingHours.end\",\n      \"code\": \"custom\",\n      \"message\": \"start must be before end\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "403 FORBIDDEN",
+      "originalRequest": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{partnerCapacityVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/partner/capacity",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "capacity"
+          ]
+        },
+        "description": "Sets any of the capacity fields; omitted fields stay as they are, `null` clears `maxOpenLeads` or `workingHours`. Pausing stops new leads without affecting open ones. Owner only. Partner context (CA, DSA or connector firm members). Reading needs a partner membership; changes need the firm owner.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"maxOpenLeads\": 25,\n  \"workingDays\": [\n    1,\n    2,\n    3,\n    4,\n    5,\n    6\n  ],\n  \"workingHours\": {\n    \"start\": \"09:30\",\n    \"end\": \"18:30\"\n  },\n  \"languages\": [\n    \"hi\",\n    \"en\"\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Forbidden",
+      "code": 403,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"FORBIDDEN\",\n  \"message\": \"You do not have permission to do this.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

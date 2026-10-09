@@ -15,6 +15,7 @@ import { ConfigPublishingModule } from './modules/config-publishing/config-publi
 import { ConsentsModule } from './modules/consents/consents.module.js';
 import { HealthModule } from './modules/health/health.module.js';
 import { NotificationsModule } from './modules/notifications/notifications.module.js';
+import { PartnersModule } from './modules/partners/partners.module.js';
 import { QuestionnairesModule } from './modules/questionnaires/questionnaires.module.js';
 
 @Module({
@@ -30,6 +31,7 @@ import { QuestionnairesModule } from './modules/questionnaires/questionnaires.mo
     ConfigPublishingModule,
     QuestionnairesModule,
     ConsentsModule,
+    PartnersModule,
   ],
   providers: [
     { provide: APP_FILTER, useClass: HttpErrorFilter },

@@ -19,6 +19,8 @@
 | `attribute.changed` | attributes (`attribute-dictionary.service.ts`) | none yet (dictionary cache is invalidated directly after commit) | — | M1 | `useful` | §6.1 |
 | `facts.recorded` | attributes (`fact.service.ts`) | none yet (M1: lead quality re-score, routing re-evaluation; M5: assessments) | — | M1 | `useful` | §6.1 |
 | `consent.granted` · `consent.withdrawn` | consents (`consent.service.ts`, one event per record) | none yet (M1.6: leads `consent_pending` → routable; later documents, notifications) | — | M1 | `useful` | §7.2; spec `consents` |
+| `organization.created` · `organization.status_changed` | access (`organization.service.ts`) | `organization.status_changed` (non-active) → `auth.session-revocations` (revokes every member's sessions) | — | M1 | `useful` | spec `partners` (suspended owner token rejected at once) |
+| `partner.registered` · `partner.verification_recommended` · `partner.verified` · `partner.rejected` · `partner.suspended` · `partner.reinstated` · `partner.level_changed` · `partner.capacity_changed` · `partner.service_areas_changed` | partners (`partner.service.ts`, `partner-admin.service.ts`) | none yet (M1.8: routing pool refresh; notifications to the owner) | — | M1 | `useful` | §7.4 |
 | `consent_purpose.changed` | consents (`consent-purpose.service.ts`) | none yet (purpose cache is invalidated directly after commit) | — | M1 | `useful` | §14 |
 | `import.batch.validated` · `import.batch.committed` · `import.batch.undone` | imports | leads, reports, notifications (to uploader) | user room | M1 | `planned` | §7.1 |
 | `lead.captured` · `lead.qualified` · `lead.unqualified` · `lead.status.changed` | leads | `leads.route`, reports, sync | org room (when assigned) | M1 | `planned` | §7.3 |

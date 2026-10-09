@@ -32,19 +32,34 @@ export const ROLE_GRANTS: Partial<Record<Role, Grant>> = {
     can([AppAction.Read, AppAction.Update], 'Party');
     can(AppAction.Manage, 'Question');
     can(AppAction.Read, 'ConsentPurpose');
+    can([AppAction.Read, AppAction.Update], 'PartnerProfile');
     can([AppAction.Read, AppAction.Approve], 'ConfigDocument');
     can(CONFIG_MAKER, 'ConfigDocument', { resource: { in: OPS_CONFIG_RESOURCES } });
   },
   [Role.compliance_officer]: ({ can }) => {
     can(AppAction.Read, ['User', 'Membership', 'Invitation', 'Organization', 'AuditEvent', 'AttributeDefinition', 'Party', 'Question', NonModelSubject.Catalog]);
     can(AppAction.Manage, 'ConsentPurpose');
+    can(AppAction.Read, 'PartnerProfile');
     can([AppAction.Read, AppAction.Approve], 'ConfigDocument');
     can(CONFIG_MAKER, 'ConfigDocument', { resource: { in: COMPLIANCE_CONFIG_RESOURCES } });
   },
   [Role.support]: ({ can }) => {
-    can(AppAction.Read, ['User', 'Membership', 'AttributeDefinition', 'Party', 'Question', 'ConfigDocument', 'ConsentPurpose', NonModelSubject.Catalog]);
+    can(AppAction.Read, ['User', 'Membership', 'AttributeDefinition', 'Party', 'Question', 'ConfigDocument', 'ConsentPurpose', 'PartnerProfile', NonModelSubject.Catalog]);
   },
-  [Role.partner_manager]: manageOrganizationMembers(OrganizationType.partner),
+  [Role.partner_manager]: (builder, actor) => {
+    manageOrganizationMembers(OrganizationType.partner)(builder, actor);
+    builder.can([AppAction.Read, AppAction.Update], 'PartnerProfile');
+  },
+  [Role.partner_owner]: ({ can }, { organizationId }) => {
+    if (!organizationId) return;
+    can([AppAction.Read, AppAction.Update], 'PartnerProfile', { organizationId });
+    can(AppAction.Read, ['Membership', 'Invitation'], { organizationId });
+    can([AppAction.Create, AppAction.Update], ['Membership', 'Invitation'], { organizationId, role: Role.partner_agent });
+  },
+  [Role.partner_agent]: ({ can }, { organizationId }) => {
+    if (!organizationId) return;
+    can(AppAction.Read, 'PartnerProfile', { organizationId });
+  },
   [Role.lender_manager]: manageOrganizationMembers(OrganizationType.lender),
 };
 

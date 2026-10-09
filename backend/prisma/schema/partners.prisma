@@ -1,0 +1,77 @@
+enum PartnerKind {
+  ca
+  dsa
+  connector
+}
+
+enum PartnerLevel {
+  new
+  active
+  strategic
+}
+
+enum PartnerVerificationStatus {
+  pending
+  in_review
+  verified
+  rejected
+}
+
+enum VerificationDecision {
+  approve
+  reject
+}
+
+model PartnerProfile {
+  id                     String                    @id @default(uuid(7)) @db.Uuid
+  organizationId         String                    @unique @map("organization_id") @db.Uuid
+  kind                   PartnerKind
+  level                  PartnerLevel              @default(new)
+  verificationStatus     PartnerVerificationStatus @default(pending) @map("verification_status")
+  membershipNumber       String?                   @map("membership_number")
+  firmRegistrationNumber String?                   @map("firm_registration_number")
+  recommendedDecision    VerificationDecision?     @map("recommended_decision")
+  recommendedByUserId    String?                   @map("recommended_by_user_id") @db.Uuid
+  recommendationNote     String?                   @map("recommendation_note")
+  recommendedAt          DateTime?                 @map("recommended_at") @db.Timestamptz(3)
+  decidedByUserId        String?                   @map("decided_by_user_id") @db.Uuid
+  decisionNote           String?                   @map("decision_note")
+  decidedAt              DateTime?                 @map("decided_at") @db.Timestamptz(3)
+  segments               String[]
+  categories             String[]
+  languages              String[]
+  maxOpenLeads           Int?                      @map("max_open_leads")
+  paused                 Boolean                   @default(false)
+  workingDays            Int[]                     @map("working_days")
+  workingHoursStart      String?                   @map("working_hours_start")
+  workingHoursEnd        String?                   @map("working_hours_end")
+  signedUpByUserId       String                    @map("signed_up_by_user_id") @db.Uuid
+  version                Int                       @default(1)
+  createdAt              DateTime                  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt              DateTime                  @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  organization Organization         @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  serviceAreas PartnerServiceArea[]
+
+  @@index([verificationStatus, kind])
+  @@map("partner_profiles")
+}
+
+model PartnerServiceArea {
+  id               String   @id @default(uuid(7)) @db.Uuid
+  partnerProfileId String   @map("partner_profile_id") @db.Uuid
+  stateId          String?  @map("state_id") @db.Uuid
+  cityId           String?  @map("city_id") @db.Uuid
+  pincode          String?
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  partner PartnerProfile @relation(fields: [partnerProfileId], references: [id], onDelete: Cascade, onUpdate: Restrict)
+  state   GeoState?      @relation(fields: [stateId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  city    GeoCity?       @relation(fields: [cityId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([partnerProfileId])
+  @@index([stateId])
+  @@index([cityId])
+  @@index([pincode])
+  @@map("partner_service_areas")
+}

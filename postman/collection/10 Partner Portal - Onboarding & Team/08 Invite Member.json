@@ -1,0 +1,138 @@
+{
+  "name": "Invite Member",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/partner/members",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "partner",
+        "members"
+      ]
+    },
+    "description": "Invites a staff member (`partner_agent`) by mobile. They join automatically the first time they sign in as a partner with that number; an SMS tells them. Owner only. Partner context (CA, DSA or connector firm members). Reading needs a partner membership; changes need the firm owner.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"mobile\": \"{{memberMobile}}\",\n  \"countryCode\": \"+91\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "if (!pm.collectionVariables.get('memberMobile')) pm.collectionVariables.set('memberMobile', '97' + String(Math.floor(Math.random() * 1e8)).padStart(8, '0'));"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/partner/members",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "members"
+          ]
+        },
+        "description": "Invites a staff member (`partner_agent`) by mobile. They join automatically the first time they sign in as a partner with that number; an SMS tells them. Owner only. Partner context (CA, DSA or connector firm members). Reading needs a partner membership; changes need the firm owner.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"mobile\": \"{{memberMobile}}\",\n  \"countryCode\": \"+91\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a121d0-92a3-7eb5-a6c7-d8e9fa0b1c2d\",\n  \"organization\": {\n    \"id\": \"01a121d0-2b3c-7d4e-9f50-61728394a5b6\",\n    \"name\": \"Agarwal & Co Chartered Accountants\",\n    \"type\": \"partner\",\n    \"status\": \"active\"\n  },\n  \"context\": \"partner\",\n  \"role\": \"partner_agent\",\n  \"channel\": \"mobile\",\n  \"recipient\": \"98•••••574\",\n  \"status\": \"pending\",\n  \"expiresAt\": \"2026-10-16T18:05:00.000Z\",\n  \"acceptedAt\": null,\n  \"createdAt\": \"2026-10-09T18:05:00.000Z\"\n}"
+    },
+    {
+      "name": "400 MOBILE_INVALID",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/partner/members",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "members"
+          ]
+        },
+        "description": "Invites a staff member (`partner_agent`) by mobile. They join automatically the first time they sign in as a partner with that number; an SMS tells them. Owner only. Partner context (CA, DSA or connector firm members). Reading needs a partner membership; changes need the firm owner.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"mobile\": \"{{memberMobile}}\",\n  \"countryCode\": \"+91\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"MOBILE_INVALID\",\n  \"message\": \"Enter a valid mobile number.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

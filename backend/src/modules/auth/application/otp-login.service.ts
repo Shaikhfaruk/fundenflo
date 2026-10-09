@@ -1,7 +1,7 @@
 import { Transactional } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
 
-import { ContactType, LoginAs, LoginMethod, OtpPurpose, UserStatus } from '../../../common/enums/db.enums.js';
+import { ContactType, LoginAs, LoginMethod, MembershipStatus, OrganizationStatus, OtpPurpose, UserStatus } from '../../../common/enums/db.enums.js';
 import { EventName } from '../../../common/events/event-names.js';
 import { AppError } from '../../../common/errors/app-error.js';
 import { ErrorCode } from '../../../common/errors/error-codes.js';
@@ -33,6 +33,8 @@ type LoginPayload = { referralCode?: string };
 const NEXT_ACTION_MESSAGES: Record<NextActionCode, string> = {
   [NextActionCode.PartnerNotOnboarded]: 'This account is not registered as a CA or DSA partner yet. Complete partner signup to continue.',
   [NextActionCode.MembershipRequired]: 'This account has not been given access to a lender organization yet. Ask your organization admin for an invitation.',
+  [NextActionCode.PartnerPendingVerification]: 'Your partner registration is being verified. You can sign in as a partner once it is approved.',
+  [NextActionCode.MembershipSuspended]: 'Access to this organization is suspended. Contact FundenFlo support.',
 };
 
 @Injectable()
@@ -137,7 +139,7 @@ export class OtpLoginService {
     return {
       ...issued.tokens,
       user: await this.me.build(userId, membership?.id ?? null),
-      nextAction: membership ? null : this.nextAction(input.loginAs),
+      nextAction: membership ? null : await this.nextAction(userId, input.loginAs),
     };
   }
 
@@ -147,8 +149,16 @@ export class OtpLoginService {
     return this.invitations.hasAcceptable(identifier.channel, identifier.hash, LOGIN_AS_CONTEXT[loginAs]);
   }
 
-  private nextAction(loginAs: LoginAs): NextAction {
-    const code = loginAs === LoginAs.lender ? NextActionCode.MembershipRequired : NextActionCode.PartnerNotOnboarded;
+  private async nextAction(userId: string, loginAs: LoginAs): Promise<NextAction> {
+    const code = await this.nextActionCode(userId, loginAs);
     return { code, message: NEXT_ACTION_MESSAGES[code] };
+  }
+
+  private async nextActionCode(userId: string, loginAs: LoginAs): Promise<NextActionCode> {
+    const latest = await this.memberships.latestForContext(userId, LOGIN_AS_CONTEXT[loginAs]);
+    if (latest?.status === MembershipStatus.suspended || latest?.organization?.status === OrganizationStatus.suspended) return NextActionCode.MembershipSuspended;
+    if (loginAs === LoginAs.lender) return NextActionCode.MembershipRequired;
+    if (latest?.status === MembershipStatus.pending && latest.organization?.status === OrganizationStatus.pending) return NextActionCode.PartnerPendingVerification;
+    return NextActionCode.PartnerNotOnboarded;
   }
 }
