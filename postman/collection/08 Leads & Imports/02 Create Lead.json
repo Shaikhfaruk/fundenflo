@@ -1,0 +1,155 @@
+{
+  "name": "Create Lead",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "Idempotency-Key",
+        "value": "{{$guid}}"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/ops/leads",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "leads"
+      ]
+    },
+    "description": "Manual entry by ops or a telecaller (source `manual` unless `source` names another lead source). `consent` records what the person agreed to with `basis` and `evidence`; with contact and partner-sharing consent the lead is `consentStatus: ok`, otherwise it waits in the consent queue. `flags` may mark `test` or `spam`. At least one valid mobile, landline or email is required; an invalid extra number is kept as the `invalid_number` flag. The person is matched by contact (same contact and a compatible name links to the same person; a different name on the same contact opens a review). `category` may be a key or an alias, and `city` free text is resolved through aliases; anything unrecognised is kept and flagged (`unmapped_category`, `unmapped_location`). `amountText` such as \"20-25 lakh\" or \"upto 1 cr\" is parsed into paise. A repeat open enquiry for the same person and category within 30 days is flagged `duplicate`. `answers` go through the lead-capture questionnaire for the source and become declared facts. The original payload is stored encrypted. Staff only. Reading needs lead read access (ops lead, ops reviewer, compliance, support); changes need lead update access (ops lead, ops reviewer).",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"name\": \"Ramesh Kumar\",\n  \"mobile\": \"{{leadMobile}}\",\n  \"businessName\": \"Kumar Traders\",\n  \"segment\": \"msme\",\n  \"category\": \"business\",\n  \"amountText\": \"20-25 lakh\",\n  \"city\": \"Gurgaon\",\n  \"urgency\": \"within_month\",\n  \"preferredLanguage\": \"hi\",\n  \"consent\": {\n    \"basis\": \"consent\",\n    \"evidence\": \"Agreed on call, 9 Oct\",\n    \"items\": [\n      {\n        \"purpose\": \"contact\",\n        \"granted\": true\n      },\n      {\n        \"purpose\": \"partner_sharing\",\n        \"granted\": true\n      }\n    ]\n  }\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "if (!pm.collectionVariables.get('leadMobile')) pm.collectionVariables.set('leadMobile', '96' + String(Math.floor(Math.random() * 1e8)).padStart(8, '0'));"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "const previous = pm.collectionVariables.get('leadId');",
+          "if (previous) pm.collectionVariables.set('previousLeadId', previous);",
+          "pm.collectionVariables.set('leadId', String(pm.response.json().id));",
+          "pm.collectionVariables.set('leadVersion', String(pm.response.json().version));",
+          "pm.collectionVariables.set('leadRef', String(pm.response.json().ref));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "{{$guid}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/leads",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "leads"
+          ]
+        },
+        "description": "Manual entry by ops or a telecaller (source `manual` unless `source` names another lead source). `consent` records what the person agreed to with `basis` and `evidence`; with contact and partner-sharing consent the lead is `consentStatus: ok`, otherwise it waits in the consent queue. `flags` may mark `test` or `spam`. At least one valid mobile, landline or email is required; an invalid extra number is kept as the `invalid_number` flag. The person is matched by contact (same contact and a compatible name links to the same person; a different name on the same contact opens a review). `category` may be a key or an alias, and `city` free text is resolved through aliases; anything unrecognised is kept and flagged (`unmapped_category`, `unmapped_location`). `amountText` such as \"20-25 lakh\" or \"upto 1 cr\" is parsed into paise. A repeat open enquiry for the same person and category within 30 days is flagged `duplicate`. `answers` go through the lead-capture questionnaire for the source and become declared facts. The original payload is stored encrypted. Staff only. Reading needs lead read access (ops lead, ops reviewer, compliance, support); changes need lead update access (ops lead, ops reviewer).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Ramesh Kumar\",\n  \"mobile\": \"{{leadMobile}}\",\n  \"businessName\": \"Kumar Traders\",\n  \"segment\": \"msme\",\n  \"category\": \"business\",\n  \"amountText\": \"20-25 lakh\",\n  \"city\": \"Gurgaon\",\n  \"urgency\": \"within_month\",\n  \"preferredLanguage\": \"hi\",\n  \"consent\": {\n    \"basis\": \"consent\",\n    \"evidence\": \"Agreed on call, 9 Oct\",\n    \"items\": [\n      {\n        \"purpose\": \"contact\",\n        \"granted\": true\n      },\n      {\n        \"purpose\": \"partner_sharing\",\n        \"granted\": true\n      }\n    ]\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a121e0-1a2b-7c3d-8e4f-5061728394a5\",\n  \"ref\": \"LD-26-000123\",\n  \"status\": \"new\",\n  \"unqualifiedReason\": null,\n  \"lostReason\": null,\n  \"statusNote\": null,\n  \"statusChangedAt\": \"2026-10-09T18:45:00.000Z\",\n  \"holdUntil\": null,\n  \"party\": {\n    \"id\": \"01a121e0-2b3c-7d4e-9f50-61728394a5b6\",\n    \"displayName\": \"Ramesh Kumar\"\n  },\n  \"business\": {\n    \"id\": \"01a121e0-3c4d-7e5f-8061-728394a5b6c7\",\n    \"displayName\": \"Kumar Traders\"\n  },\n  \"source\": {\n    \"id\": \"01a121e0-4d5e-7f60-8172-8394a5b6c7d8\",\n    \"key\": \"manual\",\n    \"kind\": \"manual\"\n  },\n  \"campaign\": null,\n  \"segmentKey\": \"msme\",\n  \"subSegmentKey\": null,\n  \"categoryKey\": \"business\",\n  \"purposeKey\": null,\n  \"purposeNote\": null,\n  \"amount\": {\n    \"minPaise\": 200000000,\n    \"maxPaise\": 250000000,\n    \"text\": \"20-25 lakh\"\n  },\n  \"tenureMonths\": null,\n  \"location\": {\n    \"state\": {\n      \"gstCode\": \"06\",\n      \"name\": \"Haryana\"\n    },\n    \"city\": {\n      \"id\": \"01a121e0-5e6f-7a71-9283-94a5b6c7d8e9\",\n      \"name\": \"Gurugram\"\n    },\n    \"pincode\": null,\n    \"text\": null\n  },\n  \"urgency\": \"within_month\",\n  \"preferredLanguage\": \"hi\",\n  \"preferredContactTime\": null,\n  \"qualityScore\": 95,\n  \"flags\": [],\n  \"consentStatus\": \"ok\",\n  \"lawfulBasis\": \"consent\",\n  \"duplicateOfLeadId\": null,\n  \"mergedIntoLeadId\": null,\n  \"importBatchId\": null,\n  \"importRowNumber\": null,\n  \"convertedApplicationId\": null,\n  \"version\": 2,\n  \"createdAt\": \"2026-10-09T18:45:00.000Z\",\n  \"updatedAt\": \"2026-10-09T18:45:00.000Z\",\n  \"externalRef\": null,\n  \"utm\": null,\n  \"consentEvidence\": \"Agreed on call, 9 Oct\",\n  \"capturedByUserId\": \"01a121e0-7081-7c93-84a5-b6c7d8e9fa0b\",\n  \"apiClientId\": null,\n  \"contacts\": [\n    {\n      \"type\": \"mobile\",\n      \"masked\": \"96•••••210\",\n      \"primary\": true,\n      \"verified\": false,\n      \"doNotContact\": false,\n      \"invalid\": false\n    }\n  ],\n  \"events\": [\n    {\n      \"id\": \"01a121e0-6f70-7b82-a394-a5b6c7d8e9fa\",\n      \"type\": \"captured\",\n      \"fromStatus\": null,\n      \"toStatus\": \"new\",\n      \"reason\": null,\n      \"note\": null,\n      \"actorType\": \"user\",\n      \"actorUserId\": \"01a121e0-7081-7c93-84a5-b6c7d8e9fa0b\",\n      \"data\": {\n        \"source\": \"manual\",\n        \"partyOutcome\": \"created\",\n        \"flags\": [],\n        \"duplicateOfLeadId\": null\n      },\n      \"createdAt\": \"2026-10-09T18:45:00.000Z\"\n    }\n  ]\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "{{$guid}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/leads",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "leads"
+          ]
+        },
+        "description": "Manual entry by ops or a telecaller (source `manual` unless `source` names another lead source). `consent` records what the person agreed to with `basis` and `evidence`; with contact and partner-sharing consent the lead is `consentStatus: ok`, otherwise it waits in the consent queue. `flags` may mark `test` or `spam`. At least one valid mobile, landline or email is required; an invalid extra number is kept as the `invalid_number` flag. The person is matched by contact (same contact and a compatible name links to the same person; a different name on the same contact opens a review). `category` may be a key or an alias, and `city` free text is resolved through aliases; anything unrecognised is kept and flagged (`unmapped_category`, `unmapped_location`). `amountText` such as \"20-25 lakh\" or \"upto 1 cr\" is parsed into paise. A repeat open enquiry for the same person and category within 30 days is flagged `duplicate`. `answers` go through the lead-capture questionnaire for the source and become declared facts. The original payload is stored encrypted. Staff only. Reading needs lead read access (ops lead, ops reviewer, compliance, support); changes need lead update access (ops lead, ops reviewer).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Ramesh Kumar\",\n  \"mobile\": \"{{leadMobile}}\",\n  \"businessName\": \"Kumar Traders\",\n  \"segment\": \"msme\",\n  \"category\": \"business\",\n  \"amountText\": \"20-25 lakh\",\n  \"city\": \"Gurgaon\",\n  \"urgency\": \"within_month\",\n  \"preferredLanguage\": \"hi\",\n  \"consent\": {\n    \"basis\": \"consent\",\n    \"evidence\": \"Agreed on call, 9 Oct\",\n    \"items\": [\n      {\n        \"purpose\": \"contact\",\n        \"granted\": true\n      },\n      {\n        \"purpose\": \"partner_sharing\",\n        \"granted\": true\n      }\n    ]\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"mobile\",\n      \"code\": \"contact_required\",\n      \"message\": \"a lead needs at least one valid mobile, landline or email\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

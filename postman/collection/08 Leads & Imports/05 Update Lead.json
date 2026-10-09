@@ -1,0 +1,163 @@
+{
+  "name": "Update Lead",
+  "request": {
+    "method": "PATCH",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "If-Match",
+        "value": "\"{{leadVersion}}\""
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/ops/leads/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "leads",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{leadId}}"
+        }
+      ]
+    },
+    "description": "Corrects the requirement (segment, category, purpose, amount, tenure, city or pincode, urgency, language, contact time, campaign, flags). Keys are validated against the catalog; the quality score is recalculated. Contacts are changed on the person, not the lead. Staff only. Reading needs lead read access (ops lead, ops reviewer, compliance, support); changes need lead update access (ops lead, ops reviewer).",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"category\": \"working-capital\",\n  \"amountMinPaise\": 150000000,\n  \"amountMaxPaise\": 200000000,\n  \"pincode\": \"122002\",\n  \"tenureMonths\": 36\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.collectionVariables.set('leadVersion', String(pm.response.json().version));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{leadVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/leads/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "leads",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{leadId}}"
+            }
+          ]
+        },
+        "description": "Corrects the requirement (segment, category, purpose, amount, tenure, city or pincode, urgency, language, contact time, campaign, flags). Keys are validated against the catalog; the quality score is recalculated. Contacts are changed on the person, not the lead. Staff only. Reading needs lead read access (ops lead, ops reviewer, compliance, support); changes need lead update access (ops lead, ops reviewer).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"category\": \"working-capital\",\n  \"amountMinPaise\": 150000000,\n  \"amountMaxPaise\": 200000000,\n  \"pincode\": \"122002\",\n  \"tenureMonths\": 36\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a121e0-1a2b-7c3d-8e4f-5061728394a5\",\n  \"ref\": \"LD-26-000123\",\n  \"status\": \"new\",\n  \"unqualifiedReason\": null,\n  \"lostReason\": null,\n  \"statusNote\": null,\n  \"statusChangedAt\": \"2026-10-09T18:45:00.000Z\",\n  \"holdUntil\": null,\n  \"party\": {\n    \"id\": \"01a121e0-2b3c-7d4e-9f50-61728394a5b6\",\n    \"displayName\": \"Ramesh Kumar\"\n  },\n  \"business\": {\n    \"id\": \"01a121e0-3c4d-7e5f-8061-728394a5b6c7\",\n    \"displayName\": \"Kumar Traders\"\n  },\n  \"source\": {\n    \"id\": \"01a121e0-4d5e-7f60-8172-8394a5b6c7d8\",\n    \"key\": \"manual\",\n    \"kind\": \"manual\"\n  },\n  \"campaign\": null,\n  \"segmentKey\": \"msme\",\n  \"subSegmentKey\": null,\n  \"categoryKey\": \"working-capital\",\n  \"purposeKey\": null,\n  \"purposeNote\": null,\n  \"amount\": {\n    \"minPaise\": 150000000,\n    \"maxPaise\": 200000000,\n    \"text\": \"20-25 lakh\"\n  },\n  \"tenureMonths\": 36,\n  \"location\": {\n    \"state\": {\n      \"gstCode\": \"06\",\n      \"name\": \"Haryana\"\n    },\n    \"city\": {\n      \"id\": \"01a121e0-5e6f-7a71-9283-94a5b6c7d8e9\",\n      \"name\": \"Gurugram\"\n    },\n    \"pincode\": null,\n    \"text\": null\n  },\n  \"urgency\": \"within_month\",\n  \"preferredLanguage\": \"hi\",\n  \"preferredContactTime\": null,\n  \"qualityScore\": 95,\n  \"flags\": [],\n  \"consentStatus\": \"ok\",\n  \"lawfulBasis\": \"consent\",\n  \"duplicateOfLeadId\": null,\n  \"mergedIntoLeadId\": null,\n  \"importBatchId\": null,\n  \"importRowNumber\": null,\n  \"convertedApplicationId\": null,\n  \"version\": 3,\n  \"createdAt\": \"2026-10-09T18:45:00.000Z\",\n  \"updatedAt\": \"2026-10-09T18:45:00.000Z\",\n  \"externalRef\": null,\n  \"utm\": null,\n  \"consentEvidence\": \"Agreed on call, 9 Oct\",\n  \"capturedByUserId\": \"01a121e0-7081-7c93-84a5-b6c7d8e9fa0b\",\n  \"apiClientId\": null,\n  \"contacts\": [\n    {\n      \"type\": \"mobile\",\n      \"masked\": \"96•••••210\",\n      \"primary\": true,\n      \"verified\": false,\n      \"doNotContact\": false,\n      \"invalid\": false\n    }\n  ],\n  \"events\": [\n    {\n      \"id\": \"01a121e0-6f70-7b82-a394-a5b6c7d8e9fa\",\n      \"type\": \"captured\",\n      \"fromStatus\": null,\n      \"toStatus\": \"new\",\n      \"reason\": null,\n      \"note\": null,\n      \"actorType\": \"user\",\n      \"actorUserId\": \"01a121e0-7081-7c93-84a5-b6c7d8e9fa0b\",\n      \"data\": {\n        \"source\": \"manual\",\n        \"partyOutcome\": \"created\",\n        \"flags\": [],\n        \"duplicateOfLeadId\": null\n      },\n      \"createdAt\": \"2026-10-09T18:45:00.000Z\"\n    }\n  ]\n}"
+    },
+    {
+      "name": "409 VERSION_CONFLICT",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{leadVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/leads/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "leads",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{leadId}}"
+            }
+          ]
+        },
+        "description": "Corrects the requirement (segment, category, purpose, amount, tenure, city or pincode, urgency, language, contact time, campaign, flags). Keys are validated against the catalog; the quality score is recalculated. Contacts are changed on the person, not the lead. Staff only. Reading needs lead read access (ops lead, ops reviewer, compliance, support); changes need lead update access (ops lead, ops reviewer).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"category\": \"working-capital\",\n  \"amountMinPaise\": 150000000,\n  \"amountMaxPaise\": 200000000,\n  \"pincode\": \"122002\",\n  \"tenureMonths\": 36\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VERSION_CONFLICT\",\n  \"message\": \"This record was changed by someone else. Reload it and try again.\",\n  \"details\": {\n    \"currentVersion\": 3\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

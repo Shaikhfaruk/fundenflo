@@ -2,11 +2,14 @@ import type { Ability } from '@casl/ability';
 import type { PrismaQueryOf, Subjects } from '@casl/prisma/runtime';
 
 import type {
+  ApiClient,
   AttributeDefinition,
   AuditEvent,
   ConfigDocument,
   ConsentPurpose,
   Invitation,
+  Lead,
+  LeadSource,
   Membership,
   Organization,
   PartnerProfile,
@@ -49,6 +52,9 @@ export type AppSubjects =
       Question: Question;
       ConsentPurpose: ConsentPurpose;
       PartnerProfile: PartnerProfile;
+      ApiClient: ApiClient;
+      Lead: Lead;
+      LeadSource: LeadSource;
     }>;
 
 export type AppAbility = Ability<[AppAction, AppSubjects], PrismaQueryOf<Prisma.TypeMap>>;

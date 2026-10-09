@@ -57,6 +57,8 @@ model Party {
   facts             BorrowerFact[]
   answers           Answer[]
   consentRecords    ConsentRecord[]
+  leads             Lead[]              @relation("lead_person")
+  businessLeads     Lead[]              @relation("lead_business")
 
   @@index([kind, status])
   @@map("parties")

@@ -1,0 +1,178 @@
+enum LeadSourceKind {
+  manual
+  import
+  web_form
+  app_dropoff
+  partner_referral
+  webhook
+  api
+}
+
+enum LeadStatus {
+  new
+  qualified
+  in_progress
+  on_hold
+  converted
+  won
+  lost
+  unqualified
+}
+
+enum LeadUnqualifiedReason {
+  junk
+  invalid_number
+  duplicate
+  not_interested
+  not_eligible
+  do_not_contact
+  test
+}
+
+enum LeadLostReason {
+  not_interested
+  not_eligible
+  went_elsewhere
+  unreachable
+  other
+}
+
+enum LeadConsentStatus {
+  pending
+  ok
+  withdrawn
+}
+
+enum LeadFlag {
+  duplicate
+  invalid_number
+  do_not_contact
+  test
+  spam
+  unmapped_location
+  unmapped_category
+}
+
+enum LeadUrgency {
+  immediate
+  within_month
+  exploring
+}
+
+enum LeadEventType {
+  captured
+  edited
+  status_changed
+  consent_changed
+  merged
+  contact_revealed
+}
+
+model LeadSource {
+  id                 String         @id @default(uuid(7)) @db.Uuid
+  key                String         @unique
+  name               String
+  kind               LeadSourceKind
+  status             CatalogStatus  @default(active)
+  questionSetStage   String?        @map("question_set_stage")
+  consentContext     String?        @map("consent_context")
+  defaultLawfulBasis ConsentBasis?  @map("default_lawful_basis")
+  version            Int            @default(1)
+  createdAt          DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt          DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  leads      Lead[]
+  apiClients ApiClient[]
+
+  @@map("lead_sources")
+}
+
+model Lead {
+  id                     String                 @id @default(uuid(7)) @db.Uuid
+  ref                    String                 @unique
+  partyId                String                 @map("party_id") @db.Uuid
+  businessPartyId        String?                @map("business_party_id") @db.Uuid
+  sourceId               String                 @map("source_id") @db.Uuid
+  apiClientId            String?                @map("api_client_id") @db.Uuid
+  capturedByUserId       String?                @map("captured_by_user_id") @db.Uuid
+  campaign               String?
+  utm                    Json?
+  externalRef            String?                @map("external_ref")
+  status                 LeadStatus             @default(new)
+  unqualifiedReason      LeadUnqualifiedReason? @map("unqualified_reason")
+  lostReason             LeadLostReason?        @map("lost_reason")
+  statusNote             String?                @map("status_note")
+  statusChangedAt        DateTime               @default(now()) @map("status_changed_at") @db.Timestamptz(3)
+  holdUntil              DateTime?              @map("hold_until") @db.Timestamptz(3)
+  segmentKey             String?                @map("segment_key")
+  subSegmentKey          String?                @map("sub_segment_key")
+  categoryKey            String?                @map("category_key")
+  purposeKey             String?                @map("purpose_key")
+  purposeNote            String?                @map("purpose_note")
+  amountMinPaise         BigInt?                @map("amount_min_paise")
+  amountMaxPaise         BigInt?                @map("amount_max_paise")
+  amountText             String?                @map("amount_text")
+  tenureMonths           Int?                   @map("tenure_months")
+  stateId                String?                @map("state_id") @db.Uuid
+  cityId                 String?                @map("city_id") @db.Uuid
+  pincode                String?
+  locationText           String?                @map("location_text")
+  urgency                LeadUrgency?
+  preferredLanguage      String?                @map("preferred_language")
+  preferredContactTime   String?                @map("preferred_contact_time")
+  qualityScore           Int                    @default(0) @map("quality_score")
+  flags                  LeadFlag[]
+  consentStatus          LeadConsentStatus      @default(pending) @map("consent_status")
+  lawfulBasis            ConsentBasis?          @map("lawful_basis")
+  consentEvidence        String?                @map("consent_evidence")
+  duplicateOfLeadId      String?                @map("duplicate_of_lead_id") @db.Uuid
+  mergedIntoLeadId       String?                @map("merged_into_lead_id") @db.Uuid
+  importBatchId          String?                @map("import_batch_id") @db.Uuid
+  importRowNumber        Int?                   @map("import_row_number")
+  rawPayloadEnc          String?                @map("raw_payload_enc")
+  convertedApplicationId String?                @map("converted_application_id") @db.Uuid
+  convertedAt            DateTime?              @map("converted_at") @db.Timestamptz(3)
+  version                Int                    @default(1)
+  createdAt              DateTime               @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt              DateTime               @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  party         Party       @relation("lead_person", fields: [partyId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  businessParty Party?      @relation("lead_business", fields: [businessPartyId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  source        LeadSource  @relation(fields: [sourceId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  apiClient     ApiClient?  @relation(fields: [apiClientId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  state         GeoState?   @relation(fields: [stateId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  city          GeoCity?    @relation(fields: [cityId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  duplicateOf   Lead?       @relation("lead_duplicate", fields: [duplicateOfLeadId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  duplicates    Lead[]      @relation("lead_duplicate")
+  mergedInto    Lead?       @relation("lead_merge", fields: [mergedIntoLeadId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  mergedLeads   Lead[]      @relation("lead_merge")
+  events        LeadEvent[]
+
+  @@unique([sourceId, externalRef])
+  @@index([status, createdAt])
+  @@index([partyId])
+  @@index([consentStatus, status])
+  @@index([categoryKey, cityId])
+  @@index([pincode])
+  @@index([importBatchId])
+  @@map("leads")
+}
+
+model LeadEvent {
+  id          String        @id @default(uuid(7)) @db.Uuid
+  leadId      String        @map("lead_id") @db.Uuid
+  type        LeadEventType
+  fromStatus  LeadStatus?   @map("from_status")
+  toStatus    LeadStatus?   @map("to_status")
+  reason      String?
+  note        String?
+  actorType   ActorType     @map("actor_type")
+  actorUserId String?       @map("actor_user_id") @db.Uuid
+  data        Json?
+  createdAt   DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  lead Lead @relation(fields: [leadId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([leadId, createdAt])
+  @@map("lead_events")
+}

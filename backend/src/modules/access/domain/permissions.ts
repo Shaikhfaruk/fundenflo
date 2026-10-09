@@ -35,16 +35,21 @@ export const ROLE_GRANTS: Partial<Record<Role, Grant>> = {
     can([AppAction.Read, AppAction.Update], 'PartnerProfile');
     can([AppAction.Read, AppAction.Approve], 'ConfigDocument');
     can(CONFIG_MAKER, 'ConfigDocument', { resource: { in: OPS_CONFIG_RESOURCES } });
+    can(AppAction.Manage, ['ApiClient', 'Lead', 'LeadSource']);
+  },
+  [Role.ops_reviewer]: ({ can }) => {
+    can([AppAction.Read, AppAction.Update], ['Lead', 'Party']);
+    can(AppAction.Read, ['LeadSource', 'AttributeDefinition', 'Question', 'ConsentPurpose', 'PartnerProfile', NonModelSubject.Catalog]);
   },
   [Role.compliance_officer]: ({ can }) => {
     can(AppAction.Read, ['User', 'Membership', 'Invitation', 'Organization', 'AuditEvent', 'AttributeDefinition', 'Party', 'Question', NonModelSubject.Catalog]);
     can(AppAction.Manage, 'ConsentPurpose');
-    can(AppAction.Read, 'PartnerProfile');
+    can(AppAction.Read, ['PartnerProfile', 'ApiClient', 'Lead', 'LeadSource']);
     can([AppAction.Read, AppAction.Approve], 'ConfigDocument');
     can(CONFIG_MAKER, 'ConfigDocument', { resource: { in: COMPLIANCE_CONFIG_RESOURCES } });
   },
   [Role.support]: ({ can }) => {
-    can(AppAction.Read, ['User', 'Membership', 'AttributeDefinition', 'Party', 'Question', 'ConfigDocument', 'ConsentPurpose', 'PartnerProfile', NonModelSubject.Catalog]);
+    can(AppAction.Read, ['User', 'Membership', 'AttributeDefinition', 'Party', 'Question', 'ConfigDocument', 'ConsentPurpose', 'PartnerProfile', 'Lead', 'LeadSource', NonModelSubject.Catalog]);
   },
   [Role.partner_manager]: (builder, actor) => {
     manageOrganizationMembers(OrganizationType.partner)(builder, actor);

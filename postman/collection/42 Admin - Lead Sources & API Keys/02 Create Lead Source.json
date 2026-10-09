@@ -1,0 +1,143 @@
+{
+  "name": "Create Lead Source",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "Idempotency-Key",
+        "value": "{{$guid}}"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/lead-sources",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "lead-sources"
+      ]
+    },
+    "description": "Adds a lead source. Its `key` is what lead-capture question sets scope to (`scope.leadSources`) and what reports group by. `consentContext` names the consent template its forms show; `defaultLawfulBasis` applies to its leads when none is sent. Staff only. Reading needs read access (ops lead, compliance, support); changes need manage access (ops lead, super admin).",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"key\": \"website_{{$timestamp}}\",\n  \"name\": \"Diwali landing page\",\n  \"kind\": \"web_form\",\n  \"consentContext\": \"lead_capture\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "pm.collectionVariables.set('leadSourceId', String(pm.response.json().id));",
+          "pm.collectionVariables.set('leadSourceVersion', String(pm.response.json().version));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "{{$guid}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/lead-sources",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "lead-sources"
+          ]
+        },
+        "description": "Adds a lead source. Its `key` is what lead-capture question sets scope to (`scope.leadSources`) and what reports group by. `consentContext` names the consent template its forms show; `defaultLawfulBasis` applies to its leads when none is sent. Staff only. Reading needs read access (ops lead, compliance, support); changes need manage access (ops lead, super admin).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"key\": \"website_{{$timestamp}}\",\n  \"name\": \"Diwali landing page\",\n  \"kind\": \"web_form\",\n  \"consentContext\": \"lead_capture\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a121e0-4d5e-7f60-8172-8394a5b6c7d8\",\n  \"key\": \"website_diwali\",\n  \"name\": \"Diwali landing page\",\n  \"kind\": \"web_form\",\n  \"status\": \"active\",\n  \"questionSetStage\": null,\n  \"consentContext\": \"lead_capture\",\n  \"defaultLawfulBasis\": null,\n  \"version\": 1,\n  \"updatedAt\": \"2026-10-09T18:45:00.000Z\"\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "{{$guid}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/lead-sources",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "lead-sources"
+          ]
+        },
+        "description": "Adds a lead source. Its `key` is what lead-capture question sets scope to (`scope.leadSources`) and what reports group by. `consentContext` names the consent template its forms show; `defaultLawfulBasis` applies to its leads when none is sent. Staff only. Reading needs read access (ops lead, compliance, support); changes need manage access (ops lead, super admin).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"key\": \"website_{{$timestamp}}\",\n  \"name\": \"Diwali landing page\",\n  \"kind\": \"web_form\",\n  \"consentContext\": \"lead_capture\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

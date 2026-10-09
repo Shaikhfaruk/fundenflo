@@ -115,6 +115,7 @@ model GeoState {
   cities              GeoCity[]
   pincodes            GeoPincode[]
   partnerServiceAreas PartnerServiceArea[]
+  leads               Lead[]
 
   @@map("geo_states")
 }
@@ -131,6 +132,7 @@ model GeoCity {
   state               GeoState             @relation(fields: [stateId], references: [id], onDelete: Restrict)
   pincodes            GeoPincode[]
   partnerServiceAreas PartnerServiceArea[]
+  leads               Lead[]
 
   @@unique([stateId, name])
   @@index([name])

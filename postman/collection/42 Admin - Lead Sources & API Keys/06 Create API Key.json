@@ -1,0 +1,97 @@
+{
+  "name": "Create API Key",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "Idempotency-Key",
+        "value": "{{$guid}}"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/api-clients",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "api-clients"
+      ]
+    },
+    "description": "Creates an API key and returns the full key once (`ffk_<prefix>.<secret>`); only its hash is stored. `leads:create` keys must be linked to a lead source. Optional `expiresAt`. Staff only. Reading needs read access (ops lead, compliance, support); changes need manage access (ops lead, super admin).",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"name\": \"Diwali landing page form\",\n  \"scopes\": [\n    \"leads:create\"\n  ],\n  \"leadSourceId\": \"{{leadSourceId}}\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "pm.collectionVariables.set('apiClientId', String(pm.response.json().client.id));",
+          "pm.collectionVariables.set('leadApiKey', String(pm.response.json().key));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "{{$guid}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/api-clients",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "api-clients"
+          ]
+        },
+        "description": "Creates an API key and returns the full key once (`ffk_<prefix>.<secret>`); only its hash is stored. `leads:create` keys must be linked to a lead source. Optional `expiresAt`. Staff only. Reading needs read access (ops lead, compliance, support); changes need manage access (ops lead, super admin).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Diwali landing page form\",\n  \"scopes\": [\n    \"leads:create\"\n  ],\n  \"leadSourceId\": \"{{leadSourceId}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"client\": {\n    \"id\": \"01a121e0-8192-7da4-95b6-c7d8e9fa0b1c\",\n    \"name\": \"Diwali landing page form\",\n    \"keyPrefix\": \"h3Kx9Qa2\",\n    \"scopes\": [\n      \"leads:create\"\n    ],\n    \"leadSourceId\": \"01a121e0-4d5e-7f60-8172-8394a5b6c7d8\",\n    \"status\": \"active\",\n    \"lastUsedAt\": null,\n    \"expiresAt\": null,\n    \"revokedAt\": null,\n    \"createdAt\": \"2026-10-09T18:45:00.000Z\"\n  },\n  \"key\": \"ffk_h3Kx9Qa2.Gm2Wb3pVq8rT1sXy5Zc7dNf0hJk4lMn6oPq9rSt2uVw\"\n}"
+    }
+  ]
+}

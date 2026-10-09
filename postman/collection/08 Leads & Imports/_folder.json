@@ -1,0 +1,3 @@
+{
+  "description": "Lead intake and the ops lead queue. Every source (ops entry, websites, imports, app drop-offs, partners) goes through the same capture: person matching, catalog and city resolution, amount parsing, dedupe, consent, lead-capture questions and quality scoring."
+}

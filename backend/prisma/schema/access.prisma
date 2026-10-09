@@ -114,3 +114,29 @@ model Invitation {
   @@index([organizationId, status])
   @@map("invitations")
 }
+
+enum ApiClientStatus {
+  active
+  revoked
+}
+
+model ApiClient {
+  id              String          @id @default(uuid(7)) @db.Uuid
+  name            String
+  keyPrefix       String          @unique @map("key_prefix")
+  keyHash         String          @map("key_hash")
+  scopes          String[]
+  leadSourceId    String?         @map("lead_source_id") @db.Uuid
+  status          ApiClientStatus @default(active)
+  createdByUserId String?         @map("created_by_user_id") @db.Uuid
+  lastUsedAt      DateTime?       @map("last_used_at") @db.Timestamptz(3)
+  expiresAt       DateTime?       @map("expires_at") @db.Timestamptz(3)
+  revokedAt       DateTime?       @map("revoked_at") @db.Timestamptz(3)
+  createdAt       DateTime        @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime        @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  leadSource LeadSource? @relation(fields: [leadSourceId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  leads      Lead[]
+
+  @@map("api_clients")
+}

@@ -22,6 +22,7 @@ export const CipherPurpose = {
   NotificationPayload: 'notifications.payload',
   MfaChallenge: 'auth.mfa_challenge',
   BorrowerFact: 'borrower_facts.value',
+  LeadRawPayload: 'leads.raw_payload',
 } as const;
 
 export type CipherPurpose = (typeof CipherPurpose)[keyof typeof CipherPurpose];

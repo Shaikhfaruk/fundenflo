@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
 import { decideMatch } from './decide.js';
+import { decideLeadMatch, namesCompatible } from './lead-match.js';
 import { maskEmail, maskMobile } from './mask.js';
-import { normaliseEmail, normaliseMobile } from './normalise.js';
+import { normaliseEmail, normaliseLandline, normaliseMobile } from './normalise.js';
 
 describe('normaliseMobile', () => {
   it('accepts a 10-digit Indian mobile with the frontend country code', () => {
@@ -61,5 +62,30 @@ describe('decideMatch', () => {
 
   it('returns multiple when more than one unclaimed party matches', () => {
     expect(decideMatch([{ partyId: 'p1', hasLogin: false }, { partyId: 'p2', hasLogin: false }])).toEqual({ outcome: 'multiple', partyIds: ['p1', 'p2'] });
+  });
+});
+
+describe('lead matching', () => {
+  it('ignores honorifics and punctuation when comparing names', () => {
+    expect(namesCompatible('Mr. Ramesh Kumar', 'ramesh k')).toBe(true);
+    expect(namesCompatible('Smt Sunita Devi', 'Ramesh Kumar')).toBe(false);
+    expect(namesCompatible(null, 'Ramesh')).toBe(true);
+  });
+
+  it('links one compatible party, prefers a single verified one, and asks for review otherwise', () => {
+    expect(decideLeadMatch([], 'Ramesh')).toEqual({ outcome: 'none' });
+    expect(decideLeadMatch([{ partyId: 'p1', displayName: 'Ramesh Kumar', verified: false }], 'Ramesh')).toEqual({ outcome: 'single', partyId: 'p1' });
+    expect(decideLeadMatch([{ partyId: 'p1', displayName: 'Sunita Devi', verified: true }], 'Ramesh Kumar')).toEqual({ outcome: 'multiple', partyIds: ['p1'] });
+    expect(
+      decideLeadMatch([{ partyId: 'p1', displayName: 'Ramesh', verified: false }, { partyId: 'p2', displayName: 'Ramesh K', verified: true }], 'Ramesh'),
+    ).toEqual({ outcome: 'single', partyId: 'p2' });
+    expect(
+      decideLeadMatch([{ partyId: 'p1', displayName: 'Ramesh', verified: false }, { partyId: 'p2', displayName: 'Ramesh K', verified: false }], 'Ramesh'),
+    ).toEqual({ outcome: 'multiple', partyIds: ['p1', 'p2'] });
+  });
+
+  it('normalises Indian landlines and rejects mobiles as landlines', () => {
+    expect(normaliseLandline('011 2345 6789')).toBe('+911123456789');
+    expect(normaliseLandline('9876543210')).toBeNull();
   });
 });

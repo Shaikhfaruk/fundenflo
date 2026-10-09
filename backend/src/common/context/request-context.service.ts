@@ -45,6 +45,7 @@ export class RequestContext {
     const actor = this.actor;
     if (!actor) return undefined;
     if (actor.type === 'system') return { type: 'system', name: actor.name };
+    if (actor.type === 'api_client') return { type: 'api_client', apiClientId: actor.apiClientId, name: actor.name };
     return {
       type: 'user',
       userId: actor.userId,

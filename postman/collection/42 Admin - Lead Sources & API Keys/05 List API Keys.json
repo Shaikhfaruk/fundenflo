@@ -1,0 +1,59 @@
+{
+  "name": "List API Keys",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/api-clients",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "api-clients"
+      ]
+    },
+    "description": "API keys for external systems, with prefix, scopes, linked lead source and last use. The secret is never shown again. Staff only. Reading needs read access (ops lead, compliance, support); changes need manage access (ops lead, super admin)."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/api-clients",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "api-clients"
+          ]
+        },
+        "description": "API keys for external systems, with prefix, scopes, linked lead source and last use. The secret is never shown again. Staff only. Reading needs read access (ops lead, compliance, support); changes need manage access (ops lead, super admin)."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a121e0-8192-7da4-95b6-c7d8e9fa0b1c\",\n      \"name\": \"Diwali landing page form\",\n      \"keyPrefix\": \"h3Kx9Qa2\",\n      \"scopes\": [\n        \"leads:create\"\n      ],\n      \"leadSourceId\": \"01a121e0-4d5e-7f60-8172-8394a5b6c7d8\",\n      \"status\": \"active\",\n      \"lastUsedAt\": null,\n      \"expiresAt\": null,\n      \"revokedAt\": null,\n      \"createdAt\": \"2026-10-09T18:45:00.000Z\"\n    }\n  ]\n}"
+    }
+  ]
+}

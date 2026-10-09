@@ -20,12 +20,16 @@ export class PartyRepository {
   findContactCandidates(type: ContactType, valueHash: string) {
     return this.txHost.tx.partyContact.findMany({
       where: { type, valueHash, party: { status: PartyStatus.active, kind: PartyKind.person } },
-      select: { partyId: true, verifiedAt: true, party: { select: { user: { select: { id: true } } } } },
+      select: { partyId: true, verifiedAt: true, doNotContact: true, invalidAt: true, party: { select: { displayName: true, user: { select: { id: true } } } } },
     });
   }
 
   findContact(partyId: string, type: ContactType, valueHash: string) {
     return this.txHost.tx.partyContact.findUnique({ where: { partyId_type_valueHash: { partyId, type, valueHash } } });
+  }
+
+  listContacts(partyId: string) {
+    return this.txHost.tx.partyContact.findMany({ where: { partyId }, orderBy: [{ isPrimary: 'desc' }, { createdAt: 'asc' }] });
   }
 
   findPrimaryContact(partyId: string, type: ContactType) {

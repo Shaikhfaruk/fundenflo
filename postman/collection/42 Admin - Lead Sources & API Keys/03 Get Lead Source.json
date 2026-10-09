@@ -1,0 +1,109 @@
+{
+  "name": "Get Lead Source",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/lead-sources/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "lead-sources",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{leadSourceId}}"
+        }
+      ]
+    },
+    "description": "One lead source. Staff only. Reading needs read access (ops lead, compliance, support); changes need manage access (ops lead, super admin)."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.collectionVariables.set('leadSourceVersion', String(pm.response.json().version));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/lead-sources/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "lead-sources",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{leadSourceId}}"
+            }
+          ]
+        },
+        "description": "One lead source. Staff only. Reading needs read access (ops lead, compliance, support); changes need manage access (ops lead, super admin)."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a121e0-4d5e-7f60-8172-8394a5b6c7d8\",\n  \"key\": \"website_diwali\",\n  \"name\": \"Diwali landing page\",\n  \"kind\": \"web_form\",\n  \"status\": \"active\",\n  \"questionSetStage\": null,\n  \"consentContext\": \"lead_capture\",\n  \"defaultLawfulBasis\": null,\n  \"version\": 1,\n  \"updatedAt\": \"2026-10-09T18:45:00.000Z\"\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/lead-sources/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "lead-sources",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{leadSourceId}}"
+            }
+          ]
+        },
+        "description": "One lead source. Staff only. Reading needs read access (ops lead, compliance, support); changes need manage access (ops lead, super admin)."
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

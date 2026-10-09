@@ -38,6 +38,13 @@ export const EventName = {
   PartnerLevelChanged: 'partner.level_changed',
   PartnerCapacityChanged: 'partner.capacity_changed',
   PartnerServiceAreasChanged: 'partner.service_areas_changed',
+  ApiClientChanged: 'api_client.changed',
+  LeadCaptured: 'lead.captured',
+  LeadUpdated: 'lead.updated',
+  LeadStatusChanged: 'lead.status_changed',
+  LeadMerged: 'lead.merged',
+  LeadContactRevealed: 'lead.contact_revealed',
+  LeadSourceChanged: 'lead_source.changed',
 } as const;
 
 export type EventName = (typeof EventName)[keyof typeof EventName];

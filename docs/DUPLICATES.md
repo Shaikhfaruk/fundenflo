@@ -50,4 +50,9 @@ These are the places where a second copy is most tempting. Use the one listed.
 | Applying a state machine transition in a service | `transitionOrThrow()` | Local try/catch around `machine.next` |
 | Organization lifecycle (pending, active, suspended, closed) and member token revocation | `OrganizationService` | Updating `organizations.status` or revoking memberships from partner, lender or other modules |
 | Normalising an invitation recipient (mobile or email) | `toInvitationRecipient()` | Per-controller normalisation before `InvitationService.create` |
+| Creating a lead from any source (ops, web form, import, drop-off, partner, webhook) | `LeadCaptureService.capture()` | Source-specific insert paths into `leads` |
+| Human-readable references | `RefGenerator.next(RefKind.X)` with a Postgres sequence per kind | Counting rows or random strings for refs |
+| Reading amounts written as text | `parseAmountText()` | Per-feature regexes for lakh/crore |
+| Authenticating external systems | `ApiClientService` + `@ApiKeyAuth(scope)` | Per-endpoint shared secrets or header checks |
+| Mapping the current actor to an audit actor type | `actorTypeOf()` | Local ternaries over `actor.type` |
 | Locale handling | `common/i18n/locale.ts` (`localise`, `resolveLocale`, `@RequestLocale()`) | Per-module locale constants |

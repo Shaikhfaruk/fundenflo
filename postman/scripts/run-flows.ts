@@ -64,7 +64,7 @@ function stepItem(step: FlowStep, index: number): Record<string, unknown> {
   const item = findItem(step.request);
   const setup: string[] = [
     ...(step.identity ? identitySwitch(step.identity) : []),
-    ...Object.entries(step.variables ?? {}).map(([name, value]) => `pm.collectionVariables.set(${JSON.stringify(name)}, ${JSON.stringify(value)});`),
+    ...Object.entries(step.variables ?? {}).map(([name, value]) => `pm.collectionVariables.set(${JSON.stringify(name)}, pm.variables.replaceIn(${JSON.stringify(value)}));`),
   ];
   if (step.waitSeconds) setup.push(`setTimeout(() => {}, ${step.waitSeconds * 1000});`);
   const events = (item.event as Array<{ listen: string; script: { exec: string[] } }> | undefined) ?? [];

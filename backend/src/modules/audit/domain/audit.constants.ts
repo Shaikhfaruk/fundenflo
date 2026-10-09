@@ -48,6 +48,15 @@ export const AuditAction = {
   PartnerLevelChanged: 'partner.level_changed',
   PartnerCapacityChanged: 'partner.capacity_changed',
   PartnerServiceAreasChanged: 'partner.service_areas_changed',
+  ApiClientCreated: 'api_client.created',
+  ApiClientRevoked: 'api_client.revoked',
+  LeadCaptured: 'lead.captured',
+  LeadUpdated: 'lead.updated',
+  LeadStatusChanged: 'lead.status_changed',
+  LeadMerged: 'lead.merged',
+  LeadContactRevealed: 'lead.contact_revealed',
+  LeadSourceCreated: 'lead_source.created',
+  LeadSourceChanged: 'lead_source.changed',
 } as const;
 
 export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction];
@@ -77,6 +86,9 @@ export const AuditEntity = {
   ConsentRecord: 'consent_record',
   Organization: 'organization',
   PartnerProfile: 'partner_profile',
+  ApiClient: 'api_client',
+  Lead: 'lead',
+  LeadSource: 'lead_source',
 } as const;
 
 export type AuditEntity = (typeof AuditEntity)[keyof typeof AuditEntity];

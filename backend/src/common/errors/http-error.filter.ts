@@ -38,6 +38,10 @@ export class HttpErrorFilter implements ExceptionFilter {
     if (exception instanceof Prisma.PrismaClientKnownRequestError) {
       if (exception.code === 'P2002') return new AppError(ErrorCode.CONFLICT, { cause: exception });
       if (exception.code === 'P2025') return new AppError(ErrorCode.NOT_FOUND, { cause: exception });
+      if (exception.code === 'P2003') {
+        const field = exception.meta?.field_name;
+        return new AppError(ErrorCode.VALIDATION_FAILED, { cause: exception, details: [{ path: typeof field === 'string' ? field : 'reference', code: 'unknown_reference', message: 'refers to a record that does not exist' }] });
+      }
     }
 
     if (exception instanceof HttpException) {

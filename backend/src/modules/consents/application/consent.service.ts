@@ -163,6 +163,16 @@ export class ConsentService {
     return entry ? consentAllows(entry.state, check.organizationId, { explicitOnly: check.explicitOnly }) : false;
   }
 
+  async summary(partyId: string, purposes: string[], check: ConsentCheck = {}): Promise<Map<string, { granted: boolean; recorded: boolean }>> {
+    const states = await this.states(partyId, purposes);
+    return new Map(
+      purposes.map((purpose) => {
+        const entry = states.get(purpose);
+        return [purpose, { granted: entry ? consentAllows(entry.state, check.organizationId, { explicitOnly: check.explicitOnly }) : false, recorded: Boolean(entry) }];
+      }),
+    );
+  }
+
   async assertConsent(partyId: string, purpose: string, check: ConsentCheck = {}): Promise<void> {
     if (!(await this.hasConsent(partyId, purpose, check))) throw new AppError(ErrorCode.CONSENT_REQUIRED, { details: { purpose, organizationId: check.organizationId ?? null } });
   }

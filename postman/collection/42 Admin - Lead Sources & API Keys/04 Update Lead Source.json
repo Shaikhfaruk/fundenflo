@@ -1,0 +1,162 @@
+{
+  "name": "Update Lead Source",
+  "request": {
+    "method": "PATCH",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "If-Match",
+        "value": "\"{{leadSourceVersion}}\""
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/lead-sources/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "lead-sources",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{leadSourceId}}"
+        }
+      ]
+    },
+    "description": "Changes the name, question-set stage, consent context, default lawful basis or status. An inactive source rejects new leads. `key` and `kind` never change. Staff only. Reading needs read access (ops lead, compliance, support); changes need manage access (ops lead, super admin).",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"name\": \"Diwali landing page (Hindi)\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{leadSourceVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/lead-sources/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "lead-sources",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{leadSourceId}}"
+            }
+          ]
+        },
+        "description": "Changes the name, question-set stage, consent context, default lawful basis or status. An inactive source rejects new leads. `key` and `kind` never change. Staff only. Reading needs read access (ops lead, compliance, support); changes need manage access (ops lead, super admin).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Diwali landing page (Hindi)\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a121e0-4d5e-7f60-8172-8394a5b6c7d8\",\n  \"key\": \"website_diwali\",\n  \"name\": \"Diwali landing page (Hindi)\",\n  \"kind\": \"web_form\",\n  \"status\": \"active\",\n  \"questionSetStage\": null,\n  \"consentContext\": \"lead_capture\",\n  \"defaultLawfulBasis\": null,\n  \"version\": 2,\n  \"updatedAt\": \"2026-10-09T18:45:00.000Z\"\n}"
+    },
+    {
+      "name": "409 VERSION_CONFLICT",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{leadSourceVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/lead-sources/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "lead-sources",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{leadSourceId}}"
+            }
+          ]
+        },
+        "description": "Changes the name, question-set stage, consent context, default lawful basis or status. An inactive source rejects new leads. `key` and `kind` never change. Staff only. Reading needs read access (ops lead, compliance, support); changes need manage access (ops lead, super admin).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Diwali landing page (Hindi)\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VERSION_CONFLICT\",\n  \"message\": \"This record was changed by someone else. Reload it and try again.\",\n  \"details\": {\n    \"currentVersion\": 2\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

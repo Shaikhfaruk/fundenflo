@@ -17,6 +17,7 @@ export const HttpHeader = {
   ETag: 'ETag',
   RetryAfter: 'Retry-After',
   IdempotentReplay: 'Idempotent-Replayed',
+  ApiKey: 'X-Api-Key',
 } as const;
 
 export const REQUEST_ID_PATTERN = /^[A-Za-z0-9._-]{8,128}$/;

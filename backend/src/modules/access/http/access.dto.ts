@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import { InvitationStatus, MembershipStatus, Role } from '../../../common/enums/db.enums.js';
 import { pageQuerySchema } from '../../../common/listing/cursor-page.js';
+import { ApiScope } from '../domain/access.constants.js';
 
 const roleSchema = z.enum(Object.values(Role));
 
@@ -44,3 +45,14 @@ export const listInvitationsSchema = pageQuerySchema.extend({
 });
 
 export type ListInvitationsDto = z.output<typeof listInvitationsSchema>;
+
+export const createApiClientSchema = z
+  .object({
+    name: z.string().trim().min(3).max(100),
+    scopes: z.array(z.enum(Object.values(ApiScope))).min(1),
+    leadSourceId: z.uuid().optional(),
+    expiresAt: z.coerce.date().refine((date) => date > new Date(), 'must be in the future').optional(),
+  })
+  .strict();
+
+export type CreateApiClientDto = z.output<typeof createApiClientSchema>;

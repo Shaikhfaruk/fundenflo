@@ -1,0 +1,209 @@
+{
+  "name": "Submit Website Lead",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "X-Api-Key",
+        "value": "{{leadApiKey}}"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/public/leads",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "public",
+        "leads"
+      ]
+    },
+    "description": "Lead intake for websites, landing pages and partner systems, authenticated with an API key (`X-Api-Key`) that has the `leads:create` scope and is linked to a lead source. Rate limited per key. Send `externalRef` (your own id) to make retries safe: a repeat returns 200 with `replayed: true` and the original lead. Consent captured on the form is sent as `consent.items` with the `templateVersionId` of the consent text shown; without it the lead waits in the consent queue. At least one valid mobile, landline or email is required; an invalid extra number is kept as the `invalid_number` flag. The person is matched by contact (same contact and a compatible name links to the same person; a different name on the same contact opens a review). `category` may be a key or an alias, and `city` free text is resolved through aliases; anything unrecognised is kept and flagged (`unmapped_category`, `unmapped_location`). `amountText` such as \"20-25 lakh\" or \"upto 1 cr\" is parsed into paise. A repeat open enquiry for the same person and category within 30 days is flagged `duplicate`. `answers` go through the lead-capture questionnaire for the source and become declared facts. The original payload is stored encrypted.",
+    "auth": {
+      "type": "noauth"
+    },
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"name\": \"Farida Khan\",\n  \"mobile\": \"{{publicLeadMobile}}\",\n  \"businessName\": \"Khan Garments\",\n  \"segment\": \"msme\",\n  \"category\": \"working capital\",\n  \"amountText\": \"10 lakh\",\n  \"city\": \"Gurgaon\",\n  \"externalRef\": \"postman-{{$timestamp}}\",\n  \"utm\": {\n    \"utm_source\": \"google\",\n    \"utm_campaign\": \"diwali\"\n  }\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "if (!pm.collectionVariables.get('publicLeadMobile')) pm.collectionVariables.set('publicLeadMobile', '96' + String(Math.floor(Math.random() * 1e8)).padStart(8, '0'));"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "pm.collectionVariables.set('publicLeadId', String(pm.response.json().id));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Api-Key",
+            "value": "{{leadApiKey}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/public/leads",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "public",
+            "leads"
+          ]
+        },
+        "description": "Lead intake for websites, landing pages and partner systems, authenticated with an API key (`X-Api-Key`) that has the `leads:create` scope and is linked to a lead source. Rate limited per key. Send `externalRef` (your own id) to make retries safe: a repeat returns 200 with `replayed: true` and the original lead. Consent captured on the form is sent as `consent.items` with the `templateVersionId` of the consent text shown; without it the lead waits in the consent queue. At least one valid mobile, landline or email is required; an invalid extra number is kept as the `invalid_number` flag. The person is matched by contact (same contact and a compatible name links to the same person; a different name on the same contact opens a review). `category` may be a key or an alias, and `city` free text is resolved through aliases; anything unrecognised is kept and flagged (`unmapped_category`, `unmapped_location`). `amountText` such as \"20-25 lakh\" or \"upto 1 cr\" is parsed into paise. A repeat open enquiry for the same person and category within 30 days is flagged `duplicate`. `answers` go through the lead-capture questionnaire for the source and become declared facts. The original payload is stored encrypted.",
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Farida Khan\",\n  \"mobile\": \"{{publicLeadMobile}}\",\n  \"businessName\": \"Khan Garments\",\n  \"segment\": \"msme\",\n  \"category\": \"working capital\",\n  \"amountText\": \"10 lakh\",\n  \"city\": \"Gurgaon\",\n  \"externalRef\": \"postman-{{$timestamp}}\",\n  \"utm\": {\n    \"utm_source\": \"google\",\n    \"utm_campaign\": \"diwali\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a121e0-1a2b-7c3d-8e4f-5061728394a5\",\n  \"ref\": \"LD-26-000124\",\n  \"status\": \"new\",\n  \"replayed\": false\n}"
+    },
+    {
+      "name": "200 OK (retry)",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Api-Key",
+            "value": "{{leadApiKey}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/public/leads",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "public",
+            "leads"
+          ]
+        },
+        "description": "Lead intake for websites, landing pages and partner systems, authenticated with an API key (`X-Api-Key`) that has the `leads:create` scope and is linked to a lead source. Rate limited per key. Send `externalRef` (your own id) to make retries safe: a repeat returns 200 with `replayed: true` and the original lead. Consent captured on the form is sent as `consent.items` with the `templateVersionId` of the consent text shown; without it the lead waits in the consent queue. At least one valid mobile, landline or email is required; an invalid extra number is kept as the `invalid_number` flag. The person is matched by contact (same contact and a compatible name links to the same person; a different name on the same contact opens a review). `category` may be a key or an alias, and `city` free text is resolved through aliases; anything unrecognised is kept and flagged (`unmapped_category`, `unmapped_location`). `amountText` such as \"20-25 lakh\" or \"upto 1 cr\" is parsed into paise. A repeat open enquiry for the same person and category within 30 days is flagged `duplicate`. `answers` go through the lead-capture questionnaire for the source and become declared facts. The original payload is stored encrypted.",
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Farida Khan\",\n  \"mobile\": \"{{publicLeadMobile}}\",\n  \"businessName\": \"Khan Garments\",\n  \"segment\": \"msme\",\n  \"category\": \"working capital\",\n  \"amountText\": \"10 lakh\",\n  \"city\": \"Gurgaon\",\n  \"externalRef\": \"postman-{{$timestamp}}\",\n  \"utm\": {\n    \"utm_source\": \"google\",\n    \"utm_campaign\": \"diwali\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a121e0-1a2b-7c3d-8e4f-5061728394a5\",\n  \"ref\": \"LD-26-000124\",\n  \"status\": \"new\",\n  \"replayed\": true\n}"
+    },
+    {
+      "name": "401 API_KEY_INVALID",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Api-Key",
+            "value": "{{leadApiKey}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/public/leads",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "public",
+            "leads"
+          ]
+        },
+        "description": "Lead intake for websites, landing pages and partner systems, authenticated with an API key (`X-Api-Key`) that has the `leads:create` scope and is linked to a lead source. Rate limited per key. Send `externalRef` (your own id) to make retries safe: a repeat returns 200 with `replayed: true` and the original lead. Consent captured on the form is sent as `consent.items` with the `templateVersionId` of the consent text shown; without it the lead waits in the consent queue. At least one valid mobile, landline or email is required; an invalid extra number is kept as the `invalid_number` flag. The person is matched by contact (same contact and a compatible name links to the same person; a different name on the same contact opens a review). `category` may be a key or an alias, and `city` free text is resolved through aliases; anything unrecognised is kept and flagged (`unmapped_category`, `unmapped_location`). `amountText` such as \"20-25 lakh\" or \"upto 1 cr\" is parsed into paise. A repeat open enquiry for the same person and category within 30 days is flagged `duplicate`. `answers` go through the lead-capture questionnaire for the source and become declared facts. The original payload is stored encrypted.",
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Farida Khan\",\n  \"mobile\": \"{{publicLeadMobile}}\",\n  \"businessName\": \"Khan Garments\",\n  \"segment\": \"msme\",\n  \"category\": \"working capital\",\n  \"amountText\": \"10 lakh\",\n  \"city\": \"Gurgaon\",\n  \"externalRef\": \"postman-{{$timestamp}}\",\n  \"utm\": {\n    \"utm_source\": \"google\",\n    \"utm_campaign\": \"diwali\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Unauthorized",
+      "code": 401,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"API_KEY_INVALID\",\n  \"message\": \"This API key is missing, revoked or not valid.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

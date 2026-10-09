@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
 
-import { CatalogStatus } from '../../../common/enums/db.enums.js';
+import { AliasKind, CatalogStatus } from '../../../common/enums/db.enums.js';
 import { DEFAULT_LOCALE, type Locale } from '../../../common/i18n/locale.js';
 import { CacheService } from '../../../infrastructure/cache/cache.service.js';
 import { CATALOG_CACHE_TTL_SECONDS, CatalogCacheTag } from '../domain/catalog.constants.js';
+import { normaliseLookupText } from '../domain/alias.js';
 import { CatalogRepository } from '../infrastructure/catalog.repository.js';
+import { GeoRepository } from '../infrastructure/geo.repository.js';
 import { type AvailabilityContext, CategoryAvailabilityService } from './category-availability.service.js';
 import { type CategoryConfigView, type CategoryView, type SegmentView, toCategoryConfigView, toSegmentView } from './catalog.views.js';
 
@@ -14,6 +16,7 @@ export class CatalogQueryService {
     private readonly catalog: CatalogRepository,
     private readonly availability: CategoryAvailabilityService,
     private readonly cache: CacheService,
+    private readonly geo: GeoRepository,
   ) {}
 
   segments(locale: Locale): Promise<SegmentView[]> {
@@ -38,6 +41,19 @@ export class CatalogQueryService {
       subSegments: new Set(segments.flatMap((segment) => segment.subSegments.map((sub) => sub.key))),
       categories: new Set(categories.map((category) => category.key)),
     };
+  }
+
+  async resolveCategory(text: string): Promise<{ key: string; purposeKeys: string[] } | null> {
+    const direct = await this.findActiveCategory(text.trim().toLowerCase());
+    const category = direct ?? (await this.categoryByAlias(text));
+    return category ? { key: category.key, purposeKeys: category.purposes.filter((purpose) => purpose.status === CatalogStatus.active).map((purpose) => purpose.key) } : null;
+  }
+
+  private async categoryByAlias(text: string) {
+    const [alias] = await this.geo.findAliases(AliasKind.category, [normaliseLookupText(text)]);
+    if (!alias) return null;
+    const category = await this.catalog.findCategory(alias.targetId);
+    return category && category.status === CatalogStatus.active ? category : null;
   }
 
   async findActiveCategory(key: string) {

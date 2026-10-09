@@ -3,7 +3,7 @@
 > The map of everything in the system. **Search here before creating any function, class, route, worker, queue, channel or file, and reuse or extend what is listed.**
 > Any change that adds, renames, moves, removes or changes the behaviour or callers of an item updates this inventory and the matching diagram in [`ARCHITECTURE.md`](ARCHITECTURE.md) in the same change.
 > Known duplicates: [`DUPLICATES.md`](DUPLICATES.md). Design: [`BACKEND_ARCHITECTURE_PLAN.md`](BACKEND_ARCHITECTURE_PLAN.md).
-> Last updated: 2026-10-09 · Backend: **M0 foundation + M1.1 catalog + M1.2 attributes, facts and conditions + M1.3 config publishing and questionnaires + M1.4 consents + M1.5 partners light built** (122 routes, 4 queues, 134 tests). Remaining M1+ items are `planned`.
+> Last updated: 2026-10-09 · Backend: **M0 foundation + M1.1 catalog + M1.2 attributes, facts and conditions + M1.3 config publishing and questionnaires + M1.4 consents + M1.5 partners light + M1.6a leads core built** (142 routes, 4 queues, 151 tests). Remaining M1+ items are `planned`.
 > Automated checks: `pnpm inventory:check` (routes ↔ `inventory/api-routes.md`), `pnpm postman:coverage` (routes ↔ Postman), `pnpm lint:boundaries` (module rules).
 
 ## Status legend
@@ -22,8 +22,8 @@ Items marked `dead` or `duplicate` are never deleted without the owner's review.
 
 | Service | Table | Items |
 |---|---|---|
-| API — modules | [`inventory/api-modules.md`](inventory/api-modules.md) | 26 modules (12 built) |
-| API — routes | [`inventory/api-routes.md`](inventory/api-routes.md) | Every HTTP and WebSocket route, grouped by Postman folder (122 built) |
+| API — modules | [`inventory/api-modules.md`](inventory/api-modules.md) | 26 modules (13 built) |
+| API — routes | [`inventory/api-routes.md`](inventory/api-routes.md) | Every HTTP and WebSocket route, grouped by Postman folder (142 built) |
 | Worker — queues, jobs, cron | [`inventory/worker-queues-jobs.md`](inventory/worker-queues-jobs.md) | 4 built, 13 planned |
 | Events, real-time channels, notifications | [`inventory/events-and-channels.md`](inventory/events-and-channels.md) | Domain events, rooms, notification templates |
 | Shared building blocks (engines, infrastructure, common) | [`inventory/shared-building-blocks.md`](inventory/shared-building-blocks.md) | Reusable components and where enums/constants live |
@@ -39,7 +39,7 @@ Items marked `dead` or `duplicate` are never deleted without the owner's review.
 | `docs/ARCHITECTURE.md` | Living diagrams | `useful` | Linked from every inventory table |
 | `docs/inventory.md`, `docs/inventory/*.md` | This system map | `useful` | — |
 | `docs/DUPLICATES.md` | Known duplicates register and single-implementation rules | `useful` | No open duplicates as of 2026-10-09 |
-| `postman/` | Postman collection source, environments, flows and scripts (plan §12) | `useful` | 122 request files, 9 flows (the runner supports several staff identities per flow via `requires: checkerInvitation` and step `identity`); `pnpm postman:coverage` and `pnpm postman:flows` pass |
+| `postman/` | Postman collection source, environments, flows and scripts (plan §12) | `useful` | 142 request files, 10 flows (step variables may reference other variables) (the runner supports several staff identities per flow via `requires: checkerInvitation` and step `identity`); `pnpm postman:coverage` and `pnpm postman:flows` pass |
 | `backend/` | NestJS 12 API + worker (`package.json`, `nest-cli.json`, `tsconfig*.json`, `prisma.config.ts`, `prisma/`, `src/`, `test/`, `docker-compose.yml`, `.env.example`, `.oxlintrc.json`, `.dependency-cruiser.cjs`, `vitest.config*.ts`, `pnpm-workspace.yaml`) | `useful` | `pnpm build`, `pnpm test`, `pnpm test:integration` pass |
 | `backend/prisma/migrations/20261009154711_init` | Generated schema for M0 tables | `useful` | Applied locally and in every integration run |
 | `backend/prisma/migrations/20261009163422_catalog_geography` | Catalog and geography tables | `useful` | Applied locally and in every integration run |
@@ -47,6 +47,7 @@ Items marked `dead` or `duplicate` are never deleted without the owner's review.
 | `backend/prisma/migrations/20261009170341_config_questionnaires` | Config documents, versions and change requests; questions and answers; hand-added `immutable_except_party_id()` (now used by `borrower_facts` and `answers`; replaces `borrower_facts_immutable()`), `config_versions_freeze()`, `config_change_requests_decide_once()`, no-delete triggers, maker ≠ checker check | `useful` | Specs `config-publishing` (freeze, no delete), `questionnaires` (answers append-only), `attributes` (facts still immutable) |
 | `backend/prisma/migrations/20261009172715_consents` | Consent purposes and records; hand-added `consent_records` immutability (`immutable_except_party_id()`) and no-delete triggers, purpose scope/basis checks | `useful` | Spec `consents` (append-only, no delete) |
 | `backend/prisma/migrations/20261009173808_partners` | Partner profiles (capacity and capabilities) and service areas; hand-added checks: one area target, pincode format, capacity ≥ 0, working days 1–7, recommender ≠ decider | `useful` | Spec `partners` |
+| `backend/prisma/migrations/20261009175506_leads` | Lead sources, leads, lead events, API clients; hand-added `lead_ref_seq`, `lead_events` append-only, amount/pincode/quality/self-link checks | `useful` | Spec `leads` |
 | `backend/prisma/migrations/20261009154712_audit_integrity` | Hand-written: `forbid_mutation()`, `audit_event_hash()`, audit chain + append-only triggers, `NULLS NOT DISTINCT` membership index | `useful` | Spec `platform` (append-only), `staff-admin` (chain verify); `prisma migrate diff` empty |
 | `.gitignore` | Ignores `node_modules`, `dist`, `.env*` (except `.env.example`), generated Prisma client, `postman/dist`, `frontend/`, `.claude`, the roadmap docx | `useful` | — |
 | `frontend/` | Reference clone of `fundenflo-v1-app` @ `7bc9685` | `useful` | Requirements source only; git-ignored once the backend repo is initialised; never edited |

@@ -55,7 +55,7 @@ export class PartyService {
       ? await this.parties.updateContact(existing.id, {
           verifiedAt: input.verified ? (existing.verifiedAt ?? now) : existing.verifiedAt,
           isPrimary: input.primary || existing.isPrimary,
-          invalidAt: null,
+          invalidAt: input.verified ? null : existing.invalidAt,
         })
       : await this.parties.createContact({
           partyId,
@@ -73,6 +73,19 @@ export class PartyService {
 
   async assertExists(partyId: string): Promise<void> {
     if (!(await this.parties.findById(partyId))) throw new AppError(ErrorCode.NOT_FOUND, { details: { partyId } });
+  }
+
+  async listContacts(partyId: string, reveal: boolean) {
+    return (await this.parties.listContacts(partyId)).map((contact) => ({
+      id: contact.id,
+      type: contact.type,
+      value: reveal ? this.codec.decrypt(contact.valueEnc, CipherPurpose.PartyContact) : null,
+      masked: contact.valueMasked,
+      primary: contact.isPrimary,
+      verified: contact.verifiedAt !== null,
+      doNotContact: contact.doNotContact,
+      invalid: contact.invalidAt !== null,
+    }));
   }
 
   async getPrimaryContactValue(partyId: string, type: ContactType): Promise<string | null> {

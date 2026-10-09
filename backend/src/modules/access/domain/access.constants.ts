@@ -42,3 +42,21 @@ export const FUNDENFLO_ORGANIZATION_NAME = 'FundenFlo';
 export const OPS_CONFIG_RESOURCES: ConfigResource[] = [ConfigResource.question_set, ConfigResource.routing_rule];
 
 export const COMPLIANCE_CONFIG_RESOURCES: ConfigResource[] = [ConfigResource.consent_template];
+
+export const ApiScope = {
+  LeadsCreate: 'leads:create',
+} as const;
+
+export type ApiScope = (typeof ApiScope)[keyof typeof ApiScope];
+
+export const API_KEY_PREFIX = 'ffk';
+
+export const API_KEY_PREFIX_BYTES = 6;
+
+export const API_KEY_SECRET_BYTES = 32;
+
+export const API_KEY_PATTERN = /^ffk_([A-Za-z0-9_-]{8})\.([A-Za-z0-9_-]{43})$/;
+
+export const API_KEY_RATE_LIMIT = { name: 'api-key', limit: 120, windowSeconds: 60 } as const;
+
+export const API_KEY_LAST_USED_RESOLUTION_MS = 60_000;

@@ -14,6 +14,7 @@ import type { AppConfig } from '../config/env.schema.js';
 import { CacheService } from './cache/cache.service.js';
 import { CryptoModule } from './crypto/crypto.module.js';
 import { DatabaseModule } from './database/database.module.js';
+import { RefGenerator } from './database/ref-generator.js';
 import { PrismaService } from './database/prisma.service.js';
 import { IdempotencyInterceptor } from './idempotency/idempotency.interceptor.js';
 import { IdempotencyMaintenance } from './idempotency/idempotency.maintenance.js';
@@ -30,7 +31,7 @@ export type InfrastructureOptions = {
   processName: 'api' | 'worker' | 'script';
 };
 
-const sharedProviders = [CacheService, OutboxService, RateLimiter, RevocationRegistry, IdempotencyInterceptor, IdempotencyMaintenance, IpRateLimitGuard];
+const sharedProviders = [CacheService, OutboxService, RateLimiter, RevocationRegistry, IdempotencyInterceptor, IdempotencyMaintenance, IpRateLimitGuard, RefGenerator];
 
 @Global()
 @Module({})

@@ -1,0 +1,59 @@
+{
+  "name": "List Lead Sources",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/lead-sources",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "lead-sources"
+      ]
+    },
+    "description": "Where leads come from: `manual`, `import` and `app_dropoff` are built in; websites, partner systems and campaigns are added here. Filter by `status`. Staff only. Reading needs read access (ops lead, compliance, support); changes need manage access (ops lead, super admin)."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/lead-sources",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "lead-sources"
+          ]
+        },
+        "description": "Where leads come from: `manual`, `import` and `app_dropoff` are built in; websites, partner systems and campaigns are added here. Filter by `status`. Staff only. Reading needs read access (ops lead, compliance, support); changes need manage access (ops lead, super admin)."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a121e0-4d5e-7f60-8172-8394a5b6c7d8\",\n      \"key\": \"website_diwali\",\n      \"name\": \"Diwali landing page\",\n      \"kind\": \"web_form\",\n      \"status\": \"active\",\n      \"questionSetStage\": null,\n      \"consentContext\": \"lead_capture\",\n      \"defaultLawfulBasis\": null,\n      \"version\": 1,\n      \"updatedAt\": \"2026-10-09T18:45:00.000Z\"\n    }\n  ]\n}"
+    }
+  ]
+}

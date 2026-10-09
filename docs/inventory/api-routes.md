@@ -147,19 +147,30 @@ Controller: `backend/src/modules/catalog/http/catalog.controller.ts` · Postman:
 
 | Method | Path | Module | Context | Milestone | Status |
 |---|---|---|---|---|---|
-| `POST` | `/public/leads` | leads | api_key | M1 | `planned` |
-| `POST` `GET` | `/ops/leads` | leads | staff | M1 | `planned` |
-| `GET` `PATCH` | `/ops/leads/:id` | leads | staff | M1 | `planned` |
+Built in M1.6a (Postman `08 Leads & Imports/`). Controllers: `backend/src/modules/leads/http/public-leads.controller.ts` (API key with `leads:create`, `ApiKeyGuard`), `ops-leads.controller.ts`. The planned `GET /ops/leads/consent-pending` is served by `GET /ops/leads?consentStatus=pending` instead.
+
+| Method | Path | Module | Context | Milestone | Status |
+|---|---|---|---|---|---|
+| `POST` | `/public/leads` | leads | api_key | M1 | `useful` |
+| `POST` `GET` | `/ops/leads` | leads | staff | M1 | `useful` |
+| `GET` `PATCH` | `/ops/leads/:id` | leads | staff | M1 | `useful` |
+| `POST` | `/ops/leads/:id/qualify` | leads | staff | M1 | `useful` |
+| `POST` | `/ops/leads/:id/disqualify` | leads | staff | M1 | `useful` |
+| `POST` | `/ops/leads/:id/hold` | leads | staff | M1 | `useful` |
+| `POST` | `/ops/leads/:id/reopen` | leads | staff | M1 | `useful` |
+| `POST` | `/ops/leads/:id/recycle` | leads | staff | M1 | `useful` |
+| `POST` | `/ops/leads/:id/lose` | leads | staff | M1 | `useful` |
+| `POST` | `/ops/leads/merge` | leads | staff | M1 | `useful` |
+| `POST` | `/ops/leads/:id/reveal-contact` | leads | staff | M1 | `useful` |
+
+Planned:
+
+| Method | Path | Module | Context | Milestone | Status |
+|---|---|---|---|---|---|
 | `POST` | `/ops/leads/:id/assign` | leads | staff | M1 | `planned` |
 | `POST` | `/ops/leads/:id/route` | leads | staff | M1 | `planned` |
 | `POST` | `/ops/leads/bulk-assign` | leads | staff | M1 | `planned` |
 | `POST` | `/ops/leads/bulk-route` | leads | staff | M1 | `planned` |
-| `POST` | `/ops/leads/:id/qualify` | leads | staff | M1 | `planned` |
-| `POST` | `/ops/leads/:id/disqualify` | leads | staff | M1 | `planned` |
-| `POST` | `/ops/leads/:id/hold` | leads | staff | M1 | `planned` |
-| `POST` | `/ops/leads/:id/recycle` | leads | staff | M1 | `planned` |
-| `POST` | `/ops/leads/merge` | leads | staff | M1 | `planned` |
-| `GET` | `/ops/leads/consent-pending` | leads | staff | M1 | `planned` |
 | `POST` | `/ops/leads/:id/consent-request` | leads | staff | M1 | `planned` |
 | `GET` | `/ops/party-match-reviews` | parties | staff | M1 | `planned` |
 | `POST` | `/ops/party-match-reviews/:id/resolve` | parties | staff | M1 | `planned` |
@@ -170,8 +181,6 @@ Controller: `backend/src/modules/catalog/http/catalog.controller.ts` · Postman:
 | `POST` | `/admin/imports/:id/commit` | imports | staff | M1 | `planned` |
 | `POST` | `/admin/imports/:id/undo` | imports | staff | M1 | `planned` |
 | `GET` | `/admin/imports/:id/errors` | imports | staff | M1 | `planned` |
-| `GET` `POST` | `/admin/lead-sources` | leads | staff | M1 | `planned` |
-| `GET` `PATCH` | `/admin/lead-sources/:id` | leads | staff | M1 | `planned` |
 | `GET` | `/ops/reports/leads/funnel` | leads | staff | M1 | `planned` |
 | `GET` | `/ops/reports/partners/performance` | leads | staff | M1 | `planned` |
 
@@ -344,6 +353,15 @@ Built in M1.4 (Postman `49 Admin - Consents/`). Controllers: `backend/src/module
 | `POST` | `/admin/consent-templates/:id/versions/:number/publish` | consents | staff | M1 | `useful` |
 | `POST` | `/admin/consent-templates/:id/versions/:number/retire` | consents | staff | M1 | `useful` |
 
+Built in M1.6a (Postman `42 Admin - Lead Sources & API Keys/`). Controllers: `backend/src/modules/leads/http/admin-lead-sources.controller.ts`, `backend/src/modules/access/http/admin-api-clients.controller.ts`.
+
+| Method | Path | Module | Context | Milestone | Status |
+|---|---|---|---|---|---|
+| `GET` `POST` | `/admin/lead-sources` | leads | staff | M1 | `useful` |
+| `GET` `PATCH` | `/admin/lead-sources/:id` | leads | staff | M1 | `useful` |
+| `GET` `POST` | `/admin/api-clients` | access | staff | M1 | `useful` |
+| `DELETE` | `/admin/api-clients/:id` | access | staff | M1 | `useful` |
+
 Built in M1.5 (Postman `43 Admin - Partners/`). Controller: `backend/src/modules/partners/http/admin-partners.controller.ts`.
 
 | Method | Path | Module | Context | Milestone | Status |
@@ -359,8 +377,6 @@ Planned:
 
 | Method | Path | Module | Context | Milestone | Status |
 |---|---|---|---|---|---|
-| `GET` `POST` | `/admin/api-clients` | access | staff | M1 | `planned` |
-| `DELETE` | `/admin/api-clients/:id` | access | staff | M1 | `planned` |
 | `GET` `POST` | `/admin/notification-templates` | notifications | staff | M1 | `planned` |
 | `PATCH` | `/admin/notification-templates/:id` | notifications | staff | M1 | `planned` |
 | `GET` `POST` | `/admin/document-types` | documents | staff | M2 | `planned` |

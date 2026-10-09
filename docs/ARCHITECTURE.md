@@ -1,7 +1,7 @@
 # FundenFlo Backend — Architecture Diagrams
 
 > Living document. Any change that adds, renames, moves or removes a module, route group, queue, job, channel or worker updates the matching diagram here **and** [`inventory.md`](inventory.md) in the same change.
-> **Built (M0 + M1.1 – M1.5):** system context, identity & multiple logins (diagrams 3–4, parties/users/memberships/sessions parts), audit, notifications, outbox and the four M0 queues in diagram 9, the `catalog` module (diagram 2; feeds the Category and Requirement steps in diagram 7), the `attributes` module with the `conditions` and `facts` engines (diagram 2; the fact store and rule evaluation behind every step of diagram 7), and `config-publishing` + `questionnaires` with the `state-machines` and `questionnaire` engines (diagram 7: Pre-check step and the config lifecycle), `consents` with the `consents` engine (diagram 7: Consent step; diagram 5: consent gate before sharing), and `partners` light with organization lifecycle (diagram 4: partner sign-in states; diagram 5: the CA pool routing will draw from). Everything else is planned. Design rationale: [`BACKEND_ARCHITECTURE_PLAN.md`](BACKEND_ARCHITECTURE_PLAN.md).
+> **Built (M0 + M1.1 – M1.6a):** system context, identity & multiple logins (diagrams 3–4, parties/users/memberships/sessions parts), audit, notifications, outbox and the four M0 queues in diagram 9, the `catalog` module (diagram 2; feeds the Category and Requirement steps in diagram 7), the `attributes` module with the `conditions` and `facts` engines (diagram 2; the fact store and rule evaluation behind every step of diagram 7), and `config-publishing` + `questionnaires` with the `state-machines` and `questionnaire` engines (diagram 7: Pre-check step and the config lifecycle), `consents` with the `consents` engine (diagram 7: Consent step; diagram 5: consent gate before sharing), `partners` light with organization lifecycle (diagram 4: partner sign-in states; diagram 5: the CA pool routing will draw from), and leads core: capture, lifecycle and the ops queue (diagrams 5 and 6, green parts). Everything else is planned. Design rationale: [`BACKEND_ARCHITECTURE_PLAN.md`](BACKEND_ARCHITECTURE_PLAN.md).
 > Last updated: 2026-10-09
 
 ## Diagrams
@@ -158,10 +158,10 @@ flowchart TB
   LeadsGroup --> Ports
   Platform --> Ports
   classDef built fill:#d8f3dc,stroke:#2d6a4f,color:#081c15
-  class auth,access,parties,catalog,attributes,questionnaires,consents,partners,notifications,audit,configPublishing,conditions,facts,questionnaire,partyMatching,stateMachines,consentFold,database,queue,storage,crypto,cache built
+  class auth,access,parties,catalog,attributes,questionnaires,consents,partners,leads,notifications,audit,configPublishing,conditions,facts,questionnaire,partyMatching,stateMachines,consentFold,database,queue,storage,crypto,cache built
 ```
 
-Green = built (M0 – M1.5). Rules: engines import nothing from Nest, modules or infrastructure. Modules talk only through exported façade services or domain events. Integrations are reached only through ports.
+Green = built (M0 – M1.6a). Rules: engines import nothing from Nest, modules or infrastructure. Modules talk only through exported façade services or domain events. Integrations are reached only through ports.
 
 ---
 
@@ -276,29 +276,43 @@ flowchart LR
   WORK -->|lost| LOST[Lost with reason]
   WORK -->|returned| ROUTE
   APPL -->|application events| DERIVE[Lead status derived: converted / won / lost]
+  classDef built fill:#d8f3dc,stroke:#2d6a4f,color:#081c15
+  class MAN,WEB,CAP,RES,LINK,MQ,FACTS,CONS,CP built
 ```
+
+Green = built in M1.6a: ops entry and the API-key website intake go through `LeadCaptureService` (person matching with a name check, catalog/city/amount resolution, 30-day dedupe flag, consent and lead-capture answers, quality score, encrypted raw payload). `consent_pending` is the `consentStatus=pending` filter on `GET /ops/leads`.
 
 ---
 
 ## 6. Lead & assignment state machines
 
+Lead (built in M1.6a as `leadMachine`; `start` and `convert` are used from M1.8 / M3):
+
 ```mermaid
 stateDiagram-v2
   direction LR
   [*] --> new
-  new --> qualified
-  new --> unqualified
-  qualified --> in_progress
-  qualified --> on_hold
-  in_progress --> converted
-  in_progress --> lost
-  in_progress --> on_hold
-  on_hold --> qualified
-  converted --> won
-  converted --> lost
-  qualified --> recycled
-  in_progress --> recycled
-  recycled --> qualified
+  new --> qualified: qualify
+  qualified --> in_progress: start (assignment accepted)
+  new --> on_hold: hold
+  qualified --> on_hold: hold
+  in_progress --> on_hold: hold
+  on_hold --> new: reopen
+  qualified --> new: recycle
+  in_progress --> new: recycle
+  on_hold --> new: recycle
+  new --> unqualified: disqualify / merge
+  qualified --> unqualified: disqualify / merge
+  on_hold --> unqualified: disqualify / merge
+  new --> converted: convert
+  qualified --> converted: convert
+  in_progress --> converted: convert
+  converted --> won: win
+  new --> lost: lose
+  qualified --> lost: lose
+  in_progress --> lost: lose
+  on_hold --> lost: lose
+  converted --> lost: lose
   unqualified --> [*]
   won --> [*]
   lost --> [*]

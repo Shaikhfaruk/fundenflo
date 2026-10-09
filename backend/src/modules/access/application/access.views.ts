@@ -1,3 +1,4 @@
+import type { ApiClient } from '../../../generated/prisma/client.js';
 import type { InvitationWithOrganization, MemberWithUser, MembershipWithOrganization } from '../infrastructure/access.repository.js';
 
 export type OrganizationSummaryView = {
@@ -60,3 +61,16 @@ export function toInvitationView(invitation: InvitationWithOrganization): Invita
 export function toMemberView(member: MemberWithUser) {
   return { ...toMembershipView(member), userId: member.userId, displayName: member.user.party.displayName, approvedAt: member.approvedAt?.toISOString() ?? null };
 }
+
+export const toApiClientView = (client: ApiClient) => ({
+  id: client.id,
+  name: client.name,
+  keyPrefix: client.keyPrefix,
+  scopes: client.scopes,
+  leadSourceId: client.leadSourceId,
+  status: client.status,
+  lastUsedAt: client.lastUsedAt?.toISOString() ?? null,
+  expiresAt: client.expiresAt?.toISOString() ?? null,
+  revokedAt: client.revokedAt?.toISOString() ?? null,
+  createdAt: client.createdAt.toISOString(),
+});

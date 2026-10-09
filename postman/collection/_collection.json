@@ -278,6 +278,50 @@
     {
       "key": "memberMembershipId",
       "value": ""
+    },
+    {
+      "key": "leadSourceId",
+      "value": ""
+    },
+    {
+      "key": "leadSourceVersion",
+      "value": ""
+    },
+    {
+      "key": "apiClientId",
+      "value": ""
+    },
+    {
+      "key": "leadApiKey",
+      "value": ""
+    },
+    {
+      "key": "leadId",
+      "value": ""
+    },
+    {
+      "key": "previousLeadId",
+      "value": ""
+    },
+    {
+      "key": "leadVersion",
+      "value": ""
+    },
+    {
+      "key": "leadRef",
+      "value": ""
+    },
+    {
+      "key": "leadMobile",
+      "value": ""
+    },
+    {
+      "key": "publicLeadMobile",
+      "value": ""
+    },
+    {
+      "key": "publicLeadId",
+      "value": ""
     }
   ]
 }

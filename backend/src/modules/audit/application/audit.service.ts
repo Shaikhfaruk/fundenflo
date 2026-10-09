@@ -1,9 +1,8 @@
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
 
-import type { Actor } from '../../../common/context/actor.js';
+import { type Actor, actorTypeOf } from '../../../common/context/actor.js';
 import { RequestContext } from '../../../common/context/request-context.service.js';
-import { ActorType } from '../../../common/enums/db.enums.js';
 import type { Prisma } from '../../../generated/prisma/client.js';
 import type { PrismaTx } from '../../../infrastructure/database/database.types.js';
 import type { AuditAction, AuditEntity } from '../domain/audit.constants.js';
@@ -26,11 +25,15 @@ export class AuditService {
   async record(input: AuditRecordInput): Promise<void> {
     const actor = input.actor ?? this.context.actor;
     const user = actor?.type === 'user' ? actor : undefined;
-    const metadata = { ...input.metadata, ...(actor?.type === 'system' ? { systemActor: actor.name } : {}) };
+    const metadata = {
+      ...input.metadata,
+      ...(actor?.type === 'system' ? { systemActor: actor.name } : {}),
+      ...(actor?.type === 'api_client' ? { apiClientId: actor.apiClientId, apiClient: actor.name } : {}),
+    };
 
     await this.txHost.tx.auditEvent.create({
       data: {
-        actorType: user ? ActorType.user : ActorType.system,
+        actorType: actorTypeOf(actor),
         actorUserId: user?.userId ?? null,
         actorMembershipId: user?.membershipId ?? null,
         actorContext: user?.context ?? null,

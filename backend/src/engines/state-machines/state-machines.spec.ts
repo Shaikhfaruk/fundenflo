@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { defineMachine, TransitionError } from './define-machine.js';
 import { configVersionMachine } from './machines/config-version.machine.js';
+import { leadMachine } from './machines/lead.machine.js';
 import { organizationMachine } from './machines/organization.machine.js';
 import { partnerVerificationMachine } from './machines/partner-verification.machine.js';
 
@@ -58,5 +59,18 @@ describe('organizationMachine', () => {
     expect(organizationMachine.next('suspended', 'reinstate')).toBe('active');
     expect(organizationMachine.can('active', 'activate')).toBe(false);
     expect(organizationMachine.events('closed')).toEqual([]);
+  });
+});
+
+describe('leadMachine', () => {
+  it('qualifies, works and closes leads, and keeps closed leads closed', () => {
+    expect(leadMachine.next('new', 'qualify')).toBe('qualified');
+    expect(leadMachine.next('qualified', 'start')).toBe('in_progress');
+    expect(leadMachine.next('in_progress', 'recycle')).toBe('new');
+    expect(leadMachine.next('on_hold', 'reopen')).toBe('new');
+    expect(leadMachine.next('converted', 'win')).toBe('won');
+    expect(leadMachine.can('in_progress', 'disqualify')).toBe(false);
+    expect(leadMachine.events('won')).toEqual([]);
+    expect(leadMachine.events('unqualified')).toEqual([]);
   });
 });

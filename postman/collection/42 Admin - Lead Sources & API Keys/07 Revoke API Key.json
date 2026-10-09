@@ -1,0 +1,108 @@
+{
+  "name": "Revoke API Key",
+  "request": {
+    "method": "DELETE",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/api-clients/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "api-clients",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{apiClientId}}"
+        }
+      ]
+    },
+    "description": "Revokes a key immediately; requests with it get `API_KEY_INVALID`. Revoking twice is harmless. Staff only. Reading needs read access (ops lead, compliance, support); changes need manage access (ops lead, super admin)."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/api-clients/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "api-clients",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{apiClientId}}"
+            }
+          ]
+        },
+        "description": "Revokes a key immediately; requests with it get `API_KEY_INVALID`. Revoking twice is harmless. Staff only. Reading needs read access (ops lead, compliance, support); changes need manage access (ops lead, super admin)."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a121e0-8192-7da4-95b6-c7d8e9fa0b1c\",\n  \"name\": \"Diwali landing page form\",\n  \"keyPrefix\": \"h3Kx9Qa2\",\n  \"scopes\": [\n    \"leads:create\"\n  ],\n  \"leadSourceId\": \"01a121e0-4d5e-7f60-8172-8394a5b6c7d8\",\n  \"status\": \"revoked\",\n  \"lastUsedAt\": null,\n  \"expiresAt\": null,\n  \"revokedAt\": \"2026-10-09T18:45:00.000Z\",\n  \"createdAt\": \"2026-10-09T18:45:00.000Z\"\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/api-clients/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "api-clients",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{apiClientId}}"
+            }
+          ]
+        },
+        "description": "Revokes a key immediately; requests with it get `API_KEY_INVALID`. Revoking twice is harmless. Staff only. Reading needs read access (ops lead, compliance, support); changes need manage access (ops lead, super admin)."
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

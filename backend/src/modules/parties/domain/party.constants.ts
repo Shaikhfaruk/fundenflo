@@ -7,6 +7,7 @@ export const ContactSource = {
   MobileChange: 'mobile_change',
   StaffInvitation: 'staff_invitation',
   Seed: 'seed',
+  Lead: 'lead',
 } as const;
 
 export type ContactSource = (typeof ContactSource)[keyof typeof ContactSource];

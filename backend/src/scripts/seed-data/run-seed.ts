@@ -5,6 +5,7 @@ import { sha256 } from '../../infrastructure/crypto/secure-random.js';
 import { FUNDENFLO_ORGANIZATION_NAME } from '../../modules/access/domain/access.constants.js';
 import { normaliseLookupText } from '../../modules/catalog/domain/alias.js';
 import { compileConsentTemplate } from '../../modules/consents/application/compile-consent-template.js';
+import { SYSTEM_LEAD_SOURCES } from '../../modules/leads/domain/lead.constants.js';
 import { compileQuestion } from '../../modules/questionnaires/application/questionnaire.views.js';
 import type { NotificationTemplateKey } from '../../modules/notifications/domain/notification.constants.js';
 import { ATTRIBUTE_SEEDS, SEED_ATTRIBUTE_PROVENANCE } from './attributes.js';
@@ -27,6 +28,7 @@ export type SeedResult = {
   questionSets: number;
   consentPurposes: number;
   consentTemplates: number;
+  leadSources: number;
 };
 
 function dltTemplateId(template: TemplateSeed, env: NodeJS.ProcessEnv): string | null {
@@ -213,6 +215,12 @@ async function seedConsents(prisma: PrismaClient) {
   await seedPublishedConfig(prisma, { resource: ConfigResource.consent_template, ...template, compiled: compileConsentTemplate(template.content) });
 }
 
+async function seedLeadSources(prisma: PrismaClient) {
+  for (const source of SYSTEM_LEAD_SOURCES) {
+    await prisma.leadSource.upsert({ where: { key: source.key }, create: source, update: {} });
+  }
+}
+
 export async function runSeed(prisma: PrismaClient, env: NodeJS.ProcessEnv): Promise<SeedResult> {
   const organization = await seedOrganization(prisma);
   await seedTemplates(prisma, env);
@@ -223,6 +231,7 @@ export async function runSeed(prisma: PrismaClient, env: NodeJS.ProcessEnv): Pro
   await seedQuestions(prisma);
   await seedQuestionSets(prisma);
   await seedConsents(prisma);
+  await seedLeadSources(prisma);
   return {
     organizationId: organization.id,
     templates: NOTIFICATION_TEMPLATE_SEEDS.length,
@@ -236,5 +245,6 @@ export async function runSeed(prisma: PrismaClient, env: NodeJS.ProcessEnv): Pro
     questionSets: QUESTION_SET_SEEDS.length,
     consentPurposes: CONSENT_PURPOSE_SEEDS.length,
     consentTemplates: 1,
+    leadSources: SYSTEM_LEAD_SOURCES.length,
   };
 }

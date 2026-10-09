@@ -23,9 +23,9 @@
 | `partner.registered` · `partner.verification_recommended` · `partner.verified` · `partner.rejected` · `partner.suspended` · `partner.reinstated` · `partner.level_changed` · `partner.capacity_changed` · `partner.service_areas_changed` | partners (`partner.service.ts`, `partner-admin.service.ts`) | none yet (M1.8: routing pool refresh; notifications to the owner) | — | M1 | `useful` | §7.4 |
 | `consent_purpose.changed` | consents (`consent-purpose.service.ts`) | none yet (purpose cache is invalidated directly after commit) | — | M1 | `useful` | §14 |
 | `import.batch.validated` · `import.batch.committed` · `import.batch.undone` | imports | leads, reports, notifications (to uploader) | user room | M1 | `planned` | §7.1 |
-| `lead.captured` · `lead.qualified` · `lead.unqualified` · `lead.status.changed` | leads | `leads.route`, reports, sync | org room (when assigned) | M1 | `planned` | §7.3 |
+| `lead.captured` · `lead.updated` · `lead.status_changed` · `lead.merged` · `lead.contact_revealed` | leads (`lead-capture.service.ts`, `lead.service.ts`) | none yet (M1.8: `leads.route` on captured / status_changed to `new`/`qualified`; M1.9: reports, sync) | org room (when assigned, M1.9) | M1 | `useful` | §7.3; spec `leads` |
+| `lead_source.changed` · `api_client.changed` | leads, access | none yet | — | M1 | `useful` | §7.1 |
 | `lead.assignment.offered` · `accepted` · `declined` · `expired` · `revoked` · `returned` · `completed` | leads | sla, `leads.route`, notifications, reports | partner org + assignee membership rooms | M1 | `planned` | §7.3 |
-| `lead.contact.revealed` | leads | audit | — | M1 | `planned` | §7.5 |
 | `lead.activity.logged` · `follow_up.due` | activities | sla, notifications | assignee room | M1 | `planned` | §7.5 |
 | `lead.converted` · `lead.offline_conversion.recorded` | leads | commissions (lead terms), reports | org room | M1 / M3 | `planned` | §7.5 |
 | `sla.warning` · `sla.breached` | sla | leads, applications, notifications | assignee room | M1 | `planned` | §7.6 |
