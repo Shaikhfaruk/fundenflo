@@ -26,8 +26,4 @@ export class FactRepository {
       take,
     });
   }
-
-  partyExists(partyId: string) {
-    return this.txHost.tx.party.count({ where: { id: partyId } });
-  }
 }

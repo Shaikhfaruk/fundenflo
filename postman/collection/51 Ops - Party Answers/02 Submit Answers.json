@@ -1,0 +1,203 @@
+{
+  "name": "Submit Answers",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/ops/parties/:partyId/answers",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "parties",
+        ":partyId",
+        "answers"
+      ],
+      "variable": [
+        {
+          "key": "partyId",
+          "value": "{{partyId}}"
+        }
+      ]
+    },
+    "description": "Records answers taken on a call. The questionnaire for the context decides which questions are allowed; each answer becomes a `declared` fact (options map to their configured value) and both are saved together, or nothing is saved if any answer is invalid. Returns the answers, the facts and the required questions still `remaining`. Publishes `answers.recorded` and `facts.recorded`. Context: `stage` (`pre_check`, `profile`, `lead_capture`, `lender_specific`, `post_sanction`) plus optional `segment`, `subSegment`, `category`, `leadSource`. Every active published set whose scope matches is merged, generic sets first, and each question appears once. Staff only. Reading needs party read access; submitting needs party update access (ops lead, super admin). `partyId` comes from a lead or user record.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"stage\": \"pre_check\",\n  \"segment\": \"msme\",\n  \"answers\": [\n    {\n      \"questionKey\": \"business_age\",\n      \"value\": \"1-3\"\n    },\n    {\n      \"questionKey\": \"monthly_turnover\",\n      \"value\": \"5-25L\"\n    },\n    {\n      \"questionKey\": \"gst_registered\",\n      \"value\": \"yes\"\n    }\n  ]\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/parties/:partyId/answers",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "parties",
+            ":partyId",
+            "answers"
+          ],
+          "variable": [
+            {
+              "key": "partyId",
+              "value": "{{partyId}}"
+            }
+          ]
+        },
+        "description": "Records answers taken on a call. The questionnaire for the context decides which questions are allowed; each answer becomes a `declared` fact (options map to their configured value) and both are saved together, or nothing is saved if any answer is invalid. Returns the answers, the facts and the required questions still `remaining`. Publishes `answers.recorded` and `facts.recorded`. Context: `stage` (`pre_check`, `profile`, `lead_capture`, `lender_specific`, `post_sanction`) plus optional `segment`, `subSegment`, `category`, `leadSource`. Every active published set whose scope matches is merged, generic sets first, and each question appears once. Staff only. Reading needs party read access; submitting needs party update access (ops lead, super admin). `partyId` comes from a lead or user record.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"stage\": \"pre_check\",\n  \"segment\": \"msme\",\n  \"answers\": [\n    {\n      \"questionKey\": \"business_age\",\n      \"value\": \"1-3\"\n    },\n    {\n      \"questionKey\": \"monthly_turnover\",\n      \"value\": \"5-25L\"\n    },\n    {\n      \"questionKey\": \"gst_registered\",\n      \"value\": \"yes\"\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"answers\": [\n    {\n      \"id\": \"01a121b0-7081-7c93-84a5-b6c7d8e9fa0b\",\n      \"questionKey\": \"business_age\",\n      \"questionSetVersionId\": \"01a121a8-71d8-776f-aeac-0a01045cde78\",\n      \"value\": \"1-3\",\n      \"factId\": \"01a121b0-8192-7da4-95b6-c7d8e9fa0b1c\",\n      \"channel\": \"ops\",\n      \"answeredByUserId\": \"01a121b0-5e6f-7a71-9283-94a5b6c7d8e9\",\n      \"leadId\": null,\n      \"applicationId\": null,\n      \"createdAt\": \"2026-10-09T17:10:00.000Z\"\n    }\n  ],\n  \"facts\": [\n    {\n      \"factId\": \"01a121b0-8192-7da4-95b6-c7d8e9fa0b1c\",\n      \"attributeKey\": \"business.vintage_months\",\n      \"value\": {\n        \"min\": 12,\n        \"max\": 35\n      },\n      \"provenance\": \"declared\",\n      \"sourceType\": \"question_answer\",\n      \"sourceId\": \"01a121b0-7081-7c93-84a5-b6c7d8e9fa0b\",\n      \"confidence\": null,\n      \"observedAt\": \"2026-10-09T17:10:00.000Z\",\n      \"stale\": false\n    }\n  ],\n  \"remaining\": [\n    \"existing_emis\"\n  ],\n  \"hidden\": []\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/parties/:partyId/answers",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "parties",
+            ":partyId",
+            "answers"
+          ],
+          "variable": [
+            {
+              "key": "partyId",
+              "value": "{{partyId}}"
+            }
+          ]
+        },
+        "description": "Records answers taken on a call. The questionnaire for the context decides which questions are allowed; each answer becomes a `declared` fact (options map to their configured value) and both are saved together, or nothing is saved if any answer is invalid. Returns the answers, the facts and the required questions still `remaining`. Publishes `answers.recorded` and `facts.recorded`. Context: `stage` (`pre_check`, `profile`, `lead_capture`, `lender_specific`, `post_sanction`) plus optional `segment`, `subSegment`, `category`, `leadSource`. Every active published set whose scope matches is merged, generic sets first, and each question appears once. Staff only. Reading needs party read access; submitting needs party update access (ops lead, super admin). `partyId` comes from a lead or user record.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"stage\": \"pre_check\",\n  \"segment\": \"msme\",\n  \"answers\": [\n    {\n      \"questionKey\": \"business_age\",\n      \"value\": \"1-3\"\n    },\n    {\n      \"questionKey\": \"monthly_turnover\",\n      \"value\": \"5-25L\"\n    },\n    {\n      \"questionKey\": \"gst_registered\",\n      \"value\": \"yes\"\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"answers.0.value\",\n      \"code\": \"invalid_answer\",\n      \"message\": \"must be one of the listed options\"\n    },\n    {\n      \"path\": \"answers.1.questionKey\",\n      \"code\": \"unknown_question\",\n      \"message\": \"employment is not part of this questionnaire\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/parties/:partyId/answers",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "parties",
+            ":partyId",
+            "answers"
+          ],
+          "variable": [
+            {
+              "key": "partyId",
+              "value": "{{partyId}}"
+            }
+          ]
+        },
+        "description": "Records answers taken on a call. The questionnaire for the context decides which questions are allowed; each answer becomes a `declared` fact (options map to their configured value) and both are saved together, or nothing is saved if any answer is invalid. Returns the answers, the facts and the required questions still `remaining`. Publishes `answers.recorded` and `facts.recorded`. Context: `stage` (`pre_check`, `profile`, `lead_capture`, `lender_specific`, `post_sanction`) plus optional `segment`, `subSegment`, `category`, `leadSource`. Every active published set whose scope matches is merged, generic sets first, and each question appears once. Staff only. Reading needs party read access; submitting needs party update access (ops lead, super admin). `partyId` comes from a lead or user record.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"stage\": \"pre_check\",\n  \"segment\": \"msme\",\n  \"answers\": [\n    {\n      \"questionKey\": \"business_age\",\n      \"value\": \"1-3\"\n    },\n    {\n      \"questionKey\": \"monthly_turnover\",\n      \"value\": \"5-25L\"\n    },\n    {\n      \"questionKey\": \"gst_registered\",\n      \"value\": \"yes\"\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

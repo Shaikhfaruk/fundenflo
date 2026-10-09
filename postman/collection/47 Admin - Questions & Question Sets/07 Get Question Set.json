@@ -1,0 +1,109 @@
+{
+  "name": "Get Question Set",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/question-sets/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "question-sets",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{questionSetId}}"
+        }
+      ]
+    },
+    "description": "One question set with all version summaries. Staff only. Question sets are versioned config: draft → submit (maker) → approve or reject (a different staff member, in Change Requests) → publish → retire. Reading needs config read access; making, publishing and retiring need config maker access for question sets (ops lead, super admin)."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.collectionVariables.set('questionSetVersion', String(pm.response.json().version));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/question-sets/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "question-sets",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{questionSetId}}"
+            }
+          ]
+        },
+        "description": "One question set with all version summaries. Staff only. Question sets are versioned config: draft → submit (maker) → approve or reject (a different staff member, in Change Requests) → publish → retire. Reading needs config read access; making, publishing and retiring need config maker access for question sets (ops lead, super admin)."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a121b0-2b3c-7d4e-9f50-61728394a5b6\",\n  \"resource\": \"question_set\",\n  \"key\": \"lead_capture.msme_campaign\",\n  \"name\": {\n    \"en\": \"MSME Campaign Form\"\n  },\n  \"description\": null,\n  \"status\": \"active\",\n  \"activeVersion\": null,\n  \"openVersion\": {\n    \"id\": \"01a121b0-3c4d-7e5f-8061-728394a5b6c7\",\n    \"number\": 1,\n    \"status\": \"draft\"\n  },\n  \"versions\": [\n    {\n      \"id\": \"01a121b0-3c4d-7e5f-8061-728394a5b6c7\",\n      \"number\": 1,\n      \"status\": \"draft\",\n      \"effectiveFrom\": null,\n      \"publishedAt\": null,\n      \"retiredAt\": null,\n      \"updatedAt\": \"2026-10-09T17:10:00.000Z\"\n    }\n  ],\n  \"version\": 1,\n  \"createdAt\": \"2026-10-09T17:10:00.000Z\",\n  \"updatedAt\": \"2026-10-09T17:10:00.000Z\"\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/question-sets/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "question-sets",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{questionSetId}}"
+            }
+          ]
+        },
+        "description": "One question set with all version summaries. Staff only. Question sets are versioned config: draft → submit (maker) → approve or reject (a different staff member, in Change Requests) → publish → retire. Reading needs config read access; making, publishing and retiring need config maker access for question sets (ops lead, super admin)."
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

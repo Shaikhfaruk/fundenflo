@@ -343,6 +343,8 @@ This section is the core of the plan. The goal is that a new lender with new cri
 | `question_sets` + `question_set_versions` | `key` (`pre_check.msme`), `stage` (`pre_check \| profile \| lender_specific \| post_sanction`), scope (segments, sub-segments, categories, or one lender product version), ordered items with `required` and `section` |
 | `answers` | Raw answer for audit (`question_version`, `value`, `answered_by` = borrower/partner/ops). Each answer **also writes a `declared` fact**. |
 
+**As built (M1.3):** question sets are stored in the generic config tables (`config_documents` / `config_versions`, §6.9) rather than per-resource tables; `visible_if` lives on the set item so the same question can be conditional in one set and not another; `validation` is a typed object (`min`, `max`, `minLength`, `maxLength`, `pattern`, `maxSelections`) from which the API generates the JSON Schema for clients, so no free-form schema is stored; submitting a version compiles a frozen snapshot of every question, so later question edits never change a published set; answers store `question_set_version_id`.
+
 **Runtime resolution** (`GET /v1/applications/:id/questions?stage=pre_check`):
 
 1. Load the base question set for (segment, sub-segment, category, stage).
@@ -445,7 +447,7 @@ The run is persisted in `match_runs` (input snapshot, product versions considere
 
 ### 6.9 Config lifecycle (shared by all dynamic entities)
 
-`draft → in_review → published → retired`, through `config_change_requests` (maker, checker, diff, reason, effective date). This applies to question sets, consent templates, document requirements, scoring models, improvement rules, lender product versions, commission schemes and lead routing rules. Publishing invalidates caches, such as category availability in Valkey. In-flight applications keep their pinned versions.
+`draft → in_review → published → retired`, through `config_change_requests` (maker, checker, diff, reason, effective date). **As built (M1.3):** `config_documents` + `config_versions` + `config_change_requests` hold every resource; states are `draft → in_review → approved → published → retired` (reject returns to draft); approval happens in the shared `/admin/change-requests` inbox; `effective_from` on the version schedules publishing; DB triggers freeze submitted content and make decisions final. This applies to question sets, consent templates, document requirements, scoring models, improvement rules, lender product versions, commission schemes and lead routing rules. Publishing invalidates caches, such as category availability in Valkey. In-flight applications keep their pinned versions.
 
 ### 6.10 Worked example: onboarding a new lender
 
@@ -715,7 +717,7 @@ A referral code at OTP signup, or a partner-filed application → `active (prote
 | **activities & SLA** | `activities` (polymorphic entity, type call/meeting/whatsapp/email/note/status_change/system, outcome, body, actor, at), `follow_ups` (entity, due_at, assignee, done_at), `tags` + `entity_tags`, `sla_timers` (entity, policy, due_at, breached_at, escalated_to) |
 | **attributes** | `attribute_definitions`, `borrower_facts` (append-only) |
 | **catalog** | `segments`, `sub_segments`, `loan_categories` (limits in paise, `tenure_options_months`, `illustrative_rate_bps`, icon, sort), `category_segments`, `category_purposes`, `geo_states`, `geo_cities`, `geo_pincodes` |
-| **questionnaires** | `questions`, `question_sets`, `question_set_versions`, `question_set_items`, `answers` |
+| **questionnaires** | `questions`, `answers` (sets in `config_documents` / `config_versions`) |
 | **consents** | `consent_purposes` (`ai_documents`, `credit_bureau`, `lender_sharing`, `whatsapp`, `marketing`), `consent_templates` (versioned text per purpose & language, `text_hash`), `consent_records` (append-only: subject, application, purpose, template version, granted, scope such as lender IDs, captured via app/partner-OTP, actor, IP, UA, device) |
 | **documents** | `document_types`, `document_requirements`, `documents` (storage key, sha256, MIME, size, pages, source upload/scan/digilocker/aa, period, retention_until, status), `document_extractions` (extractor/model/prompt version, fields with confidence + page refs), `document_access_logs` |
 | **assessments** | `analyses`, `scoring_models`, `scoring_model_versions`, `score_results` (snapshot + hash), `improvement_rules`, `improvement_items` |

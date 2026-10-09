@@ -1,0 +1,3 @@
+{
+  "description": "Maker-checker approvals shared by every versioned config resource. A change is approved by someone other than its maker before it can be published."
+}

@@ -40,6 +40,9 @@ export const ErrorCode = {
   INVITATION_INVALID: 'INVITATION_INVALID',
   INVITATION_CHANNEL_NOT_ALLOWED: 'INVITATION_CHANNEL_NOT_ALLOWED',
   ORGANIZATION_INACTIVE: 'ORGANIZATION_INACTIVE',
+  INVALID_TRANSITION: 'INVALID_TRANSITION',
+  OPEN_VERSION_EXISTS: 'OPEN_VERSION_EXISTS',
+  SELF_APPROVAL_NOT_ALLOWED: 'SELF_APPROVAL_NOT_ALLOWED',
   SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE',
   INTERNAL_ERROR: 'INTERNAL_ERROR',
 } as const;
@@ -88,6 +91,9 @@ export const ERROR_CATALOG: Record<ErrorCode, { status: number; message: string 
   INVITATION_INVALID: { status: 400, message: 'This invitation is not valid or has expired.' },
   INVITATION_CHANNEL_NOT_ALLOWED: { status: 400, message: 'Staff invitations must be sent by email.' },
   ORGANIZATION_INACTIVE: { status: 409, message: 'This organization is not active.' },
+  INVALID_TRANSITION: { status: 409, message: 'This action is not allowed in the current state.' },
+  OPEN_VERSION_EXISTS: { status: 409, message: 'A version is already in progress. Publish or retire it first.' },
+  SELF_APPROVAL_NOT_ALLOWED: { status: 403, message: 'A change must be approved by someone other than its maker.' },
   SERVICE_UNAVAILABLE: { status: 503, message: 'The service is temporarily unavailable. Please try again.' },
   INTERNAL_ERROR: { status: 500, message: 'Something went wrong. Please try again.' },
 };

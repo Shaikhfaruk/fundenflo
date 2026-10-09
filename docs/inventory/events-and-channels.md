@@ -26,7 +26,9 @@
 | `lead.activity.logged` · `follow_up.due` | activities | sla, notifications | assignee room | M1 | `planned` | §7.5 |
 | `lead.converted` · `lead.offline_conversion.recorded` | leads | commissions (lead terms), reports | org room | M1 / M3 | `planned` | §7.5 |
 | `sla.warning` · `sla.breached` | sla | leads, applications, notifications | assignee room | M1 | `planned` | §7.6 |
-| `config.published` | config-publishing | cache invalidation, catalog availability | — | M1 | `planned` | §6.9 |
+| `config.changed` · `config.change_requested` · `config.change_decided` · `config.published` · `config.retired` | config-publishing (`config-publishing.service.ts`) | none yet (caches are invalidated directly after commit; M1: notify checkers on `config.change_requested`, catalog availability on `config.published` for lender products) | — | M1 | `useful` | §6.9; spec `config-publishing` asserts the `config.published` outbox row |
+| `question.changed` | questionnaires (`question.service.ts`) | none yet | — | M1 | `useful` | §6.2 |
+| `answers.recorded` | questionnaires (`questionnaire.service.ts`) | none yet (M1: lead quality re-score, routing re-evaluation) | — | M1 | `useful` | §6.2 |
 | `application.created` · `application.status.changed` | applications | leads (derived status), notifications, reports | user + partner org rooms | M3 | `planned` | §8.1 |
 | `document.uploaded` · `document.scanned` · `document.verified` · `document.rejected` | documents | `documents.extract`, applications, notifications | user room | M3 | `planned` | §8.3 |
 | `analysis.completed` · `score.computed` | assessments | matching, notifications | user room | M5 | `planned` | §8.4 |

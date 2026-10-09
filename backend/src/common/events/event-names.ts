@@ -17,6 +17,13 @@ export const EventName = {
   GeoChanged: 'geo.changed',
   AttributeChanged: 'attribute.changed',
   FactsRecorded: 'facts.recorded',
+  ConfigChanged: 'config.changed',
+  ConfigChangeRequested: 'config.change_requested',
+  ConfigChangeDecided: 'config.change_decided',
+  ConfigPublished: 'config.published',
+  ConfigRetired: 'config.retired',
+  QuestionChanged: 'question.changed',
+  AnswersRecorded: 'answers.recorded',
 } as const;
 
 export type EventName = (typeof EventName)[keyof typeof EventName];

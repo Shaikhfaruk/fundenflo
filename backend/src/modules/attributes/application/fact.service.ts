@@ -11,6 +11,7 @@ import type { BorrowerFact, Prisma } from '../../../generated/prisma/client.js';
 import { CipherPurpose } from '../../../infrastructure/crypto/crypto.constants.js';
 import { FieldCipher } from '../../../infrastructure/crypto/field-cipher.service.js';
 import { ChangeRecorder } from '../../audit/application/change-recorder.service.js';
+import { PartyService } from '../../parties/application/party.service.js';
 import { AuditAction, AuditEntity } from '../../audit/domain/audit.constants.js';
 import { type FactSourceType, MAX_FACTS_PER_WRITE, PROVENANCE_RANK } from '../domain/attribute.constants.js';
 import { type AttributeShape, normaliseFactValue } from '../domain/fact-value.js';
@@ -24,6 +25,7 @@ export type FactInput = {
   confidence?: number;
   observedAt?: Date;
   validUntil?: Date;
+  sourceId?: string;
 };
 
 export type FactContext = {
@@ -44,6 +46,7 @@ export class FactService {
     private readonly dictionary: AttributeDictionary,
     private readonly cipher: FieldCipher,
     private readonly changes: ChangeRecorder,
+    private readonly parties: PartyService,
   ) {}
 
   async record(partyId: string, inputs: FactInput[], context: FactContext): Promise<ResolvedFact[]> {
@@ -51,7 +54,7 @@ export class FactService {
     if (inputs.length > MAX_FACTS_PER_WRITE) {
       throw new AppError(ErrorCode.VALIDATION_FAILED, { details: [{ path: 'facts', code: 'too_big', message: `at most ${MAX_FACTS_PER_WRITE} facts per write` }] });
     }
-    await this.requireParty(partyId);
+    await this.parties.assertExists(partyId);
     const dictionary = await this.dictionary.active();
     const problems: Array<{ path: string; code: string; message: string }> = [];
     const now = new Date();
@@ -85,7 +88,7 @@ export class FactService {
           valueMax: sensitive ? null : normalised.max,
           provenance: context.provenance,
           sourceType: context.sourceType,
-          sourceId: context.sourceId ?? null,
+          sourceId: input.sourceId ?? context.sourceId ?? null,
           confidence: input.confidence ?? null,
           observedAt: input.observedAt ?? now,
           validUntil: input.validUntil ?? null,
@@ -122,12 +125,12 @@ export class FactService {
   }
 
   async snapshot(partyId: string): Promise<ResolvedFact[]> {
-    await this.requireParty(partyId);
+    await this.parties.assertExists(partyId);
     return [...(await this.current(partyId)).values()];
   }
 
   async lookup(partyId: string | null, overlay: Record<string, FactValue | undefined> = {}): Promise<FactLookup> {
-    if (partyId) await this.requireParty(partyId);
+    if (partyId) await this.parties.assertExists(partyId);
     const current = partyId ? await this.current(partyId) : new Map<string, ResolvedFact>();
     return (attr) => {
       if (overlay[attr] !== undefined) return overlay[attr];
@@ -137,16 +140,12 @@ export class FactService {
   }
 
   async history(partyId: string, filters: PageQuery & { attributeKey?: string }) {
-    await this.requireParty(partyId);
+    await this.parties.assertExists(partyId);
     const dictionary = await this.dictionary.active();
     const window = pageWindow(filters);
     const rows = await this.facts.history(partyId, filters.attributeKey, window.take, window.idFilter);
     const now = new Date();
     return toPage(rows, filters.limit, (fact) => this.toResolved(fact, dictionary.get(fact.attributeKey), now));
-  }
-
-  private async requireParty(partyId: string) {
-    if ((await this.facts.partyExists(partyId)) === 0) throw new AppError(ErrorCode.NOT_FOUND, { details: { partyId } });
   }
 
   private toResolved(fact: BorrowerFact, definition: AttributeView | undefined, now: Date): ResolvedFact {

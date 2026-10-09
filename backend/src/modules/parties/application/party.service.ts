@@ -63,6 +63,10 @@ export class PartyService {
     return contact;
   }
 
+  async assertExists(partyId: string): Promise<void> {
+    if (!(await this.parties.findById(partyId))) throw new AppError(ErrorCode.NOT_FOUND, { details: { partyId } });
+  }
+
   async getPrimaryContactValue(partyId: string, type: ContactType): Promise<string | null> {
     const contact = await this.parties.findPrimaryContact(partyId, type);
     return contact ? this.codec.decrypt(contact.valueEnc, CipherPurpose.PartyContact) : null;

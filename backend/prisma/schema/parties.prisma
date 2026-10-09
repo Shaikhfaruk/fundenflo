@@ -55,6 +55,7 @@ model Party {
   user              User?
   organization      Organization?
   facts             BorrowerFact[]
+  answers           Answer[]
 
   @@index([kind, status])
   @@map("parties")

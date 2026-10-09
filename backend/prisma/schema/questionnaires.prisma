@@ -1,0 +1,63 @@
+enum QuestionType {
+  single_select
+  multi_select
+  number
+  money
+  date
+  text
+  boolean
+  city
+  pincode
+}
+
+enum AnswerChannel {
+  borrower
+  partner
+  ops
+  lead_source
+  import
+}
+
+model Question {
+  id           String        @id @default(uuid(7)) @db.Uuid
+  key          String        @unique
+  attributeKey String        @map("attribute_key")
+  type         QuestionType
+  label        Json
+  help         Json?
+  options      Json?
+  validation   Json?
+  ui           Json?
+  status       CatalogStatus @default(active)
+  version      Int           @default(1)
+  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime      @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  attribute AttributeDefinition @relation(fields: [attributeKey], references: [key], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([attributeKey])
+  @@map("questions")
+}
+
+model Answer {
+  id                   String        @id @default(uuid(7)) @db.Uuid
+  partyId              String        @map("party_id") @db.Uuid
+  questionSetVersionId String        @map("question_set_version_id") @db.Uuid
+  questionKey          String        @map("question_key")
+  value                Json
+  factId               String?       @unique @map("fact_id") @db.Uuid
+  channel              AnswerChannel
+  answeredByUserId     String?       @map("answered_by_user_id") @db.Uuid
+  leadId               String?       @map("lead_id") @db.Uuid
+  applicationId        String?       @map("application_id") @db.Uuid
+  createdAt            DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  party              Party         @relation(fields: [partyId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  questionSetVersion ConfigVersion @relation(fields: [questionSetVersionId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  fact               BorrowerFact? @relation(fields: [factId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([partyId, questionKey, createdAt])
+  @@index([leadId])
+  @@index([applicationId])
+  @@map("answers")
+}

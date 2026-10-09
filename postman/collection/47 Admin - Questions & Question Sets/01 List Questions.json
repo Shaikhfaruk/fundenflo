@@ -1,0 +1,105 @@
+{
+  "name": "List Questions",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/questions?status=active",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "questions"
+      ],
+      "query": [
+        {
+          "key": "status",
+          "value": "active"
+        }
+      ]
+    },
+    "description": "The question bank. Each question fills exactly one attribute from the dictionary. Filters: `status`, `attributeKey`. Staff only. Reading needs question read access (ops lead, compliance, support); changes need question manage access (ops lead, super admin). Changes are audited and published as `question.changed`. Published question sets keep the snapshot they were approved with, so editing a question only affects sets submitted afterwards."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/questions?status=active",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "questions"
+          ],
+          "query": [
+            {
+              "key": "status",
+              "value": "active"
+            }
+          ]
+        },
+        "description": "The question bank. Each question fills exactly one attribute from the dictionary. Filters: `status`, `attributeKey`. Staff only. Reading needs question read access (ops lead, compliance, support); changes need question manage access (ops lead, super admin). Changes are audited and published as `question.changed`. Published question sets keep the snapshot they were approved with, so editing a question only affects sets submitted afterwards."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a121b0-1a2b-7c3d-8e4f-5061728394a5\",\n      \"key\": \"constitution\",\n      \"attributeKey\": \"business.constitution\",\n      \"type\": \"single_select\",\n      \"label\": {\n        \"en\": \"Type Of Business\"\n      },\n      \"help\": null,\n      \"options\": [\n        {\n          \"value\": \"pvt\",\n          \"label\": {\n            \"en\": \"Pvt Ltd\"\n          },\n          \"fact\": \"private_limited\"\n        },\n        {\n          \"value\": \"llp\",\n          \"label\": {\n            \"en\": \"LLP\"\n          },\n          \"fact\": \"llp\"\n        },\n        {\n          \"value\": \"prop\",\n          \"label\": {\n            \"en\": \"Proprietor\"\n          },\n          \"fact\": \"proprietorship\"\n        }\n      ],\n      \"validation\": null,\n      \"ui\": {\n        \"widget\": \"chips\",\n        \"columns\": 2\n      },\n      \"status\": \"active\",\n      \"version\": 1,\n      \"updatedAt\": \"2026-10-09T17:10:00.000Z\"\n    }\n  ]\n}"
+    },
+    {
+      "name": "403 FORBIDDEN",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/questions?status=active",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "questions"
+          ],
+          "query": [
+            {
+              "key": "status",
+              "value": "active"
+            }
+          ]
+        },
+        "description": "The question bank. Each question fills exactly one attribute from the dictionary. Filters: `status`, `attributeKey`. Staff only. Reading needs question read access (ops lead, compliance, support); changes need question manage access (ops lead, super admin). Changes are audited and published as `question.changed`. Published question sets keep the snapshot they were approved with, so editing a question only affects sets submitted afterwards."
+      },
+      "status": "Forbidden",
+      "code": 403,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"FORBIDDEN\",\n  \"message\": \"You do not have permission to do this.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

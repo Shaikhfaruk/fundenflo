@@ -1,0 +1,97 @@
+enum ConfigResource {
+  question_set
+  routing_rule
+  consent_template
+  document_requirement
+  lender_product
+  scoring_model
+  improvement_rule
+  commission_scheme
+}
+
+enum ConfigVersionStatus {
+  draft
+  in_review
+  approved
+  published
+  retired
+}
+
+enum ChangeRequestStatus {
+  pending
+  approved
+  rejected
+  withdrawn
+}
+
+model ConfigDocument {
+  id              String         @id @default(uuid(7)) @db.Uuid
+  resource        ConfigResource
+  key             String
+  name            Json
+  description     Json?
+  status          CatalogStatus  @default(active)
+  openVersionId   String?        @unique @map("open_version_id") @db.Uuid
+  latestNumber    Int            @default(0) @map("latest_number")
+  version         Int            @default(1)
+  createdByUserId String?        @map("created_by_user_id") @db.Uuid
+  createdAt       DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  versions ConfigVersion[]
+
+  @@unique([resource, key])
+  @@index([resource, status])
+  @@map("config_documents")
+}
+
+model ConfigVersion {
+  id                String              @id @default(uuid(7)) @db.Uuid
+  documentId        String              @map("document_id") @db.Uuid
+  number            Int
+  status            ConfigVersionStatus @default(draft)
+  content           Json
+  compiled          Json?
+  issues            Json?
+  contentHash       String?             @map("content_hash")
+  notes             String?
+  effectiveFrom     DateTime?           @map("effective_from") @db.Timestamptz(3)
+  publishedAt       DateTime?           @map("published_at") @db.Timestamptz(3)
+  retiredAt         DateTime?           @map("retired_at") @db.Timestamptz(3)
+  createdByUserId   String?             @map("created_by_user_id") @db.Uuid
+  submittedByUserId String?             @map("submitted_by_user_id") @db.Uuid
+  approvedByUserId  String?             @map("approved_by_user_id") @db.Uuid
+  publishedByUserId String?             @map("published_by_user_id") @db.Uuid
+  retiredByUserId   String?             @map("retired_by_user_id") @db.Uuid
+  version           Int                 @default(1)
+  createdAt         DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt         DateTime            @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  document       ConfigDocument        @relation(fields: [documentId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  changeRequests ConfigChangeRequest[]
+  answers        Answer[]
+
+  @@unique([documentId, number])
+  @@index([status, effectiveFrom])
+  @@map("config_versions")
+}
+
+model ConfigChangeRequest {
+  id            String              @id @default(uuid(7)) @db.Uuid
+  versionId     String              @map("version_id") @db.Uuid
+  resource      ConfigResource
+  status        ChangeRequestStatus @default(pending)
+  makerUserId   String              @map("maker_user_id") @db.Uuid
+  checkerUserId String?             @map("checker_user_id") @db.Uuid
+  reason        String
+  decisionNote  String?             @map("decision_note")
+  diff          Json
+  createdAt     DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
+  decidedAt     DateTime?           @map("decided_at") @db.Timestamptz(3)
+
+  configVersion ConfigVersion @relation(fields: [versionId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([status, resource])
+  @@index([versionId])
+  @@map("config_change_requests")
+}

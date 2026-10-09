@@ -52,6 +52,11 @@ export class GeoService {
     return toPincodeView(found);
   }
 
+  async findActiveCity(id: string) {
+    const city = await this.geo.findCity(id);
+    return city && city.status === CatalogStatus.active ? toCityView(city) : null;
+  }
+
   async resolveCity(text: string): Promise<ResolvedPlace | null> {
     const [cityPart, statePart] = text.split(',').map((part) => normaliseLookupText(part));
     if (!cityPart) return null;

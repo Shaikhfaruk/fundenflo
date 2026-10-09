@@ -1,0 +1,163 @@
+{
+  "name": "Update Question",
+  "request": {
+    "method": "PATCH",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "If-Match",
+        "value": "\"{{questionVersion}}\""
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/questions/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "questions",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{questionId}}"
+        }
+      ]
+    },
+    "description": "Changes label, help, options, validation, UI hints or status. `key`, `attributeKey` and `type` never change. Staff only. Reading needs question read access (ops lead, compliance, support); changes need question manage access (ops lead, super admin). Changes are audited and published as `question.changed`. Published question sets keep the snapshot they were approved with, so editing a question only affects sets submitted afterwards.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"help\": {\n    \"en\": \"As shown on your registration certificate\"\n  }\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.collectionVariables.set('questionVersion', String(pm.response.json().version));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{questionVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/questions/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "questions",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{questionId}}"
+            }
+          ]
+        },
+        "description": "Changes label, help, options, validation, UI hints or status. `key`, `attributeKey` and `type` never change. Staff only. Reading needs question read access (ops lead, compliance, support); changes need question manage access (ops lead, super admin). Changes are audited and published as `question.changed`. Published question sets keep the snapshot they were approved with, so editing a question only affects sets submitted afterwards.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"help\": {\n    \"en\": \"As shown on your registration certificate\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a121b0-1a2b-7c3d-8e4f-5061728394a5\",\n  \"key\": \"constitution\",\n  \"attributeKey\": \"business.constitution\",\n  \"type\": \"single_select\",\n  \"label\": {\n    \"en\": \"Type Of Business\"\n  },\n  \"help\": {\n    \"en\": \"As shown on your registration certificate\"\n  },\n  \"options\": [\n    {\n      \"value\": \"pvt\",\n      \"label\": {\n        \"en\": \"Pvt Ltd\"\n      },\n      \"fact\": \"private_limited\"\n    },\n    {\n      \"value\": \"llp\",\n      \"label\": {\n        \"en\": \"LLP\"\n      },\n      \"fact\": \"llp\"\n    },\n    {\n      \"value\": \"prop\",\n      \"label\": {\n        \"en\": \"Proprietor\"\n      },\n      \"fact\": \"proprietorship\"\n    }\n  ],\n  \"validation\": null,\n  \"ui\": {\n    \"widget\": \"chips\",\n    \"columns\": 2\n  },\n  \"status\": \"active\",\n  \"version\": 2,\n  \"updatedAt\": \"2026-10-09T17:10:00.000Z\"\n}"
+    },
+    {
+      "name": "409 VERSION_CONFLICT",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{questionVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/questions/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "questions",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{questionId}}"
+            }
+          ]
+        },
+        "description": "Changes label, help, options, validation, UI hints or status. `key`, `attributeKey` and `type` never change. Staff only. Reading needs question read access (ops lead, compliance, support); changes need question manage access (ops lead, super admin). Changes are audited and published as `question.changed`. Published question sets keep the snapshot they were approved with, so editing a question only affects sets submitted afterwards.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"help\": {\n    \"en\": \"As shown on your registration certificate\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VERSION_CONFLICT\",\n  \"message\": \"This record was changed by someone else. Reload it and try again.\",\n  \"details\": {\n    \"currentVersion\": 2\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

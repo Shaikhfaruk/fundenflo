@@ -5,7 +5,7 @@ import { join } from 'node:path';
 
 import { buildCollection, COLLECTION_DIR, DIST_DIR, POSTMAN_ROOT } from './build.ts';
 
-type FlowStep = { request: string; variables?: Record<string, string>; waitSeconds?: number };
+type FlowStep = { request: string; variables?: Record<string, string>; waitSeconds?: number; identity?: string };
 type Flow = { name: string; requires?: string[]; steps: FlowStep[] };
 
 const BACKEND_DIR = join(POSTMAN_ROOT, '..', 'backend');
@@ -13,6 +13,10 @@ const FLOWS_DIR = join(POSTMAN_ROOT, 'flows');
 const ENVIRONMENT = join(POSTMAN_ROOT, 'environments', 'local.postman_environment.json');
 const NEWMAN = join(BACKEND_DIR, 'node_modules', '.bin', 'newman');
 const STAFF_FULL_NAME = 'Postman Flow Runner';
+const CHECKER_FULL_NAME = 'Postman Flow Checker';
+const DEFAULT_IDENTITY = 'maker';
+const IDENTITY_SESSION_VARIABLES = ['accessToken', 'refreshToken', 'totpSecret'];
+const IDENTITY_CREDENTIALS = ['Email', 'InviteToken', 'Password', 'FullName'];
 
 function readBackendEnv(): Map<string, string> {
   const file = join(BACKEND_DIR, '.env');
@@ -27,12 +31,27 @@ function readBackendEnv(): Map<string, string> {
   );
 }
 
-function createStaffInvitation(): Record<string, string> {
+function createStaffInvitation(prefix: string, role: string, fullName: string): Record<string, string> {
   const email = `postman.${Date.now()}.${randomInt(0, 1_000_000)}@sustaininsight.com`;
-  const output = execFileSync('node', ['dist/scripts/invite-staff.js', '--email', email, '--role', 'super_admin'], { cwd: BACKEND_DIR, encoding: 'utf8' });
+  const output = execFileSync('node', ['dist/scripts/invite-staff.js', '--email', email, '--role', role], { cwd: BACKEND_DIR, encoding: 'utf8' });
   const token = /Invitation code: (\S+)/.exec(output)?.[1];
   if (!token) throw new Error(`Could not read the invitation code from invite-staff output:\n${output}`);
-  return { staffEmail: email, staffInviteToken: token, staffPassword: randomBytes(18).toString('base64url'), staffFullName: STAFF_FULL_NAME };
+  return { [`${prefix}Email`]: email, [`${prefix}InviteToken`]: token, [`${prefix}Password`]: randomBytes(18).toString('base64url'), [`${prefix}FullName`]: fullName };
+}
+
+function identitySwitch(target: string): string[] {
+  return [
+    `const target = ${JSON.stringify(target)};`,
+    `const current = pm.collectionVariables.get('flowIdentity') || ${JSON.stringify(DEFAULT_IDENTITY)};`,
+    'if (current !== target) {',
+    `  ${JSON.stringify(IDENTITY_SESSION_VARIABLES)}.forEach((key) => {`,
+    '    pm.collectionVariables.set(`${current}.${key}`, pm.collectionVariables.get(key) || \'\');',
+    '    pm.collectionVariables.set(key, pm.collectionVariables.get(`${target}.${key}`) || \'\');',
+    '  });',
+    `  ${JSON.stringify(IDENTITY_CREDENTIALS)}.forEach((key) => pm.environment.set(\`staff\${key}\`, pm.environment.get(\`\${target}\${key}\`)));`,
+    "  pm.collectionVariables.set('flowIdentity', target);",
+    '}',
+  ];
 }
 
 function findItem(relativePath: string): Record<string, unknown> {
@@ -43,9 +62,10 @@ function findItem(relativePath: string): Record<string, unknown> {
 
 function stepItem(step: FlowStep, index: number): Record<string, unknown> {
   const item = findItem(step.request);
-  const setup: string[] = Object.entries(step.variables ?? {}).map(
-    ([name, value]) => `pm.collectionVariables.set(${JSON.stringify(name)}, ${JSON.stringify(value)});`,
-  );
+  const setup: string[] = [
+    ...(step.identity ? identitySwitch(step.identity) : []),
+    ...Object.entries(step.variables ?? {}).map(([name, value]) => `pm.collectionVariables.set(${JSON.stringify(name)}, ${JSON.stringify(value)});`),
+  ];
   if (step.waitSeconds) setup.push(`setTimeout(() => {}, ${step.waitSeconds * 1000});`);
   const events = (item.event as Array<{ listen: string; script: { exec: string[] } }> | undefined) ?? [];
   const prerequest = setup.length > 0 ? [{ listen: 'prerequest', script: { type: 'text/javascript', exec: setup } }] : [];
@@ -60,7 +80,11 @@ function runFlow(file: string, env: Map<string, string>): boolean {
   writeFileSync(output, `${JSON.stringify(collection, null, 2)}\n`);
 
   const variables: Record<string, string> = { otp: env.get('AUTH_OTP_STATIC_CODE') ?? '' };
-  if (flow.requires?.includes('staffInvitation')) Object.assign(variables, createStaffInvitation());
+  if (flow.requires?.includes('staffInvitation')) {
+    const staff = createStaffInvitation('staff', 'super_admin', STAFF_FULL_NAME);
+    Object.assign(variables, staff, Object.fromEntries(IDENTITY_CREDENTIALS.map((key) => [`${DEFAULT_IDENTITY}${key}`, staff[`staff${key}`] ?? ''])));
+  }
+  if (flow.requires?.includes('checkerInvitation')) Object.assign(variables, createStaffInvitation('checker', 'ops_lead', CHECKER_FULL_NAME));
   const args = ['run', output, '-e', ENVIRONMENT, '--bail', '--color', 'on', ...Object.entries(variables).flatMap(([name, value]) => ['--env-var', `${name}=${value}`])];
   process.stdout.write(`\n▶ ${flow.name}\n`);
   return spawnSync(NEWMAN, args, { stdio: 'inherit' }).status === 0;

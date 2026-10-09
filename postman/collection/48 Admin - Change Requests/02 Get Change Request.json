@@ -1,0 +1,108 @@
+{
+  "name": "Get Change Request",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/change-requests/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "change-requests",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{changeRequestId}}"
+        }
+      ]
+    },
+    "description": "One change request with the diff against the version it replaces (`comparedWith`), as JSON paths with before and after values. Staff only. The checker inbox for every versioned config resource (question sets now; routing rules, consent templates, lender products and more later). Lists only resources the caller may read. Deciding needs approve access (ops lead, compliance, super admin) and the checker must not be the maker."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/change-requests/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "change-requests",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{changeRequestId}}"
+            }
+          ]
+        },
+        "description": "One change request with the diff against the version it replaces (`comparedWith`), as JSON paths with before and after values. Staff only. The checker inbox for every versioned config resource (question sets now; routing rules, consent templates, lender products and more later). Lists only resources the caller may read. Deciding needs approve access (ops lead, compliance, super admin) and the checker must not be the maker."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a121b0-4d5e-7f60-8172-8394a5b6c7d8\",\n  \"status\": \"pending\",\n  \"makerUserId\": \"01a121b0-5e6f-7a71-9283-94a5b6c7d8e9\",\n  \"checkerUserId\": null,\n  \"reason\": \"Campaign form for the October MSME drive\",\n  \"decisionNote\": null,\n  \"createdAt\": \"2026-10-09T17:10:00.000Z\",\n  \"decidedAt\": null,\n  \"resource\": \"question_set\",\n  \"documentId\": \"01a121b0-2b3c-7d4e-9f50-61728394a5b6\",\n  \"documentKey\": \"lead_capture.msme_campaign\",\n  \"versionId\": \"01a121b0-3c4d-7e5f-8061-728394a5b6c7\",\n  \"versionNumber\": 1,\n  \"versionStatus\": \"in_review\",\n  \"diff\": {\n    \"changes\": [\n      {\n        \"path\": \"$\",\n        \"kind\": \"added\",\n        \"after\": {\n          \"stage\": \"lead_capture\",\n          \"scope\": {\n            \"segments\": [\n              \"msme\"\n            ]\n          },\n          \"sections\": [\n            {\n              \"key\": \"business\",\n              \"label\": {\n                \"en\": \"About The Business\"\n              }\n            }\n          ],\n          \"items\": [\n            {\n              \"question\": {\n                \"key\": \"constitution\",\n                \"attributeKey\": \"business.constitution\",\n                \"kind\": \"single_select\",\n                \"label\": {\n                  \"en\": \"Type Of Business\"\n                },\n                \"help\": null,\n                \"options\": [\n                  {\n                    \"value\": \"pvt\",\n                    \"label\": {\n                      \"en\": \"Pvt Ltd\"\n                    },\n                    \"fact\": \"private_limited\"\n                  },\n                  {\n                    \"value\": \"llp\",\n                    \"label\": {\n                      \"en\": \"LLP\"\n                    },\n                    \"fact\": \"llp\"\n                  },\n                  {\n                    \"value\": \"prop\",\n                    \"label\": {\n                      \"en\": \"Proprietor\"\n                    },\n                    \"fact\": \"proprietorship\"\n                  }\n                ],\n                \"validation\": null,\n                \"ui\": {\n                  \"widget\": \"chips\",\n                  \"columns\": 2\n                }\n              },\n              \"required\": true,\n              \"section\": \"business\",\n              \"visibleIf\": null\n            }\n          ]\n        }\n      }\n    ],\n    \"truncated\": false,\n    \"comparedWith\": null\n  }\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/change-requests/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "change-requests",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{changeRequestId}}"
+            }
+          ]
+        },
+        "description": "One change request with the diff against the version it replaces (`comparedWith`), as JSON paths with before and after values. Staff only. The checker inbox for every versioned config resource (question sets now; routing rules, consent templates, lender products and more later). Lists only resources the caller may read. Deciding needs approve access (ops lead, compliance, super admin) and the checker must not be the maker."
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

@@ -1,0 +1,129 @@
+{
+  "name": "List Answers",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/ops/parties/:partyId/answers?limit=25",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "parties",
+        ":partyId",
+        "answers"
+      ],
+      "query": [
+        {
+          "key": "limit",
+          "value": "25"
+        }
+      ],
+      "variable": [
+        {
+          "key": "partyId",
+          "value": "{{partyId}}"
+        }
+      ]
+    },
+    "description": "Raw answers for a person or business, newest first, each pinned to the question set version it was given against and linked to the fact it recorded. Filter by `questionKey`; paginate with `cursor`. Answers are never edited. Staff only. Reading needs party read access; submitting needs party update access (ops lead, super admin). `partyId` comes from a lead or user record."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/ops/parties/:partyId/answers?limit=25",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "parties",
+            ":partyId",
+            "answers"
+          ],
+          "query": [
+            {
+              "key": "limit",
+              "value": "25"
+            }
+          ],
+          "variable": [
+            {
+              "key": "partyId",
+              "value": "{{partyId}}"
+            }
+          ]
+        },
+        "description": "Raw answers for a person or business, newest first, each pinned to the question set version it was given against and linked to the fact it recorded. Filter by `questionKey`; paginate with `cursor`. Answers are never edited. Staff only. Reading needs party read access; submitting needs party update access (ops lead, super admin). `partyId` comes from a lead or user record."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a121b0-7081-7c93-84a5-b6c7d8e9fa0b\",\n      \"questionKey\": \"business_age\",\n      \"questionSetVersionId\": \"01a121a8-71d8-776f-aeac-0a01045cde78\",\n      \"value\": \"1-3\",\n      \"factId\": \"01a121b0-8192-7da4-95b6-c7d8e9fa0b1c\",\n      \"channel\": \"ops\",\n      \"answeredByUserId\": \"01a121b0-5e6f-7a71-9283-94a5b6c7d8e9\",\n      \"leadId\": null,\n      \"applicationId\": null,\n      \"createdAt\": \"2026-10-09T17:10:00.000Z\"\n    }\n  ],\n  \"nextCursor\": null\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/ops/parties/:partyId/answers?limit=25",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "parties",
+            ":partyId",
+            "answers"
+          ],
+          "query": [
+            {
+              "key": "limit",
+              "value": "25"
+            }
+          ],
+          "variable": [
+            {
+              "key": "partyId",
+              "value": "{{partyId}}"
+            }
+          ]
+        },
+        "description": "Raw answers for a person or business, newest first, each pinned to the question set version it was given against and linked to the fact it recorded. Filter by `questionKey`; paginate with `cursor`. Answers are never edited. Staff only. Reading needs party read access; submitting needs party update access (ops lead, super admin). `partyId` comes from a lead or user record."
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

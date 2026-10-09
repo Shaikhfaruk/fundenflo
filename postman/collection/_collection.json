@@ -194,6 +194,38 @@
     {
       "key": "partyId",
       "value": ""
+    },
+    {
+      "key": "questionId",
+      "value": ""
+    },
+    {
+      "key": "questionVersion",
+      "value": ""
+    },
+    {
+      "key": "questionKey",
+      "value": ""
+    },
+    {
+      "key": "questionSetId",
+      "value": ""
+    },
+    {
+      "key": "questionSetVersion",
+      "value": ""
+    },
+    {
+      "key": "questionSetNumber",
+      "value": ""
+    },
+    {
+      "key": "questionSetVersionRow",
+      "value": ""
+    },
+    {
+      "key": "changeRequestId",
+      "value": ""
     }
   ]
 }

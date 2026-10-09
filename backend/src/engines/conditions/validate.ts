@@ -1,3 +1,4 @@
+import { isValidPattern } from '../../common/utils/regex.js';
 import { type AttributeSpec, type Condition, type ConditionIssue, LeafOperator } from './condition.types.js';
 import { CONDITION_LIMITS } from './conditions.constants.js';
 
@@ -116,11 +117,3 @@ export function validateCondition(condition: unknown, resolve: (attr: string) =>
 
 export const isCondition = (value: unknown, resolve: (attr: string) => AttributeSpec | undefined): value is Condition =>
   validateCondition(value, resolve).length === 0;
-
-function isValidPattern(pattern: string): boolean {
-  try {
-    return RegExp(pattern, 'u') instanceof RegExp;
-  } catch {
-    return false;
-  }
-}

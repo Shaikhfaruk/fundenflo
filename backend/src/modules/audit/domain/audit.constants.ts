@@ -22,6 +22,17 @@ export const AuditAction = {
   CatalogChanged: 'catalog.changed',
   CatalogDeleted: 'catalog.deleted',
   FactsRecorded: 'facts.recorded',
+  ConfigCreated: 'config.created',
+  ConfigChanged: 'config.changed',
+  ConfigVersionCreated: 'config.version_created',
+  ConfigSubmitted: 'config.submitted',
+  ConfigApproved: 'config.approved',
+  ConfigRejected: 'config.rejected',
+  ConfigPublished: 'config.published',
+  ConfigRetired: 'config.retired',
+  QuestionCreated: 'question.created',
+  QuestionChanged: 'question.changed',
+  AnswersRecorded: 'answers.recorded',
 } as const;
 
 export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction];
@@ -43,6 +54,10 @@ export const AuditEntity = {
   LookupAlias: 'lookup_alias',
   AttributeDefinition: 'attribute_definition',
   BorrowerFact: 'borrower_fact',
+  ConfigDocument: 'config_document',
+  ConfigVersion: 'config_version',
+  ConfigChangeRequest: 'config_change_request',
+  Question: 'question',
 } as const;
 
 export type AuditEntity = (typeof AuditEntity)[keyof typeof AuditEntity];

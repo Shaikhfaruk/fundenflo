@@ -1,0 +1,171 @@
+{
+  "name": "Retire Version",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/question-sets/:id/versions/:number/retire",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "question-sets",
+        ":id",
+        "versions",
+        ":number",
+        "retire"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{questionSetId}}"
+        },
+        {
+          "key": "number",
+          "value": "{{questionSetNumber}}"
+        }
+      ]
+    },
+    "description": "Takes a version out of use immediately: a draft or pending version is discarded (its change request is withdrawn), a published one stops being served and the previous published version, if any, takes over. Retired versions are final. Publishes `config.retired`. Staff only. Question sets are versioned config: draft → submit (maker) → approve or reject (a different staff member, in Change Requests) → publish → retire. Reading needs config read access; making, publishing and retiring need config maker access for question sets (ops lead, super admin).",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"reason\": \"Campaign ended\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/question-sets/:id/versions/:number/retire",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "question-sets",
+            ":id",
+            "versions",
+            ":number",
+            "retire"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{questionSetId}}"
+            },
+            {
+              "key": "number",
+              "value": "{{questionSetNumber}}"
+            }
+          ]
+        },
+        "description": "Takes a version out of use immediately: a draft or pending version is discarded (its change request is withdrawn), a published one stops being served and the previous published version, if any, takes over. Retired versions are final. Publishes `config.retired`. Staff only. Question sets are versioned config: draft → submit (maker) → approve or reject (a different staff member, in Change Requests) → publish → retire. Reading needs config read access; making, publishing and retiring need config maker access for question sets (ops lead, super admin).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reason\": \"Campaign ended\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a121b0-3c4d-7e5f-8061-728394a5b6c7\",\n  \"resource\": \"question_set\",\n  \"documentId\": \"01a121b0-2b3c-7d4e-9f50-61728394a5b6\",\n  \"documentKey\": \"lead_capture.msme_campaign\",\n  \"number\": 1,\n  \"status\": \"retired\",\n  \"content\": {\n    \"stage\": \"lead_capture\",\n    \"scope\": {\n      \"segments\": [\n        \"msme\"\n      ]\n    },\n    \"sections\": [\n      {\n        \"key\": \"business\",\n        \"label\": {\n          \"en\": \"About The Business\"\n        }\n      }\n    ],\n    \"items\": [\n      {\n        \"questionKey\": \"constitution\",\n        \"required\": true,\n        \"section\": \"business\"\n      },\n      {\n        \"questionKey\": \"monthly_turnover\",\n        \"required\": true,\n        \"section\": \"business\",\n        \"visibleIf\": {\n          \"attr\": \"business.constitution\",\n          \"op\": \"in\",\n          \"value\": [\n            \"private_limited\",\n            \"llp\"\n          ]\n        }\n      }\n    ]\n  },\n  \"compiled\": {\n    \"stage\": \"lead_capture\",\n    \"scope\": {\n      \"segments\": [\n        \"msme\"\n      ]\n    },\n    \"sections\": [\n      {\n        \"key\": \"business\",\n        \"label\": {\n          \"en\": \"About The Business\"\n        }\n      }\n    ],\n    \"items\": [\n      {\n        \"question\": {\n          \"key\": \"constitution\",\n          \"attributeKey\": \"business.constitution\",\n          \"kind\": \"single_select\",\n          \"label\": {\n            \"en\": \"Type Of Business\"\n          },\n          \"help\": null,\n          \"options\": [\n            {\n              \"value\": \"pvt\",\n              \"label\": {\n                \"en\": \"Pvt Ltd\"\n              },\n              \"fact\": \"private_limited\"\n            },\n            {\n              \"value\": \"llp\",\n              \"label\": {\n                \"en\": \"LLP\"\n              },\n              \"fact\": \"llp\"\n            },\n            {\n              \"value\": \"prop\",\n              \"label\": {\n                \"en\": \"Proprietor\"\n              },\n              \"fact\": \"proprietorship\"\n            }\n          ],\n          \"validation\": null,\n          \"ui\": {\n            \"widget\": \"chips\",\n            \"columns\": 2\n          }\n        },\n        \"required\": true,\n        \"section\": \"business\",\n        \"visibleIf\": null\n      }\n    ]\n  },\n  \"issues\": [],\n  \"contentHash\": \"mQ0dK2b7cWlq3oV9t1pLr8sX4yZ6aE5uH0nJ2fG3kD8\",\n  \"notes\": null,\n  \"effectiveFrom\": \"2026-10-09T17:10:00.000Z\",\n  \"publishedAt\": \"2026-10-09T17:10:00.000Z\",\n  \"retiredAt\": \"2026-10-09T17:10:00.000Z\",\n  \"createdByUserId\": \"01a121b0-5e6f-7a71-9283-94a5b6c7d8e9\",\n  \"submittedByUserId\": \"01a121b0-5e6f-7a71-9283-94a5b6c7d8e9\",\n  \"approvedByUserId\": \"01a121b0-6f70-7b82-a394-a5b6c7d8e9fa\",\n  \"publishedByUserId\": \"01a121b0-5e6f-7a71-9283-94a5b6c7d8e9\",\n  \"retiredByUserId\": \"01a121b0-5e6f-7a71-9283-94a5b6c7d8e9\",\n  \"changeRequest\": {\n    \"id\": \"01a121b0-4d5e-7f60-8172-8394a5b6c7d8\",\n    \"status\": \"approved\",\n    \"makerUserId\": \"01a121b0-5e6f-7a71-9283-94a5b6c7d8e9\",\n    \"checkerUserId\": \"01a121b0-6f70-7b82-a394-a5b6c7d8e9fa\",\n    \"reason\": \"Campaign form for the October MSME drive\",\n    \"decisionNote\": null,\n    \"createdAt\": \"2026-10-09T17:10:00.000Z\",\n    \"decidedAt\": \"2026-10-09T17:10:00.000Z\"\n  },\n  \"availableActions\": [],\n  \"version\": 5,\n  \"createdAt\": \"2026-10-09T17:10:00.000Z\",\n  \"updatedAt\": \"2026-10-09T17:10:00.000Z\"\n}"
+    },
+    {
+      "name": "409 INVALID_TRANSITION",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/question-sets/:id/versions/:number/retire",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "question-sets",
+            ":id",
+            "versions",
+            ":number",
+            "retire"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{questionSetId}}"
+            },
+            {
+              "key": "number",
+              "value": "{{questionSetNumber}}"
+            }
+          ]
+        },
+        "description": "Takes a version out of use immediately: a draft or pending version is discarded (its change request is withdrawn), a published one stops being served and the previous published version, if any, takes over. Retired versions are final. Publishes `config.retired`. Staff only. Question sets are versioned config: draft → submit (maker) → approve or reject (a different staff member, in Change Requests) → publish → retire. Reading needs config read access; making, publishing and retiring need config maker access for question sets (ops lead, super admin).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reason\": \"Campaign ended\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"INVALID_TRANSITION\",\n  \"message\": \"This action is not allowed in the current state.\",\n  \"details\": {\n    \"from\": \"retired\",\n    \"event\": \"retire\",\n    \"allowed\": []\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

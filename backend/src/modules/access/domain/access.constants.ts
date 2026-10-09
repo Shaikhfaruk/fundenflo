@@ -1,4 +1,4 @@
-import { LoginAs, OrganizationType, Role, SessionContext } from '../../../common/enums/db.enums.js';
+import { ConfigResource, LoginAs, OrganizationType, Role, SessionContext } from '../../../common/enums/db.enums.js';
 
 type ActiveContext = Exclude<SessionContext, typeof SessionContext.none>;
 
@@ -38,3 +38,7 @@ export const INVITATION_TTL_DAYS = 7;
 export const INVITATION_TOKEN_BYTES = 32;
 
 export const FUNDENFLO_ORGANIZATION_NAME = 'FundenFlo';
+
+export const OPS_CONFIG_RESOURCES: ConfigResource[] = [ConfigResource.question_set, ConfigResource.routing_rule];
+
+export const COMPLIANCE_CONFIG_RESOURCES: ConfigResource[] = [ConfigResource.consent_template];

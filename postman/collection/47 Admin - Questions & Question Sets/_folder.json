@@ -1,0 +1,3 @@
+{
+  "description": "Dynamic questions: the question bank (each question fills one dictionary attribute) and versioned question sets that decide which questions appear for which segment, category, lead source and stage. No deploy is needed to change what borrowers, CAs or ops are asked."
+}

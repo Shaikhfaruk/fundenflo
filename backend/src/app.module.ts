@@ -11,8 +11,10 @@ import { AttributesModule } from './modules/attributes/attributes.module.js';
 import { AuditModule } from './modules/audit/audit.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { CatalogModule } from './modules/catalog/catalog.module.js';
+import { ConfigPublishingModule } from './modules/config-publishing/config-publishing.module.js';
 import { HealthModule } from './modules/health/health.module.js';
 import { NotificationsModule } from './modules/notifications/notifications.module.js';
+import { QuestionnairesModule } from './modules/questionnaires/questionnaires.module.js';
 
 @Module({
   imports: [
@@ -24,6 +26,8 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
     AuthModule,
     CatalogModule,
     AttributesModule,
+    ConfigPublishingModule,
+    QuestionnairesModule,
   ],
   providers: [
     { provide: APP_FILTER, useClass: HttpErrorFilter },

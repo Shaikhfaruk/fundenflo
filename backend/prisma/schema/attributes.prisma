@@ -47,7 +47,8 @@ model AttributeDefinition {
   createdAt         DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt         DateTime          @updatedAt @map("updated_at") @db.Timestamptz(3)
 
-  facts BorrowerFact[]
+  facts     BorrowerFact[]
+  questions Question[]
 
   @@index([status])
   @@map("attribute_definitions")
@@ -74,6 +75,7 @@ model BorrowerFact {
 
   party     Party               @relation(fields: [partyId], references: [id], onDelete: Restrict, onUpdate: Restrict)
   attribute AttributeDefinition @relation(fields: [attributeKey], references: [key], onDelete: Restrict, onUpdate: Restrict)
+  answer    Answer?
 
   @@index([partyId, attributeKey, observedAt])
   @@index([leadId])

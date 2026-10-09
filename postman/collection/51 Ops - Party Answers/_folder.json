@@ -1,0 +1,3 @@
+{
+  "description": "Answers taken by ops on behalf of a borrower. Each answer is stored as given and as a declared fact, so later lender rules, routing and scoring can use it."
+}

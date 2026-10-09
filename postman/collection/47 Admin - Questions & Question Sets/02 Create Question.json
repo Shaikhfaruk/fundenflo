@@ -1,0 +1,144 @@
+{
+  "name": "Create Question",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "Idempotency-Key",
+        "value": "{{$guid}}"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/questions",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "questions"
+      ]
+    },
+    "description": "Adds a question. `type`: `single_select`, `multi_select`, `number`, `money` (paise), `date`, `text`, `boolean`, `city` (city id from the city search), `pincode`. The type must suit the attribute's data type. Select options map each choice to the fact it records (`fact`), e.g. `\"1-3\"` → `{\"min\": 12, \"max\": 35}` months; facts are checked against the attribute. `validation` takes `min`/`max` (number, money), `minLength`/`maxLength`/`pattern` (text) or `maxSelections` (multi-select). `ui` holds rendering hints. Staff only. Reading needs question read access (ops lead, compliance, support); changes need question manage access (ops lead, super admin). Changes are audited and published as `question.changed`. Published question sets keep the snapshot they were approved with, so editing a question only affects sets submitted afterwards.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"key\": \"constitution_{{$timestamp}}\",\n  \"attributeKey\": \"business.constitution\",\n  \"type\": \"single_select\",\n  \"label\": {\n    \"en\": \"Type Of Business\",\n    \"hi\": \"व्यवसाय का प्रकार\"\n  },\n  \"options\": [\n    {\n      \"value\": \"pvt\",\n      \"label\": {\n        \"en\": \"Pvt Ltd\"\n      },\n      \"fact\": \"private_limited\"\n    },\n    {\n      \"value\": \"llp\",\n      \"label\": {\n        \"en\": \"LLP\"\n      },\n      \"fact\": \"llp\"\n    },\n    {\n      \"value\": \"prop\",\n      \"label\": {\n        \"en\": \"Proprietor\"\n      },\n      \"fact\": \"proprietorship\"\n    }\n  ],\n  \"ui\": {\n    \"widget\": \"chips\",\n    \"columns\": 2\n  }\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "pm.collectionVariables.set('questionId', String(pm.response.json().id));",
+          "pm.collectionVariables.set('questionVersion', String(pm.response.json().version));",
+          "pm.collectionVariables.set('questionKey', String(pm.response.json().key));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "{{$guid}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/questions",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "questions"
+          ]
+        },
+        "description": "Adds a question. `type`: `single_select`, `multi_select`, `number`, `money` (paise), `date`, `text`, `boolean`, `city` (city id from the city search), `pincode`. The type must suit the attribute's data type. Select options map each choice to the fact it records (`fact`), e.g. `\"1-3\"` → `{\"min\": 12, \"max\": 35}` months; facts are checked against the attribute. `validation` takes `min`/`max` (number, money), `minLength`/`maxLength`/`pattern` (text) or `maxSelections` (multi-select). `ui` holds rendering hints. Staff only. Reading needs question read access (ops lead, compliance, support); changes need question manage access (ops lead, super admin). Changes are audited and published as `question.changed`. Published question sets keep the snapshot they were approved with, so editing a question only affects sets submitted afterwards.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"key\": \"constitution_{{$timestamp}}\",\n  \"attributeKey\": \"business.constitution\",\n  \"type\": \"single_select\",\n  \"label\": {\n    \"en\": \"Type Of Business\",\n    \"hi\": \"व्यवसाय का प्रकार\"\n  },\n  \"options\": [\n    {\n      \"value\": \"pvt\",\n      \"label\": {\n        \"en\": \"Pvt Ltd\"\n      },\n      \"fact\": \"private_limited\"\n    },\n    {\n      \"value\": \"llp\",\n      \"label\": {\n        \"en\": \"LLP\"\n      },\n      \"fact\": \"llp\"\n    },\n    {\n      \"value\": \"prop\",\n      \"label\": {\n        \"en\": \"Proprietor\"\n      },\n      \"fact\": \"proprietorship\"\n    }\n  ],\n  \"ui\": {\n    \"widget\": \"chips\",\n    \"columns\": 2\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a121b0-1a2b-7c3d-8e4f-5061728394a5\",\n  \"key\": \"constitution\",\n  \"attributeKey\": \"business.constitution\",\n  \"type\": \"single_select\",\n  \"label\": {\n    \"en\": \"Type Of Business\"\n  },\n  \"help\": null,\n  \"options\": [\n    {\n      \"value\": \"pvt\",\n      \"label\": {\n        \"en\": \"Pvt Ltd\"\n      },\n      \"fact\": \"private_limited\"\n    },\n    {\n      \"value\": \"llp\",\n      \"label\": {\n        \"en\": \"LLP\"\n      },\n      \"fact\": \"llp\"\n    },\n    {\n      \"value\": \"prop\",\n      \"label\": {\n        \"en\": \"Proprietor\"\n      },\n      \"fact\": \"proprietorship\"\n    }\n  ],\n  \"validation\": null,\n  \"ui\": {\n    \"widget\": \"chips\",\n    \"columns\": 2\n  },\n  \"status\": \"active\",\n  \"version\": 1,\n  \"updatedAt\": \"2026-10-09T17:10:00.000Z\"\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "{{$guid}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/questions",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "questions"
+          ]
+        },
+        "description": "Adds a question. `type`: `single_select`, `multi_select`, `number`, `money` (paise), `date`, `text`, `boolean`, `city` (city id from the city search), `pincode`. The type must suit the attribute's data type. Select options map each choice to the fact it records (`fact`), e.g. `\"1-3\"` → `{\"min\": 12, \"max\": 35}` months; facts are checked against the attribute. `validation` takes `min`/`max` (number, money), `minLength`/`maxLength`/`pattern` (text) or `maxSelections` (multi-select). `ui` holds rendering hints. Staff only. Reading needs question read access (ops lead, compliance, support); changes need question manage access (ops lead, super admin). Changes are audited and published as `question.changed`. Published question sets keep the snapshot they were approved with, so editing a question only affects sets submitted afterwards.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"key\": \"constitution_{{$timestamp}}\",\n  \"attributeKey\": \"business.constitution\",\n  \"type\": \"single_select\",\n  \"label\": {\n    \"en\": \"Type Of Business\",\n    \"hi\": \"व्यवसाय का प्रकार\"\n  },\n  \"options\": [\n    {\n      \"value\": \"pvt\",\n      \"label\": {\n        \"en\": \"Pvt Ltd\"\n      },\n      \"fact\": \"private_limited\"\n    },\n    {\n      \"value\": \"llp\",\n      \"label\": {\n        \"en\": \"LLP\"\n      },\n      \"fact\": \"llp\"\n    },\n    {\n      \"value\": \"prop\",\n      \"label\": {\n        \"en\": \"Proprietor\"\n      },\n      \"fact\": \"proprietorship\"\n    }\n  ],\n  \"ui\": {\n    \"widget\": \"chips\",\n    \"columns\": 2\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"options.1.fact\",\n      \"code\": \"invalid_fact\",\n      \"message\": \"must be one of proprietorship, partnership, llp, private_limited, public_limited, opc, huf, trust, society, cooperative\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

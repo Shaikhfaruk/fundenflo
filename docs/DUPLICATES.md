@@ -40,4 +40,8 @@ These are the places where a second copy is most tempting. Use the one listed.
 | Borrower data points (turnover, vintage, income, GST status, …) | `attributes` dictionary + `FactService.record()` | Columns on leads, applications or partner tables, or per-feature JSON blobs |
 | Choosing the current value among several facts | `engines/facts` `resolveFact()` with `PROVENANCE_RANK` | Ad-hoc "latest wins" queries |
 | Day and time arithmetic constants | `common/constants/time.constants.ts` | Local `DAY_MS`-style constants |
+| Draft → review → publish for a new dynamic resource | A `@ConfigHandler(resource)` + `createVersionedConfigController` (and approve/reject via `/admin/change-requests`) | Resource-specific version tables, status columns or approval routes |
+| Checking that a party exists | `PartyService.assertExists()` | Counting `parties` rows inside other modules' repositories |
+| Validating admin-supplied regular expressions | `isValidPattern()` | Local `try { new RegExp() }` blocks |
+| Turning an answer into a fact value | `engines/questionnaire` `answerToFact()` | Mapping option ids to values in lead capture, imports or the compat layer |
 | Locale handling | `common/i18n/locale.ts` (`localise`, `resolveLocale`, `@RequestLocale()`) | Per-module locale constants |

@@ -1,0 +1,155 @@
+{
+  "name": "Create Version",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/question-sets/:id/versions",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "question-sets",
+        ":id",
+        "versions"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{questionSetId}}"
+        }
+      ]
+    },
+    "description": "Opens the next draft. Send `content`, or `fromNumber` to copy an earlier version; with neither, the latest published version (or the latest version) is copied. Only one version can be in progress (draft, in review or approved) at a time. Staff only. Question sets are versioned config: draft → submit (maker) → approve or reject (a different staff member, in Change Requests) → publish → retire. Reading needs config read access; making, publishing and retiring need config maker access for question sets (ops lead, super admin).",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"content\": {\n    \"stage\": \"lead_capture\",\n    \"scope\": {\n      \"segments\": [\n        \"msme\"\n      ]\n    },\n    \"sections\": [\n      {\n        \"key\": \"business\",\n        \"label\": {\n          \"en\": \"About The Business\"\n        }\n      }\n    ],\n    \"items\": [\n      {\n        \"questionKey\": \"{{questionKey}}\",\n        \"required\": false,\n        \"section\": \"business\"\n      },\n      {\n        \"questionKey\": \"monthly_turnover\",\n        \"required\": true,\n        \"section\": \"business\",\n        \"visibleIf\": {\n          \"attr\": \"business.constitution\",\n          \"op\": \"in\",\n          \"value\": [\n            \"private_limited\",\n            \"llp\"\n          ]\n        }\n      }\n    ]\n  },\n  \"notes\": \"Constitution becomes optional\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "pm.collectionVariables.set('questionSetNumber', String(pm.response.json().number));",
+          "pm.collectionVariables.set('questionSetVersionRow', String(pm.response.json().version));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/question-sets/:id/versions",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "question-sets",
+            ":id",
+            "versions"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{questionSetId}}"
+            }
+          ]
+        },
+        "description": "Opens the next draft. Send `content`, or `fromNumber` to copy an earlier version; with neither, the latest published version (or the latest version) is copied. Only one version can be in progress (draft, in review or approved) at a time. Staff only. Question sets are versioned config: draft → submit (maker) → approve or reject (a different staff member, in Change Requests) → publish → retire. Reading needs config read access; making, publishing and retiring need config maker access for question sets (ops lead, super admin).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"content\": {\n    \"stage\": \"lead_capture\",\n    \"scope\": {\n      \"segments\": [\n        \"msme\"\n      ]\n    },\n    \"sections\": [\n      {\n        \"key\": \"business\",\n        \"label\": {\n          \"en\": \"About The Business\"\n        }\n      }\n    ],\n    \"items\": [\n      {\n        \"questionKey\": \"{{questionKey}}\",\n        \"required\": false,\n        \"section\": \"business\"\n      },\n      {\n        \"questionKey\": \"monthly_turnover\",\n        \"required\": true,\n        \"section\": \"business\",\n        \"visibleIf\": {\n          \"attr\": \"business.constitution\",\n          \"op\": \"in\",\n          \"value\": [\n            \"private_limited\",\n            \"llp\"\n          ]\n        }\n      }\n    ]\n  },\n  \"notes\": \"Constitution becomes optional\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a121b0-3c4e-7f60-9172-8394a5b6c7d8\",\n  \"resource\": \"question_set\",\n  \"documentId\": \"01a121b0-2b3c-7d4e-9f50-61728394a5b6\",\n  \"documentKey\": \"lead_capture.msme_campaign\",\n  \"number\": 2,\n  \"status\": \"draft\",\n  \"content\": {\n    \"stage\": \"lead_capture\",\n    \"scope\": {\n      \"segments\": [\n        \"msme\"\n      ]\n    },\n    \"sections\": [\n      {\n        \"key\": \"business\",\n        \"label\": {\n          \"en\": \"About The Business\"\n        }\n      }\n    ],\n    \"items\": [\n      {\n        \"questionKey\": \"constitution\",\n        \"required\": true,\n        \"section\": \"business\"\n      },\n      {\n        \"questionKey\": \"monthly_turnover\",\n        \"required\": true,\n        \"section\": \"business\",\n        \"visibleIf\": {\n          \"attr\": \"business.constitution\",\n          \"op\": \"in\",\n          \"value\": [\n            \"private_limited\",\n            \"llp\"\n          ]\n        }\n      }\n    ]\n  },\n  \"compiled\": null,\n  \"issues\": [],\n  \"contentHash\": null,\n  \"notes\": null,\n  \"effectiveFrom\": null,\n  \"publishedAt\": null,\n  \"retiredAt\": null,\n  \"createdByUserId\": \"01a121b0-5e6f-7a71-9283-94a5b6c7d8e9\",\n  \"submittedByUserId\": null,\n  \"approvedByUserId\": null,\n  \"publishedByUserId\": null,\n  \"retiredByUserId\": null,\n  \"changeRequest\": null,\n  \"availableActions\": [\n    \"edit\",\n    \"submit\",\n    \"retire\"\n  ],\n  \"version\": 1,\n  \"createdAt\": \"2026-10-09T17:10:00.000Z\",\n  \"updatedAt\": \"2026-10-09T17:10:00.000Z\"\n}"
+    },
+    {
+      "name": "409 OPEN_VERSION_EXISTS",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/question-sets/:id/versions",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "question-sets",
+            ":id",
+            "versions"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{questionSetId}}"
+            }
+          ]
+        },
+        "description": "Opens the next draft. Send `content`, or `fromNumber` to copy an earlier version; with neither, the latest published version (or the latest version) is copied. Only one version can be in progress (draft, in review or approved) at a time. Staff only. Question sets are versioned config: draft → submit (maker) → approve or reject (a different staff member, in Change Requests) → publish → retire. Reading needs config read access; making, publishing and retiring need config maker access for question sets (ops lead, super admin).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"content\": {\n    \"stage\": \"lead_capture\",\n    \"scope\": {\n      \"segments\": [\n        \"msme\"\n      ]\n    },\n    \"sections\": [\n      {\n        \"key\": \"business\",\n        \"label\": {\n          \"en\": \"About The Business\"\n        }\n      }\n    ],\n    \"items\": [\n      {\n        \"questionKey\": \"{{questionKey}}\",\n        \"required\": false,\n        \"section\": \"business\"\n      },\n      {\n        \"questionKey\": \"monthly_turnover\",\n        \"required\": true,\n        \"section\": \"business\",\n        \"visibleIf\": {\n          \"attr\": \"business.constitution\",\n          \"op\": \"in\",\n          \"value\": [\n            \"private_limited\",\n            \"llp\"\n          ]\n        }\n      }\n    ]\n  },\n  \"notes\": \"Constitution becomes optional\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"OPEN_VERSION_EXISTS\",\n  \"message\": \"A version is already in progress. Publish or retire it first.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

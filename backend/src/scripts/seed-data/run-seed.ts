@@ -1,12 +1,16 @@
-import { AliasKind, NotificationChannel, OrganizationStatus, OrganizationType, PartyKind } from '../../common/enums/db.enums.js';
-import type { PrismaClient } from '../../generated/prisma/client.js';
+import { AliasKind, ConfigResource, ConfigVersionStatus, NotificationChannel, OrganizationStatus, OrganizationType, PartyKind } from '../../common/enums/db.enums.js';
+import { stableStringify } from '../../common/utils/stable-json.js';
+import type { Prisma, PrismaClient } from '../../generated/prisma/client.js';
+import { sha256 } from '../../infrastructure/crypto/secure-random.js';
 import { FUNDENFLO_ORGANIZATION_NAME } from '../../modules/access/domain/access.constants.js';
 import { normaliseLookupText } from '../../modules/catalog/domain/alias.js';
+import { compileQuestion } from '../../modules/questionnaires/application/questionnaire.views.js';
 import type { NotificationTemplateKey } from '../../modules/notifications/domain/notification.constants.js';
 import { ATTRIBUTE_SEEDS, SEED_ATTRIBUTE_PROVENANCE } from './attributes.js';
 import { CATEGORY_SEEDS, categoryAmounts, SEGMENT_CATEGORY_ORDER, SEGMENT_SEEDS } from './catalog.js';
 import { CITY_ALIAS_SEEDS, CITY_SEEDS, STATE_SEEDS } from './geo.js';
 import { DLT_TEMPLATE_ENV, NOTIFICATION_TEMPLATE_SEEDS, type TemplateSeed } from './notification-templates.js';
+import { QUESTION_SEEDS, QUESTION_SET_SEEDS } from './questionnaires.js';
 
 export type SeedResult = {
   organizationId: string;
@@ -17,6 +21,8 @@ export type SeedResult = {
   cities: number;
   aliases: number;
   attributes: number;
+  questions: number;
+  questionSets: number;
 };
 
 function dltTemplateId(template: TemplateSeed, env: NodeJS.ProcessEnv): string | null {
@@ -137,6 +143,56 @@ async function seedAttributes(prisma: PrismaClient) {
   }
 }
 
+async function seedQuestions(prisma: PrismaClient) {
+  for (const seed of QUESTION_SEEDS) {
+    await prisma.question.upsert({
+      where: { key: seed.key },
+      create: { ...seed, label: { en: seed.label }, options: seed.options },
+      update: {},
+    });
+  }
+}
+
+async function seedQuestionSets(prisma: PrismaClient) {
+  const questions = new Map((await prisma.question.findMany()).map((question) => [question.key, question]));
+  for (const seed of QUESTION_SET_SEEDS) {
+    const existing = await prisma.configDocument.findUnique({ where: { resource_key: { resource: ConfigResource.question_set, key: seed.key } } });
+    if (existing) continue;
+    const compiled = {
+      stage: seed.content.stage,
+      scope: seed.content.scope,
+      sections: seed.content.sections,
+      items: seed.content.items.map((item) => {
+        const question = questions.get(item.questionKey);
+        if (!question) throw new Error(`Seed question set ${seed.key} references unknown question ${item.questionKey}`);
+        return { question: compileQuestion(question), required: item.required, section: item.section ?? null, visibleIf: null };
+      }),
+    };
+    const now = new Date();
+    await prisma.configDocument.create({
+      data: {
+        resource: ConfigResource.question_set,
+        key: seed.key,
+        name: { en: seed.name },
+        latestNumber: 1,
+        versions: {
+          create: {
+            number: 1,
+            status: ConfigVersionStatus.published,
+            content: seed.content as Prisma.InputJsonValue,
+            compiled: compiled as Prisma.InputJsonValue,
+            issues: [],
+            contentHash: sha256(stableStringify(compiled)),
+            notes: 'Seeded from the v0.1 app pre-check questions',
+            effectiveFrom: now,
+            publishedAt: now,
+          },
+        },
+      },
+    });
+  }
+}
+
 export async function runSeed(prisma: PrismaClient, env: NodeJS.ProcessEnv): Promise<SeedResult> {
   const organization = await seedOrganization(prisma);
   await seedTemplates(prisma, env);
@@ -144,6 +200,8 @@ export async function runSeed(prisma: PrismaClient, env: NodeJS.ProcessEnv): Pro
   await seedCategories(prisma, segmentIds);
   await seedGeo(prisma);
   await seedAttributes(prisma);
+  await seedQuestions(prisma);
+  await seedQuestionSets(prisma);
   return {
     organizationId: organization.id,
     templates: NOTIFICATION_TEMPLATE_SEEDS.length,
@@ -153,5 +211,7 @@ export async function runSeed(prisma: PrismaClient, env: NodeJS.ProcessEnv): Pro
     cities: CITY_SEEDS.length,
     aliases: CITY_ALIAS_SEEDS.length,
     attributes: ATTRIBUTE_SEEDS.length,
+    questions: QUESTION_SEEDS.length,
+    questionSets: QUESTION_SET_SEEDS.length,
   };
 }

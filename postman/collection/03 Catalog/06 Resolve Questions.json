@@ -1,0 +1,127 @@
+{
+  "name": "Resolve Questions",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/catalog/questions?stage=pre_check&segment=msme",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "catalog",
+        "questions"
+      ],
+      "query": [
+        {
+          "key": "stage",
+          "value": "pre_check"
+        },
+        {
+          "key": "segment",
+          "value": "msme"
+        }
+      ]
+    },
+    "description": "The questions a client should render for a context, in order, with localised labels, options, a JSON Schema per question, UI hints and the `visibleIf` condition (evaluate it on the client against answers so far; unknown means show). Replaces the hard-coded pre-check in the v0.1 app; option values match the ones it already uses. Context: `stage` (`pre_check`, `profile`, `lead_capture`, `lender_specific`, `post_sanction`) plus optional `segment`, `subSegment`, `category`, `leadSource`. Every active published set whose scope matches is merged, generic sets first, and each question appears once.",
+    "auth": {
+      "type": "noauth"
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.test('has questions', () => pm.expect(pm.response.json().questions.length).to.be.above(0));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/catalog/questions?stage=pre_check&segment=msme",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "catalog",
+            "questions"
+          ],
+          "query": [
+            {
+              "key": "stage",
+              "value": "pre_check"
+            },
+            {
+              "key": "segment",
+              "value": "msme"
+            }
+          ]
+        },
+        "description": "The questions a client should render for a context, in order, with localised labels, options, a JSON Schema per question, UI hints and the `visibleIf` condition (evaluate it on the client against answers so far; unknown means show). Replaces the hard-coded pre-check in the v0.1 app; option values match the ones it already uses. Context: `stage` (`pre_check`, `profile`, `lead_capture`, `lender_specific`, `post_sanction`) plus optional `segment`, `subSegment`, `category`, `leadSource`. Every active published set whose scope matches is merged, generic sets first, and each question appears once.",
+        "auth": {
+          "type": "noauth"
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"sets\": [\n    {\n      \"key\": \"pre_check.msme\",\n      \"versionId\": \"01a121a8-71d8-776f-aeac-0a01045cde78\",\n      \"number\": 1\n    }\n  ],\n  \"sections\": [],\n  \"questions\": [\n    {\n      \"key\": \"business_age\",\n      \"attributeKey\": \"business.vintage_months\",\n      \"type\": \"single_select\",\n      \"label\": \"How Old Is The Business?\",\n      \"help\": null,\n      \"options\": [\n        {\n          \"value\": \"lt1\",\n          \"label\": \"< 1 Yr\"\n        },\n        {\n          \"value\": \"1-3\",\n          \"label\": \"1–3 Yrs\"\n        },\n        {\n          \"value\": \"3-5\",\n          \"label\": \"3–5 Yrs\"\n        },\n        {\n          \"value\": \"5+\",\n          \"label\": \"5+ Yrs\"\n        }\n      ],\n      \"required\": true,\n      \"section\": null,\n      \"ui\": {\n        \"widget\": \"chips\",\n        \"columns\": 2\n      },\n      \"schema\": {\n        \"type\": \"string\",\n        \"enum\": [\n          \"lt1\",\n          \"1-3\",\n          \"3-5\",\n          \"5+\"\n        ]\n      },\n      \"visibleIf\": null,\n      \"visibility\": \"pass\",\n      \"setKey\": \"pre_check.msme\",\n      \"setVersionId\": \"01a121a8-71d8-776f-aeac-0a01045cde78\"\n    }\n  ],\n  \"hidden\": []\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/catalog/questions?stage=pre_check&segment=msme",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "catalog",
+            "questions"
+          ],
+          "query": [
+            {
+              "key": "stage",
+              "value": "pre_check"
+            },
+            {
+              "key": "segment",
+              "value": "msme"
+            }
+          ]
+        },
+        "description": "The questions a client should render for a context, in order, with localised labels, options, a JSON Schema per question, UI hints and the `visibleIf` condition (evaluate it on the client against answers so far; unknown means show). Replaces the hard-coded pre-check in the v0.1 app; option values match the ones it already uses. Context: `stage` (`pre_check`, `profile`, `lead_capture`, `lender_specific`, `post_sanction`) plus optional `segment`, `subSegment`, `category`, `leadSource`. Every active published set whose scope matches is merged, generic sets first, and each question appears once.",
+        "auth": {
+          "type": "noauth"
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"stage\",\n      \"code\": \"invalid_value\",\n      \"message\": \"Invalid option: expected one of \\\"pre_check\\\"|\\\"profile\\\"|\\\"lead_capture\\\"|\\\"lender_specific\\\"|\\\"post_sanction\\\"\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

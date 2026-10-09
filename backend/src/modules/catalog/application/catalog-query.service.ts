@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { CatalogStatus } from '../../../common/enums/db.enums.js';
-import type { Locale } from '../../../common/i18n/locale.js';
+import { DEFAULT_LOCALE, type Locale } from '../../../common/i18n/locale.js';
 import { CacheService } from '../../../infrastructure/cache/cache.service.js';
 import { CATALOG_CACHE_TTL_SECONDS, CatalogCacheTag } from '../domain/catalog.constants.js';
 import { CatalogRepository } from '../infrastructure/catalog.repository.js';
@@ -29,6 +29,15 @@ export class CatalogQueryService {
       context,
     );
     return configs.map((config) => ({ ...config, availability: availability.get(config.key) ?? { available: false, reason: null } }));
+  }
+
+  async referenceKeys(): Promise<{ segments: Set<string>; subSegments: Set<string>; categories: Set<string> }> {
+    const [segments, categories] = await Promise.all([this.segments(DEFAULT_LOCALE), this.categoryConfigs(DEFAULT_LOCALE, undefined)]);
+    return {
+      segments: new Set(segments.map((segment) => segment.key)),
+      subSegments: new Set(segments.flatMap((segment) => segment.subSegments.map((sub) => sub.key))),
+      categories: new Set(categories.map((category) => category.key)),
+    };
   }
 
   async findActiveCategory(key: string) {
