@@ -21,6 +21,7 @@ export const AuditAction = {
   CatalogCreated: 'catalog.created',
   CatalogChanged: 'catalog.changed',
   CatalogDeleted: 'catalog.deleted',
+  FactsRecorded: 'facts.recorded',
 } as const;
 
 export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction];
@@ -40,6 +41,8 @@ export const AuditEntity = {
   GeoCity: 'geo_city',
   GeoPincode: 'geo_pincode',
   LookupAlias: 'lookup_alias',
+  AttributeDefinition: 'attribute_definition',
+  BorrowerFact: 'borrower_fact',
 } as const;
 
 export type AuditEntity = (typeof AuditEntity)[keyof typeof AuditEntity];

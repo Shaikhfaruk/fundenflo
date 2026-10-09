@@ -7,9 +7,9 @@
 
 | Component | Path | Main exports | Used by | Milestone | Status | Evidence |
 |---|---|---|---|---|---|---|
-| Condition DSL | `engines/conditions/` | `validateCondition`, `evaluateCondition` (three-valued result + explanation trace) | lenders, questionnaires, documents, assessments, leads routing, sla | M1 | `planned` | §6.3 |
+| Condition DSL | `engines/conditions/` | `validateCondition` (against an attribute resolver, size limits in `CONDITION_LIMITS`), `evaluateCondition` (three-valued `pass`/`fail`/`unknown` over scalar, list and `{min,max}` range facts, with a trace), `collectMessages`, `referencedAttributes`, `isRange` | attributes (`AttributeDictionary.validate/evaluate`); next: questionnaires, leads routing, lenders, documents, assessments, sla | M1 | `useful` | `conditions.spec.ts`; spec `attributes` |
 | Formulas | `engines/formulas/` | `evaluateFormula` (JSON Logic) | attributes (derived), lenders (indicative amount), scoring | M1 | `planned` | §6.1 |
-| Facts | `engines/facts/` | `resolveFact`, `resolveFacts`, `detectConflicts` | attributes, questionnaires, assessments, matching | M1 | `planned` | §6.1 |
+| Facts | `engines/facts/resolve-fact.ts` | `resolveFact` (skip expired, fresh before stale, then rank, then recency), `isBetterFact`, `isStale`, `isExpired`; `detectConflicts` comes with M5 | attributes (`FactService.current`); next: questionnaires, assessments, matching | M1 | `useful` | `facts.spec.ts`; spec `attributes` |
 | Party matching | `engines/party-matching/` | `normaliseMobile`, `normaliseEmail`, `maskMobile`, `maskEmail`, `decideMatch` (identifier normalisers for PAN/GSTIN come with M3 KYC) | parties, auth, access, notifications | M0 | `useful` | `party-matching.spec.ts` |
 | Assignment | `engines/assignment/` | `pickAssignee` with strategies `manual`, `round_robin`, `weighted`, `least_loaded`, `pool`, `broadcast`, `sticky` | leads, applications (case queue), risk | M1 | `planned` | §7.4 |
 | State machines | `engines/state-machines/` | `defineMachine`, `assertTransition`; machines `lead`, `leadAssignment`, `application`, `submission`, `document`, `analysis`, `receivable`, `payout` | every stateful module | M1 | `planned` | §8, §7.3 |
@@ -38,7 +38,7 @@
 | Maintenance | `infrastructure/maintenance/` | `@MaintenanceTask(name)`, `MaintenanceProcessor` (discovers tasks), `RETENTION` | auth, idempotency; later documents, leads, audit retention | M0 | `useful` |
 | Logger | `infrastructure/logger/` | `buildLoggerParams` (pino, PII redaction, path-only request logging) | api, worker | M0 | `useful` |
 | Realtime | `infrastructure/realtime/` | `RealtimeGateway`, `RealtimePublisher.toRoom()` | sync, leads, applications | M1 | `planned` |
-| Cache | `infrastructure/cache/` | `CacheService.wrap(key, tags, ttl, load)`, `invalidate(...tags)` (Redis, tag-versioned keys; invalidate after commit) | catalog, geo; next: config-publishing, leads routing | M1 | `useful` (spec `catalog`: admin change visible immediately) |
+| Cache | `infrastructure/cache/` | `CacheService.wrap(key, tags, ttl, load)`, `invalidate(...tags)` (Redis, tag-versioned keys), `runThenInvalidate(txHost, cache, tags, work)` (runs `work` in a transaction, invalidates only after commit) | catalog, geo, attributes; next: config-publishing, leads routing | M1 | `useful` (specs `catalog`, `attributes`: admin change visible immediately) |
 | Telemetry | `infrastructure/telemetry/` | OpenTelemetry setup | all | M1 | `planned` |
 
 ## Common (`common/`) and platform helpers
@@ -51,12 +51,14 @@
 | Auth decorators | `common/auth/auth.decorators.ts` | `@Public()`, `@AllowContexts()`, `@AnyContext()`, `@StaffOnly()`, `@CurrentActor()` | all controllers | M0 | `useful` |
 | Access-token guard | `modules/auth/http/access-token.guard.ts` | `AccessTokenGuard` (global): verify JWT, revocation check, context check, set actor | every route | M0 | `useful` |
 | Policies | `modules/access/http/policies.guard.ts`, `modules/access/application/ability.factory.ts` | `@CheckPolicies()`, `@CurrentAbility()`, `PoliciesGuard`, `AbilityFactory`; scoping in queries via `accessibleBy(ability).ofType(...)` | admin controllers, services | M0 | `useful` |
+| Change recorder | `modules/audit/application/change-recorder.service.ts` | `ChangeRecorder.record({ action, entityType, entityId, metadata, event?, payload? })`: audit event + optional outbox event in the caller's transaction | catalog, attributes; next: every admin/config write | M1 | `useful` (specs `catalog`, `attributes`) |
 | Request context | `common/context/` | `RequestContext` (request ID, IP, user agent, actor), `UserActor`, `SystemActor`, `ActorSnapshot` | audit, outbox, OTP, sessions | M0 | `useful` |
 | Validation | `common/validation/` | `ZodValidationPipe`, `@ValidBody()`, `@ValidQuery()`, `@ValidParam()`, `uuidSchema`, `deviceSchema`, `otpCodeSchema`, `personNameSchema`, `localeSchema` | all controllers | M0 | `useful` |
 | Listing | `common/listing/cursor-page.ts` | `pageQuerySchema`, `pageWindow`, `toPage` (uuidv7 cursor) | admin lists, audit | M0 | `useful` |
 | IDs | `common/ids/uuid-v7.ts` | `uuidv7()` | OTP challenges, scripts | M0 | `useful` (spec `uuid-v7.spec.ts`) |
 | Events | `common/events/` | `EventName`, `DomainEventInput`, `DomainEventEnvelope` | outbox and consumers | M0 | `useful` |
 | Enums and constants | `common/enums/` (`db.enums.ts` re-exports Prisma enums, `device-platform.enum.ts`), `common/constants/`; module-only in `modules/<m>/domain/` | — | all | M0 | `useful` |
+| Time constants | `common/constants/time.constants.ts` | `DAY_MS` | sessions, auth maintenance, facts engine | M1 | `useful` |
 | Stable JSON | `common/utils/stable-json.ts` | `stableStringify` | idempotency request hashing | M0 | `useful` |
 | Templates | `modules/notifications/domain/template-renderer.ts` | `renderTemplate`, `MissingTemplateParamsError` | notifications | M0 | `useful` (spec `template-renderer.spec.ts`) |
 | Route catalog | `scripts/route-catalog.ts`, `scripts/inventory-check.ts` | `listRoutes(AppModule)`; `pnpm inventory:check` | Postman coverage, inventory check | M0 | `useful` |

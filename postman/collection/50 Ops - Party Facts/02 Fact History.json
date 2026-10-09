@@ -1,0 +1,97 @@
+{
+  "name": "Fact History",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/ops/parties/:partyId/facts/history?attributeKey=business.monthly_turnover_paise&limit=25",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "parties",
+        ":partyId",
+        "facts",
+        "history"
+      ],
+      "query": [
+        {
+          "key": "attributeKey",
+          "value": "business.monthly_turnover_paise"
+        },
+        {
+          "key": "limit",
+          "value": "25"
+        }
+      ],
+      "variable": [
+        {
+          "key": "partyId",
+          "value": "{{partyId}}"
+        }
+      ]
+    },
+    "description": "Every recorded value, newest first, including superseded and stale ones. Facts are never edited: a correction is a new fact. Paginate with `cursor` = `nextCursor`. Staff only. Reading needs party read access (ops lead, compliance, support); recording needs party update access (ops lead, super admin). `partyId` comes from a lead or user record."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/ops/parties/:partyId/facts/history?attributeKey=business.monthly_turnover_paise&limit=25",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "parties",
+            ":partyId",
+            "facts",
+            "history"
+          ],
+          "query": [
+            {
+              "key": "attributeKey",
+              "value": "business.monthly_turnover_paise"
+            },
+            {
+              "key": "limit",
+              "value": "25"
+            }
+          ],
+          "variable": [
+            {
+              "key": "partyId",
+              "value": "{{partyId}}"
+            }
+          ]
+        },
+        "description": "Every recorded value, newest first, including superseded and stale ones. Facts are never edited: a correction is a new fact. Paginate with `cursor` = `nextCursor`. Staff only. Reading needs party read access (ops lead, compliance, support); recording needs party update access (ops lead, super admin). `partyId` comes from a lead or user record."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"factId\": \"01a1216b-5061-7ea4-80b6-c7d8e9fa0b1c\",\n      \"attributeKey\": \"business.monthly_turnover_paise\",\n      \"value\": {\n        \"min\": 50000000,\n        \"max\": 249999999\n      },\n      \"provenance\": \"ops_verified\",\n      \"sourceType\": \"ops_entry\",\n      \"sourceId\": \"Verified from GST returns\",\n      \"confidence\": null,\n      \"observedAt\": \"2026-10-09T16:52:10.004Z\",\n      \"stale\": false\n    }\n  ],\n  \"nextCursor\": null\n}"
+    }
+  ]
+}

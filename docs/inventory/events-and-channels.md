@@ -16,6 +16,8 @@
 | `membership.created` · `membership.changed` | access (`membership.service.ts`) | `membership.changed` → `auth.session-revocations` | M1 | M0 | `useful` | §3.4 |
 | `invitation.created` · `invitation.accepted` · `invitation.revoked` | access (`invitation.service.ts`) | none yet | — | M0 | `useful` | §3.4 |
 | `catalog.changed` · `geo.changed` | catalog (`catalog-admin.service.ts`, `geo.service.ts`) | none yet (caches are invalidated directly after commit) | — | M1 | `useful` | §6 |
+| `attribute.changed` | attributes (`attribute-dictionary.service.ts`) | none yet (dictionary cache is invalidated directly after commit) | — | M1 | `useful` | §6.1 |
+| `facts.recorded` | attributes (`fact.service.ts`) | none yet (M1: lead quality re-score, routing re-evaluation; M5: assessments) | — | M1 | `useful` | §6.1 |
 | `consent.granted` · `consent.withdrawn` | consents | leads (`consent_pending` → routable), documents, notifications | — | M1 | `planned` | §7.2 |
 | `import.batch.validated` · `import.batch.committed` · `import.batch.undone` | imports | leads, reports, notifications (to uploader) | user room | M1 | `planned` | §7.1 |
 | `lead.captured` · `lead.qualified` · `lead.unqualified` · `lead.status.changed` | leads | `leads.route`, reports, sync | org room (when assigned) | M1 | `planned` | §7.3 |

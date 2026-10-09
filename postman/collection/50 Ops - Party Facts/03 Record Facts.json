@@ -1,0 +1,203 @@
+{
+  "name": "Record Facts",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/ops/parties/:partyId/facts",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "parties",
+        ":partyId",
+        "facts"
+      ],
+      "variable": [
+        {
+          "key": "partyId",
+          "value": "{{partyId}}"
+        }
+      ]
+    },
+    "description": "Records up to 100 ops-verified facts in one go; all are validated against the dictionary first and nothing is saved if any fails. `value` may be a single value or, for numeric attributes, a `{min, max}` range (either bound may be null). `note` is kept as the source reference. Publishes `facts.recorded`. Staff only. Reading needs party read access (ops lead, compliance, support); recording needs party update access (ops lead, super admin). `partyId` comes from a lead or user record.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"note\": \"Verified from GST returns on call\",\n  \"facts\": [\n    {\n      \"attributeKey\": \"business.monthly_turnover_paise\",\n      \"value\": {\n        \"min\": 50000000,\n        \"max\": 249999999\n      }\n    },\n    {\n      \"attributeKey\": \"business.gst_registered\",\n      \"value\": true\n    }\n  ]\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/parties/:partyId/facts",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "parties",
+            ":partyId",
+            "facts"
+          ],
+          "variable": [
+            {
+              "key": "partyId",
+              "value": "{{partyId}}"
+            }
+          ]
+        },
+        "description": "Records up to 100 ops-verified facts in one go; all are validated against the dictionary first and nothing is saved if any fails. `value` may be a single value or, for numeric attributes, a `{min, max}` range (either bound may be null). `note` is kept as the source reference. Publishes `facts.recorded`. Staff only. Reading needs party read access (ops lead, compliance, support); recording needs party update access (ops lead, super admin). `partyId` comes from a lead or user record.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"note\": \"Verified from GST returns on call\",\n  \"facts\": [\n    {\n      \"attributeKey\": \"business.monthly_turnover_paise\",\n      \"value\": {\n        \"min\": 50000000,\n        \"max\": 249999999\n      }\n    },\n    {\n      \"attributeKey\": \"business.gst_registered\",\n      \"value\": true\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"factId\": \"01a1216b-5061-7ea4-80b6-c7d8e9fa0b1c\",\n      \"attributeKey\": \"business.monthly_turnover_paise\",\n      \"value\": {\n        \"min\": 50000000,\n        \"max\": 249999999\n      },\n      \"provenance\": \"ops_verified\",\n      \"sourceType\": \"ops_entry\",\n      \"sourceId\": \"Verified from GST returns\",\n      \"confidence\": null,\n      \"observedAt\": \"2026-10-09T16:52:10.004Z\",\n      \"stale\": false\n    },\n    {\n      \"factId\": \"01a1216b-5062-7fb5-91c7-d8e9fa0b1c2d\",\n      \"attributeKey\": \"business.gst_registered\",\n      \"value\": true,\n      \"provenance\": \"ops_verified\",\n      \"sourceType\": \"ops_entry\",\n      \"sourceId\": \"Verified from GST returns\",\n      \"confidence\": null,\n      \"observedAt\": \"2026-10-09T16:52:10.004Z\",\n      \"stale\": false\n    }\n  ]\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/parties/:partyId/facts",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "parties",
+            ":partyId",
+            "facts"
+          ],
+          "variable": [
+            {
+              "key": "partyId",
+              "value": "{{partyId}}"
+            }
+          ]
+        },
+        "description": "Records up to 100 ops-verified facts in one go; all are validated against the dictionary first and nothing is saved if any fails. `value` may be a single value or, for numeric attributes, a `{min, max}` range (either bound may be null). `note` is kept as the source reference. Publishes `facts.recorded`. Staff only. Reading needs party read access (ops lead, compliance, support); recording needs party update access (ops lead, super admin). `partyId` comes from a lead or user record.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"note\": \"Verified from GST returns on call\",\n  \"facts\": [\n    {\n      \"attributeKey\": \"business.monthly_turnover_paise\",\n      \"value\": {\n        \"min\": 50000000,\n        \"max\": 249999999\n      }\n    },\n    {\n      \"attributeKey\": \"business.gst_registered\",\n      \"value\": true\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"facts[0].value\",\n      \"code\": \"invalid_value\",\n      \"message\": \"range min must not exceed max\"\n    },\n    {\n      \"path\": \"facts[1].attributeKey\",\n      \"code\": \"unknown_attribute\",\n      \"message\": \"unknown or inactive attribute business.nope\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/parties/:partyId/facts",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "parties",
+            ":partyId",
+            "facts"
+          ],
+          "variable": [
+            {
+              "key": "partyId",
+              "value": "{{partyId}}"
+            }
+          ]
+        },
+        "description": "Records up to 100 ops-verified facts in one go; all are validated against the dictionary first and nothing is saved if any fails. `value` may be a single value or, for numeric attributes, a `{min, max}` range (either bound may be null). `note` is kept as the source reference. Publishes `facts.recorded`. Staff only. Reading needs party read access (ops lead, compliance, support); recording needs party update access (ops lead, super admin). `partyId` comes from a lead or user record.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"note\": \"Verified from GST returns on call\",\n  \"facts\": [\n    {\n      \"attributeKey\": \"business.monthly_turnover_paise\",\n      \"value\": {\n        \"min\": 50000000,\n        \"max\": 249999999\n      }\n    },\n    {\n      \"attributeKey\": \"business.gst_registered\",\n      \"value\": true\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

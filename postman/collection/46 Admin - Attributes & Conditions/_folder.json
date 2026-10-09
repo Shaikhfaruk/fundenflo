@@ -1,0 +1,3 @@
+{
+  "description": "The attribute dictionary and the conditions engine shared by questionnaires, lender eligibility rules, lead routing and imports. Definitions are versioned (If-Match), audited and cached."
+}

@@ -1,0 +1,216 @@
+{
+  "name": "Update Attribute",
+  "request": {
+    "method": "PATCH",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "If-Match",
+        "value": "\"{{attributeVersion}}\""
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/attributes/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "attributes",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{attributeId}}"
+        }
+      ]
+    },
+    "description": "Changes label, description, unit, enum values, sensitivity, allowed provenance, freshness or status. `key` and `dataType` never change. Enum values can be added but never removed, because stored facts and rules use them; deactivate the attribute instead. Staff only. Reading needs attribute read access (ops lead, compliance, support); changes need attribute manage access (ops lead, super admin). Every change is audited, published as `attribute.changed` and clears the dictionary cache immediately.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"freshnessDays\": 365,\n  \"enumValues\": [\n    {\n      \"value\": \"manufacturing\",\n      \"label\": {\n        \"en\": \"Manufacturing\"\n      }\n    },\n    {\n      \"value\": \"trading\",\n      \"label\": {\n        \"en\": \"Trading\"\n      }\n    },\n    {\n      \"value\": \"services\",\n      \"label\": {\n        \"en\": \"Services\"\n      }\n    }\n  ]\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.collectionVariables.set('attributeVersion', String(pm.response.json().version));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{attributeVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/attributes/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "attributes",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{attributeId}}"
+            }
+          ]
+        },
+        "description": "Changes label, description, unit, enum values, sensitivity, allowed provenance, freshness or status. `key` and `dataType` never change. Enum values can be added but never removed, because stored facts and rules use them; deactivate the attribute instead. Staff only. Reading needs attribute read access (ops lead, compliance, support); changes need attribute manage access (ops lead, super admin). Every change is audited, published as `attribute.changed` and clears the dictionary cache immediately.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"freshnessDays\": 365,\n  \"enumValues\": [\n    {\n      \"value\": \"manufacturing\",\n      \"label\": {\n        \"en\": \"Manufacturing\"\n      }\n    },\n    {\n      \"value\": \"trading\",\n      \"label\": {\n        \"en\": \"Trading\"\n      }\n    },\n    {\n      \"value\": \"services\",\n      \"label\": {\n        \"en\": \"Services\"\n      }\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a1216b-4f50-7d93-9fa5-b6c7d8e9fa0b\",\n  \"key\": \"business.industry\",\n  \"label\": {\n    \"en\": \"Industry\",\n    \"hi\": \"उद्योग\"\n  },\n  \"description\": null,\n  \"dataType\": \"enum\",\n  \"unit\": null,\n  \"enumValues\": [\n    {\n      \"value\": \"manufacturing\",\n      \"label\": {\n        \"en\": \"Manufacturing\"\n      }\n    },\n    {\n      \"value\": \"trading\",\n      \"label\": {\n        \"en\": \"Trading\"\n      }\n    }\n  ],\n  \"subject\": \"business\",\n  \"sensitivity\": \"public\",\n  \"allowedProvenance\": [\n    \"declared\",\n    \"ops_verified\"\n  ],\n  \"freshnessDays\": 365,\n  \"status\": \"active\",\n  \"version\": 2,\n  \"updatedAt\": \"2026-10-09T16:46:23.412Z\"\n}"
+    },
+    {
+      "name": "409 VERSION_CONFLICT",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{attributeVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/attributes/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "attributes",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{attributeId}}"
+            }
+          ]
+        },
+        "description": "Changes label, description, unit, enum values, sensitivity, allowed provenance, freshness or status. `key` and `dataType` never change. Enum values can be added but never removed, because stored facts and rules use them; deactivate the attribute instead. Staff only. Reading needs attribute read access (ops lead, compliance, support); changes need attribute manage access (ops lead, super admin). Every change is audited, published as `attribute.changed` and clears the dictionary cache immediately.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"freshnessDays\": 365,\n  \"enumValues\": [\n    {\n      \"value\": \"manufacturing\",\n      \"label\": {\n        \"en\": \"Manufacturing\"\n      }\n    },\n    {\n      \"value\": \"trading\",\n      \"label\": {\n        \"en\": \"Trading\"\n      }\n    },\n    {\n      \"value\": \"services\",\n      \"label\": {\n        \"en\": \"Services\"\n      }\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VERSION_CONFLICT\",\n  \"message\": \"This record was changed by someone else. Reload it and try again.\",\n  \"details\": {\n    \"currentVersion\": 2\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{attributeVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/attributes/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "attributes",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{attributeId}}"
+            }
+          ]
+        },
+        "description": "Changes label, description, unit, enum values, sensitivity, allowed provenance, freshness or status. `key` and `dataType` never change. Enum values can be added but never removed, because stored facts and rules use them; deactivate the attribute instead. Staff only. Reading needs attribute read access (ops lead, compliance, support); changes need attribute manage access (ops lead, super admin). Every change is audited, published as `attribute.changed` and clears the dictionary cache immediately.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"freshnessDays\": 365,\n  \"enumValues\": [\n    {\n      \"value\": \"manufacturing\",\n      \"label\": {\n        \"en\": \"Manufacturing\"\n      }\n    },\n    {\n      \"value\": \"trading\",\n      \"label\": {\n        \"en\": \"Trading\"\n      }\n    },\n    {\n      \"value\": \"services\",\n      \"label\": {\n        \"en\": \"Services\"\n      }\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"enumValues\",\n      \"code\": \"enum_value_removed\",\n      \"message\": \"existing values cannot be removed: trading\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

@@ -228,6 +228,15 @@ Controller: `backend/src/modules/catalog/http/catalog.controller.ts` · Postman:
 
 ## 30 Ops Console
 
+Built in M1.2 (Postman `50 Ops - Party Facts/`). Controller: `backend/src/modules/attributes/http/ops-facts.controller.ts`.
+
+| Method | Path | Module | Context | Milestone | Status |
+|---|---|---|---|---|---|
+| `GET` `POST` | `/ops/parties/:partyId/facts` | attributes | staff | M1 | `useful` |
+| `GET` | `/ops/parties/:partyId/facts/history` | attributes | staff | M1 | `useful` |
+
+Planned:
+
 | Method | Path | Module | Context | Milestone | Status |
 |---|---|---|---|---|---|
 | `GET` | `/ops/cases` | applications | staff | M3 | `planned` |
@@ -278,14 +287,21 @@ Built in M1.1 (Postman `45 Admin - Catalog & Geography/`). Controllers: `backend
 | `GET` `POST` | `/admin/lookup-aliases` | catalog | staff | M1 | `useful` |
 | `DELETE` | `/admin/lookup-aliases/:id` | catalog | staff | M1 | `useful` |
 
+Built in M1.2 (Postman `46 Admin - Attributes & Conditions/`). Controller: `backend/src/modules/attributes/http/admin-attributes.controller.ts`.
+
+| Method | Path | Module | Context | Milestone | Status |
+|---|---|---|---|---|---|
+| `GET` `POST` | `/admin/attributes` | attributes | staff | M1 | `useful` |
+| `GET` `PATCH` | `/admin/attributes/:id` | attributes | staff | M1 | `useful` |
+| `POST` | `/admin/conditions/validate` | attributes | staff | M1 | `useful` |
+| `POST` | `/admin/conditions/evaluate` | attributes | staff | M1 | `useful` |
+
 Planned:
 
 | Method | Path | Module | Context | Milestone | Status |
 |---|---|---|---|---|---|
 | `GET` `POST` | `/admin/api-clients` | access | staff | M1 | `planned` |
 | `DELETE` | `/admin/api-clients/:id` | access | staff | M1 | `planned` |
-| `GET` `POST` | `/admin/attributes` | attributes | staff | M1 | `planned` |
-| `GET` `PATCH` | `/admin/attributes/:id` | attributes | staff | M1 | `planned` |
 | `GET` `POST` | `/admin/questions` | questionnaires | staff | M1 | `planned` |
 | `GET` `PATCH` | `/admin/questions/:id` | questionnaires | staff | M1 | `planned` |
 | `GET` | `/admin/partners` | partners | staff | M1 | `planned` |

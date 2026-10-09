@@ -1,0 +1,133 @@
+{
+  "name": "Validate Condition",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/conditions/validate",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "conditions",
+        "validate"
+      ]
+    },
+    "description": "Checks a condition against the live dictionary without running it: unknown attributes, operators that do not fit the attribute type, wrong value types, unknown enum values and size limits. Use before saving lender rules, question visibility or routing rules. A condition is a tree of `all` / `any` / `not` groups over leaves `{attr, op, value?, pass?, fail?}`. Operators: `eq`, `neq`, `in`, `not_in`, `gt`, `gte`, `lt`, `lte`, `between` (`{min, max}`), `exists`, `not_exists`, `contains`, `matches`. Limits: depth 10, 200 leaves, 500 list items, 200-character patterns.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"condition\": {\n    \"all\": [\n      {\n        \"attr\": \"business.monthly_turnover_paise\",\n        \"op\": \"gte\",\n        \"value\": 50000000,\n        \"fail\": \"Monthly turnover must be at least ₹5 lakh\"\n      },\n      {\n        \"attr\": \"business.gst_registered\",\n        \"op\": \"eq\",\n        \"value\": true\n      },\n      {\n        \"attr\": \"borrower.has_existing_emis\",\n        \"op\": \"eq\",\n        \"value\": false,\n        \"fail\": \"Existing EMIs must be closed first\"\n      }\n    ]\n  }\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.test('condition is valid', () => pm.expect(pm.response.json().valid).to.eql(true));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/conditions/validate",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "conditions",
+            "validate"
+          ]
+        },
+        "description": "Checks a condition against the live dictionary without running it: unknown attributes, operators that do not fit the attribute type, wrong value types, unknown enum values and size limits. Use before saving lender rules, question visibility or routing rules. A condition is a tree of `all` / `any` / `not` groups over leaves `{attr, op, value?, pass?, fail?}`. Operators: `eq`, `neq`, `in`, `not_in`, `gt`, `gte`, `lt`, `lte`, `between` (`{min, max}`), `exists`, `not_exists`, `contains`, `matches`. Limits: depth 10, 200 leaves, 500 list items, 200-character patterns.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"condition\": {\n    \"all\": [\n      {\n        \"attr\": \"business.monthly_turnover_paise\",\n        \"op\": \"gte\",\n        \"value\": 50000000,\n        \"fail\": \"Monthly turnover must be at least ₹5 lakh\"\n      },\n      {\n        \"attr\": \"business.gst_registered\",\n        \"op\": \"eq\",\n        \"value\": true\n      },\n      {\n        \"attr\": \"borrower.has_existing_emis\",\n        \"op\": \"eq\",\n        \"value\": false,\n        \"fail\": \"Existing EMIs must be closed first\"\n      }\n    ]\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"valid\": true,\n  \"issues\": [],\n  \"attributes\": [\n    \"business.monthly_turnover_paise\",\n    \"business.gst_registered\",\n    \"borrower.has_existing_emis\"\n  ]\n}"
+    },
+    {
+      "name": "200 OK (issues)",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/conditions/validate",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "conditions",
+            "validate"
+          ]
+        },
+        "description": "Checks a condition against the live dictionary without running it: unknown attributes, operators that do not fit the attribute type, wrong value types, unknown enum values and size limits. Use before saving lender rules, question visibility or routing rules. A condition is a tree of `all` / `any` / `not` groups over leaves `{attr, op, value?, pass?, fail?}`. Operators: `eq`, `neq`, `in`, `not_in`, `gt`, `gte`, `lt`, `lte`, `between` (`{min, max}`), `exists`, `not_exists`, `contains`, `matches`. Limits: depth 10, 200 leaves, 500 list items, 200-character patterns.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"condition\": {\n    \"all\": [\n      {\n        \"attr\": \"business.monthly_turnover_paise\",\n        \"op\": \"gte\",\n        \"value\": 50000000,\n        \"fail\": \"Monthly turnover must be at least ₹5 lakh\"\n      },\n      {\n        \"attr\": \"business.gst_registered\",\n        \"op\": \"eq\",\n        \"value\": true\n      },\n      {\n        \"attr\": \"borrower.has_existing_emis\",\n        \"op\": \"eq\",\n        \"value\": false,\n        \"fail\": \"Existing EMIs must be closed first\"\n      }\n    ]\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"valid\": false,\n  \"issues\": [\n    {\n      \"path\": \"$.all[1].op\",\n      \"message\": \"gte needs a numeric or date attribute\"\n    }\n  ],\n  \"attributes\": []\n}"
+    }
+  ]
+}

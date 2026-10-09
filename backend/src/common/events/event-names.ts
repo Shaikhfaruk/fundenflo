@@ -15,6 +15,8 @@ export const EventName = {
   InvitationRevoked: 'invitation.revoked',
   CatalogChanged: 'catalog.changed',
   GeoChanged: 'geo.changed',
+  AttributeChanged: 'attribute.changed',
+  FactsRecorded: 'facts.recorded',
 } as const;
 
 export type EventName = (typeof EventName)[keyof typeof EventName];

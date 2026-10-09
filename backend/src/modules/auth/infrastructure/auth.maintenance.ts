@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 
+import { DAY_MS } from '../../../common/constants/time.constants.js';
 import { PrismaService } from '../../../infrastructure/database/prisma.service.js';
-import { DAY_MS, RETENTION } from '../../../infrastructure/maintenance/maintenance.constants.js';
+import { RETENTION } from '../../../infrastructure/maintenance/maintenance.constants.js';
 import { MaintenanceTask } from '../../../infrastructure/maintenance/maintenance-task.decorator.js';
 import { RevokeReason } from '../domain/auth.enums.js';
 

@@ -1,0 +1,176 @@
+{
+  "name": "Evaluate Condition",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/conditions/evaluate",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "conditions",
+        "evaluate"
+      ]
+    },
+    "description": "Runs a condition and returns `pass`, `fail` or `unknown` with a per-leaf trace and the configured messages. Facts come from `partyId` (current, non-stale facts) with `facts` overlaid on top, so rules can be tried before data exists. Range facts from bucketed answers pass only when the whole range satisfies the rule, fail when none of it does, and stay `unknown` otherwise. A condition is a tree of `all` / `any` / `not` groups over leaves `{attr, op, value?, pass?, fail?}`. Operators: `eq`, `neq`, `in`, `not_in`, `gt`, `gte`, `lt`, `lte`, `between` (`{min, max}`), `exists`, `not_exists`, `contains`, `matches`. Limits: depth 10, 200 leaves, 500 list items, 200-character patterns.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"condition\": {\n    \"all\": [\n      {\n        \"attr\": \"business.monthly_turnover_paise\",\n        \"op\": \"gte\",\n        \"value\": 50000000,\n        \"fail\": \"Monthly turnover must be at least ₹5 lakh\"\n      },\n      {\n        \"attr\": \"business.gst_registered\",\n        \"op\": \"eq\",\n        \"value\": true\n      },\n      {\n        \"attr\": \"borrower.has_existing_emis\",\n        \"op\": \"eq\",\n        \"value\": false,\n        \"fail\": \"Existing EMIs must be closed first\"\n      }\n    ]\n  },\n  \"facts\": {\n    \"business.monthly_turnover_paise\": {\n      \"min\": 50000000,\n      \"max\": 249999999\n    },\n    \"business.gst_registered\": true,\n    \"borrower.has_existing_emis\": true\n  }\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.test('returns an outcome', () => pm.expect(['pass', 'fail', 'unknown']).to.include(pm.response.json().outcome));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/conditions/evaluate",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "conditions",
+            "evaluate"
+          ]
+        },
+        "description": "Runs a condition and returns `pass`, `fail` or `unknown` with a per-leaf trace and the configured messages. Facts come from `partyId` (current, non-stale facts) with `facts` overlaid on top, so rules can be tried before data exists. Range facts from bucketed answers pass only when the whole range satisfies the rule, fail when none of it does, and stay `unknown` otherwise. A condition is a tree of `all` / `any` / `not` groups over leaves `{attr, op, value?, pass?, fail?}`. Operators: `eq`, `neq`, `in`, `not_in`, `gt`, `gte`, `lt`, `lte`, `between` (`{min, max}`), `exists`, `not_exists`, `contains`, `matches`. Limits: depth 10, 200 leaves, 500 list items, 200-character patterns.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"condition\": {\n    \"all\": [\n      {\n        \"attr\": \"business.monthly_turnover_paise\",\n        \"op\": \"gte\",\n        \"value\": 50000000,\n        \"fail\": \"Monthly turnover must be at least ₹5 lakh\"\n      },\n      {\n        \"attr\": \"business.gst_registered\",\n        \"op\": \"eq\",\n        \"value\": true\n      },\n      {\n        \"attr\": \"borrower.has_existing_emis\",\n        \"op\": \"eq\",\n        \"value\": false,\n        \"fail\": \"Existing EMIs must be closed first\"\n      }\n    ]\n  },\n  \"facts\": {\n    \"business.monthly_turnover_paise\": {\n      \"min\": 50000000,\n      \"max\": 249999999\n    },\n    \"business.gst_registered\": true,\n    \"borrower.has_existing_emis\": true\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"outcome\": \"fail\",\n  \"trace\": {\n    \"kind\": \"all\",\n    \"outcome\": \"fail\",\n    \"children\": [\n      {\n        \"kind\": \"leaf\",\n        \"outcome\": \"pass\",\n        \"attr\": \"business.monthly_turnover_paise\",\n        \"op\": \"gte\",\n        \"expected\": 50000000,\n        \"actual\": {\n          \"min\": 50000000,\n          \"max\": 249999999\n        },\n        \"message\": null\n      },\n      {\n        \"kind\": \"leaf\",\n        \"outcome\": \"pass\",\n        \"attr\": \"business.gst_registered\",\n        \"op\": \"eq\",\n        \"expected\": true,\n        \"actual\": true,\n        \"message\": null\n      },\n      {\n        \"kind\": \"leaf\",\n        \"outcome\": \"fail\",\n        \"attr\": \"borrower.has_existing_emis\",\n        \"op\": \"eq\",\n        \"expected\": false,\n        \"actual\": true,\n        \"message\": \"Existing EMIs must be closed first\"\n      }\n    ]\n  }\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/conditions/evaluate",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "conditions",
+            "evaluate"
+          ]
+        },
+        "description": "Runs a condition and returns `pass`, `fail` or `unknown` with a per-leaf trace and the configured messages. Facts come from `partyId` (current, non-stale facts) with `facts` overlaid on top, so rules can be tried before data exists. Range facts from bucketed answers pass only when the whole range satisfies the rule, fail when none of it does, and stay `unknown` otherwise. A condition is a tree of `all` / `any` / `not` groups over leaves `{attr, op, value?, pass?, fail?}`. Operators: `eq`, `neq`, `in`, `not_in`, `gt`, `gte`, `lt`, `lte`, `between` (`{min, max}`), `exists`, `not_exists`, `contains`, `matches`. Limits: depth 10, 200 leaves, 500 list items, 200-character patterns.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"condition\": {\n    \"all\": [\n      {\n        \"attr\": \"business.monthly_turnover_paise\",\n        \"op\": \"gte\",\n        \"value\": 50000000,\n        \"fail\": \"Monthly turnover must be at least ₹5 lakh\"\n      },\n      {\n        \"attr\": \"business.gst_registered\",\n        \"op\": \"eq\",\n        \"value\": true\n      },\n      {\n        \"attr\": \"borrower.has_existing_emis\",\n        \"op\": \"eq\",\n        \"value\": false,\n        \"fail\": \"Existing EMIs must be closed first\"\n      }\n    ]\n  },\n  \"facts\": {\n    \"business.monthly_turnover_paise\": {\n      \"min\": 50000000,\n      \"max\": 249999999\n    },\n    \"business.gst_registered\": true,\n    \"borrower.has_existing_emis\": true\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"$.attr\",\n      \"code\": \"invalid_condition\",\n      \"message\": \"unknown or inactive attribute business.unknown\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/conditions/evaluate",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "conditions",
+            "evaluate"
+          ]
+        },
+        "description": "Runs a condition and returns `pass`, `fail` or `unknown` with a per-leaf trace and the configured messages. Facts come from `partyId` (current, non-stale facts) with `facts` overlaid on top, so rules can be tried before data exists. Range facts from bucketed answers pass only when the whole range satisfies the rule, fail when none of it does, and stay `unknown` otherwise. A condition is a tree of `all` / `any` / `not` groups over leaves `{attr, op, value?, pass?, fail?}`. Operators: `eq`, `neq`, `in`, `not_in`, `gt`, `gte`, `lt`, `lte`, `between` (`{min, max}`), `exists`, `not_exists`, `contains`, `matches`. Limits: depth 10, 200 leaves, 500 list items, 200-character patterns.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"condition\": {\n    \"all\": [\n      {\n        \"attr\": \"business.monthly_turnover_paise\",\n        \"op\": \"gte\",\n        \"value\": 50000000,\n        \"fail\": \"Monthly turnover must be at least ₹5 lakh\"\n      },\n      {\n        \"attr\": \"business.gst_registered\",\n        \"op\": \"eq\",\n        \"value\": true\n      },\n      {\n        \"attr\": \"borrower.has_existing_emis\",\n        \"op\": \"eq\",\n        \"value\": false,\n        \"fail\": \"Existing EMIs must be closed first\"\n      }\n    ]\n  },\n  \"facts\": {\n    \"business.monthly_turnover_paise\": {\n      \"min\": 50000000,\n      \"max\": 249999999\n    },\n    \"business.gst_registered\": true,\n    \"borrower.has_existing_emis\": true\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

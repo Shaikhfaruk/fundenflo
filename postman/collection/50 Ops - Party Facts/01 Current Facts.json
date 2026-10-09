@@ -1,0 +1,111 @@
+{
+  "name": "Current Facts",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/ops/parties/:partyId/facts",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "parties",
+        ":partyId",
+        "facts"
+      ],
+      "variable": [
+        {
+          "key": "partyId",
+          "value": "{{partyId}}"
+        }
+      ]
+    },
+    "description": "The best current value per attribute for a person or business. Ranking: fresh before stale, then ops verified > third-party verified > extracted > derived > declared, then most recent. Facts past `validUntil` are ignored. Special-category values are decrypted for authorised staff only. Staff only. Reading needs party read access (ops lead, compliance, support); recording needs party update access (ops lead, super admin). `partyId` comes from a lead or user record."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/ops/parties/:partyId/facts",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "parties",
+            ":partyId",
+            "facts"
+          ],
+          "variable": [
+            {
+              "key": "partyId",
+              "value": "{{partyId}}"
+            }
+          ]
+        },
+        "description": "The best current value per attribute for a person or business. Ranking: fresh before stale, then ops verified > third-party verified > extracted > derived > declared, then most recent. Facts past `validUntil` are ignored. Special-category values are decrypted for authorised staff only. Staff only. Reading needs party read access (ops lead, compliance, support); recording needs party update access (ops lead, super admin). `partyId` comes from a lead or user record."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"factId\": \"01a1216b-5061-7ea4-80b6-c7d8e9fa0b1c\",\n      \"attributeKey\": \"business.monthly_turnover_paise\",\n      \"value\": {\n        \"min\": 50000000,\n        \"max\": 249999999\n      },\n      \"provenance\": \"ops_verified\",\n      \"sourceType\": \"ops_entry\",\n      \"sourceId\": \"Verified from GST returns\",\n      \"confidence\": null,\n      \"observedAt\": \"2026-10-09T16:52:10.004Z\",\n      \"stale\": false\n    },\n    {\n      \"factId\": \"01a1216b-5062-7fb5-91c7-d8e9fa0b1c2d\",\n      \"attributeKey\": \"business.gst_registered\",\n      \"value\": true,\n      \"provenance\": \"ops_verified\",\n      \"sourceType\": \"ops_entry\",\n      \"sourceId\": \"Verified from GST returns\",\n      \"confidence\": null,\n      \"observedAt\": \"2026-10-09T16:52:10.004Z\",\n      \"stale\": false\n    }\n  ]\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/ops/parties/:partyId/facts",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "parties",
+            ":partyId",
+            "facts"
+          ],
+          "variable": [
+            {
+              "key": "partyId",
+              "value": "{{partyId}}"
+            }
+          ]
+        },
+        "description": "The best current value per attribute for a person or business. Ranking: fresh before stale, then ops verified > third-party verified > extracted > derived > declared, then most recent. Facts past `validUntil` are ignored. Special-category values are decrypted for authorised staff only. Staff only. Reading needs party read access (ops lead, compliance, support); recording needs party update access (ops lead, super admin). `partyId` comes from a lead or user record."
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

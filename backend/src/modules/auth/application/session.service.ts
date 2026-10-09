@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { Transactional } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
 
+import { DAY_MS } from '../../../common/constants/time.constants.js';
 import type { UserActor } from '../../../common/context/actor.js';
 import { RequestContext } from '../../../common/context/request-context.service.js';
 import { type LoginMethod, MembershipStatus, OrganizationStatus, SessionContext, UserStatus } from '../../../common/enums/db.enums.js';
@@ -23,8 +24,6 @@ import { RevokeReason } from '../domain/auth.enums.js';
 import type { AccessClaims, SessionView, TokenPair } from '../domain/auth.types.js';
 import { type RefreshWithSession, SessionRepository } from '../infrastructure/session.repository.js';
 import { TokenService } from './token.service.js';
-
-const DAY_MS = 24 * 3600_000;
 
 export type IssuedSession = {
   session: Session;

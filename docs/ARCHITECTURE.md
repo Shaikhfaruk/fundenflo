@@ -1,7 +1,7 @@
 # FundenFlo Backend — Architecture Diagrams
 
 > Living document. Any change that adds, renames, moves or removes a module, route group, queue, job, channel or worker updates the matching diagram here **and** [`inventory.md`](inventory.md) in the same change.
-> **Built (M0 + M1.1):** system context, identity & multiple logins (diagrams 3–4, parties/users/memberships/sessions parts), audit, notifications, outbox and the four M0 queues in diagram 9, and the `catalog` module (diagram 2; feeds the Category and Requirement steps in diagram 7). Everything else is planned. Design rationale: [`BACKEND_ARCHITECTURE_PLAN.md`](BACKEND_ARCHITECTURE_PLAN.md).
+> **Built (M0 + M1.1 + M1.2):** system context, identity & multiple logins (diagrams 3–4, parties/users/memberships/sessions parts), audit, notifications, outbox and the four M0 queues in diagram 9, the `catalog` module (diagram 2; feeds the Category and Requirement steps in diagram 7), and the `attributes` module with the `conditions` and `facts` engines (diagram 2; the fact store and rule evaluation behind every step of diagram 7). Everything else is planned. Design rationale: [`BACKEND_ARCHITECTURE_PLAN.md`](BACKEND_ARCHITECTURE_PLAN.md).
 > Last updated: 2026-10-09
 
 ## Diagrams
@@ -156,9 +156,11 @@ flowchart TB
   Journey --> Ports
   LeadsGroup --> Ports
   Platform --> Ports
+  classDef built fill:#d8f3dc,stroke:#2d6a4f,color:#081c15
+  class auth,access,parties,catalog,attributes,notifications,audit,conditions,facts,partyMatching,database,queue,storage,crypto,cache built
 ```
 
-Rules: engines import nothing from Nest, modules or infrastructure. Modules talk only through exported façade services or domain events. Integrations are reached only through ports.
+Green = built (M0 – M1.2). Rules: engines import nothing from Nest, modules or infrastructure. Modules talk only through exported façade services or domain events. Integrations are reached only through ports.
 
 ---
 
@@ -327,6 +329,27 @@ flowchart LR
   S11 --> S12[Submission]
   S12 -->|lender events| S13[Sanction / disbursal]
   S13 -->|ledger| S14[Commission]
+```
+
+Every step reads and writes borrower data through one fact store and one rule format (built in M1.2):
+
+```mermaid
+flowchart LR
+  subgraph Sources
+    QA[Question answers]
+    LC[Lead capture]
+    IM[Imports]
+    OPS[Ops entry]
+    INT[Integrations: GST, AA, bureau]
+  end
+  Sources -->|FactService.record: validate against dictionary, provenance allowed?, encrypt special| BF[(borrower_facts, append-only)]
+  AD[(attribute_definitions)] -->|AttributeDictionary.active, cached| FS[FactService]
+  BF --> FS
+  FS -->|resolveFact: skip expired, fresh before stale, ops > third party > extracted > derived > declared, newest| LK[FactLookup]
+  OV[Overlay: unsaved answers] --> LK
+  RULES[Lender rules, question visibility, routing, SLA triggers] -->|validateCondition at save| AD
+  LK -->|evaluateCondition| OUT{pass / fail / unknown + trace}
+  RULES --> OUT
 ```
 
 ---

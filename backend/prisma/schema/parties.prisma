@@ -54,6 +54,7 @@ model Party {
   relationshipsTo   PartyRelationship[] @relation("relationship_to")
   user              User?
   organization      Organization?
+  facts             BorrowerFact[]
 
   @@index([kind, status])
   @@map("parties")
@@ -135,15 +136,15 @@ model PartyMerge {
 }
 
 model PartyMatchReview {
-  id               String            @id @default(uuid(7)) @db.Uuid
-  partyId          String            @map("party_id") @db.Uuid
-  candidatePartyIds String[]         @map("candidate_party_ids") @db.Uuid
-  signals          Json
-  status           MatchReviewStatus @default(open)
-  resolution       String?
-  resolvedByUserId String?           @map("resolved_by_user_id") @db.Uuid
-  resolvedAt       DateTime?         @map("resolved_at") @db.Timestamptz(3)
-  createdAt        DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
+  id                String            @id @default(uuid(7)) @db.Uuid
+  partyId           String            @map("party_id") @db.Uuid
+  candidatePartyIds String[]          @map("candidate_party_ids") @db.Uuid
+  signals           Json
+  status            MatchReviewStatus @default(open)
+  resolution        String?
+  resolvedByUserId  String?           @map("resolved_by_user_id") @db.Uuid
+  resolvedAt        DateTime?         @map("resolved_at") @db.Timestamptz(3)
+  createdAt         DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
 
   @@index([status, createdAt])
   @@map("party_match_reviews")

@@ -25,12 +25,14 @@ export const ROLE_GRANTS: Partial<Record<Role, Grant>> = {
     can([AppAction.Read, AppAction.Update], 'User');
     can(AppAction.Read, ['Membership', 'Invitation', 'Organization', 'AuditEvent']);
     can(AppAction.Manage, NonModelSubject.Catalog);
+    can(AppAction.Manage, 'AttributeDefinition');
+    can([AppAction.Read, AppAction.Update], 'Party');
   },
   [Role.compliance_officer]: ({ can }) => {
-    can(AppAction.Read, ['User', 'Membership', 'Invitation', 'Organization', 'AuditEvent', NonModelSubject.Catalog]);
+    can(AppAction.Read, ['User', 'Membership', 'Invitation', 'Organization', 'AuditEvent', 'AttributeDefinition', 'Party', NonModelSubject.Catalog]);
   },
   [Role.support]: ({ can }) => {
-    can(AppAction.Read, ['User', 'Membership', NonModelSubject.Catalog]);
+    can(AppAction.Read, ['User', 'Membership', 'AttributeDefinition', 'Party', NonModelSubject.Catalog]);
   },
   [Role.partner_manager]: manageOrganizationMembers(OrganizationType.partner),
   [Role.lender_manager]: manageOrganizationMembers(OrganizationType.lender),

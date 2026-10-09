@@ -1,0 +1,15 @@
+{
+  "name": "Attribute dictionary and conditions",
+  "requires": ["staffInvitation"],
+  "steps": [
+    { "request": "01 Auth/06 Accept Staff Invitation.json" },
+    { "request": "01 Auth/07 Staff Login.json" },
+    { "request": "01 Auth/08 Verify Staff MFA.json" },
+    { "request": "46 Admin - Attributes & Conditions/01 List Attributes.json" },
+    { "request": "46 Admin - Attributes & Conditions/02 Create Attribute.json" },
+    { "request": "46 Admin - Attributes & Conditions/03 Get Attribute.json" },
+    { "request": "46 Admin - Attributes & Conditions/04 Update Attribute.json" },
+    { "request": "46 Admin - Attributes & Conditions/05 Validate Condition.json" },
+    { "request": "46 Admin - Attributes & Conditions/06 Evaluate Condition.json" }
+  ]
+}

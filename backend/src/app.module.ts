@@ -7,6 +7,7 @@ import { EtagInterceptor } from './common/http/etag.interceptor.js';
 import { JsonBodyMiddleware } from './common/http/json-body.middleware.js';
 import { InfrastructureModule } from './infrastructure/infrastructure.module.js';
 import { AuthorizationModule } from './modules/access/authorization.module.js';
+import { AttributesModule } from './modules/attributes/attributes.module.js';
 import { AuditModule } from './modules/audit/audit.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { CatalogModule } from './modules/catalog/catalog.module.js';
@@ -22,6 +23,7 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
     HealthModule,
     AuthModule,
     CatalogModule,
+    AttributesModule,
   ],
   providers: [
     { provide: APP_FILTER, useClass: HttpErrorFilter },

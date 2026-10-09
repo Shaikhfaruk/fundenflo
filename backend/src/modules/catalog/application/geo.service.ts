@@ -9,8 +9,8 @@ import { assertVersion } from '../../../common/http/versioning.js';
 import { type PageQuery, pageWindow, toPage } from '../../../common/listing/cursor-page.js';
 import { CacheService } from '../../../infrastructure/cache/cache.service.js';
 import type { PrismaTx } from '../../../infrastructure/database/database.types.js';
-import { OutboxService } from '../../../infrastructure/outbox/outbox.service.js';
-import { AuditService } from '../../audit/application/audit.service.js';
+import { runThenInvalidate } from '../../../infrastructure/cache/run-then-invalidate.js';
+import { ChangeRecorder } from '../../audit/application/change-recorder.service.js';
 import { AuditAction, AuditEntity } from '../../audit/domain/audit.constants.js';
 import { normaliseLookupText } from '../domain/alias.js';
 import { CATALOG_CACHE_TTL_SECONDS, CatalogCacheTag, CITY_SEARCH_LIMIT } from '../domain/catalog.constants.js';
@@ -30,8 +30,7 @@ export class GeoService {
     private readonly txHost: TransactionHost<PrismaTx>,
     private readonly geo: GeoRepository,
     private readonly cache: CacheService,
-    private readonly outbox: OutboxService,
-    private readonly audit: AuditService,
+    private readonly changes: ChangeRecorder,
   ) {}
 
   states() {
@@ -176,14 +175,11 @@ export class GeoService {
     return state;
   }
 
-  private async mutate<T>(work: () => Promise<T>): Promise<T> {
-    const result = await this.txHost.withTransaction(work);
-    await this.cache.invalidate(CatalogCacheTag.Geo, CatalogCacheTag.Catalog);
-    return result;
+  private mutate<T>(work: () => Promise<T>): Promise<T> {
+    return runThenInvalidate(this.txHost, this.cache, [CatalogCacheTag.Geo, CatalogCacheTag.Catalog], work);
   }
 
-  private async recordChange(action: AuditAction, entityType: AuditEntity, entityId: string, metadata: Record<string, unknown>) {
-    await this.audit.record({ action, entityType, entityId, metadata });
-    await this.outbox.publish({ name: EventName.GeoChanged, aggregateType: entityType, aggregateId: entityId, payload: { entityType, entityId, action } });
+  private recordChange(action: AuditAction, entityType: AuditEntity, entityId: string, metadata: Record<string, unknown>) {
+    return this.changes.record({ action, entityType, entityId, metadata, event: EventName.GeoChanged });
   }
 }

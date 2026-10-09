@@ -1,0 +1,143 @@
+{
+  "name": "Create Attribute",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "Idempotency-Key",
+        "value": "{{$guid}}"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/attributes",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "attributes"
+      ]
+    },
+    "description": "Adds an attribute. `key` is permanent and namespaced (`business.*`, `person.*`, `borrower.*`). `dataType`: `integer`, `decimal`, `money` (paise), `boolean`, `enum` (needs `enumValues`), `string`, `date` (YYYY-MM-DD), `percentage`. `sensitivity: special` encrypts stored values. `allowedProvenance` limits which sources may record it. `freshnessDays` marks older facts stale so rules treat them as unknown. Staff only. Reading needs attribute read access (ops lead, compliance, support); changes need attribute manage access (ops lead, super admin). Every change is audited, published as `attribute.changed` and clears the dictionary cache immediately.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"key\": \"business.industry_{{$timestamp}}\",\n  \"label\": {\n    \"en\": \"Industry\",\n    \"hi\": \"उद्योग\"\n  },\n  \"dataType\": \"enum\",\n  \"subject\": \"business\",\n  \"sensitivity\": \"public\",\n  \"allowedProvenance\": [\n    \"declared\",\n    \"ops_verified\"\n  ],\n  \"enumValues\": [\n    {\n      \"value\": \"manufacturing\",\n      \"label\": {\n        \"en\": \"Manufacturing\"\n      }\n    },\n    {\n      \"value\": \"trading\",\n      \"label\": {\n        \"en\": \"Trading\"\n      }\n    }\n  ]\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "pm.collectionVariables.set('attributeId', String(pm.response.json().id));",
+          "pm.collectionVariables.set('attributeVersion', String(pm.response.json().version));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "{{$guid}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/attributes",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "attributes"
+          ]
+        },
+        "description": "Adds an attribute. `key` is permanent and namespaced (`business.*`, `person.*`, `borrower.*`). `dataType`: `integer`, `decimal`, `money` (paise), `boolean`, `enum` (needs `enumValues`), `string`, `date` (YYYY-MM-DD), `percentage`. `sensitivity: special` encrypts stored values. `allowedProvenance` limits which sources may record it. `freshnessDays` marks older facts stale so rules treat them as unknown. Staff only. Reading needs attribute read access (ops lead, compliance, support); changes need attribute manage access (ops lead, super admin). Every change is audited, published as `attribute.changed` and clears the dictionary cache immediately.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"key\": \"business.industry_{{$timestamp}}\",\n  \"label\": {\n    \"en\": \"Industry\",\n    \"hi\": \"उद्योग\"\n  },\n  \"dataType\": \"enum\",\n  \"subject\": \"business\",\n  \"sensitivity\": \"public\",\n  \"allowedProvenance\": [\n    \"declared\",\n    \"ops_verified\"\n  ],\n  \"enumValues\": [\n    {\n      \"value\": \"manufacturing\",\n      \"label\": {\n        \"en\": \"Manufacturing\"\n      }\n    },\n    {\n      \"value\": \"trading\",\n      \"label\": {\n        \"en\": \"Trading\"\n      }\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a1216b-4f50-7d93-9fa5-b6c7d8e9fa0b\",\n  \"key\": \"business.industry\",\n  \"label\": {\n    \"en\": \"Industry\",\n    \"hi\": \"उद्योग\"\n  },\n  \"description\": null,\n  \"dataType\": \"enum\",\n  \"unit\": null,\n  \"enumValues\": [\n    {\n      \"value\": \"manufacturing\",\n      \"label\": {\n        \"en\": \"Manufacturing\"\n      }\n    },\n    {\n      \"value\": \"trading\",\n      \"label\": {\n        \"en\": \"Trading\"\n      }\n    }\n  ],\n  \"subject\": \"business\",\n  \"sensitivity\": \"public\",\n  \"allowedProvenance\": [\n    \"declared\",\n    \"ops_verified\"\n  ],\n  \"freshnessDays\": null,\n  \"status\": \"active\",\n  \"version\": 1,\n  \"updatedAt\": \"2026-10-09T16:46:23.412Z\"\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "{{$guid}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/attributes",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "attributes"
+          ]
+        },
+        "description": "Adds an attribute. `key` is permanent and namespaced (`business.*`, `person.*`, `borrower.*`). `dataType`: `integer`, `decimal`, `money` (paise), `boolean`, `enum` (needs `enumValues`), `string`, `date` (YYYY-MM-DD), `percentage`. `sensitivity: special` encrypts stored values. `allowedProvenance` limits which sources may record it. `freshnessDays` marks older facts stale so rules treat them as unknown. Staff only. Reading needs attribute read access (ops lead, compliance, support); changes need attribute manage access (ops lead, super admin). Every change is audited, published as `attribute.changed` and clears the dictionary cache immediately.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"key\": \"business.industry_{{$timestamp}}\",\n  \"label\": {\n    \"en\": \"Industry\",\n    \"hi\": \"उद्योग\"\n  },\n  \"dataType\": \"enum\",\n  \"subject\": \"business\",\n  \"sensitivity\": \"public\",\n  \"allowedProvenance\": [\n    \"declared\",\n    \"ops_verified\"\n  ],\n  \"enumValues\": [\n    {\n      \"value\": \"manufacturing\",\n      \"label\": {\n        \"en\": \"Manufacturing\"\n      }\n    },\n    {\n      \"value\": \"trading\",\n      \"label\": {\n        \"en\": \"Trading\"\n      }\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"enumValues\",\n      \"code\": \"required\",\n      \"message\": \"enum attributes need enumValues\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

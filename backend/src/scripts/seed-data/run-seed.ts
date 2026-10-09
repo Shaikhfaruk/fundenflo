@@ -3,6 +3,7 @@ import type { PrismaClient } from '../../generated/prisma/client.js';
 import { FUNDENFLO_ORGANIZATION_NAME } from '../../modules/access/domain/access.constants.js';
 import { normaliseLookupText } from '../../modules/catalog/domain/alias.js';
 import type { NotificationTemplateKey } from '../../modules/notifications/domain/notification.constants.js';
+import { ATTRIBUTE_SEEDS, SEED_ATTRIBUTE_PROVENANCE } from './attributes.js';
 import { CATEGORY_SEEDS, categoryAmounts, SEGMENT_CATEGORY_ORDER, SEGMENT_SEEDS } from './catalog.js';
 import { CITY_ALIAS_SEEDS, CITY_SEEDS, STATE_SEEDS } from './geo.js';
 import { DLT_TEMPLATE_ENV, NOTIFICATION_TEMPLATE_SEEDS, type TemplateSeed } from './notification-templates.js';
@@ -15,6 +16,7 @@ export type SeedResult = {
   states: number;
   cities: number;
   aliases: number;
+  attributes: number;
 };
 
 function dltTemplateId(template: TemplateSeed, env: NodeJS.ProcessEnv): string | null {
@@ -125,12 +127,23 @@ async function seedGeo(prisma: PrismaClient) {
   }
 }
 
+async function seedAttributes(prisma: PrismaClient) {
+  for (const seed of ATTRIBUTE_SEEDS) {
+    await prisma.attributeDefinition.upsert({
+      where: { key: seed.key },
+      create: { ...seed, label: { en: seed.label }, allowedProvenance: SEED_ATTRIBUTE_PROVENANCE },
+      update: {},
+    });
+  }
+}
+
 export async function runSeed(prisma: PrismaClient, env: NodeJS.ProcessEnv): Promise<SeedResult> {
   const organization = await seedOrganization(prisma);
   await seedTemplates(prisma, env);
   const segmentIds = await seedSegments(prisma);
   await seedCategories(prisma, segmentIds);
   await seedGeo(prisma);
+  await seedAttributes(prisma);
   return {
     organizationId: organization.id,
     templates: NOTIFICATION_TEMPLATE_SEEDS.length,
@@ -139,5 +152,6 @@ export async function runSeed(prisma: PrismaClient, env: NodeJS.ProcessEnv): Pro
     states: STATE_SEEDS.length,
     cities: CITY_SEEDS.length,
     aliases: CITY_ALIAS_SEEDS.length,
+    attributes: ATTRIBUTE_SEEDS.length,
   };
 }

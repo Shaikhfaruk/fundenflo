@@ -1,0 +1,82 @@
+enum AttributeDataType {
+  integer
+  decimal
+  money
+  boolean
+  enum
+  string
+  date
+  percentage
+}
+
+enum AttributeSubject {
+  person
+  business
+  any
+}
+
+enum DataSensitivity {
+  public
+  personal
+  financial
+  special
+}
+
+enum FactProvenance {
+  declared
+  extracted
+  third_party_verified
+  ops_verified
+  derived
+}
+
+model AttributeDefinition {
+  id                String            @id @default(uuid(7)) @db.Uuid
+  key               String            @unique
+  label             Json
+  description       Json?
+  dataType          AttributeDataType @map("data_type")
+  unit              String?
+  enumValues        Json?             @map("enum_values")
+  subject           AttributeSubject
+  sensitivity       DataSensitivity
+  allowedProvenance FactProvenance[]  @map("allowed_provenance")
+  freshnessDays     Int?              @map("freshness_days")
+  status            CatalogStatus     @default(active)
+  version           Int               @default(1)
+  createdAt         DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt         DateTime          @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  facts BorrowerFact[]
+
+  @@index([status])
+  @@map("attribute_definitions")
+}
+
+model BorrowerFact {
+  id               String         @id @default(uuid(7)) @db.Uuid
+  partyId          String         @map("party_id") @db.Uuid
+  attributeKey     String         @map("attribute_key")
+  leadId           String?        @map("lead_id") @db.Uuid
+  applicationId    String?        @map("application_id") @db.Uuid
+  valueJson        Json?          @map("value_json")
+  valueEnc         String?        @map("value_enc")
+  valueMin         Decimal?       @map("value_min") @db.Decimal(24, 4)
+  valueMax         Decimal?       @map("value_max") @db.Decimal(24, 4)
+  provenance       FactProvenance
+  sourceType       String         @map("source_type")
+  sourceId         String?        @map("source_id")
+  confidence       Decimal?       @db.Decimal(4, 3)
+  observedAt       DateTime       @map("observed_at") @db.Timestamptz(3)
+  validUntil       DateTime?      @map("valid_until") @db.Timestamptz(3)
+  recordedByUserId String?        @map("recorded_by_user_id") @db.Uuid
+  createdAt        DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  party     Party               @relation(fields: [partyId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  attribute AttributeDefinition @relation(fields: [attributeKey], references: [key], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([partyId, attributeKey, observedAt])
+  @@index([leadId])
+  @@index([applicationId])
+  @@map("borrower_facts")
+}

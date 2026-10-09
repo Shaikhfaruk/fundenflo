@@ -1,9 +1,13 @@
 export {
   ActorType,
   AliasKind,
+  AttributeDataType,
+  AttributeSubject,
   CatalogStatus,
   ContactType,
+  DataSensitivity,
   DeliveryStatus,
+  FactProvenance,
   GeoStateKind,
   IdentifierType,
   InvitationStatus,

@@ -21,6 +21,7 @@ export const CipherPurpose = {
   TotpSecret: 'staff_credentials.totp_secret',
   NotificationPayload: 'notifications.payload',
   MfaChallenge: 'auth.mfa_challenge',
+  BorrowerFact: 'borrower_facts.value',
 } as const;
 
 export type CipherPurpose = (typeof CipherPurpose)[keyof typeof CipherPurpose];

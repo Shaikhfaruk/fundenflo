@@ -178,6 +178,22 @@
     {
       "key": "aliasId",
       "value": ""
+    },
+    {
+      "key": "attributeKey",
+      "value": ""
+    },
+    {
+      "key": "attributeId",
+      "value": ""
+    },
+    {
+      "key": "attributeVersion",
+      "value": ""
+    },
+    {
+      "key": "partyId",
+      "value": ""
     }
   ]
 }

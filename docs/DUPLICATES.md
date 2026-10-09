@@ -9,7 +9,7 @@
 | # | Item | Copy to keep | Copy to remove | Evidence | Found on | Owner review |
 |---|---|---|---|---|---|---|
 
-No entries. Backend code has not started.
+No open entries. Resolved in the same change, so nothing is left to remove: 2026-10-09, three local `DAY_MS` constants (`maintenance.constants.ts`, `session.service.ts`, `attribute.constants.ts`) merged into `common/constants/time.constants.ts`; checked with `grep -rn DAY_MS backend/src`.
 
 ## Single implementations agreed by design
 
@@ -35,4 +35,9 @@ These are the places where a second copy is most tempting. Use the one listed.
 | Request IDs, actor, IP in logs, audit and outbox | `RequestContext` | Reading headers or `req.user` in services |
 | Matching free text (city names, aliases) to master data | `GeoService.resolveCity()` + `lookup_aliases` + `normaliseLookupText()` | Per-feature city lists or string maps |
 | Caching reference data | `CacheService.wrap()` with tags, invalidated after commit | In-process maps or ad-hoc Redis keys |
+| Audit + domain event for an admin or config change | `ChangeRecorder.record()` | Calling `AuditService` and `OutboxService` separately in each service |
+| Clearing caches after a write | `runThenInvalidate()` | Invalidating inside the transaction (readers can re-cache old data before commit) |
+| Borrower data points (turnover, vintage, income, GST status, …) | `attributes` dictionary + `FactService.record()` | Columns on leads, applications or partner tables, or per-feature JSON blobs |
+| Choosing the current value among several facts | `engines/facts` `resolveFact()` with `PROVENANCE_RANK` | Ad-hoc "latest wins" queries |
+| Day and time arithmetic constants | `common/constants/time.constants.ts` | Local `DAY_MS`-style constants |
 | Locale handling | `common/i18n/locale.ts` (`localise`, `resolveLocale`, `@RequestLocale()`) | Per-module locale constants |
