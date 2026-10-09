@@ -1,0 +1,59 @@
+{
+  "name": "List My Consents",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/me/consents",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "me",
+        "consents"
+      ]
+    },
+    "description": "The consent centre: every active purpose with its current state (granted or not, organization scope, basis, channel, expiry). Any signed-in context. Consents belong to the person (their party), not to a role."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/me/consents",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "me",
+            "consents"
+          ]
+        },
+        "description": "The consent centre: every active purpose with its current state (granted or not, organization scope, basis, channel, expiry). Any signed-in context. Consents belong to the person (their party), not to a role."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"purpose\": \"ai_documents\",\n      \"label\": \"Read My Documents With AI\",\n      \"granted\": true,\n      \"everyOrganization\": true,\n      \"organizationIds\": [],\n      \"excludedOrganizationIds\": [],\n      \"basis\": \"consent\",\n      \"channel\": \"app\",\n      \"lastRecordId\": \"01a121c0-4d5e-7f60-8172-8394a5b6c7d8\",\n      \"lastChangedAt\": \"2026-10-09T17:40:00.000Z\",\n      \"expiresAt\": null\n    }\n  ]\n}"
+    }
+  ]
+}

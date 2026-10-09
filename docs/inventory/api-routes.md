@@ -24,7 +24,7 @@ Approval and rejection are not per resource: they go through the shared checker 
 |---|---|---|---|
 | `routing-rules` | leads | M1 | `planned` |
 | `question-sets` (plus `/versions/:number/preview`) | questionnaires | M1 | `useful` |
-| `consent-templates` | consents | M1 | `planned` |
+| `consent-templates` | consents | M1 | `useful` |
 | `document-requirements` | documents | M2 | `planned` |
 | `lender-products` | lenders | M4 | `planned` |
 | `scoring-models` | assessments | M5 | `planned` |
@@ -73,8 +73,8 @@ Controller: `backend/src/modules/auth/http/me.controller.ts` · Postman: `02 Me/
 | `POST` | `/me/mobile-change` | auth | any (incl. none) | M0 | `useful` |
 | `POST` | `/me/mobile-change/verify` | auth | any (incl. none) | M0 | `useful` |
 | `PUT` | `/me/sessions/current/push-token` | sync | any | M1 | `planned` |
-| `GET` | `/me/consents` | consents | any | M1 | `planned` |
-| `POST` | `/me/consents/:purpose/withdraw` | consents | any | M1 | `planned` |
+| `GET` `POST` | `/me/consents` | consents (`me-consents.controller.ts`) | any (incl. none) | M1 | `useful` |
+| `POST` | `/me/consents/:purpose/withdraw` | consents | any (incl. none) | M1 | `useful` |
 | `PUT` | `/me/notification-preferences` | notifications | any | M1 | `planned` |
 | `POST` | `/me/data-requests` | audit | any | M8 | `planned` |
 
@@ -90,7 +90,7 @@ Controller: `backend/src/modules/catalog/http/catalog.controller.ts` · Postman:
 | `GET` | `/catalog/geo/cities` | catalog | public | M1 | `useful` |
 | `GET` | `/catalog/geo/pincodes/:pincode` | catalog | public | M1 | `useful` |
 | `GET` | `/catalog/questions` | questionnaires (`catalog-questions.controller.ts`) | public | M1 | `useful` |
-| `GET` | `/catalog/consent-templates` | consents | public | M1 | `planned` |
+| `GET` | `/catalog/consent-templates` | consents (`catalog-consent-templates.controller.ts`) | public | M1 | `useful` |
 | `GET` | `/catalog/document-types` | documents | public | M2 | `planned` |
 
 ## 04 Borrower Journey
@@ -237,6 +237,8 @@ Built in M1.2 (Postman `50 Ops - Party Facts/`). Controller: `backend/src/module
 |---|---|---|---|---|---|
 | `GET` `POST` | `/ops/parties/:partyId/facts` | attributes | staff | M1 | `useful` |
 | `GET` | `/ops/parties/:partyId/facts/history` | attributes | staff | M1 | `useful` |
+| `GET` `POST` | `/ops/parties/:partyId/consents` | consents (`ops-consents.controller.ts`, Postman `52 Ops - Party Consents/`) | staff | M1 | `useful` |
+| `GET` | `/ops/parties/:partyId/consents/history` | consents | staff | M1 | `useful` |
 | `GET` `POST` | `/ops/parties/:partyId/answers` | questionnaires (`ops-answers.controller.ts`, Postman `51 Ops - Party Answers/`) | staff | M1 | `useful` |
 
 Planned:
@@ -318,6 +320,20 @@ Built in M1.3 (Postman `47 Admin - Questions & Question Sets/`, `48 Admin - Chan
 | `GET` | `/admin/change-requests/:id` | config-publishing | staff | M1 | `useful` |
 | `POST` | `/admin/change-requests/:id/approve` | config-publishing | staff | M1 | `useful` |
 | `POST` | `/admin/change-requests/:id/reject` | config-publishing | staff | M1 | `useful` |
+
+Built in M1.4 (Postman `49 Admin - Consents/`). Controllers: `backend/src/modules/consents/http/admin-consent-purposes.controller.ts`, consent templates from `createVersionedConfigController` in `consents.module.ts`.
+
+| Method | Path | Module | Context | Milestone | Status |
+|---|---|---|---|---|---|
+| `GET` `POST` | `/admin/consent-purposes` | consents | staff | M1 | `useful` |
+| `GET` `PATCH` | `/admin/consent-purposes/:id` | consents | staff | M1 | `useful` |
+| `GET` `POST` | `/admin/consent-templates` | consents | staff | M1 | `useful` |
+| `GET` `PATCH` | `/admin/consent-templates/:id` | consents | staff | M1 | `useful` |
+| `POST` | `/admin/consent-templates/:id/versions` | consents | staff | M1 | `useful` |
+| `GET` `PATCH` | `/admin/consent-templates/:id/versions/:number` | consents | staff | M1 | `useful` |
+| `POST` | `/admin/consent-templates/:id/versions/:number/submit` | consents | staff | M1 | `useful` |
+| `POST` | `/admin/consent-templates/:id/versions/:number/publish` | consents | staff | M1 | `useful` |
+| `POST` | `/admin/consent-templates/:id/versions/:number/retire` | consents | staff | M1 | `useful` |
 
 Planned:
 

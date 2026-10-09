@@ -1,0 +1,70 @@
+enum ConsentBasis {
+  consent
+  legitimate_use
+}
+
+enum ConsentChannel {
+  app
+  web_form
+  partner_assisted
+  ops_call
+  import
+  sms_link
+  whatsapp_link
+  api
+}
+
+enum ConsentScopeKind {
+  none
+  organizations
+}
+
+model ConsentPurpose {
+  id                    String            @id @default(uuid(7)) @db.Uuid
+  key                   String            @unique
+  label                 Json
+  description           Json?
+  scopeKind             ConsentScopeKind  @default(none) @map("scope_kind")
+  scopeOrganizationType OrganizationType? @map("scope_organization_type")
+  allowedBases          ConsentBasis[]    @map("allowed_bases")
+  validityDays          Int?              @map("validity_days")
+  status                CatalogStatus     @default(active)
+  version               Int               @default(1)
+  createdAt             DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt             DateTime          @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  records ConsentRecord[]
+
+  @@map("consent_purposes")
+}
+
+model ConsentRecord {
+  id                String         @id @default(uuid(7)) @db.Uuid
+  partyId           String         @map("party_id") @db.Uuid
+  purposeKey        String         @map("purpose_key")
+  granted           Boolean
+  basis             ConsentBasis
+  scope             Json?
+  templateVersionId String?        @map("template_version_id") @db.Uuid
+  textHash          String?        @map("text_hash")
+  locale            String?
+  channel           ConsentChannel
+  evidence          String?
+  capturedByUserId  String?        @map("captured_by_user_id") @db.Uuid
+  leadId            String?        @map("lead_id") @db.Uuid
+  applicationId     String?        @map("application_id") @db.Uuid
+  ip                String?
+  userAgent         String?        @map("user_agent")
+  clientRecordedAt  DateTime?      @map("client_recorded_at") @db.Timestamptz(3)
+  expiresAt         DateTime?      @map("expires_at") @db.Timestamptz(3)
+  recordedAt        DateTime       @default(now()) @map("recorded_at") @db.Timestamptz(3)
+
+  party           Party          @relation(fields: [partyId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  purpose         ConsentPurpose @relation(fields: [purposeKey], references: [key], onDelete: Restrict, onUpdate: Restrict)
+  templateVersion ConfigVersion? @relation(fields: [templateVersionId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([partyId, purposeKey, recordedAt])
+  @@index([leadId])
+  @@index([applicationId])
+  @@map("consent_records")
+}

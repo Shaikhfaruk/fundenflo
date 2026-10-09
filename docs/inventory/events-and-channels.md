@@ -18,7 +18,8 @@
 | `catalog.changed` · `geo.changed` | catalog (`catalog-admin.service.ts`, `geo.service.ts`) | none yet (caches are invalidated directly after commit) | — | M1 | `useful` | §6 |
 | `attribute.changed` | attributes (`attribute-dictionary.service.ts`) | none yet (dictionary cache is invalidated directly after commit) | — | M1 | `useful` | §6.1 |
 | `facts.recorded` | attributes (`fact.service.ts`) | none yet (M1: lead quality re-score, routing re-evaluation; M5: assessments) | — | M1 | `useful` | §6.1 |
-| `consent.granted` · `consent.withdrawn` | consents | leads (`consent_pending` → routable), documents, notifications | — | M1 | `planned` | §7.2 |
+| `consent.granted` · `consent.withdrawn` | consents (`consent.service.ts`, one event per record) | none yet (M1.6: leads `consent_pending` → routable; later documents, notifications) | — | M1 | `useful` | §7.2; spec `consents` |
+| `consent_purpose.changed` | consents (`consent-purpose.service.ts`) | none yet (purpose cache is invalidated directly after commit) | — | M1 | `useful` | §14 |
 | `import.batch.validated` · `import.batch.committed` · `import.batch.undone` | imports | leads, reports, notifications (to uploader) | user room | M1 | `planned` | §7.1 |
 | `lead.captured` · `lead.qualified` · `lead.unqualified` · `lead.status.changed` | leads | `leads.route`, reports, sync | org room (when assigned) | M1 | `planned` | §7.3 |
 | `lead.assignment.offered` · `accepted` · `declined` · `expired` · `revoked` · `returned` · `completed` | leads | sla, `leads.route`, notifications, reports | partner org + assignee membership rooms | M1 | `planned` | §7.3 |

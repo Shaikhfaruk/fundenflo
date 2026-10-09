@@ -23,6 +23,12 @@ export class MeService {
     private readonly audit: AuditService,
   ) {}
 
+  async partyIdOf(userId: string): Promise<string> {
+    const user = await this.identity.findUser(userId);
+    if (!user) throw new AppError(ErrorCode.UNAUTHENTICATED);
+    return user.partyId;
+  }
+
   get(actor: UserActor): Promise<MeView> {
     return this.me.build(actor.userId, actor.membershipId);
   }

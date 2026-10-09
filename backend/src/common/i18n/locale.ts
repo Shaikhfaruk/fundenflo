@@ -10,12 +10,19 @@ export const LOCALISED_TEXT_MAX_LENGTH = 300;
 
 export type LocalisedText = { en: string } & Partial<Record<Locale, string>>;
 
-export const localisedTextSchema = z
-  .object({
-    en: z.string().trim().min(1).max(LOCALISED_TEXT_MAX_LENGTH),
-    hi: z.string().trim().min(1).max(LOCALISED_TEXT_MAX_LENGTH).optional(),
-  })
-  .strict();
+export const LOCALISED_LONG_TEXT_MAX_LENGTH = 5_000;
+
+export const localisedTextSchemaOf = (maxLength: number) =>
+  z
+    .object({
+      en: z.string().trim().min(1).max(maxLength),
+      hi: z.string().trim().min(1).max(maxLength).optional(),
+    })
+    .strict();
+
+export const localisedTextSchema = localisedTextSchemaOf(LOCALISED_TEXT_MAX_LENGTH);
+
+export const localisedLongTextSchema = localisedTextSchemaOf(LOCALISED_LONG_TEXT_MAX_LENGTH);
 
 const isLocale = (value: string): value is Locale => (SUPPORTED_LOCALES as readonly string[]).includes(value);
 

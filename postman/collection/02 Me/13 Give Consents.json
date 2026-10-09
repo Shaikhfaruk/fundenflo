@@ -1,0 +1,129 @@
+{
+  "name": "Give Consents",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/me/consents",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "me",
+        "consents"
+      ]
+    },
+    "description": "Records the person's choices against the template version they were shown. The server time, IP, user agent, locale and text hash are stored; `clientRecordedAt` is kept for information only. Every purpose must belong to that template. `missingRequired` lists required items not granted, so the client can block the next step. Records are append-only; publishes `consent.granted` / `consent.withdrawn`. Any signed-in context. Consents belong to the person (their party), not to a role.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"templateVersionId\": \"{{consentTemplateVersionId}}\",\n  \"clientRecordedAt\": \"{{$isoTimestamp}}\",\n  \"items\": [\n    {\n      \"purpose\": \"ai_documents\",\n      \"granted\": true\n    },\n    {\n      \"purpose\": \"credit_bureau\",\n      \"granted\": false\n    },\n    {\n      \"purpose\": \"lender_sharing\",\n      \"granted\": true\n    }\n  ]\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/me/consents",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "me",
+            "consents"
+          ]
+        },
+        "description": "Records the person's choices against the template version they were shown. The server time, IP, user agent, locale and text hash are stored; `clientRecordedAt` is kept for information only. Every purpose must belong to that template. `missingRequired` lists required items not granted, so the client can block the next step. Records are append-only; publishes `consent.granted` / `consent.withdrawn`. Any signed-in context. Consents belong to the person (their party), not to a role.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"templateVersionId\": \"{{consentTemplateVersionId}}\",\n  \"clientRecordedAt\": \"{{$isoTimestamp}}\",\n  \"items\": [\n    {\n      \"purpose\": \"ai_documents\",\n      \"granted\": true\n    },\n    {\n      \"purpose\": \"credit_bureau\",\n      \"granted\": false\n    },\n    {\n      \"purpose\": \"lender_sharing\",\n      \"granted\": true\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"records\": [\n    {\n      \"id\": \"01a121c0-4d5e-7f60-8172-8394a5b6c7d8\",\n      \"purpose\": \"ai_documents\",\n      \"granted\": true,\n      \"basis\": \"consent\",\n      \"organizationIds\": null,\n      \"templateVersionId\": \"01a121bb-0c1d-7e2f-8a3b-4c5d6e7f8091\",\n      \"textHash\": \"q3V9c1mZr8XyLk2oN7tP4sWd6hE0aJ5uG1fB8nC3kD2\",\n      \"locale\": \"en\",\n      \"channel\": \"app\",\n      \"evidence\": null,\n      \"capturedByUserId\": \"01a121c0-5e6f-7a71-9283-94a5b6c7d8e9\",\n      \"leadId\": null,\n      \"applicationId\": null,\n      \"clientRecordedAt\": \"2026-10-09T17:39:52.000Z\",\n      \"expiresAt\": null,\n      \"recordedAt\": \"2026-10-09T17:40:00.000Z\"\n    }\n  ],\n  \"consents\": [\n    {\n      \"purpose\": \"ai_documents\",\n      \"label\": \"Read My Documents With AI\",\n      \"granted\": true,\n      \"everyOrganization\": true,\n      \"organizationIds\": [],\n      \"excludedOrganizationIds\": [],\n      \"basis\": \"consent\",\n      \"channel\": \"app\",\n      \"lastRecordId\": \"01a121c0-4d5e-7f60-8172-8394a5b6c7d8\",\n      \"lastChangedAt\": \"2026-10-09T17:40:00.000Z\",\n      \"expiresAt\": null\n    }\n  ],\n  \"missingRequired\": []\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/me/consents",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "me",
+            "consents"
+          ]
+        },
+        "description": "Records the person's choices against the template version they were shown. The server time, IP, user agent, locale and text hash are stored; `clientRecordedAt` is kept for information only. Every purpose must belong to that template. `missingRequired` lists required items not granted, so the client can block the next step. Records are append-only; publishes `consent.granted` / `consent.withdrawn`. Any signed-in context. Consents belong to the person (their party), not to a role.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"templateVersionId\": \"{{consentTemplateVersionId}}\",\n  \"clientRecordedAt\": \"{{$isoTimestamp}}\",\n  \"items\": [\n    {\n      \"purpose\": \"ai_documents\",\n      \"granted\": true\n    },\n    {\n      \"purpose\": \"credit_bureau\",\n      \"granted\": false\n    },\n    {\n      \"purpose\": \"lender_sharing\",\n      \"granted\": true\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"items.0.purpose\",\n      \"code\": \"not_in_template\",\n      \"message\": \"marketing is not part of template version 1\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

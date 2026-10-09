@@ -38,5 +38,6 @@ import { SessionsModule } from './sessions.module.js';
     AdminUsersService,
     { provide: APP_GUARD, useClass: AccessTokenGuard },
   ],
+  exports: [MeService],
 })
 export class AuthModule {}

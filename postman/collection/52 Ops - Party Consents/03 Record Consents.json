@@ -1,0 +1,203 @@
+{
+  "name": "Record Consents",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/ops/parties/:partyId/consents",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "parties",
+        ":partyId",
+        "consents"
+      ],
+      "variable": [
+        {
+          "key": "partyId",
+          "value": "{{partyId}}"
+        }
+      ]
+    },
+    "description": "Records consent or a lawful basis captured outside the app: on a call, from an import, a web form, an SMS/WhatsApp link or a partner. `basis` is `consent` (default) or `legitimate_use` where the purpose allows it. Grants through `web_form`, `sms_link`, `whatsapp_link` or `partner_assisted` must cite `templateVersionId`; grants without a template need `evidence` (e.g. \"website form checkbox, 2026-08-14\"). Scoped purposes take `organizationIds` of the right organization type. Staff only. Reading needs party read access; recording needs party update access (ops lead, super admin).",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"channel\": \"ops_call\",\n  \"evidence\": \"Agreed on call to share with Mehta & Associates, 9 Oct\",\n  \"items\": [\n    {\n      \"purpose\": \"partner_sharing\",\n      \"granted\": true,\n      \"organizationIds\": [\n        \"{{partnerOrganizationId}}\"\n      ]\n    }\n  ]\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/parties/:partyId/consents",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "parties",
+            ":partyId",
+            "consents"
+          ],
+          "variable": [
+            {
+              "key": "partyId",
+              "value": "{{partyId}}"
+            }
+          ]
+        },
+        "description": "Records consent or a lawful basis captured outside the app: on a call, from an import, a web form, an SMS/WhatsApp link or a partner. `basis` is `consent` (default) or `legitimate_use` where the purpose allows it. Grants through `web_form`, `sms_link`, `whatsapp_link` or `partner_assisted` must cite `templateVersionId`; grants without a template need `evidence` (e.g. \"website form checkbox, 2026-08-14\"). Scoped purposes take `organizationIds` of the right organization type. Staff only. Reading needs party read access; recording needs party update access (ops lead, super admin).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"channel\": \"ops_call\",\n  \"evidence\": \"Agreed on call to share with Mehta & Associates, 9 Oct\",\n  \"items\": [\n    {\n      \"purpose\": \"partner_sharing\",\n      \"granted\": true,\n      \"organizationIds\": [\n        \"{{partnerOrganizationId}}\"\n      ]\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"records\": [\n    {\n      \"id\": \"01a121c0-4d5e-7f60-8172-8394a5b6c7d8\",\n      \"purpose\": \"partner_sharing\",\n      \"granted\": true,\n      \"basis\": \"consent\",\n      \"organizationIds\": [\n        \"01a121c0-6f70-7b82-a394-a5b6c7d8e9fa\"\n      ],\n      \"templateVersionId\": null,\n      \"textHash\": null,\n      \"locale\": null,\n      \"channel\": \"ops_call\",\n      \"evidence\": \"Agreed on call to share with Mehta & Associates, 9 Oct\",\n      \"capturedByUserId\": \"01a121c0-5e6f-7a71-9283-94a5b6c7d8e9\",\n      \"leadId\": null,\n      \"applicationId\": null,\n      \"clientRecordedAt\": null,\n      \"expiresAt\": null,\n      \"recordedAt\": \"2026-10-09T17:40:00.000Z\"\n    }\n  ],\n  \"consents\": [\n    {\n      \"purpose\": \"partner_sharing\",\n      \"label\": \"Share My Enquiry With A FundenFlo Partner\",\n      \"granted\": true,\n      \"everyOrganization\": false,\n      \"organizationIds\": [\n        \"01a121c0-6f70-7b82-a394-a5b6c7d8e9fa\"\n      ],\n      \"excludedOrganizationIds\": [],\n      \"basis\": \"consent\",\n      \"channel\": \"ops_call\",\n      \"lastRecordId\": \"01a121c0-4d5e-7f60-8172-8394a5b6c7d8\",\n      \"lastChangedAt\": \"2026-10-09T17:40:00.000Z\",\n      \"expiresAt\": null\n    }\n  ],\n  \"missingRequired\": []\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/parties/:partyId/consents",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "parties",
+            ":partyId",
+            "consents"
+          ],
+          "variable": [
+            {
+              "key": "partyId",
+              "value": "{{partyId}}"
+            }
+          ]
+        },
+        "description": "Records consent or a lawful basis captured outside the app: on a call, from an import, a web form, an SMS/WhatsApp link or a partner. `basis` is `consent` (default) or `legitimate_use` where the purpose allows it. Grants through `web_form`, `sms_link`, `whatsapp_link` or `partner_assisted` must cite `templateVersionId`; grants without a template need `evidence` (e.g. \"website form checkbox, 2026-08-14\"). Scoped purposes take `organizationIds` of the right organization type. Staff only. Reading needs party read access; recording needs party update access (ops lead, super admin).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"channel\": \"ops_call\",\n  \"evidence\": \"Agreed on call to share with Mehta & Associates, 9 Oct\",\n  \"items\": [\n    {\n      \"purpose\": \"partner_sharing\",\n      \"granted\": true,\n      \"organizationIds\": [\n        \"{{partnerOrganizationId}}\"\n      ]\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"evidence\",\n      \"code\": \"required\",\n      \"message\": \"describe where and how this consent or lawful basis was obtained\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/parties/:partyId/consents",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "parties",
+            ":partyId",
+            "consents"
+          ],
+          "variable": [
+            {
+              "key": "partyId",
+              "value": "{{partyId}}"
+            }
+          ]
+        },
+        "description": "Records consent or a lawful basis captured outside the app: on a call, from an import, a web form, an SMS/WhatsApp link or a partner. `basis` is `consent` (default) or `legitimate_use` where the purpose allows it. Grants through `web_form`, `sms_link`, `whatsapp_link` or `partner_assisted` must cite `templateVersionId`; grants without a template need `evidence` (e.g. \"website form checkbox, 2026-08-14\"). Scoped purposes take `organizationIds` of the right organization type. Staff only. Reading needs party read access; recording needs party update access (ops lead, super admin).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"channel\": \"ops_call\",\n  \"evidence\": \"Agreed on call to share with Mehta & Associates, 9 Oct\",\n  \"items\": [\n    {\n      \"purpose\": \"partner_sharing\",\n      \"granted\": true,\n      \"organizationIds\": [\n        \"{{partnerOrganizationId}}\"\n      ]\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

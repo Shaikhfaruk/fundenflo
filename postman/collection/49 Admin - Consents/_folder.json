@@ -1,0 +1,3 @@
+{
+  "description": "Consent purposes and versioned consent templates (maker-checker). Records are append-only and each one points at the exact template version and text hash the person saw."
+}

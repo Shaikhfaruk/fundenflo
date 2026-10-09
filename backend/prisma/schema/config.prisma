@@ -70,6 +70,7 @@ model ConfigVersion {
   document       ConfigDocument        @relation(fields: [documentId], references: [id], onDelete: Restrict, onUpdate: Restrict)
   changeRequests ConfigChangeRequest[]
   answers        Answer[]
+  consentRecords ConsentRecord[]
 
   @@unique([documentId, number])
   @@index([status, effectiveFrom])

@@ -1,0 +1,71 @@
+{
+  "name": "List Consent Templates",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/consent-templates?limit=25",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "consent-templates"
+      ],
+      "query": [
+        {
+          "key": "limit",
+          "value": "25"
+        }
+      ]
+    },
+    "description": "Consent templates with their active and open versions. Staff only. Consent templates are versioned config (same lifecycle as question sets): compliance makes, a different staff member approves in Change Requests, then compliance publishes. The document key is the context clients ask for (e.g. `journey`, `lead_capture`). Each item's text is hashed so a record proves exactly what the person saw."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/consent-templates?limit=25",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "consent-templates"
+          ],
+          "query": [
+            {
+              "key": "limit",
+              "value": "25"
+            }
+          ]
+        },
+        "description": "Consent templates with their active and open versions. Staff only. Consent templates are versioned config (same lifecycle as question sets): compliance makes, a different staff member approves in Change Requests, then compliance publishes. The document key is the context clients ask for (e.g. `journey`, `lead_capture`). Each item's text is hashed so a record proves exactly what the person saw."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a121c0-2b3c-7d4e-9f50-61728394a5b6\",\n      \"resource\": \"consent_template\",\n      \"key\": \"lead_capture\",\n      \"name\": {\n        \"en\": \"Lead Capture Consent\"\n      },\n      \"description\": null,\n      \"status\": \"active\",\n      \"activeVersion\": null,\n      \"openVersion\": {\n        \"id\": \"01a121c0-3c4d-7e5f-8061-728394a5b6c7\",\n        \"number\": 1,\n        \"status\": \"draft\"\n      },\n      \"versions\": [\n        {\n          \"id\": \"01a121c0-3c4d-7e5f-8061-728394a5b6c7\",\n          \"number\": 1,\n          \"status\": \"draft\",\n          \"effectiveFrom\": null,\n          \"publishedAt\": null,\n          \"retiredAt\": null,\n          \"updatedAt\": \"2026-10-09T17:40:00.000Z\"\n        }\n      ],\n      \"version\": 1,\n      \"createdAt\": \"2026-10-09T17:40:00.000Z\",\n      \"updatedAt\": \"2026-10-09T17:40:00.000Z\"\n    }\n  ],\n  \"nextCursor\": null\n}"
+    }
+  ]
+}

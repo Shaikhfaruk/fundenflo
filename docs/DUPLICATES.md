@@ -44,4 +44,7 @@ These are the places where a second copy is most tempting. Use the one listed.
 | Checking that a party exists | `PartyService.assertExists()` | Counting `parties` rows inside other modules' repositories |
 | Validating admin-supplied regular expressions | `isValidPattern()` | Local `try { new RegExp() }` blocks |
 | Turning an answer into a fact value | `engines/questionnaire` `answerToFact()` | Mapping option ids to values in lead capture, imports or the compat layer |
+| Checking consent or lawful basis before contacting, sharing or processing | `ConsentService.hasConsent()` / `assertConsent()` | Reading `consent_records` directly or boolean consent columns on leads, users or applications |
+| The signed-in user's party id | `MeService.partyIdOf()` | Querying `users` from other modules |
+| Seeding a published config version | `seedPublishedConfig()` in `scripts/seed-data/run-seed.ts` | Hand-built `configDocument.create` calls per resource |
 | Locale handling | `common/i18n/locale.ts` (`localise`, `resolveLocale`, `@RequestLocale()`) | Per-module locale constants |

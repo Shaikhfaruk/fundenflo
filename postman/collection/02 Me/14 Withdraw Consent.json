@@ -1,0 +1,103 @@
+{
+  "name": "Withdraw Consent",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/me/consents/:purpose/withdraw",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "me",
+        "consents",
+        ":purpose",
+        "withdraw"
+      ],
+      "variable": [
+        {
+          "key": "purpose",
+          "value": "lender_sharing"
+        }
+      ]
+    },
+    "description": "Withdraws a consent from now on. For organization-scoped purposes, `organizationIds` withdraws only for those organizations; without it, everything for the purpose is withdrawn. Earlier records stay as evidence. Any signed-in context. Consents belong to the person (their party), not to a role.",
+    "body": {
+      "mode": "raw",
+      "raw": "{}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/me/consents/:purpose/withdraw",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "me",
+            "consents",
+            ":purpose",
+            "withdraw"
+          ],
+          "variable": [
+            {
+              "key": "purpose",
+              "value": "lender_sharing"
+            }
+          ]
+        },
+        "description": "Withdraws a consent from now on. For organization-scoped purposes, `organizationIds` withdraws only for those organizations; without it, everything for the purpose is withdrawn. Earlier records stay as evidence. Any signed-in context. Consents belong to the person (their party), not to a role.",
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"records\": [\n    {\n      \"id\": \"01a121c0-4d5e-7f60-8172-8394a5b6c7d8\",\n      \"purpose\": \"lender_sharing\",\n      \"granted\": false,\n      \"basis\": \"consent\",\n      \"organizationIds\": null,\n      \"templateVersionId\": null,\n      \"textHash\": null,\n      \"locale\": null,\n      \"channel\": \"app\",\n      \"evidence\": null,\n      \"capturedByUserId\": \"01a121c0-5e6f-7a71-9283-94a5b6c7d8e9\",\n      \"leadId\": null,\n      \"applicationId\": null,\n      \"clientRecordedAt\": null,\n      \"expiresAt\": null,\n      \"recordedAt\": \"2026-10-09T17:40:00.000Z\"\n    }\n  ],\n  \"consents\": [\n    {\n      \"purpose\": \"lender_sharing\",\n      \"label\": \"Share My File With Lenders I Choose\",\n      \"granted\": false,\n      \"everyOrganization\": false,\n      \"organizationIds\": [],\n      \"excludedOrganizationIds\": [],\n      \"basis\": \"consent\",\n      \"channel\": \"app\",\n      \"lastRecordId\": \"01a121c0-4d5e-7f60-8172-8394a5b6c7d8\",\n      \"lastChangedAt\": \"2026-10-09T17:40:00.000Z\",\n      \"expiresAt\": null\n    }\n  ],\n  \"missingRequired\": []\n}"
+    }
+  ]
+}

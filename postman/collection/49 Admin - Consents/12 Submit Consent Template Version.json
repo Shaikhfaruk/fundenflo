@@ -1,0 +1,172 @@
+{
+  "name": "Submit Consent Template Version",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/consent-templates/:id/versions/:number/submit",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "consent-templates",
+        ":id",
+        "versions",
+        ":number",
+        "submit"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{consentTemplateId}}"
+        },
+        {
+          "key": "number",
+          "value": "{{consentTemplateNumber}}"
+        }
+      ]
+    },
+    "description": "Compiles the draft (purposes must exist, be active and be collectable by consent), hashes each item's text and opens a change request. Staff only. Consent templates are versioned config (same lifecycle as question sets): compliance makes, a different staff member approves in Change Requests, then compliance publishes. The document key is the context clients ask for (e.g. `journey`, `lead_capture`). Each item's text is hashed so a record proves exactly what the person saw.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"reason\": \"Consent text for web lead forms\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.collectionVariables.set('changeRequestId', String(pm.response.json().changeRequest.id));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/consent-templates/:id/versions/:number/submit",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "consent-templates",
+            ":id",
+            "versions",
+            ":number",
+            "submit"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{consentTemplateId}}"
+            },
+            {
+              "key": "number",
+              "value": "{{consentTemplateNumber}}"
+            }
+          ]
+        },
+        "description": "Compiles the draft (purposes must exist, be active and be collectable by consent), hashes each item's text and opens a change request. Staff only. Consent templates are versioned config (same lifecycle as question sets): compliance makes, a different staff member approves in Change Requests, then compliance publishes. The document key is the context clients ask for (e.g. `journey`, `lead_capture`). Each item's text is hashed so a record proves exactly what the person saw.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reason\": \"Consent text for web lead forms\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a121c0-3c4d-7e5f-8061-728394a5b6c7\",\n  \"resource\": \"consent_template\",\n  \"documentId\": \"01a121c0-2b3c-7d4e-9f50-61728394a5b6\",\n  \"documentKey\": \"lead_capture\",\n  \"number\": 1,\n  \"status\": \"in_review\",\n  \"content\": {\n    \"items\": [\n      {\n        \"purpose\": \"contact\",\n        \"required\": true,\n        \"title\": {\n          \"en\": \"Call Me About My Loan\"\n        },\n        \"details\": {\n          \"en\": \"FundenFlo or its partner may call or message you about this enquiry.\"\n        }\n      },\n      {\n        \"purpose\": \"partner_sharing\",\n        \"required\": false,\n        \"title\": {\n          \"en\": \"Share My Enquiry With A Partner CA\"\n        },\n        \"details\": {\n          \"en\": \"Your enquiry may be shared with a verified FundenFlo partner who will help with your application.\"\n        }\n      }\n    ]\n  },\n  \"compiled\": null,\n  \"issues\": [],\n  \"contentHash\": null,\n  \"notes\": null,\n  \"effectiveFrom\": null,\n  \"publishedAt\": null,\n  \"retiredAt\": null,\n  \"createdByUserId\": \"01a121c0-5e6f-7a71-9283-94a5b6c7d8e9\",\n  \"submittedByUserId\": null,\n  \"approvedByUserId\": null,\n  \"publishedByUserId\": null,\n  \"retiredByUserId\": null,\n  \"changeRequest\": null,\n  \"availableActions\": [\n    \"edit\",\n    \"submit\",\n    \"retire\"\n  ],\n  \"version\": 1,\n  \"createdAt\": \"2026-10-09T17:40:00.000Z\",\n  \"updatedAt\": \"2026-10-09T17:40:00.000Z\"\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/consent-templates/:id/versions/:number/submit",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "consent-templates",
+            ":id",
+            "versions",
+            ":number",
+            "submit"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{consentTemplateId}}"
+            },
+            {
+              "key": "number",
+              "value": "{{consentTemplateNumber}}"
+            }
+          ]
+        },
+        "description": "Compiles the draft (purposes must exist, be active and be collectable by consent), hashes each item's text and opens a change request. Staff only. Consent templates are versioned config (same lifecycle as question sets): compliance makes, a different staff member approves in Change Requests, then compliance publishes. The document key is the context clients ask for (e.g. `journey`, `lead_capture`). Each item's text is hashed so a record proves exactly what the person saw.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reason\": \"Consent text for web lead forms\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"content.items.1.purpose\",\n      \"code\": \"unknown_purpose\",\n      \"message\": \"unknown or inactive purpose insurer_sharing\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

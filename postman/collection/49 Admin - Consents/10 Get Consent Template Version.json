@@ -1,0 +1,86 @@
+{
+  "name": "Get Consent Template Version",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/consent-templates/:id/versions/:number",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "consent-templates",
+        ":id",
+        "versions",
+        ":number"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{consentTemplateId}}"
+        },
+        {
+          "key": "number",
+          "value": "{{consentTemplateNumber}}"
+        }
+      ]
+    },
+    "description": "One version with content, compiled items (with text hashes, frozen at submit), issues and the latest change request. Staff only. Consent templates are versioned config (same lifecycle as question sets): compliance makes, a different staff member approves in Change Requests, then compliance publishes. The document key is the context clients ask for (e.g. `journey`, `lead_capture`). Each item's text is hashed so a record proves exactly what the person saw."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.collectionVariables.set('consentTemplateVersionRow', String(pm.response.json().version));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/consent-templates/:id/versions/:number",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "consent-templates",
+            ":id",
+            "versions",
+            ":number"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{consentTemplateId}}"
+            },
+            {
+              "key": "number",
+              "value": "{{consentTemplateNumber}}"
+            }
+          ]
+        },
+        "description": "One version with content, compiled items (with text hashes, frozen at submit), issues and the latest change request. Staff only. Consent templates are versioned config (same lifecycle as question sets): compliance makes, a different staff member approves in Change Requests, then compliance publishes. The document key is the context clients ask for (e.g. `journey`, `lead_capture`). Each item's text is hashed so a record proves exactly what the person saw."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a121c0-3c4d-7e5f-8061-728394a5b6c7\",\n  \"resource\": \"consent_template\",\n  \"documentId\": \"01a121c0-2b3c-7d4e-9f50-61728394a5b6\",\n  \"documentKey\": \"lead_capture\",\n  \"number\": 1,\n  \"status\": \"draft\",\n  \"content\": {\n    \"items\": [\n      {\n        \"purpose\": \"contact\",\n        \"required\": true,\n        \"title\": {\n          \"en\": \"Call Me About My Loan\"\n        },\n        \"details\": {\n          \"en\": \"FundenFlo or its partner may call or message you about this enquiry.\"\n        }\n      },\n      {\n        \"purpose\": \"partner_sharing\",\n        \"required\": false,\n        \"title\": {\n          \"en\": \"Share My Enquiry With A Partner CA\"\n        },\n        \"details\": {\n          \"en\": \"Your enquiry may be shared with a verified FundenFlo partner who will help with your application.\"\n        }\n      }\n    ]\n  },\n  \"compiled\": null,\n  \"issues\": [],\n  \"contentHash\": null,\n  \"notes\": null,\n  \"effectiveFrom\": null,\n  \"publishedAt\": null,\n  \"retiredAt\": null,\n  \"createdByUserId\": \"01a121c0-5e6f-7a71-9283-94a5b6c7d8e9\",\n  \"submittedByUserId\": null,\n  \"approvedByUserId\": null,\n  \"publishedByUserId\": null,\n  \"retiredByUserId\": null,\n  \"changeRequest\": null,\n  \"availableActions\": [\n    \"edit\",\n    \"submit\",\n    \"retire\"\n  ],\n  \"version\": 1,\n  \"createdAt\": \"2026-10-09T17:40:00.000Z\",\n  \"updatedAt\": \"2026-10-09T17:40:00.000Z\"\n}"
+    }
+  ]
+}

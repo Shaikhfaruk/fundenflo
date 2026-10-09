@@ -226,6 +226,42 @@
     {
       "key": "changeRequestId",
       "value": ""
+    },
+    {
+      "key": "consentTemplateVersionId",
+      "value": ""
+    },
+    {
+      "key": "consentPurposeId",
+      "value": ""
+    },
+    {
+      "key": "consentPurposeVersion",
+      "value": ""
+    },
+    {
+      "key": "consentPurposeKey",
+      "value": ""
+    },
+    {
+      "key": "consentTemplateId",
+      "value": ""
+    },
+    {
+      "key": "consentTemplateDocVersion",
+      "value": ""
+    },
+    {
+      "key": "consentTemplateNumber",
+      "value": ""
+    },
+    {
+      "key": "consentTemplateVersionRow",
+      "value": ""
+    },
+    {
+      "key": "partnerOrganizationId",
+      "value": ""
     }
   ]
 }

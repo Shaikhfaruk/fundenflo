@@ -12,6 +12,7 @@ import { AuditModule } from './modules/audit/audit.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { CatalogModule } from './modules/catalog/catalog.module.js';
 import { ConfigPublishingModule } from './modules/config-publishing/config-publishing.module.js';
+import { ConsentsModule } from './modules/consents/consents.module.js';
 import { HealthModule } from './modules/health/health.module.js';
 import { NotificationsModule } from './modules/notifications/notifications.module.js';
 import { QuestionnairesModule } from './modules/questionnaires/questionnaires.module.js';
@@ -28,6 +29,7 @@ import { QuestionnairesModule } from './modules/questionnaires/questionnaires.mo
     AttributesModule,
     ConfigPublishingModule,
     QuestionnairesModule,
+    ConsentsModule,
   ],
   providers: [
     { provide: APP_FILTER, useClass: HttpErrorFilter },

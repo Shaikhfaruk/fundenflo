@@ -1,0 +1,59 @@
+{
+  "name": "List Consent Purposes",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/consent-purposes",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "consent-purposes"
+      ]
+    },
+    "description": "Purposes for which consent or another lawful basis is recorded. Filter by `status`. Staff only. Reading needs consent-purpose read access (ops lead, compliance, support); changes need manage access (compliance officer, super admin). Purposes are referenced by consent templates, records and the consent checks in routing and processing."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/consent-purposes",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "consent-purposes"
+          ]
+        },
+        "description": "Purposes for which consent or another lawful basis is recorded. Filter by `status`. Staff only. Reading needs consent-purpose read access (ops lead, compliance, support); changes need manage access (compliance officer, super admin). Purposes are referenced by consent templates, records and the consent checks in routing and processing."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a121c0-1a2b-7c3d-8e4f-5061728394a5\",\n      \"key\": \"partner_sharing\",\n      \"label\": {\n        \"en\": \"Share My Enquiry With A FundenFlo Partner\"\n      },\n      \"description\": null,\n      \"scopeKind\": \"organizations\",\n      \"scopeOrganizationType\": \"partner\",\n      \"allowedBases\": [\n        \"consent\"\n      ],\n      \"validityDays\": null,\n      \"status\": \"active\",\n      \"version\": 1,\n      \"updatedAt\": \"2026-10-09T17:40:00.000Z\"\n    }\n  ]\n}"
+    }
+  ]
+}

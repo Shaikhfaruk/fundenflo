@@ -4,9 +4,11 @@ import type { Prisma, PrismaClient } from '../../generated/prisma/client.js';
 import { sha256 } from '../../infrastructure/crypto/secure-random.js';
 import { FUNDENFLO_ORGANIZATION_NAME } from '../../modules/access/domain/access.constants.js';
 import { normaliseLookupText } from '../../modules/catalog/domain/alias.js';
+import { compileConsentTemplate } from '../../modules/consents/application/compile-consent-template.js';
 import { compileQuestion } from '../../modules/questionnaires/application/questionnaire.views.js';
 import type { NotificationTemplateKey } from '../../modules/notifications/domain/notification.constants.js';
 import { ATTRIBUTE_SEEDS, SEED_ATTRIBUTE_PROVENANCE } from './attributes.js';
+import { CONSENT_PURPOSE_SEEDS, JOURNEY_CONSENT_TEMPLATE } from './consents.js';
 import { CATEGORY_SEEDS, categoryAmounts, SEGMENT_CATEGORY_ORDER, SEGMENT_SEEDS } from './catalog.js';
 import { CITY_ALIAS_SEEDS, CITY_SEEDS, STATE_SEEDS } from './geo.js';
 import { DLT_TEMPLATE_ENV, NOTIFICATION_TEMPLATE_SEEDS, type TemplateSeed } from './notification-templates.js';
@@ -23,6 +25,8 @@ export type SeedResult = {
   attributes: number;
   questions: number;
   questionSets: number;
+  consentPurposes: number;
+  consentTemplates: number;
 };
 
 function dltTemplateId(template: TemplateSeed, env: NodeJS.ProcessEnv): string | null {
@@ -153,11 +157,39 @@ async function seedQuestions(prisma: PrismaClient) {
   }
 }
 
+type PublishedConfigSeed = { resource: ConfigResource; key: string; name: string; notes: string; content: unknown; compiled: unknown };
+
+async function seedPublishedConfig(prisma: PrismaClient, seed: PublishedConfigSeed) {
+  const now = new Date();
+  await prisma.configDocument.create({
+    data: {
+      resource: seed.resource,
+      key: seed.key,
+      name: { en: seed.name },
+      latestNumber: 1,
+      versions: {
+        create: {
+          number: 1,
+          status: ConfigVersionStatus.published,
+          content: seed.content as Prisma.InputJsonValue,
+          compiled: seed.compiled as Prisma.InputJsonValue,
+          issues: [],
+          contentHash: sha256(stableStringify(seed.compiled)),
+          notes: seed.notes,
+          effectiveFrom: now,
+          publishedAt: now,
+        },
+      },
+    },
+  });
+}
+
+const configExists = (prisma: PrismaClient, resource: ConfigResource, key: string) => prisma.configDocument.findUnique({ where: { resource_key: { resource, key } } });
+
 async function seedQuestionSets(prisma: PrismaClient) {
   const questions = new Map((await prisma.question.findMany()).map((question) => [question.key, question]));
   for (const seed of QUESTION_SET_SEEDS) {
-    const existing = await prisma.configDocument.findUnique({ where: { resource_key: { resource: ConfigResource.question_set, key: seed.key } } });
-    if (existing) continue;
+    if (await configExists(prisma, ConfigResource.question_set, seed.key)) continue;
     const compiled = {
       stage: seed.content.stage,
       scope: seed.content.scope,
@@ -168,29 +200,17 @@ async function seedQuestionSets(prisma: PrismaClient) {
         return { question: compileQuestion(question), required: item.required, section: item.section ?? null, visibleIf: null };
       }),
     };
-    const now = new Date();
-    await prisma.configDocument.create({
-      data: {
-        resource: ConfigResource.question_set,
-        key: seed.key,
-        name: { en: seed.name },
-        latestNumber: 1,
-        versions: {
-          create: {
-            number: 1,
-            status: ConfigVersionStatus.published,
-            content: seed.content as Prisma.InputJsonValue,
-            compiled: compiled as Prisma.InputJsonValue,
-            issues: [],
-            contentHash: sha256(stableStringify(compiled)),
-            notes: 'Seeded from the v0.1 app pre-check questions',
-            effectiveFrom: now,
-            publishedAt: now,
-          },
-        },
-      },
-    });
+    await seedPublishedConfig(prisma, { resource: ConfigResource.question_set, key: seed.key, name: seed.name, notes: 'Seeded from the v0.1 app pre-check questions', content: seed.content, compiled });
   }
+}
+
+async function seedConsents(prisma: PrismaClient) {
+  for (const seed of CONSENT_PURPOSE_SEEDS) {
+    await prisma.consentPurpose.upsert({ where: { key: seed.key }, create: { ...seed, label: { en: seed.label } }, update: {} });
+  }
+  const template = JOURNEY_CONSENT_TEMPLATE;
+  if (await configExists(prisma, ConfigResource.consent_template, template.key)) return;
+  await seedPublishedConfig(prisma, { resource: ConfigResource.consent_template, ...template, compiled: compileConsentTemplate(template.content) });
 }
 
 export async function runSeed(prisma: PrismaClient, env: NodeJS.ProcessEnv): Promise<SeedResult> {
@@ -202,6 +222,7 @@ export async function runSeed(prisma: PrismaClient, env: NodeJS.ProcessEnv): Pro
   await seedAttributes(prisma);
   await seedQuestions(prisma);
   await seedQuestionSets(prisma);
+  await seedConsents(prisma);
   return {
     organizationId: organization.id,
     templates: NOTIFICATION_TEMPLATE_SEEDS.length,
@@ -213,5 +234,7 @@ export async function runSeed(prisma: PrismaClient, env: NodeJS.ProcessEnv): Pro
     attributes: ATTRIBUTE_SEEDS.length,
     questions: QUESTION_SEEDS.length,
     questionSets: QUESTION_SET_SEEDS.length,
+    consentPurposes: CONSENT_PURPOSE_SEEDS.length,
+    consentTemplates: 1,
   };
 }

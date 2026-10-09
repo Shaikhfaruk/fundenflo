@@ -1,0 +1,109 @@
+{
+  "name": "Get Consent Purpose",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/consent-purposes/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "consent-purposes",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{consentPurposeId}}"
+        }
+      ]
+    },
+    "description": "One purpose. Staff only. Reading needs consent-purpose read access (ops lead, compliance, support); changes need manage access (compliance officer, super admin). Purposes are referenced by consent templates, records and the consent checks in routing and processing."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.collectionVariables.set('consentPurposeVersion', String(pm.response.json().version));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/consent-purposes/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "consent-purposes",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{consentPurposeId}}"
+            }
+          ]
+        },
+        "description": "One purpose. Staff only. Reading needs consent-purpose read access (ops lead, compliance, support); changes need manage access (compliance officer, super admin). Purposes are referenced by consent templates, records and the consent checks in routing and processing."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a121c0-1a2b-7c3d-8e4f-5061728394a5\",\n  \"key\": \"partner_sharing\",\n  \"label\": {\n    \"en\": \"Share My Enquiry With A FundenFlo Partner\"\n  },\n  \"description\": null,\n  \"scopeKind\": \"organizations\",\n  \"scopeOrganizationType\": \"partner\",\n  \"allowedBases\": [\n    \"consent\"\n  ],\n  \"validityDays\": null,\n  \"status\": \"active\",\n  \"version\": 1,\n  \"updatedAt\": \"2026-10-09T17:40:00.000Z\"\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/consent-purposes/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "consent-purposes",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{consentPurposeId}}"
+            }
+          ]
+        },
+        "description": "One purpose. Staff only. Reading needs consent-purpose read access (ops lead, compliance, support); changes need manage access (compliance officer, super admin). Purposes are referenced by consent templates, records and the consent checks in routing and processing."
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

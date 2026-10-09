@@ -5,6 +5,7 @@ import type {
   AttributeDefinition,
   AuditEvent,
   ConfigDocument,
+  ConsentPurpose,
   Invitation,
   Membership,
   Organization,
@@ -45,6 +46,7 @@ export type AppSubjects =
       Party: Party;
       ConfigDocument: ConfigDocument;
       Question: Question;
+      ConsentPurpose: ConsentPurpose;
     }>;
 
 export type AppAbility = Ability<[AppAction, AppSubjects], PrismaQueryOf<Prisma.TypeMap>>;

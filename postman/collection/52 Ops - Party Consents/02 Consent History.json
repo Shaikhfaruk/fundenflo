@@ -1,0 +1,144 @@
+{
+  "name": "Consent History",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/ops/parties/:partyId/consents/history?purpose=partner_sharing&limit=25",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "parties",
+        ":partyId",
+        "consents",
+        "history"
+      ],
+      "query": [
+        {
+          "key": "purpose",
+          "value": "partner_sharing"
+        },
+        {
+          "key": "limit",
+          "value": "25"
+        }
+      ],
+      "variable": [
+        {
+          "key": "partyId",
+          "value": "{{partyId}}"
+        }
+      ]
+    },
+    "description": "Every consent record, newest first: grants and withdrawals with basis, channel, evidence, template version, text hash, IP and who captured it. Staff only. Reading needs party read access; recording needs party update access (ops lead, super admin)."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/ops/parties/:partyId/consents/history?purpose=partner_sharing&limit=25",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "parties",
+            ":partyId",
+            "consents",
+            "history"
+          ],
+          "query": [
+            {
+              "key": "purpose",
+              "value": "partner_sharing"
+            },
+            {
+              "key": "limit",
+              "value": "25"
+            }
+          ],
+          "variable": [
+            {
+              "key": "partyId",
+              "value": "{{partyId}}"
+            }
+          ]
+        },
+        "description": "Every consent record, newest first: grants and withdrawals with basis, channel, evidence, template version, text hash, IP and who captured it. Staff only. Reading needs party read access; recording needs party update access (ops lead, super admin)."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a121c0-4d5e-7f60-8172-8394a5b6c7d8\",\n      \"purpose\": \"partner_sharing\",\n      \"granted\": true,\n      \"basis\": \"consent\",\n      \"organizationIds\": [\n        \"01a121c0-6f70-7b82-a394-a5b6c7d8e9fa\"\n      ],\n      \"templateVersionId\": null,\n      \"textHash\": null,\n      \"locale\": null,\n      \"channel\": \"ops_call\",\n      \"evidence\": \"Agreed on call to share with Mehta & Associates, 9 Oct\",\n      \"capturedByUserId\": \"01a121c0-5e6f-7a71-9283-94a5b6c7d8e9\",\n      \"leadId\": null,\n      \"applicationId\": null,\n      \"clientRecordedAt\": null,\n      \"expiresAt\": null,\n      \"recordedAt\": \"2026-10-09T17:40:00.000Z\"\n    }\n  ],\n  \"nextCursor\": null\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/ops/parties/:partyId/consents/history?purpose=partner_sharing&limit=25",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "parties",
+            ":partyId",
+            "consents",
+            "history"
+          ],
+          "query": [
+            {
+              "key": "purpose",
+              "value": "partner_sharing"
+            },
+            {
+              "key": "limit",
+              "value": "25"
+            }
+          ],
+          "variable": [
+            {
+              "key": "partyId",
+              "value": "{{partyId}}"
+            }
+          ]
+        },
+        "description": "Every consent record, newest first: grants and withdrawals with basis, channel, evidence, template version, text hash, IP and who captured it. Staff only. Reading needs party read access; recording needs party update access (ops lead, super admin)."
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+{
+  "name": "Get Consent Template (Admin)",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/consent-templates/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "consent-templates",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{consentTemplateId}}"
+        }
+      ]
+    },
+    "description": "One template with all version summaries. Staff only. Consent templates are versioned config (same lifecycle as question sets): compliance makes, a different staff member approves in Change Requests, then compliance publishes. The document key is the context clients ask for (e.g. `journey`, `lead_capture`). Each item's text is hashed so a record proves exactly what the person saw."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.collectionVariables.set('consentTemplateDocVersion', String(pm.response.json().version));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/consent-templates/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "consent-templates",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{consentTemplateId}}"
+            }
+          ]
+        },
+        "description": "One template with all version summaries. Staff only. Consent templates are versioned config (same lifecycle as question sets): compliance makes, a different staff member approves in Change Requests, then compliance publishes. The document key is the context clients ask for (e.g. `journey`, `lead_capture`). Each item's text is hashed so a record proves exactly what the person saw."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a121c0-2b3c-7d4e-9f50-61728394a5b6\",\n  \"resource\": \"consent_template\",\n  \"key\": \"lead_capture\",\n  \"name\": {\n    \"en\": \"Lead Capture Consent\"\n  },\n  \"description\": null,\n  \"status\": \"active\",\n  \"activeVersion\": null,\n  \"openVersion\": {\n    \"id\": \"01a121c0-3c4d-7e5f-8061-728394a5b6c7\",\n    \"number\": 1,\n    \"status\": \"draft\"\n  },\n  \"versions\": [\n    {\n      \"id\": \"01a121c0-3c4d-7e5f-8061-728394a5b6c7\",\n      \"number\": 1,\n      \"status\": \"draft\",\n      \"effectiveFrom\": null,\n      \"publishedAt\": null,\n      \"retiredAt\": null,\n      \"updatedAt\": \"2026-10-09T17:40:00.000Z\"\n    }\n  ],\n  \"version\": 1,\n  \"createdAt\": \"2026-10-09T17:40:00.000Z\",\n  \"updatedAt\": \"2026-10-09T17:40:00.000Z\"\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/consent-templates/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "consent-templates",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{consentTemplateId}}"
+            }
+          ]
+        },
+        "description": "One template with all version summaries. Staff only. Consent templates are versioned config (same lifecycle as question sets): compliance makes, a different staff member approves in Change Requests, then compliance publishes. The document key is the context clients ask for (e.g. `journey`, `lead_capture`). Each item's text is hashed so a record proves exactly what the person saw."
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

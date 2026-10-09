@@ -24,6 +24,9 @@ export const EventName = {
   ConfigRetired: 'config.retired',
   QuestionChanged: 'question.changed',
   AnswersRecorded: 'answers.recorded',
+  ConsentPurposeChanged: 'consent_purpose.changed',
+  ConsentGranted: 'consent.granted',
+  ConsentWithdrawn: 'consent.withdrawn',
 } as const;
 
 export type EventName = (typeof EventName)[keyof typeof EventName];

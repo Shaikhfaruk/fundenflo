@@ -1,0 +1,115 @@
+{
+  "name": "Get Consent Template",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/catalog/consent-templates?context=journey",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "catalog",
+        "consent-templates"
+      ],
+      "query": [
+        {
+          "key": "context",
+          "value": "journey"
+        }
+      ]
+    },
+    "description": "The consent text currently in effect for a context (`journey` is seeded from the v0.1 app consent screen), localised by `Accept-Language` or `?locale=`. Send `versionId` back with the person's choices; each item's `textHash` is stored on the record. Returns 404 when no published template exists for the context.",
+    "auth": {
+      "type": "noauth"
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.collectionVariables.set('consentTemplateVersionId', String(pm.response.json().versionId));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/catalog/consent-templates?context=journey",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "catalog",
+            "consent-templates"
+          ],
+          "query": [
+            {
+              "key": "context",
+              "value": "journey"
+            }
+          ]
+        },
+        "description": "The consent text currently in effect for a context (`journey` is seeded from the v0.1 app consent screen), localised by `Accept-Language` or `?locale=`. Send `versionId` back with the person's choices; each item's `textHash` is stored on the record. Returns 404 when no published template exists for the context.",
+        "auth": {
+          "type": "noauth"
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"context\": \"journey\",\n  \"versionId\": \"01a121bb-0c1d-7e2f-8a3b-4c5d6e7f8091\",\n  \"number\": 1,\n  \"locale\": \"en\",\n  \"policyUrl\": null,\n  \"items\": [\n    {\n      \"purpose\": \"ai_documents\",\n      \"required\": true,\n      \"title\": \"Read My Documents With AI\",\n      \"summary\": \"Required · To Calculate Your Financial Health Score\",\n      \"details\": \"The Documents You Upload (Bank Statements, GST Returns, ITR) Are Read Automatically To Extract Income, Cash-Flow And Repayment Patterns. These Are Used Only To Calculate Your Financial Health Score And Improvement Plan.\",\n      \"textHash\": \"q3V9c1mZr8XyLk2oN7tP4sWd6hE0aJ5uG1fB8nC3kD2\"\n    },\n    {\n      \"purpose\": \"credit_bureau\",\n      \"required\": false,\n      \"title\": \"Fetch My Credit Bureau Report\",\n      \"summary\": \"Optional · Helps Match Lenders Accurately\",\n      \"details\": \"With Your Permission We Request Your Credit Report From A Credit Bureau To Understand Your Existing Loans And Repayment History. If You Keep This Off, Matching Uses Only The Information You Provide.\",\n      \"textHash\": \"b7T2m9Qx4RzVw1Ls8KcP0dYf3HnE6jU5gA2oN9iC7kM\"\n    }\n  ]\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/catalog/consent-templates?context=journey",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "catalog",
+            "consent-templates"
+          ],
+          "query": [
+            {
+              "key": "context",
+              "value": "journey"
+            }
+          ]
+        },
+        "description": "The consent text currently in effect for a context (`journey` is seeded from the v0.1 app consent screen), localised by `Accept-Language` or `?locale=`. Send `versionId` back with the person's choices; each item's `textHash` is stored on the record. Returns 404 when no published template exists for the context.",
+        "auth": {
+          "type": "noauth"
+        }
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

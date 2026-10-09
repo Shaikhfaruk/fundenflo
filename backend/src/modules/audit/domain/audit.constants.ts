@@ -33,6 +33,10 @@ export const AuditAction = {
   QuestionCreated: 'question.created',
   QuestionChanged: 'question.changed',
   AnswersRecorded: 'answers.recorded',
+  ConsentPurposeCreated: 'consent_purpose.created',
+  ConsentPurposeChanged: 'consent_purpose.changed',
+  ConsentGranted: 'consent.granted',
+  ConsentWithdrawn: 'consent.withdrawn',
 } as const;
 
 export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction];
@@ -58,6 +62,8 @@ export const AuditEntity = {
   ConfigVersion: 'config_version',
   ConfigChangeRequest: 'config_change_request',
   Question: 'question',
+  ConsentPurpose: 'consent_purpose',
+  ConsentRecord: 'consent_record',
 } as const;
 
 export type AuditEntity = (typeof AuditEntity)[keyof typeof AuditEntity];

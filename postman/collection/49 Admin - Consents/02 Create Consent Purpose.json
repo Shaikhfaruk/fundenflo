@@ -1,0 +1,144 @@
+{
+  "name": "Create Consent Purpose",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "Idempotency-Key",
+        "value": "{{$guid}}"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/consent-purposes",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "consent-purposes"
+      ]
+    },
+    "description": "Adds a purpose. `scopeKind: organizations` needs `scopeOrganizationType` (`partner` or `lender`) and lets records name the organizations they cover. `allowedBases`: `consent` and/or `legitimate_use`. `validityDays` makes grants expire. Staff only. Reading needs consent-purpose read access (ops lead, compliance, support); changes need manage access (compliance officer, super admin). Purposes are referenced by consent templates, records and the consent checks in routing and processing.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"key\": \"sms_offers_{{$timestamp}}\",\n  \"label\": {\n    \"en\": \"Send Me Offers By SMS\"\n  },\n  \"allowedBases\": [\n    \"consent\"\n  ],\n  \"validityDays\": 365\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "pm.collectionVariables.set('consentPurposeId', String(pm.response.json().id));",
+          "pm.collectionVariables.set('consentPurposeVersion', String(pm.response.json().version));",
+          "pm.collectionVariables.set('consentPurposeKey', String(pm.response.json().key));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "{{$guid}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/consent-purposes",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "consent-purposes"
+          ]
+        },
+        "description": "Adds a purpose. `scopeKind: organizations` needs `scopeOrganizationType` (`partner` or `lender`) and lets records name the organizations they cover. `allowedBases`: `consent` and/or `legitimate_use`. `validityDays` makes grants expire. Staff only. Reading needs consent-purpose read access (ops lead, compliance, support); changes need manage access (compliance officer, super admin). Purposes are referenced by consent templates, records and the consent checks in routing and processing.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"key\": \"sms_offers_{{$timestamp}}\",\n  \"label\": {\n    \"en\": \"Send Me Offers By SMS\"\n  },\n  \"allowedBases\": [\n    \"consent\"\n  ],\n  \"validityDays\": 365\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a121c0-1a2b-7c3d-8e4f-5061728394a5\",\n  \"key\": \"sms_offers\",\n  \"label\": {\n    \"en\": \"Send Me Offers By SMS\"\n  },\n  \"description\": null,\n  \"scopeKind\": \"none\",\n  \"scopeOrganizationType\": null,\n  \"allowedBases\": [\n    \"consent\"\n  ],\n  \"validityDays\": 365,\n  \"status\": \"active\",\n  \"version\": 1,\n  \"updatedAt\": \"2026-10-09T17:40:00.000Z\"\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "{{$guid}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/consent-purposes",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "consent-purposes"
+          ]
+        },
+        "description": "Adds a purpose. `scopeKind: organizations` needs `scopeOrganizationType` (`partner` or `lender`) and lets records name the organizations they cover. `allowedBases`: `consent` and/or `legitimate_use`. `validityDays` makes grants expire. Staff only. Reading needs consent-purpose read access (ops lead, compliance, support); changes need manage access (compliance officer, super admin). Purposes are referenced by consent templates, records and the consent checks in routing and processing.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"key\": \"sms_offers_{{$timestamp}}\",\n  \"label\": {\n    \"en\": \"Send Me Offers By SMS\"\n  },\n  \"allowedBases\": [\n    \"consent\"\n  ],\n  \"validityDays\": 365\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"scopeOrganizationType\",\n      \"code\": \"required\",\n      \"message\": \"scopeOrganizationType is set exactly when scopeKind is organizations\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

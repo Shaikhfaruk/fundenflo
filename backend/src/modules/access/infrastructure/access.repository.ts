@@ -31,6 +31,10 @@ export class AccessRepository {
     return this.txHost.tx.organization.findUnique({ where: { id } });
   }
 
+  findOrganizations(ids: string[]) {
+    return this.txHost.tx.organization.findMany({ where: { id: { in: ids } } });
+  }
+
   findFundenfloOrganization() {
     return this.txHost.tx.organization.findFirst({ where: { type: OrganizationType.fundenflo }, orderBy: { createdAt: 'asc' } });
   }
