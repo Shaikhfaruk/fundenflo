@@ -68,3 +68,33 @@ model ConsentRecord {
   @@index([applicationId])
   @@map("consent_records")
 }
+
+enum ConsentRequestStatus {
+  pending
+  completed
+  expired
+  cancelled
+}
+
+model ConsentRequest {
+  id                String               @id @default(uuid(7)) @db.Uuid
+  partyId           String               @map("party_id") @db.Uuid
+  leadId            String?              @map("lead_id") @db.Uuid
+  templateVersionId String               @map("template_version_id") @db.Uuid
+  tokenHash         String               @unique @map("token_hash")
+  channel           ConsentChannel
+  recipientMasked   String               @map("recipient_masked")
+  status            ConsentRequestStatus @default(pending)
+  expiresAt         DateTime             @map("expires_at") @db.Timestamptz(3)
+  completedAt       DateTime?            @map("completed_at") @db.Timestamptz(3)
+  createdByUserId   String?              @map("created_by_user_id") @db.Uuid
+  createdAt         DateTime             @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt         DateTime             @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  party           Party         @relation(fields: [partyId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  templateVersion ConfigVersion @relation(fields: [templateVersionId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([partyId, status])
+  @@index([leadId])
+  @@map("consent_requests")
+}

@@ -1,0 +1,203 @@
+{
+  "name": "Request Consent Link",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/ops/leads/:id/consent-request",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "leads",
+        ":id",
+        "consent-request"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{leadId}}"
+        }
+      ]
+    },
+    "description": "Sends the person an SMS with a one-time link to confirm consent for the published consent template `context` (default: the lead source's consent context, else `lead_capture`). Earlier pending links for the same template are cancelled. Refused when the person has no mobile that may be contacted. Needs `CONSENT_LINK_URL` (503 otherwise) and the `SMS_DLT_TEMPLATE_CONSENT_REQUEST` DLT id in production. Staff only, lead update access.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"context\": \"{{consentTemplateKey}}\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/leads/:id/consent-request",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "leads",
+            ":id",
+            "consent-request"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{leadId}}"
+            }
+          ]
+        },
+        "description": "Sends the person an SMS with a one-time link to confirm consent for the published consent template `context` (default: the lead source's consent context, else `lead_capture`). Earlier pending links for the same template are cancelled. Refused when the person has no mobile that may be contacted. Needs `CONSENT_LINK_URL` (503 otherwise) and the `SMS_DLT_TEMPLATE_CONSENT_REQUEST` DLT id in production. Staff only, lead update access.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"context\": \"{{consentTemplateKey}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a121f0-1a2b-7c3d-8e4f-5061728394a5\",\n  \"status\": \"pending\",\n  \"channel\": \"sms_link\",\n  \"recipient\": \"96•••••210\",\n  \"leadId\": \"01a121e0-1a2b-7c3d-8e4f-5061728394a5\",\n  \"expiresAt\": \"2026-10-16T19:20:00.000Z\",\n  \"createdAt\": \"2026-10-09T19:20:00.000Z\"\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/leads/:id/consent-request",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "leads",
+            ":id",
+            "consent-request"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{leadId}}"
+            }
+          ]
+        },
+        "description": "Sends the person an SMS with a one-time link to confirm consent for the published consent template `context` (default: the lead source's consent context, else `lead_capture`). Earlier pending links for the same template are cancelled. Refused when the person has no mobile that may be contacted. Needs `CONSENT_LINK_URL` (503 otherwise) and the `SMS_DLT_TEMPLATE_CONSENT_REQUEST` DLT id in production. Staff only, lead update access.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"context\": \"{{consentTemplateKey}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"party\",\n      \"code\": \"no_reachable_mobile\",\n      \"message\": \"this person has no mobile that may be contacted\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/leads/:id/consent-request",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "leads",
+            ":id",
+            "consent-request"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{leadId}}"
+            }
+          ]
+        },
+        "description": "Sends the person an SMS with a one-time link to confirm consent for the published consent template `context` (default: the lead source's consent context, else `lead_capture`). Earlier pending links for the same template are cancelled. Refused when the person has no mobile that may be contacted. Needs `CONSENT_LINK_URL` (503 otherwise) and the `SMS_DLT_TEMPLATE_CONSENT_REQUEST` DLT id in production. Staff only, lead update access.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"context\": \"{{consentTemplateKey}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

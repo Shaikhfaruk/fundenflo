@@ -322,6 +322,14 @@
     {
       "key": "publicLeadId",
       "value": ""
+    },
+    {
+      "key": "consentTemplateKey",
+      "value": ""
+    },
+    {
+      "key": "consentLinkToken",
+      "value": ""
     }
   ]
 }

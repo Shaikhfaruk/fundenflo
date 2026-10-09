@@ -14,7 +14,8 @@
 | `imports.process` | `validate`, `commit`, `undo` a batch, in chunks | `ImportService` | imports | `POST /admin/imports/:id/validate`, `/commit`, `/undo` | M1 | `planned` | §7.1 |
 | `leads.route` | pick and offer the next assignee | `lead.captured`, `lead.qualified`, assignment `declined / expired / returned`, ops route | leads | Event | M1 | `planned` | §7.4 |
 | `sla.timers` | fire breach → reassign, warn or escalate | `SlaService` (delayed jobs) | sla | Delayed job at `due_at`; cancelled when satisfied | M1 | `planned` | §7.6 |
-| `leads.dropoff-detect` | turn OTP-verified users without a submitted application into leads | cron | leads | Hourly | M1 | `planned` | §7.1 |
+| `leads.dropoff` | on `user.signed_up` (borrower) schedule a delayed `check` job (`LEAD_DROPOFF_DELAY_HOURS`, job id `dropoff-<userId>`); `check` captures an `app_dropoff` lead for the party if it has no lead yet (applications join the check in M3) | outbox relay + itself | leads (`lead-dropoff.processor.ts`) | Event + delayed job (replaces the planned hourly scan) | M1 | `useful` | spec `lead-consent` (`captureDropoff`) |
+| `leads.consent-sync` | on `consent.granted` / `consent.withdrawn` refresh `consentStatus` and quality of the party's open leads, with a timeline event | outbox relay | leads (`lead-consent-sync.processor.ts`) | Event | M1 | `useful` | spec `lead-consent`; flow `lead-consent` (worker run) |
 | `reports.refresh` | refresh materialised report views | cron | leads (later applications, commissions) | Every 15 minutes | M1 | `planned` | §7.8 |
 | `documents.scan` | antivirus + type sniff | `document.uploaded` | documents | Event | M3 | `planned` | §8.3 |
 | `documents.extract` | classify + extract → facts | `document.scanned` | documents | Event, gated by `ai_documents` consent | M5 | `planned` | §13 |

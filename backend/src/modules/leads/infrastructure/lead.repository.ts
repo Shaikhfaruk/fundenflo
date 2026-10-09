@@ -68,6 +68,14 @@ export class LeadRepository {
     });
   }
 
+  listOpenForParty(partyId: string, openStatuses: readonly LeadStatus[]) {
+    return this.txHost.tx.lead.findMany({ where: { partyId, status: { in: [...openStatuses] } }, include: leadListInclude });
+  }
+
+  countForParty(partyId: string) {
+    return this.txHost.tx.lead.count({ where: { partyId } });
+  }
+
   findBusinessPartyForPerson(partyId: string, businessName: string) {
     return this.txHost.tx.lead.findFirst({
       where: { partyId, businessParty: { displayName: { equals: businessName, mode: 'insensitive' } } },

@@ -17,6 +17,8 @@ import { LeadSourceService } from '../application/lead-source.service.js';
 import { LeadService } from '../application/lead.service.js';
 import { LeadSourceKey } from '../domain/lead.constants.js';
 import {
+  type ConsentRequestDto,
+  consentRequestSchema,
   type LeadDisqualifyDto,
   leadDisqualifySchema,
   type LeadHoldDto,
@@ -130,6 +132,13 @@ export class OpsLeadsController {
   @canUpdate
   lose(@ValidParam('id', uuidSchema) id: string, @ValidBody(leadLoseSchema) body: LeadLoseDto) {
     return this.leads.act(id, { event: LeadEvent.Lose, reason: body.reason, note: body.note });
+  }
+
+  @Post(':id/consent-request')
+  @HttpCode(HttpStatus.CREATED)
+  @canUpdate
+  requestConsent(@ValidParam('id', uuidSchema) id: string, @ValidBody(consentRequestSchema) body: ConsentRequestDto, @CurrentActor() actor: UserActor) {
+    return this.leads.requestConsent(id, body.context, actor.userId);
   }
 
   @Post(':id/reveal-contact')

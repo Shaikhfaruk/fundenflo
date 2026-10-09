@@ -64,6 +64,7 @@ enum LeadEventType {
   edited
   status_changed
   consent_changed
+  consent_requested
   merged
   contact_revealed
 }

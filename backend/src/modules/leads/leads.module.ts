@@ -14,12 +14,16 @@ import { LeadService } from './application/lead.service.js';
 import { AdminLeadSourcesController } from './http/admin-lead-sources.controller.js';
 import { OpsLeadsController } from './http/ops-leads.controller.js';
 import { PublicLeadsController } from './http/public-leads.controller.js';
+import { LeadConsentSyncProcessor } from './infrastructure/lead-consent-sync.processor.js';
+import { LeadDropoffProcessor } from './infrastructure/lead-dropoff.processor.js';
 import { LeadRepository } from './infrastructure/lead.repository.js';
 
 @Module({
   imports: [AccessModule, CatalogModule, ConsentsModule, PartiesModule, QuestionnairesModule],
   controllers: [AdminLeadSourcesController, OpsLeadsController, PublicLeadsController],
   providers: [LeadRepository, LeadTimeline, LeadLocator, LeadConsentPolicy, LeadSourceService, LeadCaptureService, LeadService],
-  exports: [LeadCaptureService, LeadService],
+  exports: [LeadCaptureService, LeadService, LeadSourceService],
 })
 export class LeadsModule {}
+
+export const LEAD_PROCESSORS = [LeadConsentSyncProcessor, LeadDropoffProcessor];

@@ -12,6 +12,7 @@ export type TemplateSeed = {
 export const DLT_TEMPLATE_ENV: Partial<Record<NotificationTemplateKey, string>> = {
   [NotificationTemplateKey.AuthOtp]: 'SMS_DLT_TEMPLATE_AUTH_OTP',
   [NotificationTemplateKey.InvitationMember]: 'SMS_DLT_TEMPLATE_INVITATION_MEMBER',
+  [NotificationTemplateKey.ConsentRequest]: 'SMS_DLT_TEMPLATE_CONSENT_REQUEST',
 };
 
 export const NOTIFICATION_TEMPLATE_SEEDS: TemplateSeed[] = [
@@ -49,5 +50,12 @@ export const NOTIFICATION_TEMPLATE_SEEDS: TemplateSeed[] = [
     locale: 'en',
     subject: 'You are invited to {{organization}} on FundenFlo',
     body: 'You have been invited to join {{organization}} on FundenFlo as {{role}}.\n\nSign in with this email address before {{expiresOn}} to accept.',
+  },
+  {
+    key: NotificationTemplateKey.ConsentRequest,
+    channel: NotificationChannel.sms,
+    locale: 'en',
+    subject: null,
+    body: 'FundenFlo: please confirm how we may help with your loan enquiry {{ref}}: {{link}} The link expires on {{expiresOn}}.',
   },
 ];

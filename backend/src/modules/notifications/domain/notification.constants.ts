@@ -2,6 +2,7 @@ export const NotificationTemplateKey = {
   AuthOtp: 'auth.otp',
   InvitationStaff: 'invitation.staff',
   InvitationMember: 'invitation.member',
+  ConsentRequest: 'consent.request',
 } as const;
 
 export type NotificationTemplateKey = (typeof NotificationTemplateKey)[keyof typeof NotificationTemplateKey];

@@ -33,3 +33,11 @@ export const TEMPLATE_REQUIRED_CHANNELS: ReadonlySet<ConsentChannel> = new Set([
   ConsentChannel.sms_link,
   ConsentChannel.whatsapp_link,
 ]);
+
+export const CONSENT_REQUEST_TTL_DAYS = 7;
+
+export const CONSENT_REQUEST_TOKEN_BYTES = 32;
+
+export const CONSENT_LINK_TOKEN_PARAM = 'token';
+
+export const CONSENT_LINK_RATE_LIMIT = { name: 'consent-link', limit: 30, windowSeconds: 3600 } as const;

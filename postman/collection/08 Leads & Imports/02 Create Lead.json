@@ -53,7 +53,8 @@
           "if (previous) pm.collectionVariables.set('previousLeadId', previous);",
           "pm.collectionVariables.set('leadId', String(pm.response.json().id));",
           "pm.collectionVariables.set('leadVersion', String(pm.response.json().version));",
-          "pm.collectionVariables.set('leadRef', String(pm.response.json().ref));"
+          "pm.collectionVariables.set('leadRef', String(pm.response.json().ref));",
+          "pm.collectionVariables.set('partyId', pm.response.json().party.id);"
         ]
       }
     }

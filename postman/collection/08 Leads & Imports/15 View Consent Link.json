@@ -1,0 +1,117 @@
+{
+  "name": "View Consent Link",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/public/consent-requests/:token",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "public",
+        "consent-requests",
+        ":token"
+      ],
+      "variable": [
+        {
+          "key": "token",
+          "value": "{{consentLinkToken}}"
+        }
+      ]
+    },
+    "description": "What the consent page shows: the template text (localised) and when the link expires. No personal data is returned. Public, rate limited per IP. The token comes from the SMS link (`CONSENT_LINK_URL?token=...`); it works once and expires after 7 days (410 `CONSENT_LINK_INVALID`).",
+    "auth": {
+      "type": "noauth"
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/public/consent-requests/:token",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "public",
+            "consent-requests",
+            ":token"
+          ],
+          "variable": [
+            {
+              "key": "token",
+              "value": "{{consentLinkToken}}"
+            }
+          ]
+        },
+        "description": "What the consent page shows: the template text (localised) and when the link expires. No personal data is returned. Public, rate limited per IP. The token comes from the SMS link (`CONSENT_LINK_URL?token=...`); it works once and expires after 7 days (410 `CONSENT_LINK_INVALID`).",
+        "auth": {
+          "type": "noauth"
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"expiresAt\": \"2026-10-16T19:20:00.000Z\",\n  \"template\": {\n    \"context\": \"lead_capture\",\n    \"versionId\": \"01a121c0-3c4d-7e5f-8061-728394a5b6c7\",\n    \"number\": 1,\n    \"locale\": \"en\",\n    \"policyUrl\": null,\n    \"items\": [\n      {\n        \"purpose\": \"contact\",\n        \"required\": true,\n        \"title\": \"Call Me About My Loan\",\n        \"summary\": null,\n        \"details\": \"FundenFlo or its partner may call or message you about this enquiry.\",\n        \"textHash\": \"q3V9c1mZr8XyLk2oN7tP4sWd6hE0aJ5uG1fB8nC3kD2\"\n      }\n    ]\n  }\n}"
+    },
+    {
+      "name": "410 CONSENT_LINK_INVALID",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/public/consent-requests/:token",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "public",
+            "consent-requests",
+            ":token"
+          ],
+          "variable": [
+            {
+              "key": "token",
+              "value": "{{consentLinkToken}}"
+            }
+          ]
+        },
+        "description": "What the consent page shows: the template text (localised) and when the link expires. No personal data is returned. Public, rate limited per IP. The token comes from the SMS link (`CONSENT_LINK_URL?token=...`); it works once and expires after 7 days (410 `CONSENT_LINK_INVALID`).",
+        "auth": {
+          "type": "noauth"
+        }
+      },
+      "status": "Gone",
+      "code": 410,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"CONSENT_LINK_INVALID\",\n  \"message\": \"This consent link has expired or was already used.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

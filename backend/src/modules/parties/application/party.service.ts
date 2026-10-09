@@ -75,6 +75,12 @@ export class PartyService {
     if (!(await this.parties.findById(partyId))) throw new AppError(ErrorCode.NOT_FOUND, { details: { partyId } });
   }
 
+  async summary(partyId: string) {
+    const party = await this.parties.findById(partyId);
+    if (!party) throw new AppError(ErrorCode.NOT_FOUND, { details: { partyId } });
+    return { id: party.id, kind: party.kind, displayName: party.displayName };
+  }
+
   async listContacts(partyId: string, reveal: boolean) {
     return (await this.parties.listContacts(partyId)).map((contact) => ({
       id: contact.id,

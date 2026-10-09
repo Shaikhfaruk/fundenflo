@@ -57,6 +57,8 @@ export const AuditAction = {
   LeadContactRevealed: 'lead.contact_revealed',
   LeadSourceCreated: 'lead_source.created',
   LeadSourceChanged: 'lead_source.changed',
+  ConsentRequested: 'consent.requested',
+  ConsentRequestCompleted: 'consent.request_completed',
 } as const;
 
 export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction];
@@ -89,6 +91,7 @@ export const AuditEntity = {
   ApiClient: 'api_client',
   Lead: 'lead',
   LeadSource: 'lead_source',
+  ConsentRequest: 'consent_request',
 } as const;
 
 export type AuditEntity = (typeof AuditEntity)[keyof typeof AuditEntity];

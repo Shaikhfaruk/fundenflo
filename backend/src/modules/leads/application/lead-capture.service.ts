@@ -3,9 +3,9 @@ import { Injectable } from '@nestjs/common';
 
 import { DAY_MS } from '../../../common/constants/time.constants.js';
 import {
-  type AnswerChannel,
+  AnswerChannel,
   type ConsentBasis,
-  type ConsentChannel,
+  ConsentChannel,
   ContactType,
   LeadEventType,
   LeadFlag,
@@ -14,7 +14,7 @@ import {
 import { EventName } from '../../../common/events/event-names.js';
 import { AppError } from '../../../common/errors/app-error.js';
 import { ErrorCode } from '../../../common/errors/error-codes.js';
-import type { Locale } from '../../../common/i18n/locale.js';
+import { DEFAULT_LOCALE, type Locale } from '../../../common/i18n/locale.js';
 import { parseAmountText } from '../../../common/money/parse-amount.js';
 import { paiseFromNumber } from '../../../common/money/paise.js';
 import { normaliseEmail, normaliseLandline, normaliseMobile } from '../../../engines/party-matching/normalise.js';
@@ -72,6 +72,7 @@ export type LeadCaptureInput = {
 
 export type LeadCaptureContext = {
   source: LeadSourceView;
+  partyId?: string;
   consentChannel: ConsentChannel;
   answerChannel: AnswerChannel;
   capturedByUserId?: string;
@@ -82,6 +83,8 @@ export type LeadCaptureContext = {
 };
 
 type Contacts = { contacts: UnverifiedContact[]; invalid: boolean; hasMobile: boolean; hasEmail: boolean };
+
+type CapturedPerson = { partyId: string; outcome: string; doNotContact: boolean; invalid: boolean; hasMobile: boolean; hasEmail: boolean; hasName: boolean };
 
 @Injectable()
 export class LeadCaptureService {
@@ -106,20 +109,19 @@ export class LeadCaptureService {
       const existing = await this.leads.findByExternalRef(context.source.id, input.externalRef);
       if (existing) return { lead: await this.detail(existing.id), replayed: true };
     }
-    const contacts = this.contacts(input);
+    const person = await this.person(input, context);
     const rawPayload = JSON.stringify(input);
     if (Buffer.byteLength(rawPayload, 'utf8') > LEAD_RAW_PAYLOAD_MAX_BYTES) {
       throw new AppError(ErrorCode.VALIDATION_FAILED, { details: [{ path: '', code: 'too_big', message: `lead payload must be at most ${LEAD_RAW_PAYLOAD_MAX_BYTES} bytes` }] });
     }
 
-    const person = await this.resolver.resolvePersonForLead(contacts.contacts, input.name?.trim() || null, ContactSource.Lead);
     const businessPartyId = input.businessName ? await this.businessParty(person.partyId, input.businessName.trim()) : null;
     const requirement = await this.requirement(input);
     const location = await this.locator.locate({ cityId: input.cityId, city: input.city, pincode: input.pincode });
     const amount = this.amount(input);
 
     const flags = new Set<LeadFlag>(input.flags ?? []);
-    if (contacts.invalid || person.invalidContact) flags.add(LeadFlag.invalid_number);
+    if (person.invalid) flags.add(LeadFlag.invalid_number);
     if (person.doNotContact) flags.add(LeadFlag.do_not_contact);
     if (requirement.unmapped) flags.add(LeadFlag.unmapped_category);
     if (location.unmapped) flags.add(LeadFlag.unmapped_location);
@@ -187,7 +189,7 @@ export class LeadCaptureService {
     }
 
     const consentStatus = await this.consentPolicy.statusFor(person.partyId);
-    const qualityScore = scoreFor({ ...lead, consentStatus }, { hasMobile: contacts.hasMobile, hasEmail: contacts.hasEmail, hasName: Boolean(input.name?.trim()) });
+    const qualityScore = scoreFor({ ...lead, consentStatus }, { hasMobile: person.hasMobile, hasEmail: person.hasEmail, hasName: person.hasName });
     await this.leads.update(lead.id, { consentStatus, qualityScore });
     await this.timeline.record(lead.id, LeadEventType.captured, {
       toStatus: lead.status,
@@ -202,6 +204,37 @@ export class LeadCaptureService {
       payload: { leadId: lead.id, ref: lead.ref, partyId: person.partyId, source: context.source.key, consentStatus, categoryKey: requirement.categoryKey, cityId: location.cityId, pincode: location.pincode },
     });
     return { lead: await this.detail(lead.id), replayed: false };
+  }
+
+  async captureDropoff(partyId: string, source: LeadSourceView) {
+    if ((await this.leads.countForParty(partyId)) > 0) return null;
+    return this.capture({}, { source, partyId, consentChannel: ConsentChannel.app, answerChannel: AnswerChannel.borrower, locale: DEFAULT_LOCALE });
+  }
+
+  private async person(input: LeadCaptureInput, context: LeadCaptureContext): Promise<CapturedPerson> {
+    if (context.partyId) {
+      const [summary, contacts] = await Promise.all([this.parties.summary(context.partyId), this.parties.listContacts(context.partyId, false)]);
+      return {
+        partyId: context.partyId,
+        outcome: 'known',
+        doNotContact: contacts.some((contact) => contact.doNotContact),
+        invalid: contacts.length > 0 && contacts.every((contact) => contact.invalid),
+        hasMobile: contacts.some((contact) => contact.type === ContactType.mobile && !contact.invalid),
+        hasEmail: contacts.some((contact) => contact.type === ContactType.email && !contact.invalid),
+        hasName: Boolean(summary.displayName),
+      };
+    }
+    const parsed = this.contacts(input);
+    const resolved = await this.resolver.resolvePersonForLead(parsed.contacts, input.name?.trim() || null, ContactSource.Lead);
+    return {
+      partyId: resolved.partyId,
+      outcome: resolved.outcome,
+      doNotContact: resolved.doNotContact,
+      invalid: parsed.invalid || resolved.invalidContact,
+      hasMobile: parsed.hasMobile,
+      hasEmail: parsed.hasEmail,
+      hasName: Boolean(input.name?.trim()),
+    };
   }
 
   private async detail(id: string) {

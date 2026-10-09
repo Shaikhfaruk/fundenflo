@@ -1,0 +1,26 @@
+{
+  "name": "Backlog consent: template, consent link and worker consent sync",
+  "requires": ["staffInvitation", "checkerInvitation"],
+  "steps": [
+    { "request": "01 Auth/06 Accept Staff Invitation.json" },
+    { "request": "01 Auth/07 Staff Login.json" },
+    { "request": "01 Auth/08 Verify Staff MFA.json" },
+    { "request": "49 Admin - Consents/02 Create Consent Purpose.json" },
+    { "request": "49 Admin - Consents/06 Create Consent Template.json" },
+    { "request": "49 Admin - Consents/12 Submit Consent Template Version.json" },
+    { "request": "01 Auth/06 Accept Staff Invitation.json", "identity": "checker" },
+    { "request": "01 Auth/07 Staff Login.json", "identity": "checker" },
+    { "request": "01 Auth/08 Verify Staff MFA.json", "identity": "checker" },
+    { "request": "48 Admin - Change Requests/03 Approve Change Request.json", "identity": "checker" },
+    { "request": "49 Admin - Consents/13 Publish Consent Template Version.json", "identity": "maker" },
+    { "request": "08 Leads & Imports/02 Create Lead.json" },
+    { "request": "08 Leads & Imports/14 Request Consent Link.json" },
+    { "request": "52 Ops - Party Consents/03 Record Consents.json" },
+    { "request": "52 Ops - Party Consents/01 Current Consents.json", "waitSeconds": 3 },
+    { "request": "08 Leads & Imports/04 Get Lead.json" },
+    { "request": "50 Ops - Party Facts/03 Record Facts.json" },
+    { "request": "50 Ops - Party Facts/01 Current Facts.json" },
+    { "request": "51 Ops - Party Answers/02 Submit Answers.json" },
+    { "request": "51 Ops - Party Answers/01 List Answers.json" }
+  ]
+}

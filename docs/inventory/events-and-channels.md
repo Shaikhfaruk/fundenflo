@@ -9,7 +9,7 @@
 |---|---|---|---|---|---|---|
 | `party.created` · `party.match_review.opened` | parties (`party.service.ts`, `party-resolver.service.ts`) | none yet (M1: leads relink, ops review queue) | — | M0 | `useful` | §3.3 |
 | `party.merged` | parties | sync, leads (relink), audit | — | M1 | `planned` | §3.3 |
-| `user.signed_up` | auth (`otp-login.service.ts`) | none yet (M1: referral attribution, `leads.dropoff-detect`) | — | M0 | `useful` | §3.4 |
+| `user.signed_up` | auth (`otp-login.service.ts`) | `leads.dropoff` (borrower sign-ups); M7: referral attribution | — | M0 | `useful` | §3.4 |
 | `user.status_changed` | auth (`admin-users.service.ts`) | `auth.session-revocations` | — | M0 | `useful` | §3.4 |
 | `user.mobile_changed` · `login.linked` · `login.removed` | auth (`login-methods.service.ts`) | none yet | — | M0 | `useful` | §3.4 |
 | `session.created` · `session.revoked` | auth (`session.service.ts`) | none yet (M1: real-time `session.revoked` → user room) | M1 | M0 | `useful` | §3.4 |
@@ -18,12 +18,13 @@
 | `catalog.changed` · `geo.changed` | catalog (`catalog-admin.service.ts`, `geo.service.ts`) | none yet (caches are invalidated directly after commit) | — | M1 | `useful` | §6 |
 | `attribute.changed` | attributes (`attribute-dictionary.service.ts`) | none yet (dictionary cache is invalidated directly after commit) | — | M1 | `useful` | §6.1 |
 | `facts.recorded` | attributes (`fact.service.ts`) | none yet (M1: lead quality re-score, routing re-evaluation; M5: assessments) | — | M1 | `useful` | §6.1 |
-| `consent.granted` · `consent.withdrawn` | consents (`consent.service.ts`, one event per record) | none yet (M1.6: leads `consent_pending` → routable; later documents, notifications) | — | M1 | `useful` | §7.2; spec `consents` |
+| `consent.granted` · `consent.withdrawn` | consents (`consent.service.ts`, one event per record) | `leads.consent-sync` (lead consent status); later documents, notifications | — | M1 | `useful` | §7.2; spec `consents` |
 | `organization.created` · `organization.status_changed` | access (`organization.service.ts`) | `organization.status_changed` (non-active) → `auth.session-revocations` (revokes every member's sessions) | — | M1 | `useful` | spec `partners` (suspended owner token rejected at once) |
 | `partner.registered` · `partner.verification_recommended` · `partner.verified` · `partner.rejected` · `partner.suspended` · `partner.reinstated` · `partner.level_changed` · `partner.capacity_changed` · `partner.service_areas_changed` | partners (`partner.service.ts`, `partner-admin.service.ts`) | none yet (M1.8: routing pool refresh; notifications to the owner) | — | M1 | `useful` | §7.4 |
 | `consent_purpose.changed` | consents (`consent-purpose.service.ts`) | none yet (purpose cache is invalidated directly after commit) | — | M1 | `useful` | §14 |
 | `import.batch.validated` · `import.batch.committed` · `import.batch.undone` | imports | leads, reports, notifications (to uploader) | user room | M1 | `planned` | §7.1 |
 | `lead.captured` · `lead.updated` · `lead.status_changed` · `lead.merged` · `lead.contact_revealed` | leads (`lead-capture.service.ts`, `lead.service.ts`) | none yet (M1.8: `leads.route` on captured / status_changed to `new`/`qualified`; M1.9: reports, sync) | org room (when assigned, M1.9) | M1 | `useful` | §7.3; spec `leads` |
+| `consent.requested` | consents (`consent-request.service.ts`; on send and on completion) | none yet | — | M1 | `useful` | §7.2 |
 | `lead_source.changed` · `api_client.changed` | leads, access | none yet | — | M1 | `useful` | §7.1 |
 | `lead.assignment.offered` · `accepted` · `declined` · `expired` · `revoked` · `returned` · `completed` | leads | sla, `leads.route`, notifications, reports | partner org + assignee membership rooms | M1 | `planned` | §7.3 |
 | `lead.activity.logged` · `follow_up.due` | activities | sla, notifications | assignee room | M1 | `planned` | §7.5 |
@@ -59,7 +60,7 @@ Room joins are authorised on connect, using the same CASL abilities as HTTP.
 | `partner.membership.approved` | SMS, email | partner owner | M1 | `planned` |
 | `lead.offered` | push, SMS, email | CA assignee | M1 | `planned` |
 | `lead.sla_warning` · `lead.reassigned` | push, email | CA assignee, ops | M1 | `planned` |
-| `lead.consent_request` | SMS (later WhatsApp) | lead's person | M1 | `planned` |
+| `consent.request` | SMS (later WhatsApp); DLT id `SMS_DLT_TEMPLATE_CONSENT_REQUEST`; link from `CONSENT_LINK_URL` | lead's person | M1 | `useful` |
 | `import.completed` | email | uploader | M1 | `planned` |
 | `analysis.completed` | push, WhatsApp (opt-in) | borrower | M5 | `planned` |
 | `application.status_changed` · `document.requested` | push, SMS, WhatsApp (opt-in) | borrower, partner | M6 | `planned` |

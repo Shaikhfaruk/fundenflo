@@ -46,6 +46,7 @@ export const ErrorCode = {
   CONSENT_REQUIRED: 'CONSENT_REQUIRED',
   PARTNER_ALREADY_REGISTERED: 'PARTNER_ALREADY_REGISTERED',
   API_KEY_INVALID: 'API_KEY_INVALID',
+  CONSENT_LINK_INVALID: 'CONSENT_LINK_INVALID',
   SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE',
   INTERNAL_ERROR: 'INTERNAL_ERROR',
 } as const;
@@ -100,6 +101,7 @@ export const ERROR_CATALOG: Record<ErrorCode, { status: number; message: string 
   CONSENT_REQUIRED: { status: 403, message: 'Consent for this purpose is needed first.' },
   PARTNER_ALREADY_REGISTERED: { status: 409, message: 'This account already has a partner registration.' },
   API_KEY_INVALID: { status: 401, message: 'This API key is missing, revoked or not valid.' },
+  CONSENT_LINK_INVALID: { status: 410, message: 'This consent link has expired or was already used.' },
   SERVICE_UNAVAILABLE: { status: 503, message: 'The service is temporarily unavailable. Please try again.' },
   INTERNAL_ERROR: { status: 500, message: 'Something went wrong. Please try again.' },
 };

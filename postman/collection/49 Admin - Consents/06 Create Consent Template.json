@@ -42,7 +42,8 @@
           "pm.test('responds 201', () => pm.response.to.have.status(201));",
           "pm.collectionVariables.set('consentTemplateId', String(pm.response.json().id));",
           "pm.collectionVariables.set('consentTemplateDocVersion', String(pm.response.json().version));",
-          "pm.collectionVariables.set('consentTemplateNumber', String(pm.response.json().openVersion.number));"
+          "pm.collectionVariables.set('consentTemplateNumber', String(pm.response.json().openVersion.number));",
+          "pm.collectionVariables.set('consentTemplateKey', pm.response.json().key);"
         ]
       }
     }

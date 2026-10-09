@@ -55,4 +55,6 @@ These are the places where a second copy is most tempting. Use the one listed.
 | Reading amounts written as text | `parseAmountText()` | Per-feature regexes for lakh/crore |
 | Authenticating external systems | `ApiClientService` + `@ApiKeyAuth(scope)` | Per-endpoint shared secrets or header checks |
 | Mapping the current actor to an audit actor type | `actorTypeOf()` | Local ternaries over `actor.type` |
+| Asking a person for consent by link | `ConsentRequestService.send()` | Separate SMS/WhatsApp consent flows per module |
+| Keeping lead consent status current | `LeadService.refreshConsentStatus()` via `leads.consent-sync` | Recomputing consent in routing or reports |
 | Locale handling | `common/i18n/locale.ts` (`localise`, `resolveLocale`, `@RequestLocale()`) | Per-module locale constants |

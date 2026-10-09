@@ -1,7 +1,7 @@
 # FundenFlo Backend — Architecture Diagrams
 
 > Living document. Any change that adds, renames, moves or removes a module, route group, queue, job, channel or worker updates the matching diagram here **and** [`inventory.md`](inventory.md) in the same change.
-> **Built (M0 + M1.1 – M1.6a):** system context, identity & multiple logins (diagrams 3–4, parties/users/memberships/sessions parts), audit, notifications, outbox and the four M0 queues in diagram 9, the `catalog` module (diagram 2; feeds the Category and Requirement steps in diagram 7), the `attributes` module with the `conditions` and `facts` engines (diagram 2; the fact store and rule evaluation behind every step of diagram 7), and `config-publishing` + `questionnaires` with the `state-machines` and `questionnaire` engines (diagram 7: Pre-check step and the config lifecycle), `consents` with the `consents` engine (diagram 7: Consent step; diagram 5: consent gate before sharing), `partners` light with organization lifecycle (diagram 4: partner sign-in states; diagram 5: the CA pool routing will draw from), and leads core: capture, lifecycle and the ops queue (diagrams 5 and 6, green parts). Everything else is planned. Design rationale: [`BACKEND_ARCHITECTURE_PLAN.md`](BACKEND_ARCHITECTURE_PLAN.md).
+> **Built (M0 + M1.1 – M1.6b):** system context, identity & multiple logins (diagrams 3–4, parties/users/memberships/sessions parts), audit, notifications, outbox and the four M0 queues in diagram 9, the `catalog` module (diagram 2; feeds the Category and Requirement steps in diagram 7), the `attributes` module with the `conditions` and `facts` engines (diagram 2; the fact store and rule evaluation behind every step of diagram 7), and `config-publishing` + `questionnaires` with the `state-machines` and `questionnaire` engines (diagram 7: Pre-check step and the config lifecycle), `consents` with the `consents` engine (diagram 7: Consent step; diagram 5: consent gate before sharing), `partners` light with organization lifecycle (diagram 4: partner sign-in states; diagram 5: the CA pool routing will draw from), and leads core: capture, lifecycle and the ops queue (diagrams 5 and 6, green parts). Everything else is planned. Design rationale: [`BACKEND_ARCHITECTURE_PLAN.md`](BACKEND_ARCHITECTURE_PLAN.md).
 > Last updated: 2026-10-09
 
 ## Diagrams
@@ -161,7 +161,7 @@ flowchart TB
   class auth,access,parties,catalog,attributes,questionnaires,consents,partners,leads,notifications,audit,configPublishing,conditions,facts,questionnaire,partyMatching,stateMachines,consentFold,database,queue,storage,crypto,cache built
 ```
 
-Green = built (M0 – M1.6a). Rules: engines import nothing from Nest, modules or infrastructure. Modules talk only through exported façade services or domain events. Integrations are reached only through ports.
+Green = built (M0 – M1.6b). Rules: engines import nothing from Nest, modules or infrastructure. Modules talk only through exported façade services or domain events. Integrations are reached only through ports.
 
 ---
 
@@ -277,10 +277,10 @@ flowchart LR
   WORK -->|returned| ROUTE
   APPL -->|application events| DERIVE[Lead status derived: converted / won / lost]
   classDef built fill:#d8f3dc,stroke:#2d6a4f,color:#081c15
-  class MAN,WEB,CAP,RES,LINK,MQ,FACTS,CONS,CP built
+  class MAN,WEB,DROP,CAP,RES,LINK,MQ,FACTS,CONS,CP built
 ```
 
-Green = built in M1.6a: ops entry and the API-key website intake go through `LeadCaptureService` (person matching with a name check, catalog/city/amount resolution, 30-day dedupe flag, consent and lead-capture answers, quality score, encrypted raw payload). `consent_pending` is the `consentStatus=pending` filter on `GET /ops/leads`.
+Green = built in M1.6a/b: ops entry, the API-key website intake and app drop-offs (delayed check after a borrower sign-up) go through `LeadCaptureService` (person matching with a name check, catalog/city/amount resolution, 30-day dedupe flag, consent and lead-capture answers, quality score, encrypted raw payload). `consent_pending` is the `consentStatus=pending` filter on `GET /ops/leads`; ops can send an SMS consent link (`POST /ops/leads/:id/consent-request` → public `/public/consent-requests/:token`), and `leads.consent-sync` updates open leads whenever consent changes.
 
 ---
 
@@ -453,6 +453,8 @@ flowchart LR
   SCHED -->|hourly| MAINT[maintenance.cleanup: @MaintenanceTask methods]
   RELAY --> Q[[BullMQ queues]]
   Q --> REVOKE[auth.session-revocations]
+  Q -->|consent.granted / withdrawn| CSYNC[leads.consent-sync]
+  Q -->|user.signed_up| DROPQ[leads.dropoff: delayed check]
   Q --> PROJ[projections: derived statuses, report views]
   Q --> NOTIF[notifications.dispatch]
   Q --> RTP[realtime.publish]
@@ -467,9 +469,10 @@ flowchart LR
   RTP --> GW[Socket.IO gateway + Redis adapter]
   GW --> ROOMS((rooms: user / membership / org))
   IMPAPI[Admin import validate / commit / undo] --> IMPQ[imports.process]
-  SCHED -->|hourly| DROPQ[leads.dropoff-detect]
   SCHED -->|15 min| REP[reports.refresh]
-  API[API request: OTP, invitation] -->|direct enqueue| NOTIF
+  API[API request: OTP, invitation, consent link] -->|direct enqueue| NOTIF
+  classDef built fill:#d8f3dc,stroke:#2d6a4f,color:#081c15
+  class UC,OB,RELAY,SCHED,MAINT,Q,REVOKE,CSYNC,DROPQ,NOTIF,API built
 ```
 
 Queue and job details (producers, consumers, triggers) are in [`inventory/worker-queues-jobs.md`](inventory/worker-queues-jobs.md).

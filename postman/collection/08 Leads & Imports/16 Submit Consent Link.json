@@ -1,0 +1,159 @@
+{
+  "name": "Submit Consent Link",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/public/consent-requests/:token",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "public",
+        "consent-requests",
+        ":token"
+      ],
+      "variable": [
+        {
+          "key": "token",
+          "value": "{{consentLinkToken}}"
+        }
+      ]
+    },
+    "description": "Records the person's choices against the template version the link was sent with (channel `sms_link`, linked to the lead). The lead's consent status updates shortly after via the worker. Public, rate limited per IP. The token comes from the SMS link (`CONSENT_LINK_URL?token=...`); it works once and expires after 7 days (410 `CONSENT_LINK_INVALID`).",
+    "auth": {
+      "type": "noauth"
+    },
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"items\": [\n    {\n      \"purpose\": \"contact\",\n      \"granted\": true\n    },\n    {\n      \"purpose\": \"partner_sharing\",\n      \"granted\": true\n    }\n  ]\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/public/consent-requests/:token",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "public",
+            "consent-requests",
+            ":token"
+          ],
+          "variable": [
+            {
+              "key": "token",
+              "value": "{{consentLinkToken}}"
+            }
+          ]
+        },
+        "description": "Records the person's choices against the template version the link was sent with (channel `sms_link`, linked to the lead). The lead's consent status updates shortly after via the worker. Public, rate limited per IP. The token comes from the SMS link (`CONSENT_LINK_URL?token=...`); it works once and expires after 7 days (410 `CONSENT_LINK_INVALID`).",
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"items\": [\n    {\n      \"purpose\": \"contact\",\n      \"granted\": true\n    },\n    {\n      \"purpose\": \"partner_sharing\",\n      \"granted\": true\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"consents\": [\n    {\n      \"purpose\": \"contact\",\n      \"label\": \"Contact Me About My Loan Enquiry\",\n      \"granted\": true,\n      \"everyOrganization\": true,\n      \"organizationIds\": [],\n      \"excludedOrganizationIds\": [],\n      \"basis\": \"consent\",\n      \"channel\": \"sms_link\",\n      \"lastRecordId\": \"01a121f0-2b3c-7d4e-9f50-61728394a5b6\",\n      \"lastChangedAt\": \"2026-10-09T19:20:00.000Z\",\n      \"expiresAt\": null\n    }\n  ],\n  \"missingRequired\": []\n}"
+    },
+    {
+      "name": "410 CONSENT_LINK_INVALID",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/public/consent-requests/:token",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "public",
+            "consent-requests",
+            ":token"
+          ],
+          "variable": [
+            {
+              "key": "token",
+              "value": "{{consentLinkToken}}"
+            }
+          ]
+        },
+        "description": "Records the person's choices against the template version the link was sent with (channel `sms_link`, linked to the lead). The lead's consent status updates shortly after via the worker. Public, rate limited per IP. The token comes from the SMS link (`CONSENT_LINK_URL?token=...`); it works once and expires after 7 days (410 `CONSENT_LINK_INVALID`).",
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"items\": [\n    {\n      \"purpose\": \"contact\",\n      \"granted\": true\n    },\n    {\n      \"purpose\": \"partner_sharing\",\n      \"granted\": true\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Gone",
+      "code": 410,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"CONSENT_LINK_INVALID\",\n  \"message\": \"This consent link has expired or was already used.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

@@ -29,7 +29,7 @@
     "description": "Records consent or a lawful basis captured outside the app: on a call, from an import, a web form, an SMS/WhatsApp link or a partner. `basis` is `consent` (default) or `legitimate_use` where the purpose allows it. Grants through `web_form`, `sms_link`, `whatsapp_link` or `partner_assisted` must cite `templateVersionId`; grants without a template need `evidence` (e.g. \"website form checkbox, 2026-08-14\"). Scoped purposes take `organizationIds` of the right organization type. Staff only. Reading needs party read access; recording needs party update access (ops lead, super admin).",
     "body": {
       "mode": "raw",
-      "raw": "{\n  \"channel\": \"ops_call\",\n  \"evidence\": \"Agreed on call to share with Mehta & Associates, 9 Oct\",\n  \"items\": [\n    {\n      \"purpose\": \"partner_sharing\",\n      \"granted\": true,\n      \"organizationIds\": [\n        \"{{partnerOrganizationId}}\"\n      ]\n    }\n  ]\n}",
+      "raw": "{\n  \"channel\": \"ops_call\",\n  \"evidence\": \"Asked on a call not to share with partners, 9 Oct\",\n  \"items\": [\n    {\n      \"purpose\": \"partner_sharing\",\n      \"granted\": false\n    }\n  ]\n}",
       "options": {
         "raw": {
           "language": "json"
@@ -80,7 +80,7 @@
         "description": "Records consent or a lawful basis captured outside the app: on a call, from an import, a web form, an SMS/WhatsApp link or a partner. `basis` is `consent` (default) or `legitimate_use` where the purpose allows it. Grants through `web_form`, `sms_link`, `whatsapp_link` or `partner_assisted` must cite `templateVersionId`; grants without a template need `evidence` (e.g. \"website form checkbox, 2026-08-14\"). Scoped purposes take `organizationIds` of the right organization type. Staff only. Reading needs party read access; recording needs party update access (ops lead, super admin).",
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"channel\": \"ops_call\",\n  \"evidence\": \"Agreed on call to share with Mehta & Associates, 9 Oct\",\n  \"items\": [\n    {\n      \"purpose\": \"partner_sharing\",\n      \"granted\": true,\n      \"organizationIds\": [\n        \"{{partnerOrganizationId}}\"\n      ]\n    }\n  ]\n}",
+          "raw": "{\n  \"channel\": \"ops_call\",\n  \"evidence\": \"Asked on a call not to share with partners, 9 Oct\",\n  \"items\": [\n    {\n      \"purpose\": \"partner_sharing\",\n      \"granted\": false\n    }\n  ]\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -130,7 +130,7 @@
         "description": "Records consent or a lawful basis captured outside the app: on a call, from an import, a web form, an SMS/WhatsApp link or a partner. `basis` is `consent` (default) or `legitimate_use` where the purpose allows it. Grants through `web_form`, `sms_link`, `whatsapp_link` or `partner_assisted` must cite `templateVersionId`; grants without a template need `evidence` (e.g. \"website form checkbox, 2026-08-14\"). Scoped purposes take `organizationIds` of the right organization type. Staff only. Reading needs party read access; recording needs party update access (ops lead, super admin).",
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"channel\": \"ops_call\",\n  \"evidence\": \"Agreed on call to share with Mehta & Associates, 9 Oct\",\n  \"items\": [\n    {\n      \"purpose\": \"partner_sharing\",\n      \"granted\": true,\n      \"organizationIds\": [\n        \"{{partnerOrganizationId}}\"\n      ]\n    }\n  ]\n}",
+          "raw": "{\n  \"channel\": \"ops_call\",\n  \"evidence\": \"Asked on a call not to share with partners, 9 Oct\",\n  \"items\": [\n    {\n      \"purpose\": \"partner_sharing\",\n      \"granted\": false\n    }\n  ]\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -180,7 +180,7 @@
         "description": "Records consent or a lawful basis captured outside the app: on a call, from an import, a web form, an SMS/WhatsApp link or a partner. `basis` is `consent` (default) or `legitimate_use` where the purpose allows it. Grants through `web_form`, `sms_link`, `whatsapp_link` or `partner_assisted` must cite `templateVersionId`; grants without a template need `evidence` (e.g. \"website form checkbox, 2026-08-14\"). Scoped purposes take `organizationIds` of the right organization type. Staff only. Reading needs party read access; recording needs party update access (ops lead, super admin).",
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"channel\": \"ops_call\",\n  \"evidence\": \"Agreed on call to share with Mehta & Associates, 9 Oct\",\n  \"items\": [\n    {\n      \"purpose\": \"partner_sharing\",\n      \"granted\": true,\n      \"organizationIds\": [\n        \"{{partnerOrganizationId}}\"\n      ]\n    }\n  ]\n}",
+          "raw": "{\n  \"channel\": \"ops_call\",\n  \"evidence\": \"Asked on a call not to share with partners, 9 Oct\",\n  \"items\": [\n    {\n      \"purpose\": \"partner_sharing\",\n      \"granted\": false\n    }\n  ]\n}",
           "options": {
             "raw": {
               "language": "json"

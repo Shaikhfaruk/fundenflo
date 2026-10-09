@@ -162,6 +162,8 @@ Built in M1.6a (Postman `08 Leads & Imports/`). Controllers: `backend/src/module
 | `POST` | `/ops/leads/:id/lose` | leads | staff | M1 | `useful` |
 | `POST` | `/ops/leads/merge` | leads | staff | M1 | `useful` |
 | `POST` | `/ops/leads/:id/reveal-contact` | leads | staff | M1 | `useful` |
+| `POST` | `/ops/leads/:id/consent-request` | leads → consents (`ConsentRequestService`) | staff | M1 | `useful` |
+| `GET` `POST` | `/public/consent-requests/:token` | consents (`public-consent-requests.controller.ts`) | public (token, rate limited) | M1 | `useful` |
 
 Planned:
 
@@ -171,7 +173,6 @@ Planned:
 | `POST` | `/ops/leads/:id/route` | leads | staff | M1 | `planned` |
 | `POST` | `/ops/leads/bulk-assign` | leads | staff | M1 | `planned` |
 | `POST` | `/ops/leads/bulk-route` | leads | staff | M1 | `planned` |
-| `POST` | `/ops/leads/:id/consent-request` | leads | staff | M1 | `planned` |
 | `GET` | `/ops/party-match-reviews` | parties | staff | M1 | `planned` |
 | `POST` | `/ops/party-match-reviews/:id/resolve` | parties | staff | M1 | `planned` |
 | `POST` | `/admin/imports` | imports | staff | M1 | `planned` |

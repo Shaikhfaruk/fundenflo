@@ -57,6 +57,7 @@ model Party {
   facts             BorrowerFact[]
   answers           Answer[]
   consentRecords    ConsentRecord[]
+  consentRequests   ConsentRequest[]
   leads             Lead[]              @relation("lead_person")
   businessLeads     Lead[]              @relation("lead_business")
 

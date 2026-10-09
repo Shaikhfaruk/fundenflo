@@ -73,9 +73,13 @@ export const envSchema = z
     SMS_DLT_ENTITY_ID: optional(z.string().regex(/^\d{10,30}$/, 'must be the numeric DLT principal entity ID')),
     SMS_DLT_TEMPLATE_AUTH_OTP: optional(z.string().regex(/^\d{10,30}$/, 'must be a numeric DLT template ID')),
     SMS_DLT_TEMPLATE_INVITATION_MEMBER: optional(z.string().regex(/^\d{10,30}$/, 'must be a numeric DLT template ID')),
+    SMS_DLT_TEMPLATE_CONSENT_REQUEST: optional(z.string().regex(/^\d{10,30}$/, 'must be a numeric DLT template ID')),
     EMAIL_DRIVER: z.enum(['smtp', 'log']),
     SMTP_URL: optional(z.url()),
     EMAIL_FROM: optional(z.string().min(3)),
+
+    CONSENT_LINK_URL: optional(z.url({ protocol: /^https?$/ })),
+    LEAD_DROPOFF_DELAY_HOURS: z.coerce.number().int().min(1).max(720).default(24),
 
     STORAGE_DRIVER: z.enum(['azure_blob']),
     STORAGE_CONNECTION_STRING: optional(z.string().min(1)),

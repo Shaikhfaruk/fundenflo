@@ -78,3 +78,11 @@ export type OpsConsentsDto = z.output<typeof opsConsentsSchema>;
 
 export const consentHistorySchema = pageQuerySchema.extend({ purpose: purposeKeySchema.optional() });
 export type ConsentHistoryQuery = z.output<typeof consentHistorySchema>;
+
+export const consentLinkSubmitSchema = z
+  .object({
+    locale: z.enum(SUPPORTED_LOCALES).optional(),
+    items: z.array(z.object({ purpose: purposeKeySchema, granted: z.boolean() }).strict()).min(1).max(MAX_CONSENT_ITEMS),
+  })
+  .strict();
+export type ConsentLinkSubmitDto = z.output<typeof consentLinkSubmitSchema>;

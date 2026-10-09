@@ -5,4 +5,7 @@ export const EVENT_ROUTES: Partial<Record<EventName, QueueName[]>> = {
   [EventName.MembershipChanged]: [QueueName.AuthSessionRevocations],
   [EventName.UserStatusChanged]: [QueueName.AuthSessionRevocations],
   [EventName.OrganizationStatusChanged]: [QueueName.AuthSessionRevocations],
+  [EventName.ConsentGranted]: [QueueName.LeadsConsentSync],
+  [EventName.ConsentWithdrawn]: [QueueName.LeadsConsentSync],
+  [EventName.UserSignedUp]: [QueueName.LeadsDropoff],
 };

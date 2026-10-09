@@ -14,7 +14,9 @@ import type { Prisma } from '../../../generated/prisma/client.js';
 import { ChangeRecorder } from '../../audit/application/change-recorder.service.js';
 import { AuditAction, AuditEntity } from '../../audit/domain/audit.constants.js';
 import { CatalogQueryService } from '../../catalog/application/catalog-query.service.js';
+import { ConsentRequestService } from '../../consents/application/consent-request.service.js';
 import { PartyService } from '../../parties/application/party.service.js';
+import { DEFAULT_LEAD_CONSENT_CONTEXT } from '../domain/lead.constants.js';
 import { LeadRepository } from '../infrastructure/lead.repository.js';
 import { LeadConsentPolicy } from './lead-consent.policy.js';
 import { LeadLocator } from './lead-locator.service.js';
@@ -72,6 +74,7 @@ export class LeadService {
     private readonly consentPolicy: LeadConsentPolicy,
     private readonly timeline: LeadTimeline,
     private readonly changes: ChangeRecorder,
+    private readonly consentRequests: ConsentRequestService,
   ) {}
 
   async list(filters: LeadFilters) {
@@ -190,6 +193,37 @@ export class LeadService {
       payload: { leadId: survivor.id, mergedLeadIds: others.map((lead) => lead.id) },
     });
     return this.get(survivor.id);
+  }
+
+  async requestConsent(id: string, contextKey: string | undefined, requestedByUserId: string) {
+    const lead = await this.require(id);
+    const context = contextKey ?? (await this.leads.findSource(lead.sourceId))?.consentContext ?? DEFAULT_LEAD_CONSENT_CONTEXT;
+    const request = await this.consentRequests.send(lead.partyId, { contextKey: context, leadId: lead.id, reference: lead.ref, requestedByUserId });
+    await this.timeline.record(id, LeadEventType.consent_requested, { data: { requestId: request.id, context, recipient: request.recipient } });
+    return request;
+  }
+
+  @Transactional()
+  async refreshConsentStatus(partyId: string): Promise<number> {
+    const open = await this.leads.listOpenForParty(partyId, OPEN_LEAD_STATES);
+    if (open.length === 0) return 0;
+    const status = await this.consentPolicy.statusFor(partyId);
+    const changed = open.filter((lead) => lead.consentStatus !== status);
+    if (changed.length === 0) return 0;
+    const presence = await this.presence(partyId, open[0]?.party.displayName ?? null);
+    for (const lead of changed) {
+      await this.leads.update(lead.id, { consentStatus: status, qualityScore: scoreFor({ ...lead, consentStatus: status }, presence) });
+      await this.timeline.record(lead.id, LeadEventType.consent_changed, { data: { from: lead.consentStatus, to: status } });
+      await this.changes.record({
+        action: AuditAction.LeadUpdated,
+        entityType: AuditEntity.Lead,
+        entityId: lead.id,
+        event: EventName.LeadUpdated,
+        metadata: { ref: lead.ref, fields: ['consentStatus'], from: lead.consentStatus, to: status },
+        payload: { leadId: lead.id, consentStatus: status },
+      });
+    }
+    return changed.length;
   }
 
   @Transactional()

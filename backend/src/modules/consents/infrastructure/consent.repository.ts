@@ -1,6 +1,7 @@
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
 
+import { ConsentRequestStatus } from '../../../common/enums/db.enums.js';
 import type { Prisma } from '../../../generated/prisma/client.js';
 import type { PrismaTx } from '../../../infrastructure/database/database.types.js';
 
@@ -33,6 +34,26 @@ export class ConsentRepository {
       where: { partyId, ...(purposeKeys ? { purposeKey: { in: purposeKeys } } : {}) },
       orderBy: [{ recordedAt: 'asc' }, { id: 'asc' }],
     });
+  }
+
+  createRequest(data: Prisma.ConsentRequestUncheckedCreateInput) {
+    return this.txHost.tx.consentRequest.create({ data });
+  }
+
+  findRequestByTokenHash(tokenHash: string) {
+    return this.txHost.tx.consentRequest.findUnique({ where: { tokenHash } });
+  }
+
+  cancelPendingRequests(partyId: string, templateVersionId: string) {
+    return this.txHost.tx.consentRequest.updateMany({ where: { partyId, templateVersionId, status: ConsentRequestStatus.pending }, data: { status: ConsentRequestStatus.cancelled } });
+  }
+
+  completeRequest(id: string) {
+    return this.txHost.tx.consentRequest.updateMany({ where: { id, status: ConsentRequestStatus.pending }, data: { status: ConsentRequestStatus.completed, completedAt: new Date() } });
+  }
+
+  expireRequest(id: string) {
+    return this.txHost.tx.consentRequest.updateMany({ where: { id, status: ConsentRequestStatus.pending }, data: { status: ConsentRequestStatus.expired } });
   }
 
   history(partyId: string, purposeKey: string | undefined, take: number, idFilter?: { lt: string }) {

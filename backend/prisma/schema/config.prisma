@@ -67,10 +67,11 @@ model ConfigVersion {
   createdAt         DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt         DateTime            @updatedAt @map("updated_at") @db.Timestamptz(3)
 
-  document       ConfigDocument        @relation(fields: [documentId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  changeRequests ConfigChangeRequest[]
-  answers        Answer[]
-  consentRecords ConsentRecord[]
+  document        ConfigDocument        @relation(fields: [documentId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  changeRequests  ConfigChangeRequest[]
+  answers         Answer[]
+  consentRecords  ConsentRecord[]
+  consentRequests ConsentRequest[]
 
   @@unique([documentId, number])
   @@index([status, effectiveFrom])

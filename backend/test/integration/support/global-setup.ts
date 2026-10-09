@@ -53,6 +53,7 @@ export default async function setup(project: TestProject) {
     STORAGE_DRIVER: 'azure_blob',
     STORAGE_CONNECTION_STRING: `DefaultEndpointsProtocol=http;AccountName=${AZURITE_ACCOUNT.name};AccountKey=${AZURITE_ACCOUNT.key};BlobEndpoint=${blobEndpoint};`,
     STORAGE_CONTAINER: 'fundenflo-test',
+    CONSENT_LINK_URL: 'https://consent.fundenflo.invalid/c',
   });
 
   return async () => {

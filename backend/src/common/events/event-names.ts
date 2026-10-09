@@ -45,6 +45,7 @@ export const EventName = {
   LeadMerged: 'lead.merged',
   LeadContactRevealed: 'lead.contact_revealed',
   LeadSourceChanged: 'lead_source.changed',
+  ConsentRequested: 'consent.requested',
 } as const;
 
 export type EventName = (typeof EventName)[keyof typeof EventName];

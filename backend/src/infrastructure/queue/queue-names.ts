@@ -3,6 +3,8 @@ export const QueueName = {
   NotificationsDispatch: 'notifications.dispatch',
   AuthSessionRevocations: 'auth.session-revocations',
   MaintenanceCleanup: 'maintenance.cleanup',
+  LeadsConsentSync: 'leads.consent-sync',
+  LeadsDropoff: 'leads.dropoff',
 } as const;
 
 export type QueueName = (typeof QueueName)[keyof typeof QueueName];

@@ -11,6 +11,7 @@ export {
   ConfigVersionStatus,
   ConsentBasis,
   ConsentChannel,
+  ConsentRequestStatus,
   ConsentScopeKind,
   ContactType,
   DataSensitivity,

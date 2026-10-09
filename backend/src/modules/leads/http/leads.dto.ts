@@ -113,6 +113,9 @@ export const leadMergeSchema = z.object({ survivorLeadId: z.uuid(), leadIds: z.a
 export type LeadMergeDto = z.output<typeof leadMergeSchema>;
 
 export const revealContactSchema = z.object({ reason: note }).strict();
+
+export const consentRequestSchema = z.object({ context: z.string().trim().regex(CONFIG_KEY_PATTERN).optional() }).strict();
+export type ConsentRequestDto = z.output<typeof consentRequestSchema>;
 export type RevealContactDto = z.output<typeof revealContactSchema>;
 
 export const leadSourceSchema = z
