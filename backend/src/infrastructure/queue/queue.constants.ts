@@ -20,7 +20,10 @@ export const OUTBOX_RELAY_BATCH_SIZE = 200;
 
 export const MAINTENANCE_CRON = '0 * * * *';
 
+export const SLA_SWEEP_INTERVAL_MS = 30_000;
+
 export const JobSchedulerId = {
   OutboxRelay: 'outbox-relay',
   MaintenanceCleanup: 'maintenance-cleanup',
+  SlaSweep: 'sla-sweep',
 } as const;

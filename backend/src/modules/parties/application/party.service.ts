@@ -71,6 +71,23 @@ export class PartyService {
     return contact;
   }
 
+  async requireContact(partyId: string, contactId: string) {
+    const contact = (await this.parties.listContacts(partyId)).find((row) => row.id === contactId);
+    if (!contact) throw new AppError(ErrorCode.VALIDATION_FAILED, { details: [{ path: 'contactId', code: 'not_a_contact', message: 'not a contact of this person' }] });
+    return contact;
+  }
+
+  async markContactInvalid(partyId: string, contactId: string): Promise<boolean> {
+    const contact = await this.requireContact(partyId, contactId);
+    if (contact.invalidAt || contact.verifiedAt) return false;
+    await this.parties.updateContact(contact.id, { invalidAt: new Date() });
+    return true;
+  }
+
+  async hasUsableContact(partyId: string, type: ContactType): Promise<boolean> {
+    return (await this.parties.listContacts(partyId)).some((contact) => contact.type === type && !contact.invalidAt && !contact.doNotContact);
+  }
+
   async assertExists(partyId: string): Promise<void> {
     if (!(await this.parties.findById(partyId))) throw new AppError(ErrorCode.NOT_FOUND, { details: { partyId } });
   }

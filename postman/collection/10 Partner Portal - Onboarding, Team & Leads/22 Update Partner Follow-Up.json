@@ -1,0 +1,215 @@
+{
+  "name": "Update Partner Follow-Up",
+  "request": {
+    "method": "PATCH",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "If-Match",
+        "value": "\"{{followUpVersion}}\""
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/partner/follow-ups/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "partner",
+        "follow-ups",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{followUpId}}"
+        }
+      ]
+    },
+    "description": "Completes (`done`), cancels or reschedules (`dueAt`) an open follow-up, with an optional `outcomeNote`. Closed follow-ups cannot change (409). Partner context; a member can change only their own.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"status\": \"done\",\n  \"outcomeNote\": \"Statements received on WhatsApp\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{followUpVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/partner/follow-ups/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "follow-ups",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{followUpId}}"
+            }
+          ]
+        },
+        "description": "Completes (`done`), cancels or reschedules (`dueAt`) an open follow-up, with an optional `outcomeNote`. Closed follow-ups cannot change (409). Partner context; a member can change only their own.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"done\",\n  \"outcomeNote\": \"Statements received on WhatsApp\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12220-3c4d-7e5f-8061-728394a5b6c7\",\n  \"entityType\": \"lead\",\n  \"entityId\": \"01a121e0-1a2b-7c3d-8e4f-5061728394a5\",\n  \"organizationId\": \"01a121c0-6f70-7b82-a394-a5b6c7d8e9fa\",\n  \"assigneeUserId\": \"01a121c0-5e6f-7a71-9283-94a5b6c7d8e9\",\n  \"assigneeMembershipId\": \"01a121d0-3c4d-7e5f-8061-728394a5b6c7\",\n  \"dueAt\": \"2026-10-11T05:30:00.000Z\",\n  \"overdue\": false,\n  \"note\": \"Collect six months of bank statements\",\n  \"status\": \"done\",\n  \"doneAt\": \"2026-10-11T05:10:00.000Z\",\n  \"outcomeNote\": \"Statements received on WhatsApp\",\n  \"createdByUserId\": \"01a121c0-5e6f-7a71-9283-94a5b6c7d8e9\",\n  \"version\": 2,\n  \"createdAt\": \"2026-10-10T11:15:00.000Z\",\n  \"updatedAt\": \"2026-10-10T11:15:00.000Z\"\n}"
+    },
+    {
+      "name": "409 VERSION_CONFLICT",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{followUpVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/partner/follow-ups/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "follow-ups",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{followUpId}}"
+            }
+          ]
+        },
+        "description": "Completes (`done`), cancels or reschedules (`dueAt`) an open follow-up, with an optional `outcomeNote`. Closed follow-ups cannot change (409). Partner context; a member can change only their own.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"done\",\n  \"outcomeNote\": \"Statements received on WhatsApp\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VERSION_CONFLICT\",\n  \"message\": \"This record was changed by someone else. Reload it and try again.\",\n  \"details\": {\n    \"currentVersion\": 2\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{followUpVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/partner/follow-ups/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "follow-ups",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{followUpId}}"
+            }
+          ]
+        },
+        "description": "Completes (`done`), cancels or reschedules (`dueAt`) an open follow-up, with an optional `outcomeNote`. Closed follow-ups cannot change (409). Partner context; a member can change only their own.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"done\",\n  \"outcomeNote\": \"Statements received on WhatsApp\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

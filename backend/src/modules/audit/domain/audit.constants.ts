@@ -72,6 +72,8 @@ export const AuditAction = {
   AssignmentReturned: 'lead.assignment_returned',
   AssignmentCompleted: 'lead.assignment_completed',
   AssignmentReassigned: 'lead.assignment_reassigned',
+  LeadSlaWarned: 'lead.sla_warned',
+  LeadSlaBreached: 'lead.sla_breached',
 } as const;
 
 export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction];

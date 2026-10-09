@@ -1,4 +1,7 @@
 export {
+  ActivityEntityType,
+  ActivityOutcome,
+  ActivityType,
   ActorType,
   AnswerChannel,
   ApiClientStatus,
@@ -20,6 +23,7 @@ export {
   FactProvenance,
   GeoStateKind,
   IdentifierType,
+  FollowUpStatus,
   ImportKind,
   ImportRowStatus,
   ImportStatus,
@@ -49,6 +53,7 @@ export {
   RelationshipType,
   Role,
   SessionContext,
+  SlaTimerStatus,
   UserStatus,
   VerificationDecision,
 } from '../../generated/prisma/enums.js';

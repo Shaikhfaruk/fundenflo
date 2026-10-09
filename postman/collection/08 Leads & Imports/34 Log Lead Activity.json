@@ -1,0 +1,153 @@
+{
+  "name": "Log Lead Activity",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/ops/leads/:id/activities",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "leads",
+        ":id",
+        "activities"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{leadId}}"
+        }
+      ]
+    },
+    "description": "Logs a staff call, message or note on a lead (for example consent calls on the backlog). `type`: `call`, `meeting`, `whatsapp`, `email`, `sms` or `note` (a note needs `body`). Calls may carry `outcome` (`connected`, `no_answer`, `busy`, `wrong_number`, `call_back`, `switched_off`), `durationSeconds` and `contactId` (from the contact reveal). `occurredAt` defaults to now, may be backdated up to 30 days and not in the future. Activities cannot be edited. Staff activities do not count towards a CA's first-contact deadline. Staff only. Staff activities are visible to staff only.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"type\": \"note\",\n  \"body\": \"Borrower prefers calls after 6 pm\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/leads/:id/activities",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "leads",
+            ":id",
+            "activities"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{leadId}}"
+            }
+          ]
+        },
+        "description": "Logs a staff call, message or note on a lead (for example consent calls on the backlog). `type`: `call`, `meeting`, `whatsapp`, `email`, `sms` or `note` (a note needs `body`). Calls may carry `outcome` (`connected`, `no_answer`, `busy`, `wrong_number`, `call_back`, `switched_off`), `durationSeconds` and `contactId` (from the contact reveal). `occurredAt` defaults to now, may be backdated up to 30 days and not in the future. Activities cannot be edited. Staff activities do not count towards a CA's first-contact deadline. Staff only. Staff activities are visible to staff only.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"type\": \"note\",\n  \"body\": \"Borrower prefers calls after 6 pm\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12220-2b3c-7d4e-9f50-61728394a5b6\",\n  \"entityType\": \"lead\",\n  \"entityId\": \"01a121e0-1a2b-7c3d-8e4f-5061728394a5\",\n  \"organizationId\": null,\n  \"type\": \"note\",\n  \"outcome\": null,\n  \"body\": \"Borrower prefers calls after 6 pm\",\n  \"contactId\": null,\n  \"durationSeconds\": null,\n  \"occurredAt\": \"2026-10-10T11:15:00.000Z\",\n  \"actorUserId\": \"01a121c0-5e6f-7a71-9283-94a5b6c7d8e9\",\n  \"actorMembershipId\": null,\n  \"createdAt\": \"2026-10-10T11:15:00.000Z\"\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/leads/:id/activities",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "leads",
+            ":id",
+            "activities"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{leadId}}"
+            }
+          ]
+        },
+        "description": "Logs a staff call, message or note on a lead (for example consent calls on the backlog). `type`: `call`, `meeting`, `whatsapp`, `email`, `sms` or `note` (a note needs `body`). Calls may carry `outcome` (`connected`, `no_answer`, `busy`, `wrong_number`, `call_back`, `switched_off`), `durationSeconds` and `contactId` (from the contact reveal). `occurredAt` defaults to now, may be backdated up to 30 days and not in the future. Activities cannot be edited. Staff activities do not count towards a CA's first-contact deadline. Staff only. Staff activities are visible to staff only.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"type\": \"note\",\n  \"body\": \"Borrower prefers calls after 6 pm\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"body\",\n      \"code\": \"custom\",\n      \"message\": \"a note needs a body\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

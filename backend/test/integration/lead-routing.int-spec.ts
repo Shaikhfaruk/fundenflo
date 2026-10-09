@@ -2,8 +2,6 @@ import { ClsService } from 'nestjs-cls';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import { Role } from '../../src/common/enums/db.enums.js';
-import { QueueName } from '../../src/infrastructure/queue/queue-names.js';
-import { QueueRegistry } from '../../src/infrastructure/queue/queue-registry.service.js';
 import { LeadAssignmentService } from '../../src/modules/leads/application/lead-assignment.service.js';
 import { bearer, createPartnerFirm, createStaffSession, type PartnerFirmInput, randomMobile, type StaffSession } from './support/fixtures.js';
 import { startTestApp, type TestApp } from './support/test-app.js';
@@ -90,8 +88,9 @@ describe('lead routing to CAs', () => {
     expect(hoursLeft).toBeGreaterThan(1.9);
     expect(hoursLeft).toBeLessThanOrEqual(2);
 
-    const expiryJob = await t.app.get(QueueRegistry).get(QueueName.LeadsRoute).getJob(`expire-${routed.body.assignments[0].id}`);
-    expect(expiryJob?.opts.delay).toBe(2 * 3_600_000);
+    const acceptTimer = await t.prisma.slaTimer.findFirstOrThrow({ where: { entityId: routed.body.assignments[0].id } });
+    expect(acceptTimer).toMatchObject({ kind: 'lead_assignment.accept', status: 'pending' });
+    expect(acceptTimer.dueAt.toISOString()).toBe(routed.body.assignments[0].respondBy);
     const detail = await t.api().get(`/v1/ops/leads/${created.id}`).set(bearer(ops.accessToken)).expect(200);
     expect(detail.body.assignments[0]).toMatchObject({ status: 'offered', strategy: 'round_robin', organization: { id: offeredTo } });
     expect(detail.body.events[0]).toMatchObject({ type: 'routed', data: { outcome: 'offered', rule: 'msme_haryana' } });

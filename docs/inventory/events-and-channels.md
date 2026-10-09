@@ -27,9 +27,9 @@
 | `consent.requested` | consents (`consent-request.service.ts`; on send and on completion) | none yet | — | M1 | `useful` | §7.2 |
 | `lead_source.changed` · `api_client.changed` | leads, access | none yet | — | M1 | `useful` | §7.1 |
 | `lead.assignment.offered` · `accepted` · `declined` · `expired` · `revoked` · `returned` · `completed` · `reassigned` | leads (`lead-assignment.service.ts`, via `ChangeRecorder`) | `leads.route` (`declined`, `expired`, `revoked` → route again; `returned` routes through the lead's `status_changed` to `new`); next: notifications to the CA and first-contact SLA (M1.8c), reports and realtime (M1.9) | partner org + assignee membership rooms (M1.9) | M1 | `useful` | specs `lead-routing`, `partner-leads`; flows `lead-routing`, `partner-leads` |
-| `lead.activity.logged` · `follow_up.due` | activities | sla, notifications | assignee room | M1 | `planned` | §7.5 |
+| `follow_up.due` | activities | notifications (reminder) | assignee room | M1 | `planned` | §7.5; activities are lead timeline entries (`activity_logged`), not a separate domain event |
 | `lead.converted` · `lead.offline_conversion.recorded` | leads | commissions (lead terms), reports | org room | M1 / M3 | `planned` | §7.5 |
-| `sla.warning` · `sla.breached` | sla | leads, applications, notifications | assignee room | M1 | `planned` | §7.6 |
+| `lead.sla_warned` · `lead.sla_breached` | leads (`lead-sla.handlers.ts`, first-contact SLA, via `ChangeRecorder`) | none yet (M1.8d: CA warning, ops escalation notifications; M1.9 reports) | assignee room (M1.9) | M1 | `useful` | spec `lead-activities` |
 | `config.changed` · `config.change_requested` · `config.change_decided` · `config.published` · `config.retired` | config-publishing (`config-publishing.service.ts`) | none yet (caches are invalidated directly after commit; M1: notify checkers on `config.change_requested`, catalog availability on `config.published` for lender products) | — | M1 | `useful` | §6.9; spec `config-publishing` asserts the `config.published` outbox row |
 | `question.changed` | questionnaires (`question.service.ts`) | none yet | — | M1 | `useful` | §6.2 |
 | `answers.recorded` | questionnaires (`questionnaire.service.ts`) | none yet (M1: lead quality re-score, routing re-evaluation) | — | M1 | `useful` | §6.2 |

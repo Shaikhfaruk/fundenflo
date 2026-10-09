@@ -85,6 +85,15 @@ export type PartnerInboxView = (typeof PartnerInboxView)[keyof typeof PartnerInb
 
 export const ROUTE_JOB = 'route';
 
-export const EXPIRE_OFFER_JOB = 'expire_offer';
+export const LeadSlaKind = {
+  AssignmentAccept: 'lead_assignment.accept',
+  AssignmentFirstContact: 'lead_assignment.first_contact',
+} as const;
+
+export type LeadSlaKind = (typeof LeadSlaKind)[keyof typeof LeadSlaKind];
+
+export const LEAD_ASSIGNMENT_SLA_ENTITY = 'lead_assignment';
+
+export const SLA_WARN_AT_RATIO = 0.75;
 
 export const BULK_ROUTE_MAX = 500;

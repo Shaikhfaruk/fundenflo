@@ -1,39 +1,166 @@
 {
-  "name": "CA lead inbox: masked offer, accept, reveal, hand-over, lost, decline and return",
-  "requires": ["staffInvitation", "checkerInvitation"],
+  "name": "CA lead inbox: masked offer, accept, reveal, activities, follow-ups, hand-over, lost, decline and return",
+  "requires": [
+    "staffInvitation",
+    "checkerInvitation"
+  ],
   "steps": [
-    { "request": "01 Auth/01 Request OTP.json", "identity": "partner", "variables": { "loginAs": "ca" } },
-    { "request": "01 Auth/02 Verify OTP.json", "identity": "partner" },
-    { "request": "10 Partner Portal - Onboarding, Team & Leads/01 Partner Signup.json", "identity": "partner" },
-    { "request": "01 Auth/06 Accept Staff Invitation.json", "identity": "maker" },
-    { "request": "01 Auth/07 Staff Login.json", "identity": "maker" },
-    { "request": "01 Auth/08 Verify Staff MFA.json", "identity": "maker" },
-    { "request": "43 Admin - Partners/03 Verify Partner.json", "identity": "maker" },
-    { "request": "01 Auth/06 Accept Staff Invitation.json", "identity": "checker" },
-    { "request": "01 Auth/07 Staff Login.json", "identity": "checker" },
-    { "request": "01 Auth/08 Verify Staff MFA.json", "identity": "checker" },
-    { "request": "43 Admin - Partners/03 Verify Partner.json", "identity": "checker" },
-    { "request": "53 Admin - Routing Rules/02 Create Routing Rule.json", "identity": "maker", "variables": { "leadCampaign": "postman_partner_leads_{{$timestamp}}" } },
-    { "request": "53 Admin - Routing Rules/08 Submit Routing Rule Version.json" },
-    { "request": "48 Admin - Change Requests/03 Approve Change Request.json", "identity": "checker" },
-    { "request": "53 Admin - Routing Rules/09 Publish Routing Rule Version.json", "identity": "maker" },
-    { "request": "08 Leads & Imports/02 Create Lead.json" },
-    { "request": "08 Leads & Imports/28 Route Lead.json" },
-    { "request": "01 Auth/01 Request OTP.json", "identity": "partner", "variables": { "loginAs": "ca" }, "waitSeconds": 31 },
-    { "request": "01 Auth/02 Verify OTP.json", "identity": "partner" },
-    { "request": "10 Partner Portal - Onboarding, Team & Leads/10 List Partner Leads.json", "identity": "partner" },
-    { "request": "10 Partner Portal - Onboarding, Team & Leads/11 Get Partner Lead.json", "identity": "partner" },
-    { "request": "10 Partner Portal - Onboarding, Team & Leads/12 Accept Partner Lead.json", "identity": "partner" },
-    { "request": "10 Partner Portal - Onboarding, Team & Leads/14 Reveal Partner Lead Contact.json", "identity": "partner" },
-    { "request": "10 Partner Portal - Onboarding, Team & Leads/15 Sub-Assign Partner Lead.json", "identity": "partner" },
-    { "request": "10 Partner Portal - Onboarding, Team & Leads/16 Mark Partner Lead Lost.json", "identity": "partner" },
-    { "request": "08 Leads & Imports/02 Create Lead.json", "identity": "maker" },
-    { "request": "08 Leads & Imports/28 Route Lead.json" },
-    { "request": "10 Partner Portal - Onboarding, Team & Leads/13 Decline Partner Lead.json", "identity": "partner" },
-    { "request": "08 Leads & Imports/02 Create Lead.json", "identity": "maker" },
-    { "request": "08 Leads & Imports/28 Route Lead.json" },
-    { "request": "10 Partner Portal - Onboarding, Team & Leads/12 Accept Partner Lead.json", "identity": "partner" },
-    { "request": "10 Partner Portal - Onboarding, Team & Leads/17 Return Partner Lead.json", "identity": "partner" },
-    { "request": "53 Admin - Routing Rules/10 Retire Routing Rule Version.json", "identity": "maker" }
+    {
+      "request": "01 Auth/01 Request OTP.json",
+      "identity": "partner",
+      "variables": {
+        "loginAs": "ca"
+      }
+    },
+    {
+      "request": "01 Auth/02 Verify OTP.json",
+      "identity": "partner"
+    },
+    {
+      "request": "10 Partner Portal - Onboarding, Team & Leads/01 Partner Signup.json",
+      "identity": "partner"
+    },
+    {
+      "request": "01 Auth/06 Accept Staff Invitation.json",
+      "identity": "maker"
+    },
+    {
+      "request": "01 Auth/07 Staff Login.json",
+      "identity": "maker"
+    },
+    {
+      "request": "01 Auth/08 Verify Staff MFA.json",
+      "identity": "maker"
+    },
+    {
+      "request": "43 Admin - Partners/03 Verify Partner.json",
+      "identity": "maker"
+    },
+    {
+      "request": "01 Auth/06 Accept Staff Invitation.json",
+      "identity": "checker"
+    },
+    {
+      "request": "01 Auth/07 Staff Login.json",
+      "identity": "checker"
+    },
+    {
+      "request": "01 Auth/08 Verify Staff MFA.json",
+      "identity": "checker"
+    },
+    {
+      "request": "43 Admin - Partners/03 Verify Partner.json",
+      "identity": "checker"
+    },
+    {
+      "request": "53 Admin - Routing Rules/02 Create Routing Rule.json",
+      "identity": "maker",
+      "variables": {
+        "leadCampaign": "postman_partner_leads_{{$timestamp}}"
+      }
+    },
+    {
+      "request": "53 Admin - Routing Rules/08 Submit Routing Rule Version.json"
+    },
+    {
+      "request": "48 Admin - Change Requests/03 Approve Change Request.json",
+      "identity": "checker"
+    },
+    {
+      "request": "53 Admin - Routing Rules/09 Publish Routing Rule Version.json",
+      "identity": "maker"
+    },
+    {
+      "request": "08 Leads & Imports/02 Create Lead.json"
+    },
+    {
+      "request": "08 Leads & Imports/28 Route Lead.json"
+    },
+    {
+      "request": "01 Auth/01 Request OTP.json",
+      "identity": "partner",
+      "variables": {
+        "loginAs": "ca"
+      },
+      "waitSeconds": 31
+    },
+    {
+      "request": "01 Auth/02 Verify OTP.json",
+      "identity": "partner"
+    },
+    {
+      "request": "10 Partner Portal - Onboarding, Team & Leads/10 List Partner Leads.json",
+      "identity": "partner"
+    },
+    {
+      "request": "10 Partner Portal - Onboarding, Team & Leads/11 Get Partner Lead.json",
+      "identity": "partner"
+    },
+    {
+      "request": "10 Partner Portal - Onboarding, Team & Leads/12 Accept Partner Lead.json",
+      "identity": "partner"
+    },
+    {
+      "request": "10 Partner Portal - Onboarding, Team & Leads/14 Reveal Partner Lead Contact.json",
+      "identity": "partner"
+    },
+    {
+      "request": "10 Partner Portal - Onboarding, Team & Leads/19 Log Partner Lead Activity.json",
+      "identity": "partner"
+    },
+    {
+      "request": "10 Partner Portal - Onboarding, Team & Leads/18 List Partner Lead Activities.json",
+      "identity": "partner"
+    },
+    {
+      "request": "10 Partner Portal - Onboarding, Team & Leads/20 Schedule Partner Follow-Up.json",
+      "identity": "partner"
+    },
+    {
+      "request": "10 Partner Portal - Onboarding, Team & Leads/21 List Partner Follow-Ups.json",
+      "identity": "partner"
+    },
+    {
+      "request": "10 Partner Portal - Onboarding, Team & Leads/22 Update Partner Follow-Up.json",
+      "identity": "partner"
+    },
+    {
+      "request": "10 Partner Portal - Onboarding, Team & Leads/15 Sub-Assign Partner Lead.json",
+      "identity": "partner"
+    },
+    {
+      "request": "10 Partner Portal - Onboarding, Team & Leads/16 Mark Partner Lead Lost.json",
+      "identity": "partner"
+    },
+    {
+      "request": "08 Leads & Imports/02 Create Lead.json",
+      "identity": "maker"
+    },
+    {
+      "request": "08 Leads & Imports/28 Route Lead.json"
+    },
+    {
+      "request": "10 Partner Portal - Onboarding, Team & Leads/13 Decline Partner Lead.json",
+      "identity": "partner"
+    },
+    {
+      "request": "08 Leads & Imports/02 Create Lead.json",
+      "identity": "maker"
+    },
+    {
+      "request": "08 Leads & Imports/28 Route Lead.json"
+    },
+    {
+      "request": "10 Partner Portal - Onboarding, Team & Leads/12 Accept Partner Lead.json",
+      "identity": "partner"
+    },
+    {
+      "request": "10 Partner Portal - Onboarding, Team & Leads/17 Return Partner Lead.json",
+      "identity": "partner"
+    },
+    {
+      "request": "53 Admin - Routing Rules/10 Retire Routing Rule Version.json",
+      "identity": "maker"
+    }
   ]
 }

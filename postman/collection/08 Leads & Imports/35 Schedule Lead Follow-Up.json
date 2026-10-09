@@ -1,0 +1,114 @@
+{
+  "name": "Schedule Lead Follow-Up",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/ops/leads/:id/follow-ups",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "leads",
+        ":id",
+        "follow-ups"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{leadId}}"
+        }
+      ]
+    },
+    "description": "Schedules a follow-up for yourself on a lead. `dueAt` must be in the future and at most 180 days ahead. Staff only. Staff activities are visible to staff only.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"dueAt\": \"{{followUpDueAt}}\",\n  \"note\": \"Re-check interest after Diwali\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.collectionVariables.set('followUpDueAt', new Date(Date.now() + 24 * 3600 * 1000).toISOString());"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "pm.collectionVariables.set('opsFollowUpId', String(pm.response.json().id));",
+          "pm.collectionVariables.set('opsFollowUpVersion', String(pm.response.json().version));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/leads/:id/follow-ups",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "leads",
+            ":id",
+            "follow-ups"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{leadId}}"
+            }
+          ]
+        },
+        "description": "Schedules a follow-up for yourself on a lead. `dueAt` must be in the future and at most 180 days ahead. Staff only. Staff activities are visible to staff only.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"dueAt\": \"{{followUpDueAt}}\",\n  \"note\": \"Re-check interest after Diwali\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12220-3c4d-7e5f-8061-728394a5b6c7\",\n  \"entityType\": \"lead\",\n  \"entityId\": \"01a121e0-1a2b-7c3d-8e4f-5061728394a5\",\n  \"organizationId\": null,\n  \"assigneeUserId\": \"01a121c0-5e6f-7a71-9283-94a5b6c7d8e9\",\n  \"assigneeMembershipId\": null,\n  \"dueAt\": \"2026-10-11T05:30:00.000Z\",\n  \"overdue\": false,\n  \"note\": \"Re-check interest after Diwali\",\n  \"status\": \"open\",\n  \"doneAt\": null,\n  \"outcomeNote\": null,\n  \"createdByUserId\": \"01a121c0-5e6f-7a71-9283-94a5b6c7d8e9\",\n  \"version\": 1,\n  \"createdAt\": \"2026-10-10T11:15:00.000Z\",\n  \"updatedAt\": \"2026-10-10T11:15:00.000Z\"\n}"
+    }
+  ]
+}

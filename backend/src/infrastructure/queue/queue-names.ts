@@ -7,6 +7,7 @@ export const QueueName = {
   LeadsDropoff: 'leads.dropoff',
   ImportsProcess: 'imports.process',
   LeadsRoute: 'leads.route',
+  SlaTimers: 'sla.timers',
 } as const;
 
 export type QueueName = (typeof QueueName)[keyof typeof QueueName];

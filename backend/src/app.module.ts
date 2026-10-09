@@ -16,6 +16,8 @@ import { ConsentsModule } from './modules/consents/consents.module.js';
 import { HealthModule } from './modules/health/health.module.js';
 import { ImportsModule } from './modules/imports/imports.module.js';
 import { LeadsModule } from './modules/leads/leads.module.js';
+import { ActivitiesModule } from './modules/activities/activities.module.js';
+import { SlaModule } from './modules/sla/sla.module.js';
 import { NotificationsModule } from './modules/notifications/notifications.module.js';
 import { PartnersModule } from './modules/partners/partners.module.js';
 import { QuestionnairesModule } from './modules/questionnaires/questionnaires.module.js';
@@ -34,6 +36,8 @@ import { QuestionnairesModule } from './modules/questionnaires/questionnaires.mo
     QuestionnairesModule,
     ConsentsModule,
     PartnersModule,
+    ActivitiesModule,
+    SlaModule,
     LeadsModule,
     ImportsModule,
   ],

@@ -6,15 +6,17 @@ import type { UserActor } from '../../../common/context/actor.js';
 import { AssignmentStatus, type LeadLostReason, LeadConsentStatus, LeadStatus, SessionContext } from '../../../common/enums/db.enums.js';
 import { AppError } from '../../../common/errors/app-error.js';
 import { ErrorCode } from '../../../common/errors/error-codes.js';
-import { pageWindow, toPage } from '../../../common/listing/cursor-page.js';
+import { type PageQuery, pageWindow, toPage } from '../../../common/listing/cursor-page.js';
 import { LeadEvent } from '../../../engines/state-machines/machines/lead.machine.js';
 import { MembershipService } from '../../access/application/membership.service.js';
 import { AppAction, type AppAbility } from '../../access/domain/ability.types.js';
 import { ConsentService } from '../../consents/application/consent.service.js';
 import { ConsentPurposeKey } from '../../consents/domain/consent.constants.js';
+import type { ActivityInput } from '../../activities/domain/activity.types.js';
 import { PartyService } from '../../parties/application/party.service.js';
 import { AssignmentCloseReason, PartnerInboxView } from '../domain/lead-routing.constants.js';
 import { LeadRepository, type PartnerAssignmentRow } from '../infrastructure/lead.repository.js';
+import { type FollowUpRequest, LeadActivityService } from './lead-activity.service.js';
 import { LeadAssignmentService } from './lead-assignment.service.js';
 import { LeadService } from './lead.service.js';
 import { toPartnerLeadView } from './partner-lead.views.js';
@@ -44,6 +46,7 @@ export class PartnerLeadService {
     private readonly consents: ConsentService,
     private readonly parties: PartyService,
     private readonly memberships: MembershipService,
+    private readonly leadActivities: LeadActivityService,
   ) {}
 
   async inbox(ability: AppAbility, query: { view?: PartnerInboxView; cursor?: string; limit: number }) {
@@ -110,6 +113,24 @@ export class PartnerLeadService {
     await this.assignments.complete(assignment, AssignmentCloseReason.LeadLost, note ?? null);
     await this.leadService.act(leadId, { event: LeadEvent.Lose, reason, note });
     return this.detail(leadId, ability);
+  }
+
+  async activities(leadId: string, ability: AppAbility, query: PageQuery) {
+    await this.current(leadId, ability, AppAction.Read);
+    return this.leadActivities.list(leadId, accessibleBy(ability, AppAction.Read).ofType('Activity'), query);
+  }
+
+  @Transactional()
+  async logActivity(leadId: string, input: ActivityInput, actor: UserActor, ability: AppAbility) {
+    const assignment = await this.workable(leadId, ability, 'log_activity');
+    return this.leadActivities.record(leadId, input, { userId: actor.userId, membershipId: actor.membershipId, organizationId: assignment.organizationId }, assignment);
+  }
+
+  @Transactional()
+  async createFollowUp(leadId: string, request: FollowUpRequest, actor: UserActor, ability: AppAbility) {
+    const assignment = await this.workable(leadId, ability, 'follow_up');
+    if (request.assigneeMembershipId && !ability.can(AppAction.Assign, 'LeadAssignment')) throw new AppError(ErrorCode.FORBIDDEN);
+    return this.leadActivities.createFollowUp(leadId, request, { userId: actor.userId, membershipId: actor.membershipId, organizationId: assignment.organizationId });
   }
 
   private async view(assignment: PartnerAssignmentRow, ability: AppAbility) {

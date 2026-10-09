@@ -43,7 +43,8 @@
       "script": {
         "type": "text/javascript",
         "exec": [
-          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.collectionVariables.set('contactId', String(pm.response.json().contacts[0].id));"
         ]
       }
     }

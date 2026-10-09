@@ -1,30 +1,98 @@
 {
   "name": "Lead sources, API keys, website intake and the ops lead queue",
-  "requires": ["staffInvitation"],
+  "requires": [
+    "staffInvitation"
+  ],
   "steps": [
-    { "request": "01 Auth/06 Accept Staff Invitation.json" },
-    { "request": "01 Auth/07 Staff Login.json" },
-    { "request": "01 Auth/08 Verify Staff MFA.json" },
-    { "request": "42 Admin - Lead Sources & API Keys/01 List Lead Sources.json" },
-    { "request": "42 Admin - Lead Sources & API Keys/02 Create Lead Source.json" },
-    { "request": "42 Admin - Lead Sources & API Keys/03 Get Lead Source.json" },
-    { "request": "42 Admin - Lead Sources & API Keys/04 Update Lead Source.json" },
-    { "request": "42 Admin - Lead Sources & API Keys/06 Create API Key.json" },
-    { "request": "42 Admin - Lead Sources & API Keys/05 List API Keys.json" },
-    { "request": "08 Leads & Imports/01 Submit Website Lead.json" },
-    { "request": "08 Leads & Imports/02 Create Lead.json" },
-    { "request": "08 Leads & Imports/03 List Leads.json" },
-    { "request": "08 Leads & Imports/04 Get Lead.json" },
-    { "request": "08 Leads & Imports/05 Update Lead.json" },
-    { "request": "08 Leads & Imports/06 Qualify Lead.json" },
-    { "request": "08 Leads & Imports/07 Recycle Lead.json" },
-    { "request": "08 Leads & Imports/08 Hold Lead.json" },
-    { "request": "08 Leads & Imports/09 Reopen Lead.json" },
-    { "request": "08 Leads & Imports/11 Lose Lead.json" },
-    { "request": "08 Leads & Imports/02 Create Lead.json" },
-    { "request": "08 Leads & Imports/12 Merge Leads.json" },
-    { "request": "08 Leads & Imports/13 Reveal Lead Contact.json" },
-    { "request": "08 Leads & Imports/10 Disqualify Lead.json", "variables": { "leadId": "{{publicLeadId}}" } },
-    { "request": "42 Admin - Lead Sources & API Keys/07 Revoke API Key.json" }
+    {
+      "request": "01 Auth/06 Accept Staff Invitation.json"
+    },
+    {
+      "request": "01 Auth/07 Staff Login.json"
+    },
+    {
+      "request": "01 Auth/08 Verify Staff MFA.json"
+    },
+    {
+      "request": "42 Admin - Lead Sources & API Keys/01 List Lead Sources.json"
+    },
+    {
+      "request": "42 Admin - Lead Sources & API Keys/02 Create Lead Source.json"
+    },
+    {
+      "request": "42 Admin - Lead Sources & API Keys/03 Get Lead Source.json"
+    },
+    {
+      "request": "42 Admin - Lead Sources & API Keys/04 Update Lead Source.json"
+    },
+    {
+      "request": "42 Admin - Lead Sources & API Keys/06 Create API Key.json"
+    },
+    {
+      "request": "42 Admin - Lead Sources & API Keys/05 List API Keys.json"
+    },
+    {
+      "request": "08 Leads & Imports/01 Submit Website Lead.json"
+    },
+    {
+      "request": "08 Leads & Imports/02 Create Lead.json"
+    },
+    {
+      "request": "08 Leads & Imports/03 List Leads.json"
+    },
+    {
+      "request": "08 Leads & Imports/04 Get Lead.json"
+    },
+    {
+      "request": "08 Leads & Imports/05 Update Lead.json"
+    },
+    {
+      "request": "08 Leads & Imports/06 Qualify Lead.json"
+    },
+    {
+      "request": "08 Leads & Imports/07 Recycle Lead.json"
+    },
+    {
+      "request": "08 Leads & Imports/08 Hold Lead.json"
+    },
+    {
+      "request": "08 Leads & Imports/09 Reopen Lead.json"
+    },
+    {
+      "request": "08 Leads & Imports/11 Lose Lead.json"
+    },
+    {
+      "request": "08 Leads & Imports/02 Create Lead.json"
+    },
+    {
+      "request": "08 Leads & Imports/12 Merge Leads.json"
+    },
+    {
+      "request": "08 Leads & Imports/13 Reveal Lead Contact.json"
+    },
+    {
+      "request": "08 Leads & Imports/34 Log Lead Activity.json"
+    },
+    {
+      "request": "08 Leads & Imports/33 List Lead Activities.json"
+    },
+    {
+      "request": "08 Leads & Imports/35 Schedule Lead Follow-Up.json"
+    },
+    {
+      "request": "08 Leads & Imports/36 List Follow-Ups.json"
+    },
+    {
+      "request": "08 Leads & Imports/37 Update Follow-Up.json"
+    },
+    {
+      "request": "08 Leads & Imports/10 Disqualify Lead.json",
+      "variables": {
+        "leadId": "{{publicLeadId}}"
+      }
+    },
+    {
+      "request": "42 Admin - Lead Sources & API Keys/07 Revoke API Key.json"
+    }
   ]
 }

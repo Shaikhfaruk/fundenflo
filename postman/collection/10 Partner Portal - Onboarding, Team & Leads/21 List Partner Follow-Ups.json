@@ -1,0 +1,79 @@
+{
+  "name": "List Partner Follow-Ups",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/partner/follow-ups?status=open&assignee=me",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "partner",
+        "follow-ups"
+      ],
+      "query": [
+        {
+          "key": "status",
+          "value": "open"
+        },
+        {
+          "key": "assignee",
+          "value": "me"
+        }
+      ]
+    },
+    "description": "Follow-ups due soonest first, with `overdue` and a lead summary (the name only while the firm holds the lead). `status` (default `open`), `dueBefore`, `assignee`: `me` (default) or `all` (the firm owner sees the whole firm; a member sees only their own), `limit` (default and max 100). Partner context."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/partner/follow-ups?status=open&assignee=me",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "follow-ups"
+          ],
+          "query": [
+            {
+              "key": "status",
+              "value": "open"
+            },
+            {
+              "key": "assignee",
+              "value": "me"
+            }
+          ]
+        },
+        "description": "Follow-ups due soonest first, with `overdue` and a lead summary (the name only while the firm holds the lead). `status` (default `open`), `dueBefore`, `assignee`: `me` (default) or `all` (the firm owner sees the whole firm; a member sees only their own), `limit` (default and max 100). Partner context."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a12220-3c4d-7e5f-8061-728394a5b6c7\",\n      \"entityType\": \"lead\",\n      \"entityId\": \"01a121e0-1a2b-7c3d-8e4f-5061728394a5\",\n      \"organizationId\": \"01a121c0-6f70-7b82-a394-a5b6c7d8e9fa\",\n      \"assigneeUserId\": \"01a121c0-5e6f-7a71-9283-94a5b6c7d8e9\",\n      \"assigneeMembershipId\": \"01a121d0-3c4d-7e5f-8061-728394a5b6c7\",\n      \"dueAt\": \"2026-10-11T05:30:00.000Z\",\n      \"overdue\": false,\n      \"note\": \"Collect six months of bank statements\",\n      \"status\": \"open\",\n      \"doneAt\": null,\n      \"outcomeNote\": null,\n      \"createdByUserId\": \"01a121c0-5e6f-7a71-9283-94a5b6c7d8e9\",\n      \"version\": 1,\n      \"createdAt\": \"2026-10-10T11:15:00.000Z\",\n      \"updatedAt\": \"2026-10-10T11:15:00.000Z\",\n      \"lead\": {\n        \"id\": \"01a121e0-1a2b-7c3d-8e4f-5061728394a5\",\n        \"ref\": \"LD-26-000123\",\n        \"status\": \"in_progress\",\n        \"name\": \"Ramesh Kumar\"\n      }\n    }\n  ]\n}"
+    }
+  ]
+}

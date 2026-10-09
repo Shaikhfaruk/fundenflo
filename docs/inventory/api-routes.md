@@ -179,6 +179,15 @@ Built in M1.7 (Postman `08 Leads & Imports/` 17–27; request 19 uploads to the 
 | `POST` | `/admin/imports/:id/undo` | imports | staff | M1 | `useful` |
 | `GET` | `/admin/imports/:id/errors` | imports | staff | M1 | `useful` |
 
+Built in M1.8c (Postman `08 Leads & Imports/` 33–37). Controllers: `backend/src/modules/leads/http/ops-lead-activities.controller.ts`, `ops-follow-ups.controller.ts` → `LeadActivityService` → `ActivityService`.
+
+| Method | Path | Module | Context | Milestone | Status |
+|---|---|---|---|---|---|
+| `GET` `POST` | `/ops/leads/:id/activities` | leads → activities | staff | M1 | `useful` |
+| `POST` | `/ops/leads/:id/follow-ups` | leads → activities | staff | M1 | `useful` |
+| `GET` | `/ops/follow-ups` | leads → activities | staff | M1 | `useful` |
+| `PATCH` | `/ops/follow-ups/:id` | leads → activities | staff | M1 | `useful` |
+
 Built in M1.8a (Postman `08 Leads & Imports/` 28–32). Controller: `backend/src/modules/leads/http/ops-leads.controller.ts` → `LeadRoutingService`; lead update access. Automatic routing runs in the worker (`leads.route`).
 
 | Method | Path | Module | Context | Milestone | Status |
@@ -231,6 +240,15 @@ Built in M1.8b (Postman `10 Partner Portal - Onboarding, Team & Leads/` 10–17)
 | `POST` | `/partner/leads/:id/sub-assign` | leads | partner_owner | M1 | `useful` |
 | `POST` | `/partner/leads/:id/lost` | leads | partner | M1 | `useful` |
 
+Built in M1.8c (Postman `10 Partner Portal - Onboarding, Team & Leads/` 18–22). Controllers: `backend/src/modules/leads/http/partner-lead-activities.controller.ts`, `partner-follow-ups.controller.ts` → `PartnerLeadService` / `LeadActivityService` → `ActivityService` (activities module). CASL `Activity` (firm-scoped) and `FollowUp` (owner: firm; agent: own membership).
+
+| Method | Path | Module | Context | Milestone | Status |
+|---|---|---|---|---|---|
+| `GET` `POST` | `/partner/leads/:id/activities` | leads → activities | partner | M1 | `useful` |
+| `POST` | `/partner/leads/:id/follow-ups` | leads → activities | partner | M1 | `useful` |
+| `GET` | `/partner/follow-ups` | leads → activities | partner | M1 | `useful` |
+| `PATCH` | `/partner/follow-ups/:id` | leads → activities | partner | M1 | `useful` |
+
 Planned:
 
 | Method | Path | Module | Context | Milestone | Status |
@@ -239,8 +257,6 @@ Planned:
 | `GET` | `/partner/dashboard` | partners | partner | M1 | `planned` |
 | `POST` | `/partner/leads` | leads | partner | M1 | `planned` |
 | `PATCH` | `/partner/leads/:id` | leads | partner | M1 | `planned` |
-| `POST` | `/partner/leads/:id/activities` | activities | partner | M1 | `planned` |
-| `POST` | `/partner/leads/:id/follow-ups` | activities | partner | M1 | `planned` |
 | `POST` | `/partner/leads/:id/offline-conversion` | leads | partner | M1 | `planned` |
 | `POST` | `/partner/leads/:id/convert` | leads | partner | M3 | `planned` |
 

@@ -1,0 +1,75 @@
+enum ActivityEntityType {
+  lead
+}
+
+enum ActivityType {
+  call
+  meeting
+  whatsapp
+  email
+  sms
+  note
+}
+
+enum ActivityOutcome {
+  connected
+  no_answer
+  busy
+  wrong_number
+  call_back
+  switched_off
+}
+
+enum FollowUpStatus {
+  open
+  done
+  cancelled
+}
+
+model Activity {
+  id                String             @id @default(uuid(7)) @db.Uuid
+  entityType        ActivityEntityType @map("entity_type")
+  entityId          String             @map("entity_id") @db.Uuid
+  organizationId    String?            @map("organization_id") @db.Uuid
+  type              ActivityType
+  outcome           ActivityOutcome?
+  body              String?
+  contactId         String?            @map("contact_id") @db.Uuid
+  durationSeconds   Int?               @map("duration_seconds")
+  occurredAt        DateTime           @map("occurred_at") @db.Timestamptz(3)
+  actorUserId       String             @map("actor_user_id") @db.Uuid
+  actorMembershipId String?            @map("actor_membership_id") @db.Uuid
+  createdAt         DateTime           @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([entityType, entityId, occurredAt])
+  @@index([organizationId, occurredAt])
+  @@map("activities")
+}
+
+model FollowUp {
+  id                   String             @id @default(uuid(7)) @db.Uuid
+  entityType           ActivityEntityType @map("entity_type")
+  entityId             String             @map("entity_id") @db.Uuid
+  organizationId       String?            @map("organization_id") @db.Uuid
+  assigneeUserId       String             @map("assignee_user_id") @db.Uuid
+  assigneeMembershipId String?            @map("assignee_membership_id") @db.Uuid
+  dueAt                DateTime           @map("due_at") @db.Timestamptz(3)
+  note                 String
+  status               FollowUpStatus     @default(open)
+  doneAt               DateTime?          @map("done_at") @db.Timestamptz(3)
+  doneByUserId         String?            @map("done_by_user_id") @db.Uuid
+  outcomeNote          String?            @map("outcome_note")
+  createdByUserId      String             @map("created_by_user_id") @db.Uuid
+  version              Int                @default(1)
+  createdAt            DateTime           @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt            DateTime           @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([assigneeUserId, status, dueAt])
+  @@index([organizationId, status, dueAt])
+  @@index([entityType, entityId])
+  @@map("follow_ups")
+}

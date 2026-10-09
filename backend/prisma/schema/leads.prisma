@@ -52,6 +52,7 @@ enum LeadFlag {
   spam
   unmapped_location
   unmapped_category
+  first_contact_missed
 }
 
 enum LeadUrgency {
@@ -70,6 +71,9 @@ enum LeadEventType {
   assignment_changed
   merged
   contact_revealed
+  sla_warned
+  sla_breached
+  activity_logged
 }
 
 model LeadSource {
@@ -205,6 +209,8 @@ model LeadAssignment {
   respondBy            DateTime?        @map("respond_by") @db.Timestamptz(3)
   acceptedAt           DateTime?        @map("accepted_at") @db.Timestamptz(3)
   firstContactBy       DateTime?        @map("first_contact_by") @db.Timestamptz(3)
+  firstContactMinutes  Int?             @map("first_contact_minutes")
+  firstContactedAt     DateTime?        @map("first_contacted_at") @db.Timestamptz(3)
   closedAt             DateTime?        @map("closed_at") @db.Timestamptz(3)
   reason               String?
   note                 String?

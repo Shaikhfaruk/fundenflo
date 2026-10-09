@@ -1,0 +1,27 @@
+enum SlaTimerStatus {
+  pending
+  satisfied
+  breached
+  cancelled
+}
+
+model SlaTimer {
+  id          String         @id @default(uuid(7)) @db.Uuid
+  kind        String
+  entityType  String         @map("entity_type")
+  entityId    String         @map("entity_id") @db.Uuid
+  dueAt       DateTime       @map("due_at") @db.Timestamptz(3)
+  warnAt      DateTime?      @map("warn_at") @db.Timestamptz(3)
+  status      SlaTimerStatus @default(pending)
+  warnedAt    DateTime?      @map("warned_at") @db.Timestamptz(3)
+  satisfiedAt DateTime?      @map("satisfied_at") @db.Timestamptz(3)
+  breachedAt  DateTime?      @map("breached_at") @db.Timestamptz(3)
+  cancelledAt DateTime?      @map("cancelled_at") @db.Timestamptz(3)
+  version     Int            @default(1)
+  createdAt   DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([entityType, entityId])
+  @@index([kind, status, dueAt])
+  @@map("sla_timers")
+}

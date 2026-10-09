@@ -1,0 +1,204 @@
+{
+  "name": "Log Partner Lead Activity",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/partner/leads/:id/activities",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "partner",
+        "leads",
+        ":id",
+        "activities"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{leadId}}"
+        }
+      ]
+    },
+    "description": "Logs work on an accepted lead. `type`: `call`, `meeting`, `whatsapp`, `email`, `sms` or `note` (a note needs `body`). Calls may carry `outcome` (`connected`, `no_answer`, `busy`, `wrong_number`, `call_back`, `switched_off`), `durationSeconds` and `contactId` (from the contact reveal). `occurredAt` defaults to now, may be backdated up to 30 days and not in the future. Activities cannot be edited. The first call, meeting or message meets the first-contact deadline. A `wrong_number` call marks that unverified number invalid, and the lead is flagged `invalid_number` when no usable mobile is left. The assignment moves to `working`. Partner context, on a lead the firm has accepted. Activities are visible to the firm and to FundenFlo staff, never to other firms.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"type\": \"call\",\n  \"outcome\": \"connected\",\n  \"durationSeconds\": 340,\n  \"contactId\": \"{{contactId}}\",\n  \"body\": \"Discussed documents; borrower will share bank statements\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "pm.collectionVariables.set('activityId', String(pm.response.json().id));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/partner/leads/:id/activities",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "leads",
+            ":id",
+            "activities"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{leadId}}"
+            }
+          ]
+        },
+        "description": "Logs work on an accepted lead. `type`: `call`, `meeting`, `whatsapp`, `email`, `sms` or `note` (a note needs `body`). Calls may carry `outcome` (`connected`, `no_answer`, `busy`, `wrong_number`, `call_back`, `switched_off`), `durationSeconds` and `contactId` (from the contact reveal). `occurredAt` defaults to now, may be backdated up to 30 days and not in the future. Activities cannot be edited. The first call, meeting or message meets the first-contact deadline. A `wrong_number` call marks that unverified number invalid, and the lead is flagged `invalid_number` when no usable mobile is left. The assignment moves to `working`. Partner context, on a lead the firm has accepted. Activities are visible to the firm and to FundenFlo staff, never to other firms.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"type\": \"call\",\n  \"outcome\": \"connected\",\n  \"durationSeconds\": 340,\n  \"contactId\": \"{{contactId}}\",\n  \"body\": \"Discussed documents; borrower will share bank statements\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12220-1a2b-7c3d-8e4f-5061728394a5\",\n  \"entityType\": \"lead\",\n  \"entityId\": \"01a121e0-1a2b-7c3d-8e4f-5061728394a5\",\n  \"organizationId\": \"01a121c0-6f70-7b82-a394-a5b6c7d8e9fa\",\n  \"type\": \"call\",\n  \"outcome\": \"connected\",\n  \"body\": \"Discussed documents; borrower will share bank statements\",\n  \"contactId\": \"01a121e0-2b3c-7d4e-9f50-61728394a5b6\",\n  \"durationSeconds\": 340,\n  \"occurredAt\": \"2026-10-10T11:15:00.000Z\",\n  \"actorUserId\": \"01a121c0-5e6f-7a71-9283-94a5b6c7d8e9\",\n  \"actorMembershipId\": \"01a121d0-3c4d-7e5f-8061-728394a5b6c7\",\n  \"createdAt\": \"2026-10-10T11:15:00.000Z\"\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/partner/leads/:id/activities",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "leads",
+            ":id",
+            "activities"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{leadId}}"
+            }
+          ]
+        },
+        "description": "Logs work on an accepted lead. `type`: `call`, `meeting`, `whatsapp`, `email`, `sms` or `note` (a note needs `body`). Calls may carry `outcome` (`connected`, `no_answer`, `busy`, `wrong_number`, `call_back`, `switched_off`), `durationSeconds` and `contactId` (from the contact reveal). `occurredAt` defaults to now, may be backdated up to 30 days and not in the future. Activities cannot be edited. The first call, meeting or message meets the first-contact deadline. A `wrong_number` call marks that unverified number invalid, and the lead is flagged `invalid_number` when no usable mobile is left. The assignment moves to `working`. Partner context, on a lead the firm has accepted. Activities are visible to the firm and to FundenFlo staff, never to other firms.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"type\": \"call\",\n  \"outcome\": \"connected\",\n  \"durationSeconds\": 340,\n  \"contactId\": \"{{contactId}}\",\n  \"body\": \"Discussed documents; borrower will share bank statements\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"outcome\",\n      \"code\": \"calls_only\",\n      \"message\": \"an outcome is recorded for calls only\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "409 INVALID_TRANSITION",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/partner/leads/:id/activities",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "leads",
+            ":id",
+            "activities"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{leadId}}"
+            }
+          ]
+        },
+        "description": "Logs work on an accepted lead. `type`: `call`, `meeting`, `whatsapp`, `email`, `sms` or `note` (a note needs `body`). Calls may carry `outcome` (`connected`, `no_answer`, `busy`, `wrong_number`, `call_back`, `switched_off`), `durationSeconds` and `contactId` (from the contact reveal). `occurredAt` defaults to now, may be backdated up to 30 days and not in the future. Activities cannot be edited. The first call, meeting or message meets the first-contact deadline. A `wrong_number` call marks that unverified number invalid, and the lead is flagged `invalid_number` when no usable mobile is left. The assignment moves to `working`. Partner context, on a lead the firm has accepted. Activities are visible to the firm and to FundenFlo staff, never to other firms.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"type\": \"call\",\n  \"outcome\": \"connected\",\n  \"durationSeconds\": 340,\n  \"contactId\": \"{{contactId}}\",\n  \"body\": \"Discussed documents; borrower will share bank statements\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"INVALID_TRANSITION\",\n  \"message\": \"This action is not allowed in the current state.\",\n  \"details\": {\n    \"from\": \"offered\",\n    \"event\": \"log_activity\",\n    \"allowed\": []\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

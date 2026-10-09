@@ -378,6 +378,34 @@
     {
       "key": "routingRuleVersionRow",
       "value": ""
+    },
+    {
+      "key": "contactId",
+      "value": ""
+    },
+    {
+      "key": "activityId",
+      "value": ""
+    },
+    {
+      "key": "followUpDueAt",
+      "value": ""
+    },
+    {
+      "key": "followUpId",
+      "value": ""
+    },
+    {
+      "key": "followUpVersion",
+      "value": ""
+    },
+    {
+      "key": "opsFollowUpId",
+      "value": ""
+    },
+    {
+      "key": "opsFollowUpVersion",
+      "value": ""
     }
   ]
 }

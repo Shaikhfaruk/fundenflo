@@ -1,0 +1,162 @@
+{
+  "name": "Update Follow-Up",
+  "request": {
+    "method": "PATCH",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "If-Match",
+        "value": "\"{{opsFollowUpVersion}}\""
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/ops/follow-ups/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "follow-ups",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{opsFollowUpId}}"
+        }
+      ]
+    },
+    "description": "Completes, cancels or reschedules an open follow-up. Staff only.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"status\": \"done\",\n  \"outcomeNote\": \"Spoke to the borrower; still interested\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{opsFollowUpVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/follow-ups/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "follow-ups",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{opsFollowUpId}}"
+            }
+          ]
+        },
+        "description": "Completes, cancels or reschedules an open follow-up. Staff only.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"done\",\n  \"outcomeNote\": \"Spoke to the borrower; still interested\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12220-3c4d-7e5f-8061-728394a5b6c7\",\n  \"entityType\": \"lead\",\n  \"entityId\": \"01a121e0-1a2b-7c3d-8e4f-5061728394a5\",\n  \"organizationId\": null,\n  \"assigneeUserId\": \"01a121c0-5e6f-7a71-9283-94a5b6c7d8e9\",\n  \"assigneeMembershipId\": null,\n  \"dueAt\": \"2026-10-11T05:30:00.000Z\",\n  \"overdue\": false,\n  \"note\": \"Collect six months of bank statements\",\n  \"status\": \"done\",\n  \"doneAt\": \"2026-10-11T05:10:00.000Z\",\n  \"outcomeNote\": \"Spoke to the borrower; still interested\",\n  \"createdByUserId\": \"01a121c0-5e6f-7a71-9283-94a5b6c7d8e9\",\n  \"version\": 2,\n  \"createdAt\": \"2026-10-10T11:15:00.000Z\",\n  \"updatedAt\": \"2026-10-10T11:15:00.000Z\"\n}"
+    },
+    {
+      "name": "409 INVALID_TRANSITION",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{opsFollowUpVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/follow-ups/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "follow-ups",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{opsFollowUpId}}"
+            }
+          ]
+        },
+        "description": "Completes, cancels or reschedules an open follow-up. Staff only.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"done\",\n  \"outcomeNote\": \"Spoke to the borrower; still interested\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"INVALID_TRANSITION\",\n  \"message\": \"This action is not allowed in the current state.\",\n  \"details\": {\n    \"from\": \"done\",\n    \"event\": \"done\",\n    \"allowed\": []\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

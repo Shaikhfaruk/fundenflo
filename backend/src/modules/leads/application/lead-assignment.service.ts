@@ -1,21 +1,22 @@
 import { Transactional } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
 
-import { HOUR_MS } from '../../../common/constants/time.constants.js';
-import { AssignmentStatus, LeadConsentStatus, LeadEventType } from '../../../common/enums/db.enums.js';
+import { HOUR_MS, MINUTE_MS } from '../../../common/constants/time.constants.js';
+import { ActivityEntityType, AssignmentStatus, LeadConsentStatus, LeadEventType } from '../../../common/enums/db.enums.js';
 import { AppError } from '../../../common/errors/app-error.js';
 import { ErrorCode } from '../../../common/errors/error-codes.js';
 import { transitionOrThrow } from '../../../common/errors/transition.js';
 import { EventName } from '../../../common/events/event-names.js';
 import { ACTIVE_ASSIGNMENT_STATES, AssignmentEvent, assignmentMachine } from '../../../engines/state-machines/machines/assignment.machine.js';
 import type { Prisma } from '../../../generated/prisma/client.js';
+import { ActivityService } from '../../activities/application/activity.service.js';
 import { ChangeRecorder } from '../../audit/application/change-recorder.service.js';
 import { AuditAction, AuditEntity } from '../../audit/domain/audit.constants.js';
 import { ConsentService } from '../../consents/application/consent.service.js';
 import { ConsentPurposeKey } from '../../consents/domain/consent.constants.js';
-import { AssignmentCloseReason } from '../domain/lead-routing.constants.js';
+import { SlaService } from '../../sla/application/sla.service.js';
+import { AssignmentCloseReason, LEAD_ASSIGNMENT_SLA_ENTITY, LeadSlaKind, ROUTING_DEFAULTS, SLA_WARN_AT_RATIO } from '../domain/lead-routing.constants.js';
 import { LeadRepository } from '../infrastructure/lead.repository.js';
-import { LeadRoutingQueue } from '../infrastructure/lead-routing.queue.js';
 import { LeadTimeline } from './lead-timeline.service.js';
 
 type AssignmentRef = { id: string; leadId: string; organizationId: string; status: AssignmentStatus };
@@ -40,6 +41,10 @@ const CHANGES: Partial<Record<AssignmentEvent, Change>> = {
   [AssignmentEvent.Return]: { action: AuditAction.AssignmentReturned, event: EventName.AssignmentReturned },
 };
 
+const warnAt = (start: number, due: Date) => new Date(start + (due.getTime() - start) * SLA_WARN_AT_RATIO);
+
+const slaEntity = (id: string) => ({ type: LEAD_ASSIGNMENT_SLA_ENTITY, id });
+
 const CLOSING: ReadonlySet<AssignmentEvent> = new Set([AssignmentEvent.Complete, AssignmentEvent.Decline, AssignmentEvent.Expire, AssignmentEvent.Revoke, AssignmentEvent.Return]);
 
 @Injectable()
@@ -48,23 +53,25 @@ export class LeadAssignmentService {
     private readonly leads: LeadRepository,
     private readonly timeline: LeadTimeline,
     private readonly changes: ChangeRecorder,
-    private readonly queue: LeadRoutingQueue,
+    private readonly sla: SlaService,
+    private readonly activities: ActivityService,
     private readonly consents: ConsentService,
   ) {}
 
   async offer(lead: { id: string; ref: string }, organizationId: string, terms: OfferTerms) {
     const now = Date.now();
+    const respondBy = new Date(now + terms.acceptHours * HOUR_MS);
     const assignment = await this.leads.createAssignment({
       leadId: lead.id,
       organizationId,
       routingRuleVersionId: terms.routingRuleVersionId,
       strategy: terms.strategy,
-      respondBy: new Date(now + terms.acceptHours * HOUR_MS),
-      firstContactBy: new Date(now + (terms.acceptHours + terms.firstContactHours) * HOUR_MS),
+      respondBy,
+      firstContactMinutes: Math.round(terms.firstContactHours * 60),
       assignedByUserId: terms.assignedByUserId ?? null,
       note: terms.note ?? null,
     });
-    await this.queue.scheduleExpiry(assignment.id, terms.acceptHours * HOUR_MS);
+    await this.sla.start(LeadSlaKind.AssignmentAccept, slaEntity(assignment.id), respondBy, warnAt(now, respondBy));
     await this.changes.record({
       action: AuditAction.LeadAssigned,
       entityType: AuditEntity.LeadAssignment,
@@ -76,8 +83,21 @@ export class LeadAssignmentService {
     return { id: assignment.id, organizationId, organization: assignment.organization, status: assignment.status, respondBy: assignment.respondBy?.toISOString() ?? null };
   }
 
-  accept(assignment: AssignmentRef, assigneeMembershipId: string | null) {
-    return this.transition(assignment, AssignmentEvent.Accept, { data: { acceptedAt: new Date(), assigneeMembershipId } });
+  async accept(assignment: AssignmentRef & { firstContactMinutes: number | null }, assigneeMembershipId: string | null) {
+    const now = Date.now();
+    const firstContactBy = new Date(now + (assignment.firstContactMinutes ?? ROUTING_DEFAULTS.firstContactHours * 60) * MINUTE_MS);
+    const status = await this.transition(assignment, AssignmentEvent.Accept, { data: { acceptedAt: new Date(now), assigneeMembershipId, firstContactBy } });
+    await this.sla.satisfy(LeadSlaKind.AssignmentAccept, assignment.id, new Date(now));
+    await this.sla.start(LeadSlaKind.AssignmentFirstContact, slaEntity(assignment.id), firstContactBy, warnAt(now, firstContactBy));
+    return status;
+  }
+
+  async recordFirstContact(assignment: AssignmentRef & { firstContactedAt: Date | null }, at: Date) {
+    if (assignment.firstContactedAt) return false;
+    const moved = await this.leads.updateAssignmentFromStatus(assignment.id, assignment.status, { firstContactedAt: at });
+    if (moved.count === 0) throw new AppError(ErrorCode.VERSION_CONFLICT);
+    await this.sla.satisfy(LeadSlaKind.AssignmentFirstContact, assignment.id, at);
+    return true;
   }
 
   async startWork(assignment: AssignmentRef) {
@@ -147,6 +167,10 @@ export class LeadAssignmentService {
     const closing = CLOSING.has(event);
     const moved = await this.leads.updateAssignmentFromStatus(assignment.id, assignment.status, { ...options.data, status: next, ...(closing ? { closedAt: new Date(), reason: options.reason ?? null } : {}) });
     if (moved.count === 0) throw new AppError(ErrorCode.VERSION_CONFLICT);
+    if (closing) {
+      await this.sla.cancel(assignment.id);
+      await this.activities.cancelOpenFollowUps({ type: ActivityEntityType.lead, id: assignment.leadId }, assignment.organizationId, options.reason ?? event);
+    }
     const change = CHANGES[event];
     const details = { assignmentId: assignment.id, leadId: assignment.leadId, organizationId: assignment.organizationId, from: assignment.status, to: next, reason: options.reason ?? null };
     await this.timeline.record(assignment.leadId, LeadEventType.assignment_changed, { reason: options.reason ?? event, note: options.note ?? null, data: details });

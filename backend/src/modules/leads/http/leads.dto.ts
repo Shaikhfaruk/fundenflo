@@ -1,8 +1,10 @@
 import { z } from 'zod';
 
-import { CatalogStatus, ConsentBasis, LeadConsentStatus, LeadFlag, LeadLostReason, LeadSourceKind, LeadStatus, LeadUnqualifiedReason, LeadUrgency } from '../../../common/enums/db.enums.js';
+import { ActivityOutcome, ActivityType, CatalogStatus, ConsentBasis, FollowUpStatus, LeadConsentStatus, LeadFlag, LeadLostReason, LeadSourceKind, LeadStatus, LeadUnqualifiedReason, LeadUrgency } from '../../../common/enums/db.enums.js';
 import { SUPPORTED_LOCALES } from '../../../common/i18n/locale.js';
+import { MAX_PAGE_SIZE } from '../../../common/constants/listing.constants.js';
 import { pageQuerySchema } from '../../../common/listing/cursor-page.js';
+import { ACTIVITY_BODY_MAX_LENGTH, ACTIVITY_MAX_DURATION_SECONDS } from '../../activities/domain/activity.constants.js';
 import { CONFIG_KEY_PATTERN } from '../../config-publishing/domain/config.constants.js';
 import { AssignmentDeclineReason, AssignmentReturnReason, BULK_ROUTE_MAX, OTHER_REASON, PartnerInboxView } from '../domain/lead-routing.constants.js';
 import { LEAD_MERGE_MAX, LEAD_NOTE_MAX_LENGTH, LEAD_SOURCE_KEY_PATTERN, LEAD_TEXT_MAX_LENGTH } from '../domain/lead.constants.js';
@@ -176,3 +178,35 @@ export type LeadSourcePatchDto = z.output<typeof leadSourcePatchSchema>;
 
 export const leadSourceListSchema = z.object({ status: z.enum(Object.values(CatalogStatus)).optional() });
 export type LeadSourceListQuery = z.output<typeof leadSourceListSchema>;
+
+export const logActivitySchema = z
+  .object({
+    type: z.enum(Object.values(ActivityType)),
+    outcome: z.enum(Object.values(ActivityOutcome)).optional(),
+    body: z.string().trim().min(1).max(ACTIVITY_BODY_MAX_LENGTH).optional(),
+    contactId: z.uuid().optional(),
+    durationSeconds: z.number().int().min(0).max(ACTIVITY_MAX_DURATION_SECONDS).optional(),
+    occurredAt: z.coerce.date().optional(),
+  })
+  .strict()
+  .refine((value) => value.type !== ActivityType.note || value.body !== undefined, { path: ['body'], message: 'a note needs a body' });
+export type LogActivityDto = z.output<typeof logActivitySchema>;
+
+export const createFollowUpSchema = z.object({ dueAt: z.coerce.date(), note, assigneeMembershipId: z.uuid().optional() }).strict();
+export type CreateFollowUpDto = z.output<typeof createFollowUpSchema>;
+
+export const FollowUpAssignee = { Me: 'me', All: 'all' } as const;
+
+export const followUpListSchema = z.object({
+  status: z.enum(Object.values(FollowUpStatus)).default(FollowUpStatus.open),
+  dueBefore: z.coerce.date().optional(),
+  assignee: z.enum(Object.values(FollowUpAssignee)).default(FollowUpAssignee.Me),
+  limit: z.coerce.number().int().min(1).max(MAX_PAGE_SIZE).default(MAX_PAGE_SIZE),
+});
+export type FollowUpListDto = z.output<typeof followUpListSchema>;
+
+export const updateFollowUpSchema = z
+  .object({ status: z.enum([FollowUpStatus.done, FollowUpStatus.cancelled]).optional(), dueAt: z.coerce.date().optional(), outcomeNote: note.optional() })
+  .strict()
+  .refine((value) => Object.keys(value).length > 0, 'change at least one field');
+export type UpdateFollowUpDto = z.output<typeof updateFollowUpSchema>;

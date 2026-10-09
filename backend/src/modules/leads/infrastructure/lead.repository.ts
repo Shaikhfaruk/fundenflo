@@ -1,7 +1,7 @@
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
 
-import type { AssignmentStatus, LeadStatus, Prisma } from '../../../generated/prisma/client.js';
+import type { AssignmentStatus, LeadFlag, LeadStatus, Prisma } from '../../../generated/prisma/client.js';
 import type { PrismaTx } from '../../../infrastructure/database/database.types.js';
 import { LEAD_EVENTS_IN_DETAIL } from '../domain/lead.constants.js';
 
@@ -63,6 +63,14 @@ export class LeadRepository {
     return this.txHost.tx.lead.findMany({ where: { id: { in: ids } } });
   }
 
+  findSummaries(ids: string[]) {
+    return this.txHost.tx.lead.findMany({ where: { id: { in: ids } }, select: { id: true, ref: true, status: true, party: { select: { displayName: true } } } });
+  }
+
+  addFlag(id: string, flag: LeadFlag) {
+    return this.txHost.tx.lead.updateMany({ where: { id, NOT: { flags: { has: flag } } }, data: { flags: { push: flag }, version: { increment: 1 } } });
+  }
+
   findByExternalRef(sourceId: string, externalRef: string) {
     return this.txHost.tx.lead.findUnique({ where: { sourceId_externalRef: { sourceId, externalRef } } });
   }
@@ -115,6 +123,10 @@ export class LeadRepository {
 
   findLatestAssignment(where: Prisma.LeadAssignmentWhereInput) {
     return this.txHost.tx.leadAssignment.findFirst({ where, orderBy: { offeredAt: 'desc' }, include: partnerAssignmentInclude });
+  }
+
+  heldLeadIds(leadIds: string[], organizationId: string, statuses: readonly AssignmentStatus[]) {
+    return this.txHost.tx.leadAssignment.findMany({ where: { leadId: { in: leadIds }, organizationId, status: { in: [...statuses] } }, select: { leadId: true }, distinct: ['leadId'] });
   }
 
   activeAssignmentsForParty(partyId: string, statuses: readonly AssignmentStatus[]) {

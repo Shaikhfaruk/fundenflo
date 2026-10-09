@@ -8,6 +8,7 @@ import { OutboxRelayProcessor } from './infrastructure/outbox/outbox-relay.proce
 import { AuditModule } from './modules/audit/audit.module.js';
 import { IMPORT_PROCESSORS, ImportsModule } from './modules/imports/imports.module.js';
 import { LEAD_PROCESSORS, LeadsModule } from './modules/leads/leads.module.js';
+import { SLA_PROCESSORS, SlaModule } from './modules/sla/sla.module.js';
 import { SessionRevocationProcessor } from './modules/auth/infrastructure/session-revocation.processor.js';
 import { SessionsModule } from './modules/auth/sessions.module.js';
 import { NotificationsModule } from './modules/notifications/notifications.module.js';
@@ -21,9 +22,10 @@ import { WorkerScheduler } from './worker-scheduler.service.js';
     NotificationsModule.forRoot({ worker: true }),
     DiscoveryModule,
     SessionsModule,
+    SlaModule,
     LeadsModule,
     ImportsModule,
   ],
-  providers: [OutboxRelayProcessor, SessionRevocationProcessor, MaintenanceProcessor, WorkerScheduler, ...LEAD_PROCESSORS, ...IMPORT_PROCESSORS],
+  providers: [OutboxRelayProcessor, SessionRevocationProcessor, MaintenanceProcessor, WorkerScheduler, ...LEAD_PROCESSORS, ...IMPORT_PROCESSORS, ...SLA_PROCESSORS],
 })
 export class WorkerModule {}

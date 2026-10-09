@@ -20,8 +20,8 @@ These are the places where a second copy is most tempting. Use the one listed.
 | Custom fields on leads, campaigns or lender-specific forms | `questionnaires` (question sets with stage `lead_capture` / `lender_specific`) | A separate lead-form or custom-field system |
 | Contact details, PAN, GSTIN of anyone | `parties` | Name, mobile or PAN columns copied onto leads, users or applications |
 | Assigning leads to CAs, cases to reviewers, fraud reviews to staff | `engines/assignment` (`pickAssignees`) + the module's routing service (`LeadRoutingService` for leads) | Per-module round-robin or picker code, or a second lead-offer path that skips the consent and partner checks |
-| Calls, notes, follow-ups, case notes | `activities` | `lead_notes`, `case_comments` or similar per-module tables |
-| SLA deadlines and breach handling | `sla` | Per-module timers or cron checks |
+| Calls, notes, follow-ups, case notes | `ActivityService` (`activities` module), called by the owning module after its own access checks (`LeadActivityService` for leads) | `lead_notes`, `case_comments` or similar per-module tables |
+| SLA deadlines and breach handling | `SlaService.start/satisfy/cancel` + a `@SlaHandlerFor(kind)` provider in the owning module | Per-module timers, delayed queue jobs per deadline, or cron checks |
 | Bulk uploads (leads, coverage, geography, partners) | `imports` with one handler per type | A separate CSV parser per feature |
 | Status after a lead converts | Derived from application events | A second status that is edited by hand |
 | Draft → review → publish for any config | `config-publishing` + `createVersionedConfigController` | Per-resource version tables or approval flows |
@@ -64,6 +64,6 @@ These are the places where a second copy is most tempting. Use the one listed.
 | Which organizations a person's consent covers for a purpose | `ConsentService.allowedOrganizations()` | Looping `hasConsent` per organization or reading `consent_records` |
 | Choosing who gets a lead (rules, pool, strategy) | `LeadRoutingService` (`route`, `assign`) | Picking CAs in controllers, processors or partner code |
 | Any change to a lead assignment (offer, accept, decline, return, revoke, expire, complete, hand-over) | `LeadAssignmentService` | Writing `lead_assignments` from other services or controllers |
-| Adding lead routing or offer-expiry jobs | `LeadRoutingQueue`, and outbox events for re-routing after an assignment closes | `QueueRegistry.get(LeadsRoute).add` elsewhere, or enqueueing inside a transaction |
+| Adding lead routing jobs | `LeadRoutingQueue`, and outbox events for re-routing after an assignment closes | `QueueRegistry.get(LeadsRoute).add` elsewhere, or enqueueing inside a transaction |
 | Hiding a person's name before a CA accepts | `maskName()` in `engines/party-matching` | Per-view name truncation |
 | Checking a membership belongs to an organization before handing work to it | `MembershipService.requireActiveMember()` | Reading `memberships` from other modules |

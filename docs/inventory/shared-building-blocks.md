@@ -36,7 +36,7 @@
 | Idempotency | `infrastructure/idempotency/` | `@Idempotent()`, `IdempotencyInterceptor`, `IdempotencyMaintenance` | admin creates; all future create endpoints | M0 | `useful` (spec `staff-admin`) |
 | Rate limiting | `infrastructure/rate-limit/` | `RateLimiter.consume/count/reset`, `@RateLimitByIp(rule)` | auth (OTP, refresh, staff login, MFA, invitations) | M0 | `useful` |
 | Revocation | `infrastructure/security/revocation.service.ts` | `RevocationRegistry` (session, membership, user) | access-token guard, sessions, memberships, admin users | M0 | `useful` |
-| Discovery | `infrastructure/discovery/keyed-providers.ts` | `collectKeyedProviders(discovery, reflector, metadataKey)` (providers marked with a key decorator, one per key) | config handlers, import handlers | M1 | `useful` |
+| Discovery | `infrastructure/discovery/keyed-providers.ts` | `collectKeyedProviders(discovery, reflector, metadataKey)` (providers marked with a key decorator, one per key) | SLA handlers (`SlaHandlerRegistry`), config handlers, import handlers | M1 | `useful` |
 | Maintenance | `infrastructure/maintenance/` | `@MaintenanceTask(name)`, `MaintenanceProcessor` (discovers tasks), `RETENTION` | auth, idempotency; later documents, leads, audit retention | M0 | `useful` |
 | Logger | `infrastructure/logger/` | `buildLoggerParams` (pino, PII redaction, path-only request logging) | api, worker | M0 | `useful` |
 | Realtime | `infrastructure/realtime/` | `RealtimeGateway`, `RealtimePublisher.toRoom()` | sync, leads, applications | M1 | `planned` |
