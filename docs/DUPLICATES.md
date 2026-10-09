@@ -57,4 +57,6 @@ These are the places where a second copy is most tempting. Use the one listed.
 | Mapping the current actor to an audit actor type | `actorTypeOf()` | Local ternaries over `actor.type` |
 | Asking a person for consent by link | `ConsentRequestService.send()` | Separate SMS/WhatsApp consent flows per module |
 | Keeping lead consent status current | `LeadService.refreshConsentStatus()` via `leads.consent-sync` | Recomputing consent in routing or reports |
+| Finding providers by a key decorator (handlers per resource or kind) | `collectKeyedProviders()` | Hand-written `DiscoveryService` loops |
+| Reading CSV or XLSX uploads | `readTable()` in `modules/imports/infrastructure/table-reader.ts` | Per-feature spreadsheet parsing |
 | Locale handling | `common/i18n/locale.ts` (`localise`, `resolveLocale`, `@RequestLocale()`) | Per-module locale constants |

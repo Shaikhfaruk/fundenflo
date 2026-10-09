@@ -59,6 +59,11 @@ export const AuditAction = {
   LeadSourceChanged: 'lead_source.changed',
   ConsentRequested: 'consent.requested',
   ConsentRequestCompleted: 'consent.request_completed',
+  ImportCreated: 'import.created',
+  ImportChanged: 'import.changed',
+  ImportValidated: 'import.validated',
+  ImportCommitted: 'import.committed',
+  ImportUndone: 'import.undone',
 } as const;
 
 export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction];
@@ -92,6 +97,7 @@ export const AuditEntity = {
   Lead: 'lead',
   LeadSource: 'lead_source',
   ConsentRequest: 'consent_request',
+  ImportBatch: 'import_batch',
 } as const;
 
 export type AuditEntity = (typeof AuditEntity)[keyof typeof AuditEntity];

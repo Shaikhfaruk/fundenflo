@@ -1,0 +1,22 @@
+{
+  "name": "Backlog lead import: upload, map, validate, commit and undo",
+  "requires": ["staffInvitation"],
+  "steps": [
+    { "request": "01 Auth/06 Accept Staff Invitation.json" },
+    { "request": "01 Auth/07 Staff Login.json" },
+    { "request": "01 Auth/08 Verify Staff MFA.json" },
+    { "request": "08 Leads & Imports/17 List Import Fields.json" },
+    { "request": "08 Leads & Imports/18 Create Import.json" },
+    { "request": "08 Leads & Imports/19 Upload Import File.json" },
+    { "request": "08 Leads & Imports/22 Inspect Import.json" },
+    { "request": "08 Leads & Imports/23 Map Import Columns.json" },
+    { "request": "08 Leads & Imports/24 Validate Import.json" },
+    { "request": "08 Leads & Imports/21 Get Import.json", "waitSeconds": 3 },
+    { "request": "08 Leads & Imports/25 List Import Errors.json" },
+    { "request": "08 Leads & Imports/26 Commit Import.json" },
+    { "request": "08 Leads & Imports/21 Get Import.json", "waitSeconds": 4 },
+    { "request": "08 Leads & Imports/20 List Imports.json" },
+    { "request": "08 Leads & Imports/27 Undo Import.json" },
+    { "request": "08 Leads & Imports/21 Get Import.json", "waitSeconds": 3 }
+  ]
+}

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { defineMachine, TransitionError } from './define-machine.js';
 import { configVersionMachine } from './machines/config-version.machine.js';
+import { importBatchMachine } from './machines/import-batch.machine.js';
 import { leadMachine } from './machines/lead.machine.js';
 import { organizationMachine } from './machines/organization.machine.js';
 import { partnerVerificationMachine } from './machines/partner-verification.machine.js';
@@ -72,5 +73,21 @@ describe('leadMachine', () => {
     expect(leadMachine.can('in_progress', 'disqualify')).toBe(false);
     expect(leadMachine.events('won')).toEqual([]);
     expect(leadMachine.events('unqualified')).toEqual([]);
+  });
+});
+
+describe('importBatchMachine', () => {
+  it('goes upload → map → validate → commit → undo, resumes stuck commits and re-maps only after a failed validation', () => {
+    expect(importBatchMachine.next('awaiting_upload', 'inspect')).toBe('uploaded');
+    expect(importBatchMachine.next('uploaded', 'map')).toBe('mapped');
+    expect(importBatchMachine.next('mapped', 'validate')).toBe('validating');
+    expect(importBatchMachine.next('validating', 'finish_validation')).toBe('validated');
+    expect(importBatchMachine.next('validated', 'commit')).toBe('committing');
+    expect(importBatchMachine.next('committing', 'commit')).toBe('committing');
+    expect(importBatchMachine.can('committing', 'fail')).toBe(false);
+    expect(importBatchMachine.next('validating', 'fail')).toBe('failed');
+    expect(importBatchMachine.next('failed', 'map')).toBe('mapped');
+    expect(importBatchMachine.can('committed', 'commit')).toBe(false);
+    expect(importBatchMachine.next('committed', 'undo')).toBe('undoing');
   });
 });

@@ -204,6 +204,14 @@ export class LeadService {
   }
 
   @Transactional()
+  async undoImported(id: string, batchId: string): Promise<boolean> {
+    const lead = await this.leads.findDetail(id);
+    if (lead?.importBatchId !== batchId || lead.status !== LeadStatus.new) return false;
+    await this.act(id, { event: LeadEvent.Disqualify, reason: LeadUnqualifiedReason.import_undone, note: 'Import batch undone' });
+    return true;
+  }
+
+  @Transactional()
   async refreshConsentStatus(partyId: string): Promise<number> {
     const open = await this.leads.listOpenForParty(partyId, OPEN_LEAD_STATES);
     if (open.length === 0) return 0;

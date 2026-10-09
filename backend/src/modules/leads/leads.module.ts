@@ -7,6 +7,7 @@ import { PartiesModule } from '../parties/parties.module.js';
 import { QuestionnairesModule } from '../questionnaires/questionnaires.module.js';
 import { LeadCaptureService } from './application/lead-capture.service.js';
 import { LeadConsentPolicy } from './application/lead-consent.policy.js';
+import { LeadImportHandler } from './application/lead-import.handler.js';
 import { LeadLocator } from './application/lead-locator.service.js';
 import { LeadSourceService } from './application/lead-source.service.js';
 import { LeadTimeline } from './application/lead-timeline.service.js';
@@ -21,7 +22,7 @@ import { LeadRepository } from './infrastructure/lead.repository.js';
 @Module({
   imports: [AccessModule, CatalogModule, ConsentsModule, PartiesModule, QuestionnairesModule],
   controllers: [AdminLeadSourcesController, OpsLeadsController, PublicLeadsController],
-  providers: [LeadRepository, LeadTimeline, LeadLocator, LeadConsentPolicy, LeadSourceService, LeadCaptureService, LeadService],
+  providers: [LeadRepository, LeadTimeline, LeadLocator, LeadConsentPolicy, LeadSourceService, LeadCaptureService, LeadService, LeadImportHandler],
   exports: [LeadCaptureService, LeadService, LeadSourceService],
 })
 export class LeadsModule {}

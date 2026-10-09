@@ -1,0 +1,110 @@
+{
+  "name": "Get Import",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/imports/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "imports",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{importId}}"
+        }
+      ]
+    },
+    "description": "One import with columns, a few sample rows, mapping, defaults, live row counts while a job runs, and the warning summary. Poll it after Validate, Commit or Undo. Staff only. Reading needs import read access (ops lead, compliance); running needs import manage access (ops lead, super admin)."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.test('import has not failed', () => pm.expect(pm.response.json().status).to.not.eql('failed'));",
+          "pm.collectionVariables.set('importVersion', String(pm.response.json().version));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/imports/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "imports",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{importId}}"
+            }
+          ]
+        },
+        "description": "One import with columns, a few sample rows, mapping, defaults, live row counts while a job runs, and the warning summary. Poll it after Validate, Commit or Undo. Staff only. Reading needs import read access (ops lead, compliance); running needs import manage access (ops lead, super admin)."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12200-1a2b-7c3d-8e4f-5061728394a5\",\n  \"kind\": \"leads\",\n  \"status\": \"validated\",\n  \"fileName\": \"october-backlog.csv\",\n  \"contentType\": \"text/csv\",\n  \"sizeBytes\": 412,\n  \"columns\": [\n    \"Customer Name\",\n    \"Phone\",\n    \"Loan Type\",\n    \"Amount Needed\",\n    \"City\",\n    \"Consent?\",\n    \"Ref\"\n  ],\n  \"sampleRows\": [\n    {\n      \"Customer Name\": \"Ramesh Kumar\",\n      \"Phone\": \"9876543210\",\n      \"Loan Type\": \"business loan\",\n      \"Amount Needed\": \"20-25 lakh\",\n      \"City\": \"Gurgaon\",\n      \"Consent?\": \"yes\",\n      \"Ref\": \"ROW-1\"\n    }\n  ],\n  \"mapping\": {\n    \"name\": \"Customer Name\",\n    \"mobile\": \"Phone\",\n    \"category\": \"Loan Type\",\n    \"amount\": \"Amount Needed\",\n    \"city\": \"City\",\n    \"consentGiven\": \"Consent?\",\n    \"externalRef\": \"Ref\"\n  },\n  \"defaults\": {\n    \"segment\": \"msme\",\n    \"campaign\": \"Backlog 2025\",\n    \"consent\": {\n      \"basis\": \"consent\",\n      \"evidence\": \"Website form checkbox, 2025 campaign\",\n      \"purposes\": [\n        \"contact\",\n        \"partner_sharing\"\n      ]\n    },\n    \"source\": \"import\"\n  },\n  \"counts\": {\n    \"total\": 3,\n    \"valid\": 2,\n    \"invalid\": 1,\n    \"committed\": 0,\n    \"failed\": 0,\n    \"undone\": 0\n  },\n  \"summary\": {\n    \"warnings\": {\n      \"existing_person\": 1\n    }\n  },\n  \"error\": null,\n  \"createdByUserId\": \"01a12200-2b3c-7d4e-9f50-61728394a5b6\",\n  \"startedAt\": \"2026-10-10T05:30:00.000Z\",\n  \"finishedAt\": \"2026-10-10T05:30:00.000Z\",\n  \"version\": 4,\n  \"createdAt\": \"2026-10-10T05:30:00.000Z\",\n  \"updatedAt\": \"2026-10-10T05:30:00.000Z\"\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/imports/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "imports",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{importId}}"
+            }
+          ]
+        },
+        "description": "One import with columns, a few sample rows, mapping, defaults, live row counts while a job runs, and the warning summary. Poll it after Validate, Commit or Undo. Staff only. Reading needs import read access (ops lead, compliance); running needs import manage access (ops lead, super admin)."
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

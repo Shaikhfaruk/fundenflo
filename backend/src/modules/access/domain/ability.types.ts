@@ -7,6 +7,7 @@ import type {
   AuditEvent,
   ConfigDocument,
   ConsentPurpose,
+  ImportBatch,
   Invitation,
   Lead,
   LeadSource,
@@ -55,6 +56,7 @@ export type AppSubjects =
       ApiClient: ApiClient;
       Lead: Lead;
       LeadSource: LeadSource;
+      ImportBatch: ImportBatch;
     }>;
 
 export type AppAbility = Ability<[AppAction, AppSubjects], PrismaQueryOf<Prisma.TypeMap>>;

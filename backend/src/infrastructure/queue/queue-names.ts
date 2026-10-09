@@ -5,6 +5,7 @@ export const QueueName = {
   MaintenanceCleanup: 'maintenance.cleanup',
   LeadsConsentSync: 'leads.consent-sync',
   LeadsDropoff: 'leads.dropoff',
+  ImportsProcess: 'imports.process',
 } as const;
 
 export type QueueName = (typeof QueueName)[keyof typeof QueueName];

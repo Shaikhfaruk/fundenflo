@@ -23,6 +23,8 @@ export const CipherPurpose = {
   MfaChallenge: 'auth.mfa_challenge',
   BorrowerFact: 'borrower_facts.value',
   LeadRawPayload: 'leads.raw_payload',
+  ImportRow: 'import_rows.raw',
+  ImportSample: 'import_batches.sample_rows',
 } as const;
 
 export type CipherPurpose = (typeof CipherPurpose)[keyof typeof CipherPurpose];

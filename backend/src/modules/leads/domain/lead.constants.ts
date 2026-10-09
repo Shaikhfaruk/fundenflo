@@ -44,3 +44,29 @@ export const LEAD_RAW_PAYLOAD_MAX_BYTES = 32_000;
 export const DEFAULT_LEAD_CONSENT_CONTEXT = 'lead_capture';
 
 export const DROPOFF_CHECK_JOB = 'check';
+
+export const LEAD_IMPORT_FIELDS = [
+  { key: 'name', label: 'Name', description: 'Person\'s full name' },
+  { key: 'mobile', label: 'Mobile', description: 'Mobile number, with or without +91' },
+  { key: 'countryCode', label: 'Country code', description: 'Calling code when numbers are local, e.g. +91' },
+  { key: 'email', label: 'Email', description: 'Email address' },
+  { key: 'landline', label: 'Landline', description: 'Landline number with STD code' },
+  { key: 'businessName', label: 'Business name', description: 'Firm or company name for business enquiries' },
+  { key: 'segment', label: 'Segment', description: 'Segment key such as msme or individual' },
+  { key: 'subSegment', label: 'Sub-segment', description: 'Constitution or employment key' },
+  { key: 'category', label: 'Loan category', description: 'Category key or a known alias such as "business loan"' },
+  { key: 'purpose', label: 'Purpose', description: 'Purpose key, or free text kept as a note' },
+  { key: 'amount', label: 'Amount', description: 'Amount in rupees or text such as "20-25 lakh"' },
+  { key: 'tenureMonths', label: 'Tenure (months)', description: 'Whole number of months' },
+  { key: 'city', label: 'City', description: 'City name; aliases such as Gurgaon are understood' },
+  { key: 'pincode', label: 'Pincode', description: '6-digit pincode' },
+  { key: 'urgency', label: 'Urgency', description: 'immediate, within_month or exploring' },
+  { key: 'preferredLanguage', label: 'Language', description: 'Two-letter language code such as hi' },
+  { key: 'preferredContactTime', label: 'Contact time', description: 'Preferred time to call' },
+  { key: 'campaign', label: 'Campaign', description: 'Campaign or list name' },
+  { key: 'externalRef', label: 'External id', description: 'Your own row id; re-importing the same id does not create a second lead' },
+  { key: 'consentGiven', label: 'Consent given', description: 'yes / no column; consent defaults apply only to yes rows when mapped' },
+  { key: 'consentEvidence', label: 'Consent evidence', description: 'Per-row evidence text, overriding the default evidence' },
+] as const;
+
+export const TRUTHY_CELL = /^(y|yes|true|1|agreed|consented)$/i;

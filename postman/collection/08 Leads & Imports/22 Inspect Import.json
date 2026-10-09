@@ -1,0 +1,112 @@
+{
+  "name": "Inspect Import",
+  "request": {
+    "method": "POST",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/imports/:id/inspect",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "imports",
+        ":id",
+        "inspect"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{importId}}"
+        }
+      ]
+    },
+    "description": "Checks the uploaded file, reads its header row and a few sample rows (stored encrypted). Repeatable until the import is mapped. Staff only. Reading needs import read access (ops lead, compliance); running needs import manage access (ops lead, super admin)."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.collectionVariables.set('importVersion', String(pm.response.json().version));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/imports/:id/inspect",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "imports",
+            ":id",
+            "inspect"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{importId}}"
+            }
+          ]
+        },
+        "description": "Checks the uploaded file, reads its header row and a few sample rows (stored encrypted). Repeatable until the import is mapped. Staff only. Reading needs import read access (ops lead, compliance); running needs import manage access (ops lead, super admin)."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12200-1a2b-7c3d-8e4f-5061728394a5\",\n  \"kind\": \"leads\",\n  \"status\": \"uploaded\",\n  \"fileName\": \"october-backlog.csv\",\n  \"contentType\": \"text/csv\",\n  \"sizeBytes\": 412,\n  \"columns\": [\n    \"Customer Name\",\n    \"Phone\",\n    \"Loan Type\",\n    \"Amount Needed\",\n    \"City\",\n    \"Consent?\",\n    \"Ref\"\n  ],\n  \"sampleRows\": [\n    {\n      \"Customer Name\": \"Ramesh Kumar\",\n      \"Phone\": \"9876543210\",\n      \"Loan Type\": \"business loan\",\n      \"Amount Needed\": \"20-25 lakh\",\n      \"City\": \"Gurgaon\",\n      \"Consent?\": \"yes\",\n      \"Ref\": \"ROW-1\"\n    }\n  ],\n  \"mapping\": null,\n  \"defaults\": null,\n  \"counts\": {\n    \"total\": 0,\n    \"valid\": 0,\n    \"invalid\": 0,\n    \"committed\": 0,\n    \"failed\": 0,\n    \"undone\": 0\n  },\n  \"summary\": null,\n  \"error\": null,\n  \"createdByUserId\": \"01a12200-2b3c-7d4e-9f50-61728394a5b6\",\n  \"startedAt\": null,\n  \"finishedAt\": null,\n  \"version\": 2,\n  \"createdAt\": \"2026-10-10T05:30:00.000Z\",\n  \"updatedAt\": \"2026-10-10T05:30:00.000Z\"\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/imports/:id/inspect",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "imports",
+            ":id",
+            "inspect"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{importId}}"
+            }
+          ]
+        },
+        "description": "Checks the uploaded file, reads its header row and a few sample rows (stored encrypted). Repeatable until the import is mapped. Staff only. Reading needs import read access (ops lead, compliance); running needs import manage access (ops lead, super admin)."
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"file\",\n      \"code\": \"not_uploaded\",\n      \"message\": \"upload the file to the upload URL first\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

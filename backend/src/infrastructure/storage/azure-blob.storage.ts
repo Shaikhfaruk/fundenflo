@@ -12,7 +12,7 @@ import { Injectable, type OnModuleInit } from '@nestjs/common';
 import { InjectConfig } from '../../config/config.constants.js';
 import type { AppConfig } from '../../config/env.schema.js';
 import { STORAGE_UPLOAD_BUFFER_BYTES, STORAGE_UPLOAD_CONCURRENCY } from './storage.constants.js';
-import type { ObjectStorage, PutObjectInput, ReadUrlOptions } from './storage.port.js';
+import type { ObjectStat, ObjectStorage, PutObjectInput, ReadUrlOptions, UploadUrlOptions } from './storage.port.js';
 
 @Injectable()
 export class AzureBlobStorage implements ObjectStorage, OnModuleInit {
@@ -56,19 +56,34 @@ export class AzureBlobStorage implements ObjectStorage, OnModuleInit {
   }
 
   async createReadUrl(key: string, options: ReadUrlOptions): Promise<string> {
+    const contentDisposition = options.downloadName ? `attachment; filename="${options.downloadName.replace(/"/g, '')}"` : undefined;
+    return this.sasUrl(key, 'r', options.ttlSeconds, { contentDisposition });
+  }
+
+  async createUploadUrl(key: string, options: UploadUrlOptions): Promise<string> {
+    return this.sasUrl(key, 'cw', options.ttlSeconds, { contentType: options.contentType });
+  }
+
+  async stat(key: string): Promise<ObjectStat | null> {
+    const blob = this.container.getBlobClient(key);
+    if (!(await blob.exists())) return null;
+    const properties = await blob.getProperties();
+    return { sizeBytes: properties.contentLength ?? 0, contentType: properties.contentType ?? null };
+  }
+
+  private async sasUrl(key: string, permission: string, ttlSeconds: number, headers: { contentDisposition?: string; contentType?: string }): Promise<string> {
     const blob = this.container.getBlobClient(key);
     const startsOn = new Date(Date.now() - 60_000);
-    const expiresOn = new Date(Date.now() + options.ttlSeconds * 1000);
-    const contentDisposition = options.downloadName ? `attachment; filename="${options.downloadName.replace(/"/g, '')}"` : undefined;
-    const permissions = BlobSASPermissions.parse('r');
+    const expiresOn = new Date(Date.now() + ttlSeconds * 1000);
+    const permissions = BlobSASPermissions.parse(permission);
 
     if (blob.credential instanceof StorageSharedKeyCredential) {
-      return blob.generateSasUrl({ permissions, startsOn, expiresOn, contentDisposition });
+      return blob.generateSasUrl({ permissions, startsOn, expiresOn, ...headers });
     }
 
     const delegationKey = await this.service.getUserDelegationKey(startsOn, expiresOn);
     const sas = generateBlobSASQueryParameters(
-      { containerName: this.container.containerName, blobName: key, permissions, startsOn, expiresOn, contentDisposition },
+      { containerName: this.container.containerName, blobName: key, permissions, startsOn, expiresOn, ...headers },
       delegationKey,
       this.service.accountName,
     );

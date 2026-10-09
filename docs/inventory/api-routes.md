@@ -165,6 +165,20 @@ Built in M1.6a (Postman `08 Leads & Imports/`). Controllers: `backend/src/module
 | `POST` | `/ops/leads/:id/consent-request` | leads → consents (`ConsentRequestService`) | staff | M1 | `useful` |
 | `GET` `POST` | `/public/consent-requests/:token` | consents (`public-consent-requests.controller.ts`) | public (token, rate limited) | M1 | `useful` |
 
+Built in M1.7 (Postman `08 Leads & Imports/` 17–27; request 19 uploads to the returned storage URL). Controller: `backend/src/modules/imports/http/admin-imports.controller.ts`; jobs run in the worker (`imports.process`).
+
+| Method | Path | Module | Context | Milestone | Status |
+|---|---|---|---|---|---|
+| `GET` | `/admin/imports/fields/:kind` | imports | staff | M1 | `useful` |
+| `GET` `POST` | `/admin/imports` | imports | staff | M1 | `useful` |
+| `GET` | `/admin/imports/:id` | imports | staff | M1 | `useful` |
+| `POST` | `/admin/imports/:id/inspect` | imports | staff | M1 | `useful` |
+| `PUT` | `/admin/imports/:id/mapping` | imports | staff | M1 | `useful` |
+| `POST` | `/admin/imports/:id/validate` | imports | staff | M1 | `useful` |
+| `POST` | `/admin/imports/:id/commit` | imports | staff | M1 | `useful` |
+| `POST` | `/admin/imports/:id/undo` | imports | staff | M1 | `useful` |
+| `GET` | `/admin/imports/:id/errors` | imports | staff | M1 | `useful` |
+
 Planned:
 
 | Method | Path | Module | Context | Milestone | Status |
@@ -175,13 +189,6 @@ Planned:
 | `POST` | `/ops/leads/bulk-route` | leads | staff | M1 | `planned` |
 | `GET` | `/ops/party-match-reviews` | parties | staff | M1 | `planned` |
 | `POST` | `/ops/party-match-reviews/:id/resolve` | parties | staff | M1 | `planned` |
-| `POST` | `/admin/imports` | imports | staff | M1 | `planned` |
-| `GET` | `/admin/imports/:id` | imports | staff | M1 | `planned` |
-| `PUT` | `/admin/imports/:id/mapping` | imports | staff | M1 | `planned` |
-| `POST` | `/admin/imports/:id/validate` | imports | staff | M1 | `planned` |
-| `POST` | `/admin/imports/:id/commit` | imports | staff | M1 | `planned` |
-| `POST` | `/admin/imports/:id/undo` | imports | staff | M1 | `planned` |
-| `GET` | `/admin/imports/:id/errors` | imports | staff | M1 | `planned` |
 | `GET` | `/ops/reports/leads/funnel` | leads | staff | M1 | `planned` |
 | `GET` | `/ops/reports/partners/performance` | leads | staff | M1 | `planned` |
 

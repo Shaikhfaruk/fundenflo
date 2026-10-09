@@ -29,7 +29,10 @@ const normalise = (url: string) => {
 };
 const key = (method: string, path: string) => `${method} ${path}`;
 
-const documented = new Map(listRequestFiles().map((file) => [key(file.item.request.method, normalise(rawUrl(file.item))), file.relativePath]));
+const isExternal = (raw: string) => !URL_PREFIXES.some(([prefix]) => raw.startsWith(prefix));
+const requestFiles = listRequestFiles();
+const external = requestFiles.filter((file) => isExternal(rawUrl(file.item)));
+const documented = new Map(requestFiles.filter((file) => !isExternal(rawUrl(file.item))).map((file) => [key(file.item.request.method, normalise(rawUrl(file.item))), file.relativePath]));
 const routes = await listRoutes(AppModule);
 const implemented = new Set(routes.map((route) => key(route.method, route.path)));
 
@@ -43,4 +46,4 @@ if (undocumented.length > 0 || orphaned.length > 0) {
   process.stderr.write('Postman coverage check failed\n');
   process.exit(1);
 }
-process.stdout.write(`Postman coverage check passed: ${routes.length} routes, ${documented.size} requests\n`);
+process.stdout.write(`Postman coverage check passed: ${routes.length} routes, ${documented.size} requests (+${external.length} to external URLs)\n`);

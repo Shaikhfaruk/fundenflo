@@ -1,0 +1,80 @@
+{
+  "name": "Upload Import File",
+  "request": {
+    "method": "PUT",
+    "auth": {
+      "type": "noauth"
+    },
+    "header": [
+      {
+        "key": "x-ms-blob-type",
+        "value": "BlockBlob"
+      },
+      {
+        "key": "Content-Type",
+        "value": "text/csv"
+      }
+    ],
+    "url": "{{importUploadUrl}}",
+    "body": {
+      "mode": "raw",
+      "raw": "Customer Name,Phone,Loan Type,Amount Needed,City,Consent?,Ref\nRamesh Kumar,{{importMobileA}},business loan,20-25 lakh,Gurgaon,yes,PM-{{importRun}}-1\nSunita Devi,{{importMobileB}},personal,5 lakh,Pune,no,PM-{{importRun}}-2\nNo Phone,,,,Delhi,yes,PM-{{importRun}}-3\n"
+    },
+    "description": "Uploads the file to the upload URL from Create Import (Azure Blob Storage, not the API). Send the file body with exactly the returned headers; the URL expires after 15 minutes. This example uploads a three-row CSV."
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const mobile = () => '95' + String(Math.floor(Math.random() * 1e8)).padStart(8, '0');",
+          "pm.collectionVariables.set('importMobileA', mobile());",
+          "pm.collectionVariables.set('importMobileB', mobile());",
+          "pm.collectionVariables.set('importRun', String(Date.now()));"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('stored', () => pm.response.to.have.status(201));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "PUT",
+        "auth": {
+          "type": "noauth"
+        },
+        "header": [
+          {
+            "key": "x-ms-blob-type",
+            "value": "BlockBlob"
+          },
+          {
+            "key": "Content-Type",
+            "value": "text/csv"
+          }
+        ],
+        "url": "{{importUploadUrl}}",
+        "body": {
+          "mode": "raw",
+          "raw": "Customer Name,Phone,Loan Type,Amount Needed,City,Consent?,Ref\nRamesh Kumar,{{importMobileA}},business loan,20-25 lakh,Gurgaon,yes,PM-{{importRun}}-1\nSunita Devi,{{importMobileB}},personal,5 lakh,Pune,no,PM-{{importRun}}-2\nNo Phone,,,,Delhi,yes,PM-{{importRun}}-3\n"
+        },
+        "description": "Uploads the file to the upload URL from Create Import (Azure Blob Storage, not the API). Send the file body with exactly the returned headers; the URL expires after 15 minutes. This example uploads a three-row CSV."
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "text",
+      "header": [],
+      "body": ""
+    }
+  ]
+}

@@ -17,10 +17,19 @@ export type ReadUrlOptions = {
   downloadName?: string;
 };
 
+export type UploadUrlOptions = {
+  ttlSeconds: number;
+  contentType: string;
+};
+
+export type ObjectStat = { sizeBytes: number; contentType: string | null };
+
 export interface ObjectStorage {
   put(input: PutObjectInput): Promise<void>;
   read(key: string): Promise<Readable>;
   delete(key: string): Promise<void>;
   exists(key: string): Promise<boolean>;
   createReadUrl(key: string, options: ReadUrlOptions): Promise<string>;
+  createUploadUrl(key: string, options: UploadUrlOptions): Promise<string>;
+  stat(key: string): Promise<ObjectStat | null>;
 }

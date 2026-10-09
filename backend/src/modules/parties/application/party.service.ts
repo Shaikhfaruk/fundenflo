@@ -75,6 +75,10 @@ export class PartyService {
     if (!(await this.parties.findById(partyId))) throw new AppError(ErrorCode.NOT_FOUND, { details: { partyId } });
   }
 
+  async contactExists(type: ContactType, value: string): Promise<boolean> {
+    return (await this.parties.findContactCandidates(type, this.codec.hash(type, value))).length > 0;
+  }
+
   async summary(partyId: string) {
     const party = await this.parties.findById(partyId);
     if (!party) throw new AppError(ErrorCode.NOT_FOUND, { details: { partyId } });

@@ -27,6 +27,7 @@ enum LeadUnqualifiedReason {
   not_eligible
   do_not_contact
   test
+  import_undone
 }
 
 enum LeadLostReason {

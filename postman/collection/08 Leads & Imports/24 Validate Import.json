@@ -1,0 +1,111 @@
+{
+  "name": "Validate Import",
+  "request": {
+    "method": "POST",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/imports/:id/validate",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "imports",
+        ":id",
+        "validate"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{importId}}"
+        }
+      ]
+    },
+    "description": "Starts background validation of every row (202). Rows are checked for a usable contact and valid keys; warnings count numbers already known (`existing_person`) and repeats within the file (`duplicate_in_file`). Nothing is created yet. Staff only. Reading needs import read access (ops lead, compliance); running needs import manage access (ops lead, super admin)."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 202', () => pm.response.to.have.status(202));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "202 Accepted",
+      "originalRequest": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/imports/:id/validate",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "imports",
+            ":id",
+            "validate"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{importId}}"
+            }
+          ]
+        },
+        "description": "Starts background validation of every row (202). Rows are checked for a usable contact and valid keys; warnings count numbers already known (`existing_person`) and repeats within the file (`duplicate_in_file`). Nothing is created yet. Staff only. Reading needs import read access (ops lead, compliance); running needs import manage access (ops lead, super admin)."
+      },
+      "status": "Accepted",
+      "code": 202,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12200-1a2b-7c3d-8e4f-5061728394a5\",\n  \"kind\": \"leads\",\n  \"status\": \"validating\",\n  \"fileName\": \"october-backlog.csv\",\n  \"contentType\": \"text/csv\",\n  \"sizeBytes\": 412,\n  \"columns\": [\n    \"Customer Name\",\n    \"Phone\",\n    \"Loan Type\",\n    \"Amount Needed\",\n    \"City\",\n    \"Consent?\",\n    \"Ref\"\n  ],\n  \"sampleRows\": [\n    {\n      \"Customer Name\": \"Ramesh Kumar\",\n      \"Phone\": \"9876543210\",\n      \"Loan Type\": \"business loan\",\n      \"Amount Needed\": \"20-25 lakh\",\n      \"City\": \"Gurgaon\",\n      \"Consent?\": \"yes\",\n      \"Ref\": \"ROW-1\"\n    }\n  ],\n  \"mapping\": {\n    \"name\": \"Customer Name\",\n    \"mobile\": \"Phone\",\n    \"category\": \"Loan Type\",\n    \"amount\": \"Amount Needed\",\n    \"city\": \"City\",\n    \"consentGiven\": \"Consent?\",\n    \"externalRef\": \"Ref\"\n  },\n  \"defaults\": {\n    \"segment\": \"msme\",\n    \"campaign\": \"Backlog 2025\",\n    \"consent\": {\n      \"basis\": \"consent\",\n      \"evidence\": \"Website form checkbox, 2025 campaign\",\n      \"purposes\": [\n        \"contact\",\n        \"partner_sharing\"\n      ]\n    },\n    \"source\": \"import\"\n  },\n  \"counts\": {\n    \"total\": 3,\n    \"valid\": 2,\n    \"invalid\": 1,\n    \"committed\": 0,\n    \"failed\": 0,\n    \"undone\": 0\n  },\n  \"summary\": {\n    \"warnings\": {\n      \"existing_person\": 1\n    }\n  },\n  \"error\": null,\n  \"createdByUserId\": \"01a12200-2b3c-7d4e-9f50-61728394a5b6\",\n  \"startedAt\": \"2026-10-10T05:30:00.000Z\",\n  \"finishedAt\": \"2026-10-10T05:30:00.000Z\",\n  \"version\": 4,\n  \"createdAt\": \"2026-10-10T05:30:00.000Z\",\n  \"updatedAt\": \"2026-10-10T05:30:00.000Z\"\n}"
+    },
+    {
+      "name": "409 INVALID_TRANSITION",
+      "originalRequest": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/imports/:id/validate",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "imports",
+            ":id",
+            "validate"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{importId}}"
+            }
+          ]
+        },
+        "description": "Starts background validation of every row (202). Rows are checked for a usable contact and valid keys; warnings count numbers already known (`existing_person`) and repeats within the file (`duplicate_in_file`). Nothing is created yet. Staff only. Reading needs import read access (ops lead, compliance); running needs import manage access (ops lead, super admin)."
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"INVALID_TRANSITION\",\n  \"message\": \"This action is not allowed in the current state.\",\n  \"details\": {\n    \"from\": \"committed\",\n    \"event\": \"validate\",\n    \"allowed\": [\n      \"undo\"\n    ]\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

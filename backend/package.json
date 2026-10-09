@@ -51,6 +51,8 @@
     "@prisma/client": "7.10.0",
     "argon2": "0.45.1",
     "bullmq": "6.3.12",
+    "csv-parse": "7.0.3",
+    "exceljs": "4.4.0",
     "helmet": "8.3.0",
     "ioredis": "6.0.0",
     "jose": "6.2.12",

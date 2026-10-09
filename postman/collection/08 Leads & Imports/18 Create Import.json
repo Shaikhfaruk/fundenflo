@@ -1,0 +1,143 @@
+{
+  "name": "Create Import",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "Idempotency-Key",
+        "value": "{{$guid}}"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/imports",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "imports"
+      ]
+    },
+    "description": "Starts an import for a `.csv` or `.xlsx` file and returns a short-lived upload URL. PUT the file there with the returned headers (it goes straight to private storage, not through the API), then call Inspect. Files: CSV up to 50 MB / 200,000 rows, XLSX up to 20 MB. Staff only. Reading needs import read access (ops lead, compliance); running needs import manage access (ops lead, super admin).",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"kind\": \"leads\",\n  \"fileName\": \"october-backlog.csv\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "pm.collectionVariables.set('importId', String(pm.response.json().batch.id));",
+          "pm.collectionVariables.set('importUploadUrl', String(pm.response.json().upload.url));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "{{$guid}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/imports",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "imports"
+          ]
+        },
+        "description": "Starts an import for a `.csv` or `.xlsx` file and returns a short-lived upload URL. PUT the file there with the returned headers (it goes straight to private storage, not through the API), then call Inspect. Files: CSV up to 50 MB / 200,000 rows, XLSX up to 20 MB. Staff only. Reading needs import read access (ops lead, compliance); running needs import manage access (ops lead, super admin).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"kind\": \"leads\",\n  \"fileName\": \"october-backlog.csv\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"batch\": {\n    \"id\": \"01a12200-1a2b-7c3d-8e4f-5061728394a5\",\n    \"kind\": \"leads\",\n    \"status\": \"awaiting_upload\",\n    \"fileName\": \"october-backlog.csv\",\n    \"contentType\": \"text/csv\",\n    \"sizeBytes\": null,\n    \"columns\": [],\n    \"sampleRows\": null,\n    \"mapping\": null,\n    \"defaults\": null,\n    \"counts\": {\n      \"total\": 0,\n      \"valid\": 0,\n      \"invalid\": 0,\n      \"committed\": 0,\n      \"failed\": 0,\n      \"undone\": 0\n    },\n    \"summary\": null,\n    \"error\": null,\n    \"createdByUserId\": \"01a12200-2b3c-7d4e-9f50-61728394a5b6\",\n    \"startedAt\": null,\n    \"finishedAt\": null,\n    \"version\": 1,\n    \"createdAt\": \"2026-10-10T05:30:00.000Z\",\n    \"updatedAt\": \"2026-10-10T05:30:00.000Z\"\n  },\n  \"upload\": {\n    \"method\": \"PUT\",\n    \"url\": \"https://<account>.blob.core.windows.net/fundenflo-private/imports/01a12200-1a2b-7c3d-8e4f-5061728394a5/october-backlog.csv?sv=…&sig=…\",\n    \"headers\": {\n      \"x-ms-blob-type\": \"BlockBlob\",\n      \"Content-Type\": \"text/csv\"\n    },\n    \"expiresAt\": \"2026-10-10T05:45:00.000Z\"\n  }\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "{{$guid}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/imports",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "imports"
+          ]
+        },
+        "description": "Starts an import for a `.csv` or `.xlsx` file and returns a short-lived upload URL. PUT the file there with the returned headers (it goes straight to private storage, not through the API), then call Inspect. Files: CSV up to 50 MB / 200,000 rows, XLSX up to 20 MB. Staff only. Reading needs import read access (ops lead, compliance); running needs import manage access (ops lead, super admin).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"kind\": \"leads\",\n  \"fileName\": \"october-backlog.csv\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"fileName\",\n      \"code\": \"unsupported_format\",\n      \"message\": \"upload a .csv or .xlsx file\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

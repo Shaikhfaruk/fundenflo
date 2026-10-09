@@ -59,6 +59,10 @@ export class ConsentService {
     private readonly changes: ChangeRecorder,
   ) {}
 
+  async activePurposeKeys(): Promise<Set<string>> {
+    return new Set((await this.purposes.active()).keys());
+  }
+
   async template(contextKey: string) {
     const active = (await this.config.active<CompiledConsentTemplate>(ConfigResource.consent_template)).find((entry) => entry.key === contextKey);
     if (!active) throw new AppError(ErrorCode.NOT_FOUND, { details: { context: contextKey } });

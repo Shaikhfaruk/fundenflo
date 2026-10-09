@@ -35,7 +35,7 @@ export const ROLE_GRANTS: Partial<Record<Role, Grant>> = {
     can([AppAction.Read, AppAction.Update], 'PartnerProfile');
     can([AppAction.Read, AppAction.Approve], 'ConfigDocument');
     can(CONFIG_MAKER, 'ConfigDocument', { resource: { in: OPS_CONFIG_RESOURCES } });
-    can(AppAction.Manage, ['ApiClient', 'Lead', 'LeadSource']);
+    can(AppAction.Manage, ['ApiClient', 'Lead', 'LeadSource', 'ImportBatch']);
   },
   [Role.ops_reviewer]: ({ can }) => {
     can([AppAction.Read, AppAction.Update], ['Lead', 'Party']);
@@ -44,7 +44,7 @@ export const ROLE_GRANTS: Partial<Record<Role, Grant>> = {
   [Role.compliance_officer]: ({ can }) => {
     can(AppAction.Read, ['User', 'Membership', 'Invitation', 'Organization', 'AuditEvent', 'AttributeDefinition', 'Party', 'Question', NonModelSubject.Catalog]);
     can(AppAction.Manage, 'ConsentPurpose');
-    can(AppAction.Read, ['PartnerProfile', 'ApiClient', 'Lead', 'LeadSource']);
+    can(AppAction.Read, ['PartnerProfile', 'ApiClient', 'Lead', 'LeadSource', 'ImportBatch']);
     can([AppAction.Read, AppAction.Approve], 'ConfigDocument');
     can(CONFIG_MAKER, 'ConfigDocument', { resource: { in: COMPLIANCE_CONFIG_RESOURCES } });
   },

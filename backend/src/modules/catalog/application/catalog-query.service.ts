@@ -45,8 +45,14 @@ export class CatalogQueryService {
 
   async resolveCategory(text: string): Promise<{ key: string; purposeKeys: string[] } | null> {
     const direct = await this.findActiveCategory(text.trim().toLowerCase());
-    const category = direct ?? (await this.categoryByAlias(text));
+    const category = direct ?? (await this.categoryByLabel(text)) ?? (await this.categoryByAlias(text));
     return category ? { key: category.key, purposeKeys: category.purposes.filter((purpose) => purpose.status === CatalogStatus.active).map((purpose) => purpose.key) } : null;
+  }
+
+  private async categoryByLabel(text: string) {
+    const wanted = normaliseLookupText(text);
+    const match = (await this.categoryConfigs(DEFAULT_LOCALE, undefined)).find((config) => normaliseLookupText(config.label) === wanted);
+    return match ? this.findActiveCategory(match.key) : null;
   }
 
   private async categoryByAlias(text: string) {

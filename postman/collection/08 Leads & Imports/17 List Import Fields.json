@@ -1,0 +1,75 @@
+{
+  "name": "List Import Fields",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/imports/fields/:kind",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "imports",
+        "fields",
+        ":kind"
+      ],
+      "variable": [
+        {
+          "key": "kind",
+          "value": "leads"
+        }
+      ]
+    },
+    "description": "The fields an import kind understands, for building the column-mapping screen. Staff only. Reading needs import read access (ops lead, compliance); running needs import manage access (ops lead, super admin)."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/imports/fields/:kind",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "imports",
+            "fields",
+            ":kind"
+          ],
+          "variable": [
+            {
+              "key": "kind",
+              "value": "leads"
+            }
+          ]
+        },
+        "description": "The fields an import kind understands, for building the column-mapping screen. Staff only. Reading needs import read access (ops lead, compliance); running needs import manage access (ops lead, super admin)."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"kind\": \"leads\",\n  \"fields\": [\n    {\n      \"key\": \"name\",\n      \"label\": \"Name\",\n      \"description\": \"Person's full name\"\n    },\n    {\n      \"key\": \"mobile\",\n      \"label\": \"Mobile\",\n      \"description\": \"Mobile number, with or without +91\"\n    }\n  ]\n}"
+    }
+  ]
+}

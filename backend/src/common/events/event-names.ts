@@ -46,6 +46,10 @@ export const EventName = {
   LeadContactRevealed: 'lead.contact_revealed',
   LeadSourceChanged: 'lead_source.changed',
   ConsentRequested: 'consent.requested',
+  ImportChanged: 'import.changed',
+  ImportValidated: 'import.batch.validated',
+  ImportCommitted: 'import.batch.committed',
+  ImportUndone: 'import.batch.undone',
 } as const;
 
 export type EventName = (typeof EventName)[keyof typeof EventName];

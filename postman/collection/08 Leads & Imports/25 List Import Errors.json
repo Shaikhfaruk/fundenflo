@@ -1,0 +1,75 @@
+{
+  "name": "List Import Errors",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/imports/:id/errors",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "imports",
+        ":id",
+        "errors"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{importId}}"
+        }
+      ]
+    },
+    "description": "Rows that did not pass (`invalid` at validation, `failed` at commit) with the original values and the reasons, for fixing the file. Filter `status` for other rows. Staff only. Reading needs import read access (ops lead, compliance); running needs import manage access (ops lead, super admin)."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/imports/:id/errors",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "imports",
+            ":id",
+            "errors"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{importId}}"
+            }
+          ]
+        },
+        "description": "Rows that did not pass (`invalid` at validation, `failed` at commit) with the original values and the reasons, for fixing the file. Filter `status` for other rows. Staff only. Reading needs import read access (ops lead, compliance); running needs import manage access (ops lead, super admin)."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a12200-3c4d-7e5f-8061-728394a5b6c7\",\n      \"rowNumber\": 4,\n      \"status\": \"invalid\",\n      \"values\": {\n        \"Customer Name\": \"No Phone\",\n        \"Phone\": \"\",\n        \"Loan Type\": \"\",\n        \"Amount Needed\": \"\",\n        \"City\": \"Delhi\",\n        \"Consent?\": \"yes\",\n        \"Ref\": \"ROW-3\"\n      },\n      \"issues\": {\n        \"errors\": [\n          {\n            \"field\": \"mobile\",\n            \"column\": \"Phone\",\n            \"code\": \"contact_required\",\n            \"message\": \"needs at least one valid mobile, landline or email\"\n          }\n        ],\n        \"warnings\": []\n      },\n      \"entityId\": null\n    }\n  ],\n  \"nextCursor\": null\n}"
+    }
+  ]
+}

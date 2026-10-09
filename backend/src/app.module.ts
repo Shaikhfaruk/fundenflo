@@ -14,6 +14,7 @@ import { CatalogModule } from './modules/catalog/catalog.module.js';
 import { ConfigPublishingModule } from './modules/config-publishing/config-publishing.module.js';
 import { ConsentsModule } from './modules/consents/consents.module.js';
 import { HealthModule } from './modules/health/health.module.js';
+import { ImportsModule } from './modules/imports/imports.module.js';
 import { LeadsModule } from './modules/leads/leads.module.js';
 import { NotificationsModule } from './modules/notifications/notifications.module.js';
 import { PartnersModule } from './modules/partners/partners.module.js';
@@ -34,6 +35,7 @@ import { QuestionnairesModule } from './modules/questionnaires/questionnaires.mo
     ConsentsModule,
     PartnersModule,
     LeadsModule,
+    ImportsModule,
   ],
   providers: [
     { provide: APP_FILTER, useClass: HttpErrorFilter },

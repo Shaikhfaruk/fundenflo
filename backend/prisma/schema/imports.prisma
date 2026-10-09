@@ -1,0 +1,76 @@
+enum ImportKind {
+  leads
+}
+
+enum ImportStatus {
+  awaiting_upload
+  uploaded
+  mapped
+  validating
+  validated
+  committing
+  committed
+  undoing
+  undone
+  failed
+}
+
+enum ImportRowStatus {
+  valid
+  invalid
+  committed
+  failed
+  undone
+  kept
+}
+
+model ImportBatch {
+  id              String       @id @default(uuid(7)) @db.Uuid
+  kind            ImportKind
+  status          ImportStatus @default(awaiting_upload)
+  fileName        String       @map("file_name")
+  contentType     String       @map("content_type")
+  storageKey      String       @unique @map("storage_key")
+  sizeBytes       Int?         @map("size_bytes")
+  columns         String[]
+  sampleRowsEnc   String?      @map("sample_rows_enc")
+  mapping         Json?
+  defaults        Json?
+  totalRows       Int          @default(0) @map("total_rows")
+  validRows       Int          @default(0) @map("valid_rows")
+  invalidRows     Int          @default(0) @map("invalid_rows")
+  committedRows   Int          @default(0) @map("committed_rows")
+  failedRows      Int          @default(0) @map("failed_rows")
+  undoneRows      Int          @default(0) @map("undone_rows")
+  summary         Json?
+  error           String?
+  createdByUserId String?      @map("created_by_user_id") @db.Uuid
+  startedAt       DateTime?    @map("started_at") @db.Timestamptz(3)
+  finishedAt      DateTime?    @map("finished_at") @db.Timestamptz(3)
+  version         Int          @default(1)
+  createdAt       DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime     @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  rows ImportRow[]
+
+  @@index([kind, status])
+  @@map("import_batches")
+}
+
+model ImportRow {
+  id        String          @id @default(uuid(7)) @db.Uuid
+  batchId   String          @map("batch_id") @db.Uuid
+  rowNumber Int             @map("row_number")
+  status    ImportRowStatus
+  rawEnc    String          @map("raw_enc")
+  errors    Json?
+  entityId  String?         @map("entity_id") @db.Uuid
+  createdAt DateTime        @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime        @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  batch ImportBatch @relation(fields: [batchId], references: [id], onDelete: Cascade, onUpdate: Restrict)
+
+  @@unique([batchId, rowNumber])
+  @@index([batchId, status])
+  @@map("import_rows")
+}

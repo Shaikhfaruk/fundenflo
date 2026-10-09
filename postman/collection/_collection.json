@@ -330,6 +330,30 @@
     {
       "key": "consentLinkToken",
       "value": ""
+    },
+    {
+      "key": "importId",
+      "value": ""
+    },
+    {
+      "key": "importUploadUrl",
+      "value": ""
+    },
+    {
+      "key": "importVersion",
+      "value": ""
+    },
+    {
+      "key": "importMobileA",
+      "value": ""
+    },
+    {
+      "key": "importMobileB",
+      "value": ""
+    },
+    {
+      "key": "importRun",
+      "value": ""
     }
   ]
 }
