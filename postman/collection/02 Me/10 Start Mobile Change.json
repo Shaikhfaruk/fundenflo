@@ -1,0 +1,130 @@
+{
+  "name": "Start Mobile Change",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/me/mobile-change",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "me",
+        "mobile-change"
+      ]
+    },
+    "description": "Sends an OTP to the new mobile number. The number must not belong to another account.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"mobile\": \"{{newMobile}}\",\n  \"countryCode\": \"{{countryCode}}\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 202', () => pm.response.to.have.status(202));",
+          "pm.collectionVariables.set('challengeId', pm.response.json().challengeId);"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "202 Accepted",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/me/mobile-change",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "me",
+            "mobile-change"
+          ]
+        },
+        "description": "Sends an OTP to the new mobile number. The number must not belong to another account.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"mobile\": \"{{newMobile}}\",\n  \"countryCode\": \"{{countryCode}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Accepted",
+      "code": 202,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"challengeId\": \"01a1215a-1c7c-719c-a2f0-6a7d1bd0f780\",\n  \"resendIn\": 30,\n  \"expiresIn\": 300\n}"
+    },
+    {
+      "name": "409 MOBILE_IN_USE",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/me/mobile-change",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "me",
+            "mobile-change"
+          ]
+        },
+        "description": "Sends an OTP to the new mobile number. The number must not belong to another account.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"mobile\": \"{{newMobile}}\",\n  \"countryCode\": \"{{countryCode}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"MOBILE_IN_USE\",\n  \"message\": \"This mobile number is already used by another account.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

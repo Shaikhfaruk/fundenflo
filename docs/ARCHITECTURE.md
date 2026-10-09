@@ -1,0 +1,406 @@
+# FundenFlo Backend — Architecture Diagrams
+
+> Living document. Any change that adds, renames, moves or removes a module, route group, queue, job, channel or worker updates the matching diagram here **and** [`inventory.md`](inventory.md) in the same change.
+> **Built (M0):** system context, identity & multiple logins (diagrams 3–4, parties/users/memberships/sessions parts), audit, notifications, outbox and the four M0 queues in diagram 9. Everything else is planned. Design rationale: [`BACKEND_ARCHITECTURE_PLAN.md`](BACKEND_ARCHITECTURE_PLAN.md).
+> Last updated: 2026-10-09
+
+## Diagrams
+
+1. [System context](#1-system-context)
+2. [Module map](#2-module-map)
+3. [Party, identity & lead model](#3-party-identity--lead-model)
+4. [Single user, multiple logins](#4-single-user-multiple-logins)
+5. [Lead capture → CA distribution](#5-lead-capture--ca-distribution)
+6. [Lead & assignment state machines](#6-lead--assignment-state-machines)
+7. [Borrower journey on the dynamic engines](#7-borrower-journey-on-the-dynamic-engines)
+8. [Application & submission state machines](#8-application--submission-state-machines)
+9. [Events, queues, workers & real-time](#9-events-queues-workers--real-time)
+
+---
+
+## 1. System context
+
+```mermaid
+flowchart LR
+  subgraph Clients
+    APP[Borrower app - Expo]
+    PW[Partner web / app - CA, DSA]
+    LW[Lender web]
+    OW[Ops / Admin web]
+    PUB[Public lead forms]
+  end
+  subgraph Backend
+    API[API process - NestJS]
+    WRK[Worker process - NestJS standalone]
+  end
+  subgraph Data
+    PG[(PostgreSQL 18)]
+    RD[(Redis-compatible)]
+    BL[(Private blob storage)]
+    KV[Key vault]
+  end
+  subgraph External
+    SMS[SMS / WhatsApp / Email / Push]
+    KYC[PAN / GSTN / KYC]
+    AA[Account Aggregator / Bureau]
+    LLM[LLM provider]
+    AV[ClamAV]
+    LND[Lender APIs / email]
+  end
+  Clients -->|HTTPS /v1 + WebSocket /v1/realtime| API
+  API --> PG
+  API --> RD
+  API --> BL
+  API --> KV
+  WRK --> PG
+  WRK --> RD
+  WRK --> BL
+  WRK --> KV
+  WRK --> External
+  API -->|webhooks in| External
+```
+
+Hosting, networking and pipelines are owned by infra (Pradeep, Azure) and are not drawn here.
+
+---
+
+## 2. Module map
+
+```mermaid
+flowchart TB
+  subgraph Entry
+    HTTP[HTTP controllers per audience: public, me, borrower, partner, lender, ops, admin, webhooks]
+    WS[Realtime gateway]
+    PROC[Worker processors + cron]
+  end
+  subgraph IdentityAccess[Identity & access]
+    auth
+    access
+    parties
+    sync
+  end
+  subgraph LeadsGroup[Leads]
+    leads
+    imports
+    activities
+    sla
+  end
+  subgraph Journey
+    borrowers
+    attributes
+    catalog
+    questionnaires
+    consents
+    documents
+    assessments
+    matching
+    applications
+  end
+  subgraph Network
+    lenders
+    partners
+    commissions
+  end
+  subgraph Platform
+    risk
+    notifications
+    audit
+    configPublishing[config-publishing]
+    compat
+  end
+  subgraph Engines[engines - pure TypeScript]
+    conditions
+    formulas
+    facts
+    questionnaire
+    docChecklist[documents]
+    scoring
+    improvement
+    matchingEngine[matching]
+    commissionCalc[commissions]
+    assignment
+    partyMatching[party-matching]
+    stateMachines[state-machines]
+  end
+  subgraph Infra[infrastructure]
+    database
+    queue
+    storage
+    crypto
+    realtime
+    cache
+  end
+  subgraph Ports[integrations - ports + adapters]
+    smsP[sms / whatsapp / email / push]
+    llmP[llm]
+    kycP[kyc / gstn / digilocker]
+    aaP[account-aggregator / bureau]
+    avP[antivirus]
+    leadP[lead sources]
+  end
+  Entry --> IdentityAccess
+  Entry --> LeadsGroup
+  Entry --> Journey
+  Entry --> Network
+  Entry --> Platform
+  IdentityAccess --> Engines
+  LeadsGroup --> Engines
+  Journey --> Engines
+  Network --> Engines
+  Platform --> Engines
+  IdentityAccess --> Infra
+  LeadsGroup --> Infra
+  Journey --> Infra
+  Network --> Infra
+  Platform --> Infra
+  Journey --> Ports
+  LeadsGroup --> Ports
+  Platform --> Ports
+```
+
+Rules: engines import nothing from Nest, modules or infrastructure. Modules talk only through exported façade services or domain events. Integrations are reached only through ports.
+
+---
+
+## 3. Party, identity & lead model
+
+```mermaid
+erDiagram
+  PARTY ||--o{ PARTY_CONTACT : has
+  PARTY ||--o{ PARTY_IDENTIFIER : has
+  PARTY ||--o{ PARTY_RELATIONSHIP : relates
+  PARTY ||--o{ BORROWER_FACT : "described by"
+  PARTY ||--o| USER : "logs in as"
+  PARTY ||--o| ORGANIZATION : "operates as"
+  PARTY ||--o{ LEAD : "enquires via"
+  PARTY ||--o{ BORROWER_PROFILE : "borrows as"
+  USER ||--o{ USER_LOGIN : "signs in with"
+  USER ||--o{ MEMBERSHIP : holds
+  USER ||--o{ SESSION : opens
+  ORGANIZATION ||--o{ MEMBERSHIP : has
+  SESSION }o--|| MEMBERSHIP : "acts as"
+  LEAD ||--o{ LEAD_ASSIGNMENT : "worked via"
+  LEAD_ASSIGNMENT }o--|| ORGANIZATION : "partner firm"
+  LEAD_ASSIGNMENT }o--o| MEMBERSHIP : "assignee"
+  LEAD |o--o| LOAN_APPLICATION : "converts to"
+  BORROWER_PROFILE ||--o{ LOAN_APPLICATION : opens
+  LOAN_APPLICATION ||--o{ APPLICATION_PARTY : includes
+  APPLICATION_PARTY }o--|| PARTY : is
+  LOAN_APPLICATION ||--o{ LENDER_SUBMISSION : "sent as"
+```
+
+---
+
+## 4. Single user, multiple logins
+
+```mermaid
+sequenceDiagram
+  participant C as Client
+  participant A as auth
+  participant P as parties (resolver)
+  participant M as access (memberships)
+  participant S as sessions
+  C->>A: POST /auth/otp/request {mobile | email, loginAs, referralCode?}
+  A-->>C: {resendIn}
+  C->>A: POST /auth/otp/verify {mobile | email, otp, device?}
+  A->>P: resolve person party by mobile blind index
+  P-->>A: existing party (e.g. a lead) or new party
+  A->>M: membership for loginAs
+  M->>M: accept pending invitations for this mobile or email
+  alt loginAs = borrower
+    M-->>A: personal borrower membership (created if missing)
+  else loginAs = ca, dsa or lender with an active membership
+    M-->>A: that membership
+  else no matching membership
+    M-->>A: none
+  end
+  A->>S: create session (device, IP, UA, membership or context none)
+  A-->>C: tokens {sub, mid, ctx, rol, org, sid} + user + nextAction (PARTNER_NOT_ONBOARDED / MEMBERSHIP_REQUIRED when ctx = none)
+  C->>A: POST /auth/switch-context {membershipId} or {loginAs: borrower}
+  A->>S: same session, new membership, refresh family rotated
+  A-->>C: new tokens
+  C->>A: POST /auth/token/refresh {refreshToken}
+  A->>S: rotate; reuse of an old token revokes the session and family
+```
+
+---
+
+## 5. Lead capture → CA distribution
+
+```mermaid
+flowchart LR
+  subgraph Sources
+    IMP[Backlog import]
+    MAN[Ops manual entry]
+    WEB[Public form]
+    DROP[App drop-off detector]
+    REF[Partner referral]
+    HOOK[Ad / WhatsApp / IVR webhooks]
+  end
+  IMP --> CAP
+  MAN --> CAP
+  WEB --> CAP
+  DROP --> CAP
+  REF --> CAP
+  HOOK --> CAP
+  CAP[LeadCaptureService] --> RES{Party resolver}
+  RES -->|certain match or new| LINK[Lead linked to party]
+  RES -->|uncertain| MQ[Party match review queue]
+  LINK --> FACTS[Answers stored as declared facts]
+  LINK --> CONS{Valid consent or lawful basis?}
+  CONS -->|no| CP[consent_pending queue]
+  CP -->|consent granted| CONS
+  CONS -->|yes| ROUTE[Routing rules + assignment engine]
+  REF -.->|protected referral| ROUTE
+  ROUTE -->|no eligible CA| OPSQ[Ops queue]
+  ROUTE --> OFFER[Assignment offered - PII masked]
+  OFFER -->|declined or SLA expired| ROUTE
+  OFFER -->|accepted| WORK[CA works lead: reveal contact, activities, follow-ups]
+  WORK -->|convert| APPL[Loan application on the same party]
+  WORK -->|offline conversion| OFF[Offline outcome recorded]
+  WORK -->|lost| LOST[Lost with reason]
+  WORK -->|returned| ROUTE
+  APPL -->|application events| DERIVE[Lead status derived: converted / won / lost]
+```
+
+---
+
+## 6. Lead & assignment state machines
+
+```mermaid
+stateDiagram-v2
+  direction LR
+  [*] --> new
+  new --> qualified
+  new --> unqualified
+  qualified --> in_progress
+  qualified --> on_hold
+  in_progress --> converted
+  in_progress --> lost
+  in_progress --> on_hold
+  on_hold --> qualified
+  converted --> won
+  converted --> lost
+  qualified --> recycled
+  in_progress --> recycled
+  recycled --> qualified
+  unqualified --> [*]
+  won --> [*]
+  lost --> [*]
+```
+
+```mermaid
+stateDiagram-v2
+  direction LR
+  [*] --> offered
+  offered --> accepted
+  offered --> declined
+  offered --> expired
+  offered --> revoked
+  accepted --> working
+  working --> completed
+  working --> returned
+  working --> revoked
+  declined --> [*]
+  expired --> [*]
+  revoked --> [*]
+  returned --> [*]
+  completed --> [*]
+```
+
+---
+
+## 7. Borrower journey on the dynamic engines
+
+```mermaid
+flowchart LR
+  S1[Category] -->|catalog + computed availability| S2[Requirement]
+  S2 -->|category limits| S3[Pre-check]
+  S3 -->|questionnaire engine + progressive profiling| S4[Consent]
+  S4 -->|consent templates| S5[Documents]
+  S5 -->|document requirement rules| S6[Extraction]
+  S6 -->|facts with provenance| S7[Verify details]
+  S7 -->|KYC port| S8[Score]
+  S8 -->|scoring model| S9[Improvement plan]
+  S8 --> S10[Matching]
+  S10 -->|lender product rules| S11[Lender-specific questions and documents]
+  S11 --> S12[Submission]
+  S12 -->|lender events| S13[Sanction / disbursal]
+  S13 -->|ledger| S14[Commission]
+```
+
+---
+
+## 8. Application & submission state machines
+
+```mermaid
+stateDiagram-v2
+  direction LR
+  [*] --> draft
+  draft --> pre_screened
+  pre_screened --> documents_pending
+  documents_pending --> assessed
+  assessed --> ready_for_submission
+  ready_for_submission --> submitted
+  submitted --> closed
+  draft --> withdrawn
+  pre_screened --> withdrawn
+  documents_pending --> withdrawn
+  assessed --> withdrawn
+  ready_for_submission --> withdrawn
+  draft --> expired
+  closed --> [*]
+  withdrawn --> [*]
+  expired --> [*]
+```
+
+```mermaid
+stateDiagram-v2
+  direction LR
+  [*] --> sent_to_lender
+  sent_to_lender --> under_review
+  under_review --> query_raised
+  query_raised --> under_review
+  under_review --> sanctioned
+  under_review --> rejected
+  sanctioned --> disbursed
+  sent_to_lender --> withdrawn
+  under_review --> withdrawn
+  sanctioned --> withdrawn
+  disbursed --> [*]
+  rejected --> [*]
+  withdrawn --> [*]
+```
+
+---
+
+## 9. Events, queues, workers & real-time
+
+```mermaid
+flowchart LR
+  UC[Use case in one DB transaction] -->|state change + event row| OB[(outbox_events)]
+  OB --> RELAY[outbox.relay]
+  SCHED[worker-scheduler: job schedulers] -->|every 1 s| RELAY
+  SCHED -->|hourly| MAINT[maintenance.cleanup: @MaintenanceTask methods]
+  RELAY --> Q[[BullMQ queues]]
+  Q --> REVOKE[auth.session-revocations]
+  Q --> PROJ[projections: derived statuses, report views]
+  Q --> NOTIF[notifications.dispatch]
+  Q --> RTP[realtime.publish]
+  Q --> WHO[webhooks.outbound]
+  Q --> SLAQ[sla.timers]
+  Q --> ROUTEQ[leads.route]
+  Q --> DOCQ[documents.scan → documents.extract]
+  DOCQ --> ANQ[analysis.run]
+  ANQ --> MQ2[matching.run]
+  Q --> SUBQ[submissions.deliver]
+  Q --> COMQ[commissions.accrue]
+  RTP --> GW[Socket.IO gateway + Redis adapter]
+  GW --> ROOMS((rooms: user / membership / org))
+  IMPAPI[Admin import validate / commit / undo] --> IMPQ[imports.process]
+  SCHED -->|hourly| DROPQ[leads.dropoff-detect]
+  SCHED -->|15 min| REP[reports.refresh]
+  API[API request: OTP, invitation] -->|direct enqueue| NOTIF
+```
+
+Queue and job details (producers, consumers, triggers) are in [`inventory/worker-queues-jobs.md`](inventory/worker-queues-jobs.md).

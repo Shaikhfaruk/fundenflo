@@ -1,0 +1,133 @@
+{
+  "name": "Verify Email Link",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/me/logins/verify",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "me",
+        "logins",
+        "verify"
+      ]
+    },
+    "description": "Confirms the email OTP and links the email as a sign-in method. The email also becomes the primary email contact.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"challengeId\": \"{{challengeId}}\",\n  \"otp\": \"{{otp}}\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "pm.collectionVariables.set('loginId', pm.response.json().id);"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/me/logins/verify",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "me",
+            "logins",
+            "verify"
+          ]
+        },
+        "description": "Confirms the email OTP and links the email as a sign-in method. The email also becomes the primary email contact.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"challengeId\": \"{{challengeId}}\",\n  \"otp\": \"{{otp}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a1215b-2b3c-7d4e-9f50-61728394a5b6\",\n  \"method\": \"email_otp\",\n  \"identifier\": \"ro•••@sustaininsight.com\",\n  \"verifiedAt\": \"2026-10-09T15:49:01.398Z\",\n  \"lastUsedAt\": null\n}"
+    },
+    {
+      "name": "401 OTP_INVALID",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/me/logins/verify",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "me",
+            "logins",
+            "verify"
+          ]
+        },
+        "description": "Confirms the email OTP and links the email as a sign-in method. The email also becomes the primary email contact.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"challengeId\": \"{{challengeId}}\",\n  \"otp\": \"{{otp}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Unauthorized",
+      "code": 401,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"OTP_INVALID\",\n  \"message\": \"Incorrect code. Please check and try again.\",\n  \"details\": {\n    \"attemptsLeft\": 4\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

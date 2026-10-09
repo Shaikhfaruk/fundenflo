@@ -1,0 +1,71 @@
+{
+  "name": "List Invitations",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/invitations?limit=25",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "invitations"
+      ],
+      "query": [
+        {
+          "key": "limit",
+          "value": "25"
+        }
+      ]
+    },
+    "description": "Staff only. Invitations visible to the caller's role, newest first. Filters: `organizationId`, `status`, `cursor`, `limit`."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/invitations?limit=25",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "invitations"
+          ],
+          "query": [
+            {
+              "key": "limit",
+              "value": "25"
+            }
+          ]
+        },
+        "description": "Staff only. Invitations visible to the caller's role, newest first. Filters: `organizationId`, `status`, `cursor`, `limit`."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a1215c-01e0-754e-93eb-c1a788370afa\",\n      \"organization\": {\n        \"id\": \"01a12159-30fd-748b-905a-179c43e29aa9\",\n        \"name\": \"FundenFlo\",\n        \"type\": \"fundenflo\",\n        \"status\": \"active\"\n      },\n      \"context\": \"staff\",\n      \"role\": \"ops_lead\",\n      \"channel\": \"email\",\n      \"recipient\": \"po•••@sustaininsight.com\",\n      \"status\": \"pending\",\n      \"expiresAt\": \"2026-10-16T15:55:10.002Z\",\n      \"acceptedAt\": null,\n      \"createdAt\": \"2026-10-09T15:55:10.002Z\"\n    }\n  ],\n  \"nextCursor\": null\n}"
+    }
+  ]
+}

@@ -1,0 +1,116 @@
+enum ActorType {
+  user
+  system
+  ai_agent
+  api_client
+  webhook
+}
+
+enum NotificationChannel {
+  sms
+  email
+  push
+  whatsapp
+}
+
+enum DeliveryStatus {
+  queued
+  sent
+  delivered
+  failed
+}
+
+model AuditEvent {
+  id                String          @id @default(uuid(7)) @db.Uuid
+  seq               BigInt          @unique @default(autoincrement())
+  occurredAt        DateTime        @default(now()) @map("occurred_at") @db.Timestamptz(3)
+  actorType         ActorType       @map("actor_type")
+  actorUserId       String?         @map("actor_user_id") @db.Uuid
+  actorMembershipId String?         @map("actor_membership_id") @db.Uuid
+  actorContext      SessionContext? @map("actor_context")
+  sessionId         String?         @map("session_id") @db.Uuid
+  action            String
+  entityType        String          @map("entity_type")
+  entityId          String?         @map("entity_id")
+  requestId         String?         @map("request_id")
+  ip                String?
+  userAgent         String?         @map("user_agent")
+  metadata          Json?
+  prevHash          String?         @map("prev_hash")
+  hash              String?
+
+  @@index([entityType, entityId])
+  @@index([actorUserId, occurredAt])
+  @@index([action, occurredAt])
+  @@map("audit_events")
+}
+
+model OutboxEvent {
+  id            String    @id @default(uuid(7)) @db.Uuid
+  eventName     String    @map("event_name")
+  aggregateType String    @map("aggregate_type")
+  aggregateId   String?   @map("aggregate_id")
+  payload       Json
+  actor         Json?
+  requestId     String?   @map("request_id")
+  occurredAt    DateTime  @default(now()) @map("occurred_at") @db.Timestamptz(3)
+  publishedAt   DateTime? @map("published_at") @db.Timestamptz(3)
+  attempts      Int       @default(0)
+  lastError     String?   @map("last_error")
+
+  @@index([publishedAt, occurredAt])
+  @@map("outbox_events")
+}
+
+model IdempotencyKey {
+  scope          String
+  key            String
+  requestHash    String    @map("request_hash")
+  responseStatus Int?      @map("response_status")
+  responseBody   Json?     @map("response_body")
+  completedAt    DateTime? @map("completed_at") @db.Timestamptz(3)
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  expiresAt      DateTime  @map("expires_at") @db.Timestamptz(3)
+
+  @@id([scope, key])
+  @@index([expiresAt])
+  @@map("idempotency_keys")
+}
+
+model NotificationTemplate {
+  id                 String              @id @default(uuid(7)) @db.Uuid
+  key                String
+  channel            NotificationChannel
+  locale             String
+  subject            String?
+  body               String
+  providerTemplateId String?             @map("provider_template_id")
+  active             Boolean             @default(true)
+  version            Int                 @default(1)
+  createdAt          DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt          DateTime            @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@unique([key, channel, locale])
+  @@map("notification_templates")
+}
+
+model NotificationDelivery {
+  id                String              @id @default(uuid(7)) @db.Uuid
+  templateKey       String              @map("template_key")
+  channel           NotificationChannel
+  locale            String
+  recipientHash     String              @map("recipient_hash")
+  recipientMasked   String              @map("recipient_masked")
+  provider          String?
+  providerMessageId String?             @map("provider_message_id")
+  status            DeliveryStatus      @default(queued)
+  error             String?
+  requestedAt       DateTime            @default(now()) @map("requested_at") @db.Timestamptz(3)
+  sentAt            DateTime?           @map("sent_at") @db.Timestamptz(3)
+  deliveredAt       DateTime?           @map("delivered_at") @db.Timestamptz(3)
+  failedAt          DateTime?           @map("failed_at") @db.Timestamptz(3)
+
+  @@index([recipientHash, requestedAt])
+  @@index([status, requestedAt])
+  @@map("notification_deliveries")
+}

@@ -1,0 +1,162 @@
+{
+  "name": "Update Membership",
+  "request": {
+    "method": "PATCH",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "If-Match",
+        "value": "\"{{createdMembershipVersion}}\""
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/memberships/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "memberships",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{createdMembershipId}}"
+        }
+      ]
+    },
+    "description": "Staff only. Changes `status` (`active | suspended | revoked`) and/or `role`. Suspending or revoking blocks tokens issued for that membership immediately.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"status\": \"suspended\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{createdMembershipVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/memberships/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "memberships",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{createdMembershipId}}"
+            }
+          ]
+        },
+        "description": "Staff only. Changes `status` (`active | suspended | revoked`) and/or `role`. Suspending or revoking blocks tokens issued for that membership immediately.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"suspended\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a1215d-7e8f-7a0b-9c1d-2e3f4a5b6c7d\",\n  \"context\": \"staff\",\n  \"role\": \"support\",\n  \"status\": \"suspended\",\n  \"organization\": {\n    \"id\": \"01a12159-30fd-748b-905a-179c43e29aa9\",\n    \"name\": \"FundenFlo\",\n    \"type\": \"fundenflo\",\n    \"status\": \"active\"\n  },\n  \"version\": 2,\n  \"createdAt\": \"2026-10-09T15:49:01.412Z\"\n}"
+    },
+    {
+      "name": "409 VERSION_CONFLICT",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{createdMembershipVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/memberships/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "memberships",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{createdMembershipId}}"
+            }
+          ]
+        },
+        "description": "Staff only. Changes `status` (`active | suspended | revoked`) and/or `role`. Suspending or revoking blocks tokens issued for that membership immediately.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"suspended\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VERSION_CONFLICT\",\n  \"message\": \"This record was changed by someone else. Reload it and try again.\",\n  \"details\": {\n    \"currentVersion\": 2\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

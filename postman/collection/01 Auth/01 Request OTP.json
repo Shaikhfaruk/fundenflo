@@ -1,0 +1,234 @@
+{
+  "name": "Request OTP",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/auth/otp/request",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "auth",
+        "otp",
+        "request"
+      ]
+    },
+    "description": "Starts sign-in for borrowers, CAs, DSAs and lender users. Send exactly one of `mobile` (with optional `countryCode`) or `email`.\n\n`loginAs` is `borrower | ca | dsa | lender` (default `borrower`) and decides which membership the session opens with. Optional `referralCode` (4-24 letters, numbers or hyphens) is stored on the user at signup.\n\nEmail codes are only delivered to emails already linked to an account or holding a pending invitation; the response is identical either way.\n\nLimits: 30-second resend cooldown, 5 codes per identifier per hour, 30 requests per IP per hour.",
+    "auth": {
+      "type": "noauth"
+    },
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"mobile\": \"{{mobile}}\",\n  \"countryCode\": \"{{countryCode}}\",\n  \"loginAs\": \"{{loginAs}}\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.collectionVariables.set('challengeId', pm.response.json().challengeId);"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/otp/request",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "otp",
+            "request"
+          ]
+        },
+        "description": "Starts sign-in for borrowers, CAs, DSAs and lender users. Send exactly one of `mobile` (with optional `countryCode`) or `email`.\n\n`loginAs` is `borrower | ca | dsa | lender` (default `borrower`) and decides which membership the session opens with. Optional `referralCode` (4-24 letters, numbers or hyphens) is stored on the user at signup.\n\nEmail codes are only delivered to emails already linked to an account or holding a pending invitation; the response is identical either way.\n\nLimits: 30-second resend cooldown, 5 codes per identifier per hour, 30 requests per IP per hour.",
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"mobile\": \"{{mobile}}\",\n  \"countryCode\": \"{{countryCode}}\",\n  \"loginAs\": \"{{loginAs}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"challengeId\": \"01a1215a-1c7c-719c-a2f0-6a7d1bd0f780\",\n  \"resendIn\": 30,\n  \"expiresIn\": 300\n}"
+    },
+    {
+      "name": "429 OTP_COOLDOWN",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/otp/request",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "otp",
+            "request"
+          ]
+        },
+        "description": "Starts sign-in for borrowers, CAs, DSAs and lender users. Send exactly one of `mobile` (with optional `countryCode`) or `email`.\n\n`loginAs` is `borrower | ca | dsa | lender` (default `borrower`) and decides which membership the session opens with. Optional `referralCode` (4-24 letters, numbers or hyphens) is stored on the user at signup.\n\nEmail codes are only delivered to emails already linked to an account or holding a pending invitation; the response is identical either way.\n\nLimits: 30-second resend cooldown, 5 codes per identifier per hour, 30 requests per IP per hour.",
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"mobile\": \"{{mobile}}\",\n  \"countryCode\": \"{{countryCode}}\",\n  \"loginAs\": \"{{loginAs}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Too Many Requests",
+      "code": 429,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"OTP_COOLDOWN\",\n  \"message\": \"Please wait before requesting another code.\",\n  \"details\": {\n    \"retryAfterSeconds\": 30\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "429 OTP_RATE_LIMITED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/otp/request",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "otp",
+            "request"
+          ]
+        },
+        "description": "Starts sign-in for borrowers, CAs, DSAs and lender users. Send exactly one of `mobile` (with optional `countryCode`) or `email`.\n\n`loginAs` is `borrower | ca | dsa | lender` (default `borrower`) and decides which membership the session opens with. Optional `referralCode` (4-24 letters, numbers or hyphens) is stored on the user at signup.\n\nEmail codes are only delivered to emails already linked to an account or holding a pending invitation; the response is identical either way.\n\nLimits: 30-second resend cooldown, 5 codes per identifier per hour, 30 requests per IP per hour.",
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"mobile\": \"{{mobile}}\",\n  \"countryCode\": \"{{countryCode}}\",\n  \"loginAs\": \"{{loginAs}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Too Many Requests",
+      "code": 429,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"OTP_RATE_LIMITED\",\n  \"message\": \"Too many codes requested. Try again later.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "400 MOBILE_INVALID",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/otp/request",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "otp",
+            "request"
+          ]
+        },
+        "description": "Starts sign-in for borrowers, CAs, DSAs and lender users. Send exactly one of `mobile` (with optional `countryCode`) or `email`.\n\n`loginAs` is `borrower | ca | dsa | lender` (default `borrower`) and decides which membership the session opens with. Optional `referralCode` (4-24 letters, numbers or hyphens) is stored on the user at signup.\n\nEmail codes are only delivered to emails already linked to an account or holding a pending invitation; the response is identical either way.\n\nLimits: 30-second resend cooldown, 5 codes per identifier per hour, 30 requests per IP per hour.",
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"mobile\": \"{{mobile}}\",\n  \"countryCode\": \"{{countryCode}}\",\n  \"loginAs\": \"{{loginAs}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"MOBILE_INVALID\",\n  \"message\": \"Enter a valid mobile number.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

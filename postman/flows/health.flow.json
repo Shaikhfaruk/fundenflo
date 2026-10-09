@@ -1,0 +1,4 @@
+{
+  "name": "Health probes",
+  "steps": [{ "request": "00 Health/01 Liveness.json" }, { "request": "00 Health/02 Readiness.json" }]
+}

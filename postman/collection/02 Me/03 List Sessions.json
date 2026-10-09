@@ -1,0 +1,61 @@
+{
+  "name": "List Sessions",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/me/sessions",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "me",
+        "sessions"
+      ]
+    },
+    "description": "Active sessions (devices) of the current user. `current` marks this session."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "const other = pm.response.json().items.find((session) => !session.current);",
+          "if (other) pm.collectionVariables.set('otherSessionId', other.id);"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/me/sessions",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "me",
+            "sessions"
+          ]
+        },
+        "description": "Active sessions (devices) of the current user. `current` marks this session."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a1215a-4ce6-7f21-9d0e-3a54b8c1e702\",\n      \"context\": \"borrower\",\n      \"loginMethod\": \"mobile_otp\",\n      \"deviceName\": \"Pixel 9\",\n      \"platform\": \"android\",\n      \"ip\": \"::ffff:127.0.0.1\",\n      \"userAgent\": \"okhttp/4.12.0\",\n      \"createdAt\": \"2026-10-09T15:49:01.420Z\",\n      \"lastSeenAt\": \"2026-10-09T15:52:44.103Z\",\n      \"current\": true\n    },\n    {\n      \"id\": \"01a1215b-0a11-7d4c-8e2f-5b6a7c8d9e0f\",\n      \"context\": \"none\",\n      \"loginMethod\": \"mobile_otp\",\n      \"deviceName\": null,\n      \"platform\": null,\n      \"ip\": \"::ffff:127.0.0.1\",\n      \"userAgent\": \"okhttp/4.12.0\",\n      \"createdAt\": \"2026-10-09T15:49:01.420Z\",\n      \"lastSeenAt\": \"2026-10-09T15:52:44.103Z\",\n      \"current\": false\n    }\n  ]\n}"
+    }
+  ]
+}

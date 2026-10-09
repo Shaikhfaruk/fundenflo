@@ -1,0 +1,3 @@
+{
+  "description": "FundenFlo staff administration. Requires a staff session; each route also checks the staff role's permissions."
+}

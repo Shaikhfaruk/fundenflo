@@ -1,0 +1,14 @@
+{
+  "name": "Linked sign-in methods and mobile change",
+  "steps": [
+    { "request": "01 Auth/01 Request OTP.json", "variables": { "loginAs": "borrower" } },
+    { "request": "01 Auth/02 Verify OTP.json" },
+    { "request": "02 Me/07 Start Email Link.json" },
+    { "request": "02 Me/08 Verify Email Link.json" },
+    { "request": "02 Me/06 List Logins.json" },
+    { "request": "02 Me/09 Remove Login.json" },
+    { "request": "02 Me/10 Start Mobile Change.json" },
+    { "request": "02 Me/11 Verify Mobile Change.json" },
+    { "request": "02 Me/01 Get Me.json" }
+  ]
+}

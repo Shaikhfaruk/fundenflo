@@ -1,0 +1,26 @@
+# Inventory — Worker queues, jobs & cron
+
+> One worker process (`backend/src/worker.ts`, module `worker.module.ts`) hosts every processor. Queue names are constants in `backend/src/infrastructure/queue/queue-names.ts`; repeating jobs are registered by `worker-scheduler.service.ts` as BullMQ job schedulers. Processors extend `ContextualProcessor` (request context + system actor per job).
+> Every consumer is idempotent (job ID = outbox event ID or delivery ID). Default retry: exponential backoff, 5 attempts (`queue.constants.ts`); failed jobs are kept 7 days for inspection. Alerting on failed jobs is planned with telemetry.
+> `useful` evidence = processor file + local smoke test (worker log) on 2026-10-09; `planned` evidence = plan section.
+
+| Queue | Job(s) | Producer | Consumer module | Trigger | Milestone | Status | Evidence |
+|---|---|---|---|---|---|---|---|
+| `outbox.relay` | relay pending `outbox_events` to the queues in `event-routes.ts` (`FOR UPDATE SKIP LOCKED`, batch 200) | DB writes from every module | infrastructure/outbox (`outbox-relay.processor.ts`) | Job scheduler every 1 s | M0 | `useful` | `infrastructure/outbox/outbox-relay.processor.ts` |
+| `notifications.dispatch` | render template and send SMS / email (push, WhatsApp later); payload encrypted in Redis | `NotificationService` | notifications (`notification-dispatch.processor.ts`) | Direct call; OTP jobs at critical priority | M0 | `useful` | `modules/notifications/infrastructure/notification-dispatch.processor.ts` |
+| `maintenance.cleanup` | run every `@MaintenanceTask` method found by discovery: `auth.expired-otp-challenges`, `auth.expired-sessions`, `auth.stale-refresh-tokens`, `idempotency.expired-keys` | job scheduler | infrastructure/maintenance (`maintenance.processor.ts`) | Hourly (`0 * * * *`) | M0 | `useful` | `infrastructure/maintenance/maintenance.processor.ts`, `modules/auth/infrastructure/auth.maintenance.ts`, `infrastructure/idempotency/idempotency.maintenance.ts` |
+| `auth.session-revocations` | revoke DB sessions after `membership.changed` (non-active) or `user.status_changed` (non-active) | outbox relay | auth (`session-revocation.processor.ts`) | Event | M0 | `useful` | `modules/auth/infrastructure/session-revocation.processor.ts`; spec `staff-admin` (token blocked immediately by revocation registry) |
+| `realtime.publish` | emit event IDs to Socket.IO rooms | outbox relay | infrastructure/realtime | Domain events marked real-time | M1 | `planned` | §4 sync |
+| `imports.process` | `validate`, `commit`, `undo` a batch, in chunks | `ImportService` | imports | `POST /admin/imports/:id/validate`, `/commit`, `/undo` | M1 | `planned` | §7.1 |
+| `leads.route` | pick and offer the next assignee | `lead.captured`, `lead.qualified`, assignment `declined / expired / returned`, ops route | leads | Event | M1 | `planned` | §7.4 |
+| `sla.timers` | fire breach → reassign, warn or escalate | `SlaService` (delayed jobs) | sla | Delayed job at `due_at`; cancelled when satisfied | M1 | `planned` | §7.6 |
+| `leads.dropoff-detect` | turn OTP-verified users without a submitted application into leads | cron | leads | Hourly | M1 | `planned` | §7.1 |
+| `reports.refresh` | refresh materialised report views | cron | leads (later applications, commissions) | Every 15 minutes | M1 | `planned` | §7.8 |
+| `documents.scan` | antivirus + type sniff | `document.uploaded` | documents | Event | M3 | `planned` | §8.3 |
+| `documents.extract` | classify + extract → facts | `document.scanned` | documents | Event, gated by `ai_documents` consent | M5 | `planned` | §13 |
+| `analysis.run` | run pipeline steps, compute score + improvement | `POST /applications/:id/analyses` | assessments | API call | M5 | `planned` | §8.4 |
+| `matching.run` | run matching for an application | `POST /applications/:id/matches`, `score.computed` | matching | API call or event | M6 | `planned` | §6.8 |
+| `submissions.deliver` | build packet and deliver to lender | submission created | applications | Event, gated by lender-scoped `lender_sharing` consent | M6 | `planned` | §8.2 |
+| `commissions.accrue` | post ledger entries on verified disbursal and receipts | `submission.disbursed`, `receivable.received`, lead events with terms | commissions | Event | M7 | `planned` | §8.5 |
+| — | data retention purge is not a separate queue: each module adds `@MaintenanceTask` methods (documents, leads, audit export) that `maintenance.cleanup` runs | — | owning modules | Hourly | M8 | `planned` | §14 |
+| `webhooks.outbound` | signed delivery to partner or lender systems | outbox relay | infrastructure/queue | Event | v3.0 | `planned` | §15 |

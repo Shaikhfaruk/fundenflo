@@ -1,0 +1,188 @@
+{
+  "name": "Create Invitation",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "Idempotency-Key",
+        "value": "{{$guid}}"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/invitations",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "invitations"
+      ]
+    },
+    "description": "Staff only. Invites someone to an organization with exactly one of `mobile` (+ `countryCode`) or `email`. Staff invitations must use email and are accepted with Accept Staff Invitation; lender and partner invitations are accepted automatically when the person signs in by OTP with the matching `loginAs`. Supports Idempotency-Key.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"organizationId\": \"{{organizationId}}\",\n  \"role\": \"ops_lead\",\n  \"email\": \"ops.{{$timestamp}}@sustaininsight.com\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "pm.collectionVariables.set('invitationId', pm.response.json().id);"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "{{$guid}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/invitations",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "invitations"
+          ]
+        },
+        "description": "Staff only. Invites someone to an organization with exactly one of `mobile` (+ `countryCode`) or `email`. Staff invitations must use email and are accepted with Accept Staff Invitation; lender and partner invitations are accepted automatically when the person signs in by OTP with the matching `loginAs`. Supports Idempotency-Key.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"organizationId\": \"{{organizationId}}\",\n  \"role\": \"ops_lead\",\n  \"email\": \"ops.{{$timestamp}}@sustaininsight.com\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a1215c-01e0-754e-93eb-c1a788370afa\",\n  \"organization\": {\n    \"id\": \"01a12159-30fd-748b-905a-179c43e29aa9\",\n    \"name\": \"FundenFlo\",\n    \"type\": \"fundenflo\",\n    \"status\": \"active\"\n  },\n  \"context\": \"staff\",\n  \"role\": \"ops_lead\",\n  \"channel\": \"email\",\n  \"recipient\": \"po•••@sustaininsight.com\",\n  \"status\": \"pending\",\n  \"expiresAt\": \"2026-10-16T15:55:10.002Z\",\n  \"acceptedAt\": null,\n  \"createdAt\": \"2026-10-09T15:55:10.002Z\"\n}"
+    },
+    {
+      "name": "400 INVITATION_CHANNEL_NOT_ALLOWED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "{{$guid}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/invitations",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "invitations"
+          ]
+        },
+        "description": "Staff only. Invites someone to an organization with exactly one of `mobile` (+ `countryCode`) or `email`. Staff invitations must use email and are accepted with Accept Staff Invitation; lender and partner invitations are accepted automatically when the person signs in by OTP with the matching `loginAs`. Supports Idempotency-Key.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"organizationId\": \"{{organizationId}}\",\n  \"role\": \"ops_lead\",\n  \"email\": \"ops.{{$timestamp}}@sustaininsight.com\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"INVITATION_CHANNEL_NOT_ALLOWED\",\n  \"message\": \"Staff invitations must be sent by email.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "422 IDEMPOTENCY_KEY_REUSED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "{{$guid}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/invitations",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "invitations"
+          ]
+        },
+        "description": "Staff only. Invites someone to an organization with exactly one of `mobile` (+ `countryCode`) or `email`. Staff invitations must use email and are accepted with Accept Staff Invitation; lender and partner invitations are accepted automatically when the person signs in by OTP with the matching `loginAs`. Supports Idempotency-Key.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"organizationId\": \"{{organizationId}}\",\n  \"role\": \"ops_lead\",\n  \"email\": \"ops.{{$timestamp}}@sustaininsight.com\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Unprocessable Entity",
+      "code": 422,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"IDEMPOTENCY_KEY_REUSED\",\n  \"message\": \"This Idempotency-Key was already used with a different request.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

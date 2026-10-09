@@ -1,0 +1,10 @@
+export const QueueName = {
+  OutboxRelay: 'outbox.relay',
+  NotificationsDispatch: 'notifications.dispatch',
+  AuthSessionRevocations: 'auth.session-revocations',
+  MaintenanceCleanup: 'maintenance.cleanup',
+} as const;
+
+export type QueueName = (typeof QueueName)[keyof typeof QueueName];
+
+export const ALL_QUEUES: QueueName[] = Object.values(QueueName);

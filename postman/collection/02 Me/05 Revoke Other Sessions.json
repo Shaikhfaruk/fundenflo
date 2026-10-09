@@ -1,0 +1,59 @@
+{
+  "name": "Revoke Other Sessions",
+  "request": {
+    "method": "DELETE",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/me/sessions",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "me",
+        "sessions"
+      ]
+    },
+    "description": "Signs out every session of the user except the current one."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/me/sessions",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "me",
+            "sessions"
+          ]
+        },
+        "description": "Signs out every session of the user except the current one."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"revoked\": 2\n}"
+    }
+  ]
+}

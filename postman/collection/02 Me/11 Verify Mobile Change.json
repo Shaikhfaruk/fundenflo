@@ -1,0 +1,133 @@
+{
+  "name": "Verify Mobile Change",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/me/mobile-change/verify",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "me",
+        "mobile-change",
+        "verify"
+      ]
+    },
+    "description": "Confirms the new mobile. The mobile login moves to the new number, the old number stays on the profile as a secondary contact, and every other session is signed out.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"challengeId\": \"{{challengeId}}\",\n  \"otp\": \"{{otp}}\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.collectionVariables.set('mobile', pm.collectionVariables.get('newMobile'));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/me/mobile-change/verify",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "me",
+            "mobile-change",
+            "verify"
+          ]
+        },
+        "description": "Confirms the new mobile. The mobile login moves to the new number, the old number stays on the profile as a secondary contact, and every other session is signed out.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"challengeId\": \"{{challengeId}}\",\n  \"otp\": \"{{otp}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a1215a-4ce1-7c0e-8a37-1b2f8e0d9a11\",\n  \"status\": \"active\",\n  \"fullName\": \"Rohit Sharma\",\n  \"preferredLanguage\": \"hi\",\n  \"mobile\": \"+919712345678\",\n  \"email\": null,\n  \"profileComplete\": true,\n  \"version\": 2,\n  \"activeContext\": {\n    \"membershipId\": \"01a1215a-4ce4-76ef-99ed-b872d6afc844\",\n    \"context\": \"borrower\",\n    \"role\": \"borrower\",\n    \"organization\": null\n  },\n  \"memberships\": [\n    {\n      \"id\": \"01a1215a-4ce4-76ef-99ed-b872d6afc844\",\n      \"context\": \"borrower\",\n      \"role\": \"borrower\",\n      \"status\": \"active\",\n      \"organization\": null,\n      \"version\": 1,\n      \"createdAt\": \"2026-10-09T15:49:01.412Z\"\n    }\n  ],\n  \"logins\": [\n    {\n      \"id\": \"01a1215a-4ce2-7a90-b1f3-6c0de4a5b8f9\",\n      \"method\": \"mobile_otp\",\n      \"identifier\": \"+91 98•••••670\",\n      \"verifiedAt\": \"2026-10-09T15:49:01.398Z\",\n      \"lastUsedAt\": \"2026-10-09T15:49:01.398Z\"\n    }\n  ]\n}"
+    },
+    {
+      "name": "401 OTP_INVALID",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/me/mobile-change/verify",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "me",
+            "mobile-change",
+            "verify"
+          ]
+        },
+        "description": "Confirms the new mobile. The mobile login moves to the new number, the old number stays on the profile as a secondary contact, and every other session is signed out.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"challengeId\": \"{{challengeId}}\",\n  \"otp\": \"{{otp}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Unauthorized",
+      "code": 401,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"OTP_INVALID\",\n  \"message\": \"Incorrect code. Please check and try again.\",\n  \"details\": {\n    \"attemptsLeft\": 4\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

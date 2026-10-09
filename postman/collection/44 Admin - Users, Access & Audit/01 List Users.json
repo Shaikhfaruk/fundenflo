@@ -1,0 +1,157 @@
+{
+  "name": "List Users",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/users?limit=25&q={{mobile}}",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "users"
+      ],
+      "query": [
+        {
+          "key": "limit",
+          "value": "25"
+        },
+        {
+          "key": "q",
+          "value": "{{mobile}}"
+        }
+      ]
+    },
+    "description": "Staff only. Cursor-paginated users. `q` matches an exact mobile or email through blind indexes (no plaintext search), or part of the name. Optional `status`, `cursor`, `limit` (1-100)."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "const first = pm.response.json().items[0];",
+          "if (first) pm.collectionVariables.set('targetUserId', first.id);"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/users?limit=25&q={{mobile}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "users"
+          ],
+          "query": [
+            {
+              "key": "limit",
+              "value": "25"
+            },
+            {
+              "key": "q",
+              "value": "{{mobile}}"
+            }
+          ]
+        },
+        "description": "Staff only. Cursor-paginated users. `q` matches an exact mobile or email through blind indexes (no plaintext search), or part of the name. Optional `status`, `cursor`, `limit` (1-100)."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a1215a-4ce1-7c0e-8a37-1b2f8e0d9a11\",\n      \"status\": \"active\",\n      \"fullName\": \"Rohit Sharma\",\n      \"memberships\": 1,\n      \"signupChannel\": \"mobile_otp\",\n      \"lastLoginAt\": \"2026-10-09T15:49:01.430Z\",\n      \"createdAt\": \"2026-10-09T15:49:01.395Z\",\n      \"version\": 1\n    }\n  ],\n  \"nextCursor\": null\n}"
+    },
+    {
+      "name": "403 CONTEXT_NOT_ALLOWED",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/users?limit=25&q={{mobile}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "users"
+          ],
+          "query": [
+            {
+              "key": "limit",
+              "value": "25"
+            },
+            {
+              "key": "q",
+              "value": "{{mobile}}"
+            }
+          ]
+        },
+        "description": "Staff only. Cursor-paginated users. `q` matches an exact mobile or email through blind indexes (no plaintext search), or part of the name. Optional `status`, `cursor`, `limit` (1-100)."
+      },
+      "status": "Forbidden",
+      "code": 403,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"CONTEXT_NOT_ALLOWED\",\n  \"message\": \"Switch to a role that can use this feature.\",\n  \"details\": {\n    \"context\": \"borrower\",\n    \"allowed\": [\n      \"staff\"\n    ]\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "403 FORBIDDEN",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/users?limit=25&q={{mobile}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "users"
+          ],
+          "query": [
+            {
+              "key": "limit",
+              "value": "25"
+            },
+            {
+              "key": "q",
+              "value": "{{mobile}}"
+            }
+          ]
+        },
+        "description": "Staff only. Cursor-paginated users. `q` matches an exact mobile or email through blind indexes (no plaintext search), or part of the name. Optional `status`, `cursor`, `limit` (1-100)."
+      },
+      "status": "Forbidden",
+      "code": 403,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"FORBIDDEN\",\n  \"message\": \"You do not have permission to do this.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

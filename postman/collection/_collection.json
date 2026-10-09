@@ -1,0 +1,52 @@
+{
+  "info": {
+    "_postman_id": "cc89eeb4-a096-499a-bff0-35001e6628ee",
+    "name": "FundenFlo API",
+    "description": "FundenFlo backend API (v1). Built from the files in postman/collection by postman/scripts/build.ts; do not edit the built file.\n\nConventions:\n- Base URL `{{baseUrl}}` = `<host>/v1`; health probes use `{{rootUrl}}`.\n- Bearer auth uses `{{accessToken}}`; Verify OTP, Refresh Token and Verify Staff MFA save tokens automatically.\n- Errors always have the shape `{ code, message, details?, requestId }`.\n- Money is integer paise in fields ending with `Paise`.\n- Lists use cursor pagination: `{ items, nextCursor }` with `cursor` and `limit` query parameters.\n- Send `If-Match: \"<version>\"` on updates; send `Idempotency-Key` on creates that support it.\n- Every response carries `X-Request-Id`.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.request.headers.upsert({ key: 'X-Request-Id', value: pm.variables.replaceIn('{{$guid}}') });",
+          "const digits = () => String(Math.floor(Math.random() * 100000000)).padStart(8, '0');",
+          "if (!pm.collectionVariables.get('mobile')) pm.collectionVariables.set('mobile', '98' + digits());",
+          "if (!pm.collectionVariables.get('newMobile')) pm.collectionVariables.set('newMobile', '97' + digits());",
+          "if (!pm.collectionVariables.get('linkEmail')) pm.collectionVariables.set('linkEmail', 'borrower.' + Date.now() + '@sustaininsight.com');"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    { "key": "countryCode", "value": "+91" },
+    { "key": "loginAs", "value": "borrower" },
+    { "key": "mobile", "value": "" },
+    { "key": "newMobile", "value": "" },
+    { "key": "linkEmail", "value": "" },
+    { "key": "accessToken", "value": "" },
+    { "key": "refreshToken", "value": "" },
+    { "key": "challengeId", "value": "" },
+    { "key": "userId", "value": "" },
+    { "key": "partyVersion", "value": "" },
+    { "key": "membershipId", "value": "" },
+    { "key": "borrowerMembershipId", "value": "" },
+    { "key": "organizationId", "value": "" },
+    { "key": "otherSessionId", "value": "" },
+    { "key": "loginId", "value": "" },
+    { "key": "mfaToken", "value": "" },
+    { "key": "totpSecret", "value": "" },
+    { "key": "totpCode", "value": "" },
+    { "key": "targetUserId", "value": "" },
+    { "key": "targetUserVersion", "value": "" },
+    { "key": "createdMembershipId", "value": "" },
+    { "key": "createdMembershipVersion", "value": "" },
+    { "key": "invitationId", "value": "" }
+  ]
+}

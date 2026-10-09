@@ -1,0 +1,162 @@
+{
+  "name": "Update User Status",
+  "request": {
+    "method": "PATCH",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "If-Match",
+        "value": "\"{{targetUserVersion}}\""
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/users/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "users",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{targetUserId}}"
+        }
+      ]
+    },
+    "description": "Staff only. Sets `status` to `active | suspended | deleted`. Suspending blocks the user's tokens immediately and signs out all sessions.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"status\": \"active\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{targetUserVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/users/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "users",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{targetUserId}}"
+            }
+          ]
+        },
+        "description": "Staff only. Sets `status` to `active | suspended | deleted`. Suspending blocks the user's tokens immediately and signs out all sessions.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"active\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a1215a-4ce1-7c0e-8a37-1b2f8e0d9a11\",\n  \"status\": \"suspended\",\n  \"fullName\": \"Rohit Sharma\",\n  \"version\": 2\n}"
+    },
+    {
+      "name": "409 VERSION_CONFLICT",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{targetUserVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/users/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "users",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{targetUserId}}"
+            }
+          ]
+        },
+        "description": "Staff only. Sets `status` to `active | suspended | deleted`. Suspending blocks the user's tokens immediately and signs out all sessions.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"active\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VERSION_CONFLICT\",\n  \"message\": \"This record was changed by someone else. Reload it and try again.\",\n  \"details\": {\n    \"currentVersion\": 2\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

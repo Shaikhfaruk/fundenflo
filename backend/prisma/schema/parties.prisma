@@ -1,0 +1,150 @@
+enum PartyKind {
+  person
+  business
+}
+
+enum PartyStatus {
+  active
+  merged
+  archived
+}
+
+enum ContactType {
+  mobile
+  email
+  landline
+}
+
+enum IdentifierType {
+  pan
+  gstin
+  cin
+  udyam
+  din
+}
+
+enum RelationshipType {
+  proprietor_of
+  director_of
+  partner_of
+  signatory_of
+  employee_of
+}
+
+enum MatchReviewStatus {
+  open
+  linked
+  dismissed
+}
+
+model Party {
+  id                String      @id @default(uuid(7)) @db.Uuid
+  kind              PartyKind
+  displayName       String?     @map("display_name")
+  preferredLanguage String?     @map("preferred_language")
+  status            PartyStatus @default(active)
+  mergedIntoId      String?     @map("merged_into_id") @db.Uuid
+  version           Int         @default(1)
+  createdAt         DateTime    @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt         DateTime    @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  contacts          PartyContact[]
+  identifiers       PartyIdentifier[]
+  relationshipsFrom PartyRelationship[] @relation("relationship_from")
+  relationshipsTo   PartyRelationship[] @relation("relationship_to")
+  user              User?
+  organization      Organization?
+
+  @@index([kind, status])
+  @@map("parties")
+}
+
+model PartyContact {
+  id           String      @id @default(uuid(7)) @db.Uuid
+  partyId      String      @map("party_id") @db.Uuid
+  type         ContactType
+  valueEnc     String      @map("value_enc")
+  valueHash    String      @map("value_hash")
+  valueMasked  String      @map("value_masked")
+  isPrimary    Boolean     @default(false) @map("is_primary")
+  verifiedAt   DateTime?   @map("verified_at") @db.Timestamptz(3)
+  doNotContact Boolean     @default(false) @map("do_not_contact")
+  invalidAt    DateTime?   @map("invalid_at") @db.Timestamptz(3)
+  source       String
+  createdAt    DateTime    @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime    @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  party Party @relation(fields: [partyId], references: [id], onDelete: Restrict)
+
+  @@unique([partyId, type, valueHash])
+  @@index([type, valueHash])
+  @@map("party_contacts")
+}
+
+model PartyIdentifier {
+  id          String         @id @default(uuid(7)) @db.Uuid
+  partyId     String         @map("party_id") @db.Uuid
+  type        IdentifierType
+  valueEnc    String         @map("value_enc")
+  valueHash   String         @map("value_hash")
+  valueMasked String         @map("value_masked")
+  verifiedAt  DateTime?      @map("verified_at") @db.Timestamptz(3)
+  source      String
+  createdAt   DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  party Party @relation(fields: [partyId], references: [id], onDelete: Restrict)
+
+  @@unique([partyId, type])
+  @@index([type, valueHash])
+  @@map("party_identifiers")
+}
+
+model PartyRelationship {
+  id          String           @id @default(uuid(7)) @db.Uuid
+  fromPartyId String           @map("from_party_id") @db.Uuid
+  toPartyId   String           @map("to_party_id") @db.Uuid
+  type        RelationshipType
+  shareBps    Int?             @map("share_bps")
+  startedAt   DateTime?        @map("started_at") @db.Timestamptz(3)
+  endedAt     DateTime?        @map("ended_at") @db.Timestamptz(3)
+  createdAt   DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  fromParty Party @relation("relationship_from", fields: [fromPartyId], references: [id], onDelete: Restrict)
+  toParty   Party @relation("relationship_to", fields: [toPartyId], references: [id], onDelete: Restrict)
+
+  @@index([fromPartyId])
+  @@index([toPartyId])
+  @@map("party_relationships")
+}
+
+model PartyMerge {
+  id               String    @id @default(uuid(7)) @db.Uuid
+  sourcePartyId    String    @map("source_party_id") @db.Uuid
+  targetPartyId    String    @map("target_party_id") @db.Uuid
+  reason           String
+  snapshot         Json
+  mergedByUserId   String?   @map("merged_by_user_id") @db.Uuid
+  mergedAt         DateTime  @default(now()) @map("merged_at") @db.Timestamptz(3)
+  revertedAt       DateTime? @map("reverted_at") @db.Timestamptz(3)
+  revertedByUserId String?   @map("reverted_by_user_id") @db.Uuid
+
+  @@index([sourcePartyId])
+  @@index([targetPartyId])
+  @@map("party_merges")
+}
+
+model PartyMatchReview {
+  id               String            @id @default(uuid(7)) @db.Uuid
+  partyId          String            @map("party_id") @db.Uuid
+  candidatePartyIds String[]         @map("candidate_party_ids") @db.Uuid
+  signals          Json
+  status           MatchReviewStatus @default(open)
+  resolution       String?
+  resolvedByUserId String?           @map("resolved_by_user_id") @db.Uuid
+  resolvedAt       DateTime?         @map("resolved_at") @db.Timestamptz(3)
+  createdAt        DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  @@index([status, createdAt])
+  @@map("party_match_reviews")
+}

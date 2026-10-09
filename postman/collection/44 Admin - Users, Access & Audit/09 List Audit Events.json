@@ -1,0 +1,71 @@
+{
+  "name": "List Audit Events",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/audit-events?limit=25",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "audit-events"
+      ],
+      "query": [
+        {
+          "key": "limit",
+          "value": "25"
+        }
+      ]
+    },
+    "description": "Staff with audit access. Append-only, hash-chained audit trail. Filters: `actorUserId`, `entityType`, `entityId`, `action`, `from`, `to`, `cursor`, `limit`."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/audit-events?limit=25",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "audit-events"
+          ],
+          "query": [
+            {
+              "key": "limit",
+              "value": "25"
+            }
+          ]
+        },
+        "description": "Staff with audit access. Append-only, hash-chained audit trail. Filters: `actorUserId`, `entityType`, `entityId`, `action`, `from`, `to`, `cursor`, `limit`."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a1215f-5a6b-7c8d-9e0f-1a2b3c4d5e6f\",\n      \"seq\": \"24\",\n      \"occurredAt\": \"2026-10-09T15:55:12.881Z\",\n      \"actorType\": \"user\",\n      \"actorUserId\": \"01a1215a-4ce1-7c0e-8a37-1b2f8e0d9a11\",\n      \"actorMembershipId\": \"01a1215a-4ce4-76ef-99ed-b872d6afc844\",\n      \"actorContext\": \"staff\",\n      \"sessionId\": \"01a1215a-4ce6-7f21-9d0e-3a54b8c1e702\",\n      \"action\": \"auth.staff_login\",\n      \"entityType\": \"user\",\n      \"entityId\": \"01a1215a-4ce1-7c0e-8a37-1b2f8e0d9a11\",\n      \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\",\n      \"ip\": \"::ffff:127.0.0.1\",\n      \"metadata\": {\n        \"role\": \"super_admin\"\n      },\n      \"hash\": \"9f2c4e1a7b3d5f60812a4c6e8b0d2f4a6c8e0b2d4f6a8c0e2b4d6f8a0c2e4b6d\"\n    }\n  ],\n  \"nextCursor\": null\n}"
+    }
+  ]
+}

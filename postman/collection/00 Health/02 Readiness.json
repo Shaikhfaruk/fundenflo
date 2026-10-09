@@ -1,0 +1,96 @@
+{
+  "name": "Readiness",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{rootUrl}}/health/ready",
+      "host": [
+        "{{rootUrl}}"
+      ],
+      "path": [
+        "health",
+        "ready"
+      ]
+    },
+    "description": "Readiness probe. Checks PostgreSQL and Redis. Returns 503 SERVICE_UNAVAILABLE with the failing dependency in details.",
+    "auth": {
+      "type": "noauth"
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{rootUrl}}/health/ready",
+          "host": [
+            "{{rootUrl}}"
+          ],
+          "path": [
+            "health",
+            "ready"
+          ]
+        },
+        "description": "Readiness probe. Checks PostgreSQL and Redis. Returns 503 SERVICE_UNAVAILABLE with the failing dependency in details.",
+        "auth": {
+          "type": "noauth"
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"status\": \"ok\",\n  \"info\": {\n    \"database\": {\n      \"status\": \"up\"\n    },\n    \"redis\": {\n      \"status\": \"up\"\n    }\n  },\n  \"error\": {},\n  \"details\": {\n    \"database\": {\n      \"status\": \"up\"\n    },\n    \"redis\": {\n      \"status\": \"up\"\n    }\n  }\n}"
+    },
+    {
+      "name": "503 SERVICE_UNAVAILABLE",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{rootUrl}}/health/ready",
+          "host": [
+            "{{rootUrl}}"
+          ],
+          "path": [
+            "health",
+            "ready"
+          ]
+        },
+        "description": "Readiness probe. Checks PostgreSQL and Redis. Returns 503 SERVICE_UNAVAILABLE with the failing dependency in details.",
+        "auth": {
+          "type": "noauth"
+        }
+      },
+      "status": "Service Unavailable",
+      "code": 503,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"SERVICE_UNAVAILABLE\",\n  \"message\": \"The service is temporarily unavailable. Please try again.\",\n  \"details\": {\n    \"status\": \"error\",\n    \"error\": {\n      \"redis\": {\n        \"status\": \"down\",\n        \"message\": \"Connection is closed.\"\n      }\n    }\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

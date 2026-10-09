@@ -1,0 +1,109 @@
+{
+  "name": "Get User",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/users/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "users",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{targetUserId}}"
+        }
+      ]
+    },
+    "description": "Staff only. User detail with masked sign-in methods, memberships and active session count. ETag carries the user version."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.collectionVariables.set('targetUserVersion', String(pm.response.json().version));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/users/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "users",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{targetUserId}}"
+            }
+          ]
+        },
+        "description": "Staff only. User detail with masked sign-in methods, memberships and active session count. ETag carries the user version."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a1215a-4ce1-7c0e-8a37-1b2f8e0d9a11\",\n  \"status\": \"active\",\n  \"fullName\": \"Rohit Sharma\",\n  \"partyId\": \"01a1215a-4ce0-7b5d-8c9e-0f1a2b3c4d5e\",\n  \"signupChannel\": \"mobile_otp\",\n  \"signupReferralCode\": \"FF-DSA-20418\",\n  \"lastLoginAt\": \"2026-10-09T15:49:01.430Z\",\n  \"createdAt\": \"2026-10-09T15:49:01.395Z\",\n  \"logins\": [\n    {\n      \"id\": \"01a1215a-4ce2-7a90-b1f3-6c0de4a5b8f9\",\n      \"method\": \"mobile_otp\",\n      \"identifier\": \"+91 98•••••670\",\n      \"verifiedAt\": \"2026-10-09T15:49:01.398Z\",\n      \"lastUsedAt\": \"2026-10-09T15:49:01.398Z\"\n    }\n  ],\n  \"memberships\": [\n    {\n      \"id\": \"01a1215a-4ce4-76ef-99ed-b872d6afc844\",\n      \"context\": \"borrower\",\n      \"role\": \"borrower\",\n      \"status\": \"active\",\n      \"organization\": null,\n      \"version\": 1,\n      \"createdAt\": \"2026-10-09T15:49:01.412Z\"\n    }\n  ],\n  \"activeSessions\": 1,\n  \"version\": 1\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/users/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "users",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{targetUserId}}"
+            }
+          ]
+        },
+        "description": "Staff only. User detail with masked sign-in methods, memberships and active session count. ETag carries the user version."
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

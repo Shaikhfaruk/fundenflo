@@ -1,0 +1,236 @@
+{
+  "name": "Staff Login",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/auth/staff/login",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "auth",
+        "staff",
+        "login"
+      ]
+    },
+    "description": "First step of staff sign-in. Returns an `mfaToken` valid for 5 minutes. On the first sign-in `mfaSetup` contains the TOTP secret and otpauth URL to enrol an authenticator app. Five wrong passwords lock the account for 15 minutes.",
+    "auth": {
+      "type": "noauth"
+    },
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"email\": \"{{staffEmail}}\",\n  \"password\": \"{{staffPassword}}\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "const body = pm.response.json();",
+          "pm.collectionVariables.set('mfaToken', body.mfaToken);",
+          "if (body.mfaSetup) pm.collectionVariables.set('totpSecret', body.mfaSetup.secret);"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK (first sign-in)",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/staff/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "staff",
+            "login"
+          ]
+        },
+        "description": "First step of staff sign-in. Returns an `mfaToken` valid for 5 minutes. On the first sign-in `mfaSetup` contains the TOTP secret and otpauth URL to enrol an authenticator app. Five wrong passwords lock the account for 15 minutes.",
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{staffEmail}}\",\n  \"password\": \"{{staffPassword}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"mfaToken\": \"Nf3kq9Vb2Lr7Xc1Tz8Mw4Hd6Jp0Ys5Ga\",\n  \"mfaRequired\": true,\n  \"expiresIn\": 300,\n  \"mfaSetup\": {\n    \"secret\": \"JBSWY3DPEHPK3PXPJBSWY3DPEHPK3PXP\",\n    \"otpauthUrl\": \"otpauth://totp/FundenFlo:ananya.iyer%40sustaininsight.com?issuer=FundenFlo&secret=JBSWY3DPEHPK3PXPJBSWY3DPEHPK3PXP&algorithm=SHA1&digits=6&period=30\"\n  }\n}"
+    },
+    {
+      "name": "200 OK (enrolled)",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/staff/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "staff",
+            "login"
+          ]
+        },
+        "description": "First step of staff sign-in. Returns an `mfaToken` valid for 5 minutes. On the first sign-in `mfaSetup` contains the TOTP secret and otpauth URL to enrol an authenticator app. Five wrong passwords lock the account for 15 minutes.",
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{staffEmail}}\",\n  \"password\": \"{{staffPassword}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"mfaToken\": \"Nf3kq9Vb2Lr7Xc1Tz8Mw4Hd6Jp0Ys5Ga\",\n  \"mfaRequired\": true,\n  \"expiresIn\": 300,\n  \"mfaSetup\": null\n}"
+    },
+    {
+      "name": "401 CREDENTIALS_INVALID",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/staff/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "staff",
+            "login"
+          ]
+        },
+        "description": "First step of staff sign-in. Returns an `mfaToken` valid for 5 minutes. On the first sign-in `mfaSetup` contains the TOTP secret and otpauth URL to enrol an authenticator app. Five wrong passwords lock the account for 15 minutes.",
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{staffEmail}}\",\n  \"password\": \"{{staffPassword}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Unauthorized",
+      "code": 401,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"CREDENTIALS_INVALID\",\n  \"message\": \"Incorrect email or password.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "423 ACCOUNT_LOCKED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/staff/login",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "staff",
+            "login"
+          ]
+        },
+        "description": "First step of staff sign-in. Returns an `mfaToken` valid for 5 minutes. On the first sign-in `mfaSetup` contains the TOTP secret and otpauth URL to enrol an authenticator app. Five wrong passwords lock the account for 15 minutes.",
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{staffEmail}}\",\n  \"password\": \"{{staffPassword}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Locked",
+      "code": 423,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"ACCOUNT_LOCKED\",\n  \"message\": \"Too many failed attempts. Try again later.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

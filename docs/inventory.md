@@ -1,0 +1,62 @@
+# System Inventory
+
+> The map of everything in the system. **Search here before creating any function, class, route, worker, queue, channel or file, and reuse or extend what is listed.**
+> Any change that adds, renames, moves, removes or changes the behaviour or callers of an item updates this inventory and the matching diagram in [`ARCHITECTURE.md`](ARCHITECTURE.md) in the same change.
+> Known duplicates: [`DUPLICATES.md`](DUPLICATES.md). Design: [`BACKEND_ARCHITECTURE_PLAN.md`](BACKEND_ARCHITECTURE_PLAN.md).
+> Last updated: 2026-10-09 · Backend: **M0 foundation built** (31 routes, 4 queues, 49 tests). M1+ items are `planned`.
+> Automated checks: `pnpm inventory:check` (routes ↔ `inventory/api-routes.md`), `pnpm postman:coverage` (routes ↔ Postman), `pnpm lint:boundaries` (module rules).
+
+## Status legend
+
+| Status | Meaning | Evidence required |
+|---|---|---|
+| `planned` | Designed, not in code yet | Plan section reference |
+| `useful` | Exists and has callers | File path + line, or caller list |
+| `dead` | Exists, no callers | grep / knip / vulture output at the date checked |
+| `duplicate` | A second implementation of something listed | Entry in `DUPLICATES.md` naming the copy to keep |
+| `unsure` | Exists, callers or purpose unclear | What was checked and what is still open |
+
+Items marked `dead` or `duplicate` are never deleted without the owner's review. Before deleting, re-check with a fresh grep, knip and vulture run, because this inventory is a snapshot.
+
+## Per-service tables
+
+| Service | Table | Items |
+|---|---|---|
+| API — modules | [`inventory/api-modules.md`](inventory/api-modules.md) | 26 modules (6 built) |
+| API — routes | [`inventory/api-routes.md`](inventory/api-routes.md) | Every HTTP and WebSocket route, grouped by Postman folder (31 built) |
+| Worker — queues, jobs, cron | [`inventory/worker-queues-jobs.md`](inventory/worker-queues-jobs.md) | 4 built, 13 planned |
+| Events, real-time channels, notifications | [`inventory/events-and-channels.md`](inventory/events-and-channels.md) | Domain events, rooms, notification templates |
+| Shared building blocks (engines, infrastructure, common) | [`inventory/shared-building-blocks.md`](inventory/shared-building-blocks.md) | Reusable components and where enums/constants live |
+| Frontend app (reference, not edited) | [`inventory/frontend-api-calls.md`](inventory/frontend-api-calls.md) | 19 service functions calling 17 endpoints |
+
+## Repository files
+
+| Path | Purpose | Status | Evidence |
+|---|---|---|---|
+| `.claude/CLAUDE.md` | Working rules for this repo | `useful` | Loaded as project instructions; local only (git-ignored) |
+| `.claude/context/` | Machine-readable working context, by topic and date | `useful` | Local only (git-ignored) |
+| `docs/BACKEND_ARCHITECTURE_PLAN.md` | Architecture and build plan | `useful` | Source for every `planned` row |
+| `docs/ARCHITECTURE.md` | Living diagrams | `useful` | Linked from every inventory table |
+| `docs/inventory.md`, `docs/inventory/*.md` | This system map | `useful` | — |
+| `docs/DUPLICATES.md` | Known duplicates register | `useful` | Empty: no code yet |
+| `postman/` | Postman collection source, environments, flows and scripts (plan §12) | `useful` | 31 request files; `pnpm postman:coverage` and `pnpm postman:flows` pass |
+| `backend/` | NestJS 12 API + worker (`package.json`, `nest-cli.json`, `tsconfig*.json`, `prisma.config.ts`, `prisma/`, `src/`, `test/`, `docker-compose.yml`, `.env.example`, `.oxlintrc.json`, `.dependency-cruiser.cjs`, `vitest.config*.ts`, `pnpm-workspace.yaml`) | `useful` | `pnpm build`, `pnpm test`, `pnpm test:integration` pass |
+| `backend/prisma/migrations/20261009154711_init` | Generated schema for M0 tables | `useful` | Applied locally and in every integration run |
+| `backend/prisma/migrations/20261009154712_audit_integrity` | Hand-written: `forbid_mutation()`, `audit_event_hash()`, audit chain + append-only triggers, `NULLS NOT DISTINCT` membership index | `useful` | Spec `platform` (append-only), `staff-admin` (chain verify); `prisma migrate diff` empty |
+| `.gitignore` | Ignores `node_modules`, `dist`, `.env*` (except `.env.example`), generated Prisma client, `postman/dist`, `frontend/`, `.claude`, the roadmap docx | `useful` | — |
+| `frontend/` | Reference clone of `fundenflo-v1-app` @ `7bc9685` | `useful` | Requirements source only; git-ignored once the backend repo is initialised; never edited |
+| `FundenFlo_Revised_Master_Roadmap_With_App_Versions.docx` | Product roadmap (source of truth for product rules) | `useful` | Plan §2; local only (git-ignored) |
+
+## Naming conventions (so items are easy to find)
+
+| Item | Convention | Example |
+|---|---|---|
+| Module folder | `backend/src/modules/<kebab-name>/` | `backend/src/modules/leads/` |
+| Prisma schema | `backend/prisma/schema/<area>.prisma`, models PascalCase with `@@map` snake_case tables, fields camelCase with `@map` snake_case columns | `identity.prisma` → `user_logins` |
+| Façade service | `<Name>Service`, exported from the module | `LeadService` |
+| Controller | `<audience>.controller.ts` in `http/` | `partner.controller.ts` |
+| Queue name | `<domain>.<action>` constant in `backend/src/infrastructure/queue/queue-names.ts` | `leads.route` |
+| Domain event | `<entity>.<past-tense>` constant in `backend/src/common/events/event-names.ts` | `lead.assigned` |
+| Error code | `UPPER_SNAKE` in `backend/src/common/errors/error-codes.ts`, with status and message in `ERROR_CATALOG` | `OTP_COOLDOWN` |
+| Enums / constants | Database enums: Prisma schema, re-exported by `backend/src/common/enums/db.enums.ts`. Other shared: `common/enums/`, `common/constants/`. Module-only: `modules/<m>/domain/<m>.enums.ts`, `<m>.constants.ts` | `auth.enums.ts` |
+| Postman request | `postman/collection/<NN Folder>/<NN Request Name>.json` | `08 Leads & Imports/03 List Leads.json` |

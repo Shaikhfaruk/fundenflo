@@ -1,0 +1,115 @@
+enum OrganizationType {
+  fundenflo
+  lender
+  partner
+  business
+}
+
+enum OrganizationStatus {
+  pending
+  active
+  suspended
+  closed
+}
+
+enum MembershipStatus {
+  pending
+  active
+  suspended
+  revoked
+}
+
+enum Role {
+  borrower
+  business_owner
+  authorised_signatory
+  business_member
+  partner_owner
+  partner_agent
+  lender_admin
+  lender_credit_officer
+  lender_viewer
+  super_admin
+  ops_lead
+  ops_reviewer
+  credit_analyst
+  lender_manager
+  partner_manager
+  finance
+  compliance_officer
+  support
+}
+
+enum InvitationStatus {
+  pending
+  accepted
+  revoked
+  expired
+}
+
+model Organization {
+  id        String             @id @default(uuid(7)) @db.Uuid
+  partyId   String             @unique @map("party_id") @db.Uuid
+  type      OrganizationType
+  name      String
+  status    OrganizationStatus @default(pending)
+  version   Int                @default(1)
+  createdAt DateTime           @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime           @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  party       Party        @relation(fields: [partyId], references: [id], onDelete: Restrict)
+  memberships Membership[]
+  invitations Invitation[]
+
+  @@index([type, status])
+  @@map("organizations")
+}
+
+model Membership {
+  id               String           @id @default(uuid(7)) @db.Uuid
+  userId           String           @map("user_id") @db.Uuid
+  organizationId   String?          @map("organization_id") @db.Uuid
+  context          SessionContext
+  role             Role
+  status           MembershipStatus @default(pending)
+  scope            Json?
+  approvedByUserId String?          @map("approved_by_user_id") @db.Uuid
+  approvedAt       DateTime?        @map("approved_at") @db.Timestamptz(3)
+  version          Int              @default(1)
+  createdAt        DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt        DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Restrict)
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  sessions     Session[]
+
+  @@unique([userId, organizationId, role])
+  @@index([userId, status])
+  @@index([organizationId, status])
+  @@map("memberships")
+}
+
+model Invitation {
+  id               String           @id @default(uuid(7)) @db.Uuid
+  organizationId   String           @map("organization_id") @db.Uuid
+  context          SessionContext
+  role             Role
+  channel          ContactType
+  identifierHash   String           @map("identifier_hash")
+  identifierEnc    String           @map("identifier_enc")
+  identifierMasked String           @map("identifier_masked")
+  tokenHash        String?          @unique @map("token_hash")
+  status           InvitationStatus @default(pending)
+  invitedByUserId  String?          @map("invited_by_user_id") @db.Uuid
+  acceptedUserId   String?          @map("accepted_user_id") @db.Uuid
+  expiresAt        DateTime         @map("expires_at") @db.Timestamptz(3)
+  acceptedAt       DateTime?        @map("accepted_at") @db.Timestamptz(3)
+  revokedAt        DateTime?        @map("revoked_at") @db.Timestamptz(3)
+  createdAt        DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+
+  @@index([channel, identifierHash, status])
+  @@index([organizationId, status])
+  @@map("invitations")
+}

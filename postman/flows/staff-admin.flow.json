@@ -1,0 +1,21 @@
+{
+  "name": "Staff sign-in and administration",
+  "requires": ["staffInvitation"],
+  "steps": [
+    { "request": "01 Auth/01 Request OTP.json", "variables": { "loginAs": "borrower" } },
+    { "request": "01 Auth/02 Verify OTP.json" },
+    { "request": "01 Auth/06 Accept Staff Invitation.json" },
+    { "request": "01 Auth/07 Staff Login.json" },
+    { "request": "01 Auth/08 Verify Staff MFA.json" },
+    { "request": "44 Admin - Users, Access & Audit/01 List Users.json" },
+    { "request": "44 Admin - Users, Access & Audit/02 Get User.json" },
+    { "request": "44 Admin - Users, Access & Audit/04 Create Membership.json" },
+    { "request": "44 Admin - Users, Access & Audit/05 Update Membership.json" },
+    { "request": "44 Admin - Users, Access & Audit/03 Update User Status.json" },
+    { "request": "44 Admin - Users, Access & Audit/07 Create Invitation.json" },
+    { "request": "44 Admin - Users, Access & Audit/06 List Invitations.json" },
+    { "request": "44 Admin - Users, Access & Audit/08 Revoke Invitation.json" },
+    { "request": "44 Admin - Users, Access & Audit/09 List Audit Events.json" },
+    { "request": "44 Admin - Users, Access & Audit/10 Verify Audit Chain.json" }
+  ]
+}

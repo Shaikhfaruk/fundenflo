@@ -1,0 +1,65 @@
+{
+  "name": "Liveness",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{rootUrl}}/health/live",
+      "host": [
+        "{{rootUrl}}"
+      ],
+      "path": [
+        "health",
+        "live"
+      ]
+    },
+    "description": "Process liveness probe for infra. Not prefixed with /v1. Always 200 while the process is up.",
+    "auth": {
+      "type": "noauth"
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{rootUrl}}/health/live",
+          "host": [
+            "{{rootUrl}}"
+          ],
+          "path": [
+            "health",
+            "live"
+          ]
+        },
+        "description": "Process liveness probe for infra. Not prefixed with /v1. Always 200 while the process is up.",
+        "auth": {
+          "type": "noauth"
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"status\": \"ok\"\n}"
+    }
+  ]
+}

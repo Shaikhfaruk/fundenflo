@@ -1,0 +1,13 @@
+export const NotificationTemplateKey = {
+  AuthOtp: 'auth.otp',
+  InvitationStaff: 'invitation.staff',
+  InvitationMember: 'invitation.member',
+} as const;
+
+export type NotificationTemplateKey = (typeof NotificationTemplateKey)[keyof typeof NotificationTemplateKey];
+
+export const DEFAULT_LOCALE = 'en';
+
+export const TEMPLATE_PLACEHOLDER = /\{\{\s*([a-zA-Z][a-zA-Z0-9_]*)\s*\}\}/g;
+
+export const NOTIFICATION_DISPATCH_CONCURRENCY = 10;

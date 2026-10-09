@@ -1,0 +1,74 @@
+{
+  "name": "Verify Audit Chain",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/audit-events/verify?limit=1000",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "audit-events",
+        "verify"
+      ],
+      "query": [
+        {
+          "key": "limit",
+          "value": "1000"
+        }
+      ]
+    },
+    "description": "Staff with audit access. Recomputes the hash chain in the database and reports the first broken link, if any. Optional `fromSeq`, `limit` (max 5000)."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.test('chain is valid', () => pm.expect(pm.response.json().valid).to.eql(true));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/audit-events/verify?limit=1000",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "audit-events",
+            "verify"
+          ],
+          "query": [
+            {
+              "key": "limit",
+              "value": "1000"
+            }
+          ]
+        },
+        "description": "Staff with audit access. Recomputes the hash chain in the database and reports the first broken link, if any. Optional `fromSeq`, `limit` (max 5000)."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"valid\": true,\n  \"checked\": 12,\n  \"fromSeq\": \"2\",\n  \"toSeq\": \"24\",\n  \"brokenAt\": null\n}"
+    }
+  ]
+}

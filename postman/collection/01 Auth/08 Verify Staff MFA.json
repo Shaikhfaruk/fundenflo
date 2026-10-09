@@ -1,0 +1,223 @@
+{
+  "name": "Verify Staff MFA",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/auth/staff/mfa/verify",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "auth",
+        "staff",
+        "mfa",
+        "verify"
+      ]
+    },
+    "description": "Second step of staff sign-in with the 6-digit authenticator code. The pre-request script computes the code from `totpSecret` for testing. Each code works once.",
+    "auth": {
+      "type": "noauth"
+    },
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"mfaToken\": \"{{mfaToken}}\",\n  \"code\": \"{{totpCode}}\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const cryptoJs = require('crypto-js');",
+          "const secret = pm.collectionVariables.get('totpSecret') || '';",
+          "const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';",
+          "let bits = '';",
+          "for (const char of secret.replace(/=+$/, '').toUpperCase()) bits += alphabet.indexOf(char).toString(2).padStart(5, '0');",
+          "const keyHex = (bits.match(/.{8}/g) || []).map((byte) => parseInt(byte, 2).toString(16).padStart(2, '0')).join('');",
+          "const counter = Math.floor(Date.now() / 30000).toString(16).padStart(16, '0');",
+          "const hmac = cryptoJs.HmacSHA1(cryptoJs.enc.Hex.parse(counter), cryptoJs.enc.Hex.parse(keyHex)).toString(cryptoJs.enc.Hex);",
+          "const offset = parseInt(hmac.slice(-1), 16);",
+          "const code = (parseInt(hmac.slice(offset * 2, offset * 2 + 8), 16) & 0x7fffffff) % 1000000;",
+          "pm.collectionVariables.set('totpCode', String(code).padStart(6, '0'));"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "const body = pm.response.json();",
+          "pm.collectionVariables.set('accessToken', body.accessToken);",
+          "pm.collectionVariables.set('refreshToken', body.refreshToken);",
+          "pm.collectionVariables.set('userId', body.user.id);",
+          "pm.collectionVariables.set('partyVersion', String(body.user.version));",
+          "if (body.user.activeContext) pm.collectionVariables.set('membershipId', body.user.activeContext.membershipId);",
+          "const borrower = body.user.memberships.find((membership) => membership.context === 'borrower');",
+          "if (borrower) pm.collectionVariables.set('borrowerMembershipId', borrower.id);",
+          "if (body.user.activeContext && body.user.activeContext.organization) pm.collectionVariables.set('organizationId', body.user.activeContext.organization.id);",
+          "pm.test('returns tokens and the signed-in user', () => {",
+          "  pm.expect(body.tokenType).to.eql('Bearer');",
+          "  pm.expect(body.user.id).to.be.a('string');",
+          "});"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/staff/mfa/verify",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "staff",
+            "mfa",
+            "verify"
+          ]
+        },
+        "description": "Second step of staff sign-in with the 6-digit authenticator code. The pre-request script computes the code from `totpSecret` for testing. Each code works once.",
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"mfaToken\": \"{{mfaToken}}\",\n  \"code\": \"{{totpCode}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"accessToken\": \"eyJhbGciOiJFUzI1NiIsImtpZCI6IjAxYTEyMTU4LWNkNjAtN2M2Ny1iOWM0LWRkZDJiOTRiNTA4ZSIsInR5cCI6ImF0K2p3dCJ9.eyJzaWQiOiIwMWExMjE1YS00Y2U2LTdmMjEtOWQwZS0zYTU0YjhjMWU3MDIiLCJjdHgiOiJib3Jyb3dlciJ9.MEUCIQ\",\n  \"refreshToken\": \"q1Pz3m8e4B7f0X2kHsJYw9VtR5uLcN6aD1gE8iO3pK7lM2nQ4rS6tU0vW8xY1zA3\",\n  \"tokenType\": \"Bearer\",\n  \"expiresIn\": 900,\n  \"refreshExpiresIn\": 2592000,\n  \"user\": {\n    \"id\": \"01a1215a-4ce1-7c0e-8a37-1b2f8e0d9a11\",\n    \"status\": \"active\",\n    \"fullName\": \"Ananya Iyer\",\n    \"preferredLanguage\": \"hi\",\n    \"mobile\": null,\n    \"email\": \"ananya.iyer@sustaininsight.com\",\n    \"profileComplete\": true,\n    \"version\": 2,\n    \"activeContext\": {\n      \"membershipId\": \"01a1215a-4ce4-76ef-99ed-b872d6afc844\",\n      \"context\": \"staff\",\n      \"role\": \"super_admin\",\n      \"organization\": {\n        \"id\": \"01a12159-30fd-748b-905a-179c43e29aa9\",\n        \"name\": \"FundenFlo\",\n        \"type\": \"fundenflo\",\n        \"status\": \"active\"\n      }\n    },\n    \"memberships\": [\n      {\n        \"id\": \"01a1215a-4ce4-76ef-99ed-b872d6afc844\",\n        \"context\": \"borrower\",\n        \"role\": \"borrower\",\n        \"status\": \"active\",\n        \"organization\": null,\n        \"version\": 1,\n        \"createdAt\": \"2026-10-09T15:49:01.412Z\"\n      }\n    ],\n    \"logins\": [\n      {\n        \"id\": \"01a1215a-4ce2-7a90-b1f3-6c0de4a5b8f9\",\n        \"method\": \"mobile_otp\",\n        \"identifier\": \"+91 98•••••670\",\n        \"verifiedAt\": \"2026-10-09T15:49:01.398Z\",\n        \"lastUsedAt\": \"2026-10-09T15:49:01.398Z\"\n      }\n    ]\n  },\n  \"nextAction\": null\n}"
+    },
+    {
+      "name": "401 MFA_CODE_INVALID",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/staff/mfa/verify",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "staff",
+            "mfa",
+            "verify"
+          ]
+        },
+        "description": "Second step of staff sign-in with the 6-digit authenticator code. The pre-request script computes the code from `totpSecret` for testing. Each code works once.",
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"mfaToken\": \"{{mfaToken}}\",\n  \"code\": \"{{totpCode}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Unauthorized",
+      "code": 401,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"MFA_CODE_INVALID\",\n  \"message\": \"Incorrect authenticator code.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "401 MFA_TOKEN_INVALID",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/staff/mfa/verify",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "staff",
+            "mfa",
+            "verify"
+          ]
+        },
+        "description": "Second step of staff sign-in with the 6-digit authenticator code. The pre-request script computes the code from `totpSecret` for testing. Each code works once.",
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"mfaToken\": \"{{mfaToken}}\",\n  \"code\": \"{{totpCode}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Unauthorized",
+      "code": 401,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"MFA_TOKEN_INVALID\",\n  \"message\": \"This sign-in attempt has expired. Start again.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

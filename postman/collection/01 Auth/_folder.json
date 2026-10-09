@@ -1,0 +1,3 @@
+{
+  "description": "Sign-in for every user type. One person can hold several roles (borrower, CA, DSA, lender, staff); `loginAs` and Switch Context choose the active one."
+}

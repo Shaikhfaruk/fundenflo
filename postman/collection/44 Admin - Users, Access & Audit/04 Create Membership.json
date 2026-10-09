@@ -1,0 +1,144 @@
+{
+  "name": "Create Membership",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "Idempotency-Key",
+        "value": "{{$guid}}"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/memberships",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "memberships"
+      ]
+    },
+    "description": "Staff only. Gives a user a role in an organization. The context comes from the organization type (FundenFlo: staff, lender, partner, business: borrower) and the role must belong to that context. Supports Idempotency-Key.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"userId\": \"{{targetUserId}}\",\n  \"organizationId\": \"{{organizationId}}\",\n  \"role\": \"support\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "const body = pm.response.json();",
+          "pm.collectionVariables.set('createdMembershipId', body.id);",
+          "pm.collectionVariables.set('createdMembershipVersion', String(body.version));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "{{$guid}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/memberships",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "memberships"
+          ]
+        },
+        "description": "Staff only. Gives a user a role in an organization. The context comes from the organization type (FundenFlo: staff, lender, partner, business: borrower) and the role must belong to that context. Supports Idempotency-Key.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"userId\": \"{{targetUserId}}\",\n  \"organizationId\": \"{{organizationId}}\",\n  \"role\": \"support\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a1215d-7e8f-7a0b-9c1d-2e3f4a5b6c7d\",\n  \"context\": \"staff\",\n  \"role\": \"support\",\n  \"status\": \"active\",\n  \"organization\": {\n    \"id\": \"01a12159-30fd-748b-905a-179c43e29aa9\",\n    \"name\": \"FundenFlo\",\n    \"type\": \"fundenflo\",\n    \"status\": \"active\"\n  },\n  \"version\": 1,\n  \"createdAt\": \"2026-10-09T15:49:01.412Z\"\n}"
+    },
+    {
+      "name": "400 ROLE_NOT_ALLOWED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "{{$guid}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/memberships",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "memberships"
+          ]
+        },
+        "description": "Staff only. Gives a user a role in an organization. The context comes from the organization type (FundenFlo: staff, lender, partner, business: borrower) and the role must belong to that context. Supports Idempotency-Key.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"userId\": \"{{targetUserId}}\",\n  \"organizationId\": \"{{organizationId}}\",\n  \"role\": \"support\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"ROLE_NOT_ALLOWED\",\n  \"message\": \"This role cannot be given in this organization.\",\n  \"details\": {\n    \"context\": \"staff\",\n    \"role\": \"lender_admin\",\n    \"allowedRoles\": [\n      \"super_admin\",\n      \"ops_lead\",\n      \"ops_reviewer\",\n      \"credit_analyst\",\n      \"lender_manager\",\n      \"partner_manager\",\n      \"finance\",\n      \"compliance_officer\",\n      \"support\"\n    ]\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

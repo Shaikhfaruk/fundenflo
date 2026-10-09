@@ -1,0 +1,82 @@
+{
+  "name": "Logout",
+  "request": {
+    "method": "POST",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/auth/logout",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "auth",
+        "logout"
+      ]
+    },
+    "description": "Signs out the current session. The access token stops working immediately and its refresh tokens are revoked."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 204', () => pm.response.to.have.status(204));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "204 No Content",
+      "originalRequest": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/auth/logout",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "logout"
+          ]
+        },
+        "description": "Signs out the current session. The access token stops working immediately and its refresh tokens are revoked."
+      },
+      "status": "No Content",
+      "code": 204,
+      "_postman_previewlanguage": "text",
+      "header": [],
+      "body": ""
+    },
+    {
+      "name": "401 UNAUTHENTICATED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/auth/logout",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "logout"
+          ]
+        },
+        "description": "Signs out the current session. The access token stops working immediately and its refresh tokens are revoked."
+      },
+      "status": "Unauthorized",
+      "code": 401,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"UNAUTHENTICATED\",\n  \"message\": \"Sign in to continue.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

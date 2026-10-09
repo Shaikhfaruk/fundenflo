@@ -1,0 +1,144 @@
+{
+  "name": "Accept Staff Invitation",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/auth/staff/invitations/accept",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "auth",
+        "staff",
+        "invitations",
+        "accept"
+      ]
+    },
+    "description": "Accepts a FundenFlo staff invitation sent by email and sets the staff password (12-128 characters). Each invitation can be used once.",
+    "auth": {
+      "type": "noauth"
+    },
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"token\": \"{{staffInviteToken}}\",\n  \"fullName\": \"{{staffFullName}}\",\n  \"password\": \"{{staffPassword}}\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/staff/invitations/accept",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "staff",
+            "invitations",
+            "accept"
+          ]
+        },
+        "description": "Accepts a FundenFlo staff invitation sent by email and sets the staff password (12-128 characters). Each invitation can be used once.",
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"token\": \"{{staffInviteToken}}\",\n  \"fullName\": \"{{staffFullName}}\",\n  \"password\": \"{{staffPassword}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"userId\": \"01a1215a-4ce1-7c0e-8a37-1b2f8e0d9a11\",\n  \"email\": \"an•••@sustaininsight.com\"\n}"
+    },
+    {
+      "name": "400 INVITATION_INVALID",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/staff/invitations/accept",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "staff",
+            "invitations",
+            "accept"
+          ]
+        },
+        "description": "Accepts a FundenFlo staff invitation sent by email and sets the staff password (12-128 characters). Each invitation can be used once.",
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"token\": \"{{staffInviteToken}}\",\n  \"fullName\": \"{{staffFullName}}\",\n  \"password\": \"{{staffPassword}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"INVITATION_INVALID\",\n  \"message\": \"This invitation is not valid or has expired.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

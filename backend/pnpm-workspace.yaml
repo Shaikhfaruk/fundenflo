@@ -1,0 +1,11 @@
+allowBuilds:
+  '@prisma/engines': true
+  argon2: true
+  cpu-features: false
+  msgpackr-extract: true
+  prisma: true
+  protobufjs: false
+  ssh2: false
+minimumReleaseAgeExclude:
+  - bullmq@6.3.12
+  - newman@6.2.3

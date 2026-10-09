@@ -1,0 +1,138 @@
+{
+  "name": "Remove Login",
+  "request": {
+    "method": "DELETE",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/me/logins/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "me",
+        "logins",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{loginId}}"
+        }
+      ]
+    },
+    "description": "Removes a linked sign-in method. The mobile login cannot be removed (use mobile change) and the last remaining method cannot be removed."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 204', () => pm.response.to.have.status(204));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "204 No Content",
+      "originalRequest": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/me/logins/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "me",
+            "logins",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{loginId}}"
+            }
+          ]
+        },
+        "description": "Removes a linked sign-in method. The mobile login cannot be removed (use mobile change) and the last remaining method cannot be removed."
+      },
+      "status": "No Content",
+      "code": 204,
+      "_postman_previewlanguage": "text",
+      "header": [],
+      "body": ""
+    },
+    {
+      "name": "409 PRIMARY_LOGIN_REQUIRED",
+      "originalRequest": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/me/logins/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "me",
+            "logins",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{loginId}}"
+            }
+          ]
+        },
+        "description": "Removes a linked sign-in method. The mobile login cannot be removed (use mobile change) and the last remaining method cannot be removed."
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"PRIMARY_LOGIN_REQUIRED\",\n  \"message\": \"Change your mobile number instead of removing it.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "409 LAST_LOGIN_METHOD",
+      "originalRequest": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/me/logins/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "me",
+            "logins",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{loginId}}"
+            }
+          ]
+        },
+        "description": "Removes a linked sign-in method. The mobile login cannot be removed (use mobile change) and the last remaining method cannot be removed."
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"LAST_LOGIN_METHOD\",\n  \"message\": \"You cannot remove your only sign-in method.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

@@ -1,0 +1,246 @@
+{
+  "name": "Refresh Token",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/auth/token/refresh",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "auth",
+        "token",
+        "refresh"
+      ]
+    },
+    "description": "Rotates the refresh token and returns a new access token. Reusing an already-rotated refresh token signs out the whole session (REFRESH_TOKEN_REUSED).",
+    "auth": {
+      "type": "noauth"
+    },
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "const body = pm.response.json();",
+          "pm.collectionVariables.set('accessToken', body.accessToken);",
+          "pm.collectionVariables.set('refreshToken', body.refreshToken);",
+          "pm.collectionVariables.set('userId', body.user.id);",
+          "pm.collectionVariables.set('partyVersion', String(body.user.version));",
+          "if (body.user.activeContext) pm.collectionVariables.set('membershipId', body.user.activeContext.membershipId);",
+          "const borrower = body.user.memberships.find((membership) => membership.context === 'borrower');",
+          "if (borrower) pm.collectionVariables.set('borrowerMembershipId', borrower.id);",
+          "if (body.user.activeContext && body.user.activeContext.organization) pm.collectionVariables.set('organizationId', body.user.activeContext.organization.id);",
+          "pm.test('returns tokens and the signed-in user', () => {",
+          "  pm.expect(body.tokenType).to.eql('Bearer');",
+          "  pm.expect(body.user.id).to.be.a('string');",
+          "});"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/token/refresh",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "token",
+            "refresh"
+          ]
+        },
+        "description": "Rotates the refresh token and returns a new access token. Reusing an already-rotated refresh token signs out the whole session (REFRESH_TOKEN_REUSED).",
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"accessToken\": \"eyJhbGciOiJFUzI1NiIsImtpZCI6IjAxYTEyMTU4LWNkNjAtN2M2Ny1iOWM0LWRkZDJiOTRiNTA4ZSIsInR5cCI6ImF0K2p3dCJ9.eyJzaWQiOiIwMWExMjE1YS00Y2U2LTdmMjEtOWQwZS0zYTU0YjhjMWU3MDIiLCJjdHgiOiJib3Jyb3dlciJ9.MEUCIQ\",\n  \"refreshToken\": \"q1Pz3m8e4B7f0X2kHsJYw9VtR5uLcN6aD1gE8iO3pK7lM2nQ4rS6tU0vW8xY1zA3\",\n  \"tokenType\": \"Bearer\",\n  \"expiresIn\": 900,\n  \"refreshExpiresIn\": 2592000,\n  \"user\": {\n    \"id\": \"01a1215a-4ce1-7c0e-8a37-1b2f8e0d9a11\",\n    \"status\": \"active\",\n    \"fullName\": \"Rohit Sharma\",\n    \"preferredLanguage\": \"hi\",\n    \"mobile\": \"+919812345670\",\n    \"email\": null,\n    \"profileComplete\": true,\n    \"version\": 2,\n    \"activeContext\": {\n      \"membershipId\": \"01a1215a-4ce4-76ef-99ed-b872d6afc844\",\n      \"context\": \"borrower\",\n      \"role\": \"borrower\",\n      \"organization\": null\n    },\n    \"memberships\": [\n      {\n        \"id\": \"01a1215a-4ce4-76ef-99ed-b872d6afc844\",\n        \"context\": \"borrower\",\n        \"role\": \"borrower\",\n        \"status\": \"active\",\n        \"organization\": null,\n        \"version\": 1,\n        \"createdAt\": \"2026-10-09T15:49:01.412Z\"\n      }\n    ],\n    \"logins\": [\n      {\n        \"id\": \"01a1215a-4ce2-7a90-b1f3-6c0de4a5b8f9\",\n        \"method\": \"mobile_otp\",\n        \"identifier\": \"+91 98•••••670\",\n        \"verifiedAt\": \"2026-10-09T15:49:01.398Z\",\n        \"lastUsedAt\": \"2026-10-09T15:49:01.398Z\"\n      }\n    ]\n  },\n  \"nextAction\": null\n}"
+    },
+    {
+      "name": "401 REFRESH_TOKEN_REUSED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/token/refresh",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "token",
+            "refresh"
+          ]
+        },
+        "description": "Rotates the refresh token and returns a new access token. Reusing an already-rotated refresh token signs out the whole session (REFRESH_TOKEN_REUSED).",
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Unauthorized",
+      "code": 401,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"REFRESH_TOKEN_REUSED\",\n  \"message\": \"This session was signed out for your safety. Sign in again.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "401 REFRESH_TOKEN_INVALID",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/token/refresh",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "token",
+            "refresh"
+          ]
+        },
+        "description": "Rotates the refresh token and returns a new access token. Reusing an already-rotated refresh token signs out the whole session (REFRESH_TOKEN_REUSED).",
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Unauthorized",
+      "code": 401,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"REFRESH_TOKEN_INVALID\",\n  \"message\": \"Your session is not valid. Sign in again.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "403 MEMBERSHIP_INACTIVE",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/token/refresh",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "token",
+            "refresh"
+          ]
+        },
+        "description": "Rotates the refresh token and returns a new access token. Reusing an already-rotated refresh token signs out the whole session (REFRESH_TOKEN_REUSED).",
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Forbidden",
+      "code": 403,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"MEMBERSHIP_INACTIVE\",\n  \"message\": \"This role is not active on your account.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

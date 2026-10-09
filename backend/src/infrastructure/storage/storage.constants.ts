@@ -1,0 +1,3 @@
+export const STORAGE_UPLOAD_BUFFER_BYTES = 4 * 1024 * 1024;
+
+export const STORAGE_UPLOAD_CONCURRENCY = 4;

@@ -1,0 +1,61 @@
+{
+  "name": "List Logins",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/me/logins",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "me",
+        "logins"
+      ]
+    },
+    "description": "Sign-in methods linked to the user (mobile OTP, email OTP, staff password). Identifiers are masked."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "const email = pm.response.json().items.find((login) => login.method === 'email_otp');",
+          "if (email) pm.collectionVariables.set('loginId', email.id);"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/me/logins",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "me",
+            "logins"
+          ]
+        },
+        "description": "Sign-in methods linked to the user (mobile OTP, email OTP, staff password). Identifiers are masked."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a1215a-4ce2-7a90-b1f3-6c0de4a5b8f9\",\n      \"method\": \"mobile_otp\",\n      \"identifier\": \"+91 98•••••670\",\n      \"verifiedAt\": \"2026-10-09T15:49:01.398Z\",\n      \"lastUsedAt\": \"2026-10-09T15:49:01.398Z\"\n    },\n    {\n      \"id\": \"01a1215b-2b3c-7d4e-9f50-61728394a5b6\",\n      \"method\": \"email_otp\",\n      \"identifier\": \"ro•••@sustaininsight.com\",\n      \"verifiedAt\": \"2026-10-09T15:49:01.398Z\",\n      \"lastUsedAt\": null\n    }\n  ]\n}"
+    }
+  ]
+}
