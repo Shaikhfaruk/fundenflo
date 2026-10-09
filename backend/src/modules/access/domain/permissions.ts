@@ -2,7 +2,7 @@ import type { AbilityBuilder } from '@casl/ability';
 
 import type { UserActor } from '../../../common/context/actor.js';
 import { OrganizationType, Role } from '../../../common/enums/db.enums.js';
-import { AppAction, type AppAbility } from './ability.types.js';
+import { AppAction, type AppAbility, NonModelSubject } from './ability.types.js';
 
 type Builder = AbilityBuilder<AppAbility>;
 
@@ -24,12 +24,13 @@ export const ROLE_GRANTS: Partial<Record<Role, Grant>> = {
   [Role.ops_lead]: ({ can }) => {
     can([AppAction.Read, AppAction.Update], 'User');
     can(AppAction.Read, ['Membership', 'Invitation', 'Organization', 'AuditEvent']);
+    can(AppAction.Manage, NonModelSubject.Catalog);
   },
   [Role.compliance_officer]: ({ can }) => {
-    can(AppAction.Read, ['User', 'Membership', 'Invitation', 'Organization', 'AuditEvent']);
+    can(AppAction.Read, ['User', 'Membership', 'Invitation', 'Organization', 'AuditEvent', NonModelSubject.Catalog]);
   },
   [Role.support]: ({ can }) => {
-    can(AppAction.Read, ['User', 'Membership']);
+    can(AppAction.Read, ['User', 'Membership', NonModelSubject.Catalog]);
   },
   [Role.partner_manager]: manageOrganizationMembers(OrganizationType.partner),
   [Role.lender_manager]: manageOrganizationMembers(OrganizationType.lender),

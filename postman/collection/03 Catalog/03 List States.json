@@ -1,0 +1,67 @@
+{
+  "name": "List States",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/catalog/geo/states",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "catalog",
+        "geo",
+        "states"
+      ]
+    },
+    "description": "States and union territories identified by their GST state code (the first two digits of a GSTIN).",
+    "auth": {
+      "type": "noauth"
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/catalog/geo/states",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "catalog",
+            "geo",
+            "states"
+          ]
+        },
+        "description": "States and union territories identified by their GST state code (the first two digits of a GSTIN).",
+        "auth": {
+          "type": "noauth"
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"gstCode\": \"06\",\n      \"name\": \"Haryana\",\n      \"kind\": \"state\"\n    },\n    {\n      \"gstCode\": \"07\",\n      \"name\": \"Delhi\",\n      \"kind\": \"union_territory\"\n    }\n  ]\n}"
+    }
+  ]
+}

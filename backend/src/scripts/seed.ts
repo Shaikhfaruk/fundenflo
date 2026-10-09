@@ -9,7 +9,7 @@ const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: proc
 
 try {
   const result = await runSeed(prisma, process.env);
-  process.stdout.write(`Seeded FundenFlo organization ${result.organizationId} and ${result.templates} notification templates\n`);
+  process.stdout.write(`Seeded: ${JSON.stringify(result)}\n`);
 } finally {
   await prisma.$disconnect();
 }

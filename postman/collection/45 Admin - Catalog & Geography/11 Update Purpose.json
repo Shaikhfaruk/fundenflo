@@ -1,0 +1,121 @@
+{
+  "name": "Update Purpose",
+  "request": {
+    "method": "PATCH",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "If-Match",
+        "value": "\"{{purposeVersion}}\""
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/loan-categories/:id/purposes/:purposeId",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "loan-categories",
+        ":id",
+        "purposes",
+        ":purposeId"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{categoryId}}"
+        },
+        {
+          "key": "purposeId",
+          "value": "{{purposeId}}"
+        }
+      ]
+    },
+    "description": "Changes a purpose label, note rule, order or status. Staff only. Reading needs catalog read access (ops lead, compliance, support); changes need catalog manage access (ops lead, super admin). Every change is audited and clears the public catalog cache immediately.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"label\": {\n    \"en\": \"Pay Dealers And Distributors\"\n  }\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{purposeVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/loan-categories/:id/purposes/:purposeId",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "loan-categories",
+            ":id",
+            "purposes",
+            ":purposeId"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{categoryId}}"
+            },
+            {
+              "key": "purposeId",
+              "value": "{{purposeId}}"
+            }
+          ]
+        },
+        "description": "Changes a purpose label, note rule, order or status. Staff only. Reading needs catalog read access (ops lead, compliance, support); changes need catalog manage access (ops lead, super admin). Every change is audited and clears the public catalog cache immediately.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"label\": {\n    \"en\": \"Pay Dealers And Distributors\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a1216a-1c2e-7f50-9b61-728394a5b6c7\",\n  \"key\": \"operations\",\n  \"label\": {\n    \"en\": \"Day-To-Day Operations\"\n  },\n  \"requiresNote\": false,\n  \"sortOrder\": 0,\n  \"status\": \"active\",\n  \"version\": 2\n}"
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "name": "List Segments (Admin)",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/segments",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "segments"
+      ]
+    },
+    "description": "All segments and sub-segments including inactive ones, with every locale. Staff only. Reading needs catalog read access (ops lead, compliance, support); changes need catalog manage access (ops lead, super admin). Every change is audited and clears the public catalog cache immediately."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "const msme = pm.response.json().items.find((segment) => segment.key === 'msme');",
+          "if (msme) pm.collectionVariables.set('msmeSegmentId', msme.id);"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/segments",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "segments"
+          ]
+        },
+        "description": "All segments and sub-segments including inactive ones, with every locale. Staff only. Reading needs catalog read access (ops lead, compliance, support); changes need catalog manage access (ops lead, super admin). Every change is audited and clears the public catalog cache immediately."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a1216a-0b1c-7d2e-8f30-415263748596\",\n      \"key\": \"msme\",\n      \"label\": {\n        \"en\": \"Business / MSME\"\n      },\n      \"description\": {\n        \"en\": \"Proprietor, Partnership, LLP Or Pvt Ltd\"\n      },\n      \"icon\": \"business\",\n      \"sortOrder\": 0,\n      \"status\": \"active\",\n      \"version\": 1,\n      \"subSegments\": [\n        {\n          \"id\": \"01a1216a-0b1d-7e3f-9a41-5263748596a7\",\n          \"key\": \"private_limited\",\n          \"label\": {\n            \"en\": \"Pvt Ltd\"\n          },\n          \"sortOrder\": 3,\n          \"status\": \"active\",\n          \"version\": 1\n        }\n      ],\n      \"updatedAt\": \"2026-10-09T16:34:22.118Z\"\n    }\n  ]\n}"
+    },
+    {
+      "name": "403 FORBIDDEN",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/segments",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "segments"
+          ]
+        },
+        "description": "All segments and sub-segments including inactive ones, with every locale. Staff only. Reading needs catalog read access (ops lead, compliance, support); changes need catalog manage access (ops lead, super admin). Every change is audited and clears the public catalog cache immediately."
+      },
+      "status": "Forbidden",
+      "code": 403,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"FORBIDDEN\",\n  \"message\": \"You do not have permission to do this.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

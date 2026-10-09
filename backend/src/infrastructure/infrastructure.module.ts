@@ -11,6 +11,7 @@ import type { RequestContextStore } from '../common/context/request-context.serv
 import { APP_CONFIG } from '../config/config.constants.js';
 import { ConfigModule } from '../config/config.module.js';
 import type { AppConfig } from '../config/env.schema.js';
+import { CacheService } from './cache/cache.service.js';
 import { CryptoModule } from './crypto/crypto.module.js';
 import { DatabaseModule } from './database/database.module.js';
 import { PrismaService } from './database/prisma.service.js';
@@ -29,7 +30,7 @@ export type InfrastructureOptions = {
   processName: 'api' | 'worker' | 'script';
 };
 
-const sharedProviders = [OutboxService, RateLimiter, RevocationRegistry, IdempotencyInterceptor, IdempotencyMaintenance, IpRateLimitGuard];
+const sharedProviders = [CacheService, OutboxService, RateLimiter, RevocationRegistry, IdempotencyInterceptor, IdempotencyMaintenance, IpRateLimitGuard];
 
 @Global()
 @Module({})

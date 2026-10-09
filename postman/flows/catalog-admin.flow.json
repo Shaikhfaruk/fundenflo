@@ -1,0 +1,33 @@
+{
+  "name": "Catalog and geography administration",
+  "requires": ["staffInvitation"],
+  "steps": [
+    { "request": "03 Catalog/01 List Segments.json" },
+    { "request": "03 Catalog/02 List Loan Categories.json", "variables": { "segment": "msme" } },
+    { "request": "03 Catalog/03 List States.json" },
+    { "request": "03 Catalog/04 Search Cities.json" },
+    { "request": "01 Auth/06 Accept Staff Invitation.json" },
+    { "request": "01 Auth/07 Staff Login.json" },
+    { "request": "01 Auth/08 Verify Staff MFA.json" },
+    { "request": "45 Admin - Catalog & Geography/01 List Segments.json" },
+    { "request": "45 Admin - Catalog & Geography/02 Create Segment.json" },
+    { "request": "45 Admin - Catalog & Geography/04 Create Sub-Segment.json" },
+    { "request": "45 Admin - Catalog & Geography/05 Update Sub-Segment.json" },
+    { "request": "45 Admin - Catalog & Geography/03 Update Segment.json" },
+    { "request": "45 Admin - Catalog & Geography/06 List Loan Categories.json" },
+    { "request": "45 Admin - Catalog & Geography/07 Create Loan Category.json" },
+    { "request": "45 Admin - Catalog & Geography/08 Get Loan Category.json" },
+    { "request": "45 Admin - Catalog & Geography/10 Create Purpose.json" },
+    { "request": "45 Admin - Catalog & Geography/11 Update Purpose.json" },
+    { "request": "45 Admin - Catalog & Geography/08 Get Loan Category.json" },
+    { "request": "45 Admin - Catalog & Geography/09 Update Loan Category.json" },
+    { "request": "45 Admin - Catalog & Geography/12 List Cities.json" },
+    { "request": "45 Admin - Catalog & Geography/14 Update City.json" },
+    { "request": "45 Admin - Catalog & Geography/16 Upsert Pincode.json" },
+    { "request": "03 Catalog/05 Get Pincode.json" },
+    { "request": "45 Admin - Catalog & Geography/15 List Pincodes.json" },
+    { "request": "45 Admin - Catalog & Geography/18 Create Alias.json" },
+    { "request": "45 Admin - Catalog & Geography/17 List Aliases.json" },
+    { "request": "45 Admin - Catalog & Geography/19 Delete Alias.json" }
+  ]
+}

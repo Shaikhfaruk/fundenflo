@@ -21,8 +21,13 @@ export const AppAction = {
 
 export type AppAction = (typeof AppAction)[keyof typeof AppAction];
 
+export const NonModelSubject = {
+  Catalog: 'Catalog',
+} as const;
+
 export type AppSubjects =
   | 'all'
+  | (typeof NonModelSubject)[keyof typeof NonModelSubject]
   | Subjects<{
       User: User;
       Session: Session;

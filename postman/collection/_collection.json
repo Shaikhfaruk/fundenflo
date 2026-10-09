@@ -7,7 +7,13 @@
   },
   "auth": {
     "type": "bearer",
-    "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
   },
   "event": [
     {
@@ -25,28 +31,153 @@
     }
   ],
   "variable": [
-    { "key": "countryCode", "value": "+91" },
-    { "key": "loginAs", "value": "borrower" },
-    { "key": "mobile", "value": "" },
-    { "key": "newMobile", "value": "" },
-    { "key": "linkEmail", "value": "" },
-    { "key": "accessToken", "value": "" },
-    { "key": "refreshToken", "value": "" },
-    { "key": "challengeId", "value": "" },
-    { "key": "userId", "value": "" },
-    { "key": "partyVersion", "value": "" },
-    { "key": "membershipId", "value": "" },
-    { "key": "borrowerMembershipId", "value": "" },
-    { "key": "organizationId", "value": "" },
-    { "key": "otherSessionId", "value": "" },
-    { "key": "loginId", "value": "" },
-    { "key": "mfaToken", "value": "" },
-    { "key": "totpSecret", "value": "" },
-    { "key": "totpCode", "value": "" },
-    { "key": "targetUserId", "value": "" },
-    { "key": "targetUserVersion", "value": "" },
-    { "key": "createdMembershipId", "value": "" },
-    { "key": "createdMembershipVersion", "value": "" },
-    { "key": "invitationId", "value": "" }
+    {
+      "key": "countryCode",
+      "value": "+91"
+    },
+    {
+      "key": "loginAs",
+      "value": "borrower"
+    },
+    {
+      "key": "mobile",
+      "value": ""
+    },
+    {
+      "key": "newMobile",
+      "value": ""
+    },
+    {
+      "key": "linkEmail",
+      "value": ""
+    },
+    {
+      "key": "accessToken",
+      "value": ""
+    },
+    {
+      "key": "refreshToken",
+      "value": ""
+    },
+    {
+      "key": "challengeId",
+      "value": ""
+    },
+    {
+      "key": "userId",
+      "value": ""
+    },
+    {
+      "key": "partyVersion",
+      "value": ""
+    },
+    {
+      "key": "membershipId",
+      "value": ""
+    },
+    {
+      "key": "borrowerMembershipId",
+      "value": ""
+    },
+    {
+      "key": "organizationId",
+      "value": ""
+    },
+    {
+      "key": "otherSessionId",
+      "value": ""
+    },
+    {
+      "key": "loginId",
+      "value": ""
+    },
+    {
+      "key": "mfaToken",
+      "value": ""
+    },
+    {
+      "key": "totpSecret",
+      "value": ""
+    },
+    {
+      "key": "totpCode",
+      "value": ""
+    },
+    {
+      "key": "targetUserId",
+      "value": ""
+    },
+    {
+      "key": "targetUserVersion",
+      "value": ""
+    },
+    {
+      "key": "createdMembershipId",
+      "value": ""
+    },
+    {
+      "key": "createdMembershipVersion",
+      "value": ""
+    },
+    {
+      "key": "invitationId",
+      "value": ""
+    },
+    {
+      "key": "segment",
+      "value": "msme"
+    },
+    {
+      "key": "pincode",
+      "value": ""
+    },
+    {
+      "key": "msmeSegmentId",
+      "value": ""
+    },
+    {
+      "key": "segmentId",
+      "value": ""
+    },
+    {
+      "key": "segmentVersion",
+      "value": ""
+    },
+    {
+      "key": "subSegmentId",
+      "value": ""
+    },
+    {
+      "key": "subSegmentVersion",
+      "value": ""
+    },
+    {
+      "key": "categoryId",
+      "value": ""
+    },
+    {
+      "key": "categoryVersion",
+      "value": ""
+    },
+    {
+      "key": "purposeId",
+      "value": ""
+    },
+    {
+      "key": "purposeVersion",
+      "value": ""
+    },
+    {
+      "key": "cityId",
+      "value": ""
+    },
+    {
+      "key": "cityVersion",
+      "value": ""
+    },
+    {
+      "key": "aliasId",
+      "value": ""
+    }
   ]
 }

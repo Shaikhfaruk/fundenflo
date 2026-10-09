@@ -38,7 +38,7 @@
 | Maintenance | `infrastructure/maintenance/` | `@MaintenanceTask(name)`, `MaintenanceProcessor` (discovers tasks), `RETENTION` | auth, idempotency; later documents, leads, audit retention | M0 | `useful` |
 | Logger | `infrastructure/logger/` | `buildLoggerParams` (pino, PII redaction, path-only request logging) | api, worker | M0 | `useful` |
 | Realtime | `infrastructure/realtime/` | `RealtimeGateway`, `RealtimePublisher.toRoom()` | sync, leads, applications | M1 | `planned` |
-| Cache | `infrastructure/cache/` | `CacheService` with tag invalidation | catalog, config-publishing, leads routing | M1 | `planned` |
+| Cache | `infrastructure/cache/` | `CacheService.wrap(key, tags, ttl, load)`, `invalidate(...tags)` (Redis, tag-versioned keys; invalidate after commit) | catalog, geo; next: config-publishing, leads routing | M1 | `useful` (spec `catalog`: admin change visible immediately) |
 | Telemetry | `infrastructure/telemetry/` | OpenTelemetry setup | all | M1 | `planned` |
 
 ## Common (`common/`) and platform helpers
@@ -61,6 +61,6 @@
 | Templates | `modules/notifications/domain/template-renderer.ts` | `renderTemplate`, `MissingTemplateParamsError` | notifications | M0 | `useful` (spec `template-renderer.spec.ts`) |
 | Route catalog | `scripts/route-catalog.ts`, `scripts/inventory-check.ts` | `listRoutes(AppModule)`; `pnpm inventory:check` | Postman coverage, inventory check | M0 | `useful` |
 | Versioned config controller | `modules/config-publishing/http/` | `createVersionedConfigController(resource)` | routing rules, question sets, consent templates, … | M1 | `planned` |
-| Money | `common/money/` | paise helpers, basis-point maths, INR formatting for messages | commissions, applications, leads | M1 | `planned` |
+| Money | `common/money/paise.ts` | `paiseToNumber`, `paiseFromNumber`, `rupeesToPaise` (BigInt in DB, safe integers in JSON); basis-point maths and INR formatting come with M7 | catalog; next: leads, commissions | M1 | `useful` |
 | Human refs | `common/ids/` | `nextRef(prefix)` (`FF-26-…`, `LD-26-…`) | applications, leads | M1 | `planned` |
-| i18n | `common/i18n/` | `localise(text, locale)` | catalog, questionnaires, notifications | M1 | `planned` |
+| i18n | `common/i18n/` | `SUPPORTED_LOCALES`, `DEFAULT_LOCALE`, `LocalisedText`, `localisedTextSchema`, `localise()`, `resolveLocale()`, `@RequestLocale()` | catalog, notifications, validation; next: questionnaires, consents | M1 | `useful` (spec `locale.spec.ts`) |

@@ -1,0 +1,79 @@
+{
+  "name": "List Aliases",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/lookup-aliases?kind=city&limit=25",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "lookup-aliases"
+      ],
+      "query": [
+        {
+          "key": "kind",
+          "value": "city"
+        },
+        {
+          "key": "limit",
+          "value": "25"
+        }
+      ]
+    },
+    "description": "Alternative names used to match free text (lead imports, city search) to cities, states or categories. Staff only. Reading needs catalog read access (ops lead, compliance, support); changes need catalog manage access (ops lead, super admin). Every change is audited and clears the public catalog cache immediately."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/lookup-aliases?kind=city&limit=25",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "lookup-aliases"
+          ],
+          "query": [
+            {
+              "key": "kind",
+              "value": "city"
+            },
+            {
+              "key": "limit",
+              "value": "25"
+            }
+          ]
+        },
+        "description": "Alternative names used to match free text (lead imports, city search) to cities, states or categories. Staff only. Reading needs catalog read access (ops lead, compliance, support); changes need catalog manage access (ops lead, super admin). Every change is audited and clears the public catalog cache immediately."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a1216a-3e4f-7c82-8e94-a5b6c7d8e9fa\",\n      \"kind\": \"city\",\n      \"alias\": \"thana\",\n      \"targetId\": \"01a1216a-2d3e-7a60-8c72-8394a5b6c7d8\",\n      \"createdAt\": \"2026-10-09T16:40:03.551Z\"\n    }\n  ],\n  \"nextCursor\": null\n}"
+    }
+  ]
+}

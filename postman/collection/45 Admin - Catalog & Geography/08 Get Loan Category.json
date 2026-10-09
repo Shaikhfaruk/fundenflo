@@ -1,0 +1,109 @@
+{
+  "name": "Get Loan Category",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/loan-categories/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "loan-categories",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{categoryId}}"
+        }
+      ]
+    },
+    "description": "One category with purposes. ETag carries its version. Staff only. Reading needs catalog read access (ops lead, compliance, support); changes need catalog manage access (ops lead, super admin). Every change is audited and clears the public catalog cache immediately."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.collectionVariables.set('categoryVersion', String(pm.response.json().version));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/loan-categories/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "loan-categories",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{categoryId}}"
+            }
+          ]
+        },
+        "description": "One category with purposes. ETag carries its version. Staff only. Reading needs catalog read access (ops lead, compliance, support); changes need catalog manage access (ops lead, super admin). Every change is audited and clears the public catalog cache immediately."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a1216a-1c2d-7e4f-8a50-6172839405b6\",\n  \"key\": \"working-capital\",\n  \"label\": {\n    \"en\": \"Working Capital\"\n  },\n  \"icon\": \"sync-alt\",\n  \"segments\": [\n    {\n      \"key\": \"msme\",\n      \"sortOrder\": 1\n    }\n  ],\n  \"minAmountPaise\": 50000000,\n  \"maxAmountPaise\": 2000000000,\n  \"stepPaise\": 25000000,\n  \"defaultAmountPaise\": 250000000,\n  \"tenureOptionsMonths\": [\n    12,\n    24,\n    36,\n    60\n  ],\n  \"illustrativeRateBps\": 1400,\n  \"sortOrder\": 1,\n  \"status\": \"active\",\n  \"version\": 1,\n  \"purposes\": [\n    {\n      \"id\": \"01a1216a-1c2e-7f50-9b61-728394a5b6c7\",\n      \"key\": \"operations\",\n      \"label\": {\n        \"en\": \"Day-To-Day Operations\"\n      },\n      \"requiresNote\": false,\n      \"sortOrder\": 0,\n      \"status\": \"active\",\n      \"version\": 1\n    }\n  ],\n  \"updatedAt\": \"2026-10-09T16:34:22.204Z\"\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/loan-categories/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "loan-categories",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{categoryId}}"
+            }
+          ]
+        },
+        "description": "One category with purposes. ETag carries its version. Staff only. Reading needs catalog read access (ops lead, compliance, support); changes need catalog manage access (ops lead, super admin). Every change is audited and clears the public catalog cache immediately."
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

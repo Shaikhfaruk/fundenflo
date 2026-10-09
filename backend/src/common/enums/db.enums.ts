@@ -1,7 +1,10 @@
 export {
   ActorType,
+  AliasKind,
+  CatalogStatus,
   ContactType,
   DeliveryStatus,
+  GeoStateKind,
   IdentifierType,
   InvitationStatus,
   LoginAs,

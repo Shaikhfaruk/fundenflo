@@ -9,7 +9,8 @@ import { PrismaService } from '../../../infrastructure/database/prisma.service.j
 import { JobPriority } from '../../../infrastructure/queue/queue.constants.js';
 import { QueueName } from '../../../infrastructure/queue/queue-names.js';
 import { QueueRegistry } from '../../../infrastructure/queue/queue-registry.service.js';
-import { DEFAULT_LOCALE, type NotificationTemplateKey } from '../domain/notification.constants.js';
+import { DEFAULT_LOCALE } from '../../../common/i18n/locale.js';
+import type { NotificationTemplateKey } from '../domain/notification.constants.js';
 import type { TemplateParams } from '../domain/template-renderer.js';
 
 export type NotificationRequest = {

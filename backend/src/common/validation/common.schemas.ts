@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { DevicePlatform } from '../enums/device-platform.enum.js';
+import { SUPPORTED_LOCALES } from '../i18n/locale.js';
 
 export const uuidSchema = z.uuid();
 
@@ -24,4 +25,4 @@ export const personNameSchema = z
   .regex(/^[\p{L}][\p{L} .'-]*$/u, 'use letters, spaces, dots, apostrophes or hyphens')
   .transform((value) => value.replace(/\s+/g, ' '));
 
-export const localeSchema = z.enum(['en', 'hi']);
+export const localeSchema = z.enum(SUPPORTED_LOCALES);

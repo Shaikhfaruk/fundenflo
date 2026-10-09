@@ -1,0 +1,117 @@
+{
+  "name": "Search Cities",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/catalog/geo/cities?q=gurgaon",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "catalog",
+        "geo",
+        "cities"
+      ],
+      "query": [
+        {
+          "key": "q",
+          "value": "gurgaon"
+        }
+      ]
+    },
+    "description": "City search (min 2 characters) by name prefix, any word of the name, or a known alias (Gurgaon → Gurugram, Bombay → Mumbai). Optional `state` (GST code). Up to 20 results.",
+    "auth": {
+      "type": "noauth"
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/catalog/geo/cities?q=gurgaon",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "catalog",
+            "geo",
+            "cities"
+          ],
+          "query": [
+            {
+              "key": "q",
+              "value": "gurgaon"
+            }
+          ]
+        },
+        "description": "City search (min 2 characters) by name prefix, any word of the name, or a known alias (Gurgaon → Gurugram, Bombay → Mumbai). Optional `state` (GST code). Up to 20 results.",
+        "auth": {
+          "type": "noauth"
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a1216a-2d3e-7a60-8c72-8394a5b6c7d8\",\n      \"name\": \"Gurugram\",\n      \"state\": {\n        \"gstCode\": \"06\",\n        \"name\": \"Haryana\"\n      }\n    }\n  ]\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/catalog/geo/cities?q=gurgaon",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "catalog",
+            "geo",
+            "cities"
+          ],
+          "query": [
+            {
+              "key": "q",
+              "value": "gurgaon"
+            }
+          ]
+        },
+        "description": "City search (min 2 characters) by name prefix, any word of the name, or a known alias (Gurgaon → Gurugram, Bombay → Mumbai). Optional `state` (GST code). Up to 20 results.",
+        "auth": {
+          "type": "noauth"
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"q\",\n      \"code\": \"too_small\",\n      \"message\": \"Too small: expected string to have >=2 characters\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

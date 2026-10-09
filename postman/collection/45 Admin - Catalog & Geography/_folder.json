@@ -1,0 +1,3 @@
+{
+  "description": "Staff management of the catalog and geography master data. All changes are versioned (If-Match), audited and published as events."
+}

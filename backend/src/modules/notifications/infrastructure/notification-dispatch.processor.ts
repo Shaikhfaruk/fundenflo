@@ -12,7 +12,8 @@ import { QueueName } from '../../../infrastructure/queue/queue-names.js';
 import { type EmailSender, InjectEmailSender } from '../../../integrations/email/email.port.js';
 import { InjectSmsSender, type SmsSender } from '../../../integrations/sms/sms.port.js';
 import type { DispatchJob, DispatchPayload } from '../application/notification.service.js';
-import { DEFAULT_LOCALE, NOTIFICATION_DISPATCH_CONCURRENCY } from '../domain/notification.constants.js';
+import { DEFAULT_LOCALE } from '../../../common/i18n/locale.js';
+import { NOTIFICATION_DISPATCH_CONCURRENCY } from '../domain/notification.constants.js';
 import { MissingTemplateParamsError, renderTemplate } from '../domain/template-renderer.js';
 
 @Processor(QueueName.NotificationsDispatch, { concurrency: NOTIFICATION_DISPATCH_CONCURRENCY })

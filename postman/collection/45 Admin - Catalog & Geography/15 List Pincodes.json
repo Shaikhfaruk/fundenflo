@@ -1,0 +1,81 @@
+{
+  "name": "List Pincodes",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/geo/pincodes?prefix=4006&limit=25",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "geo",
+        "pincodes"
+      ],
+      "query": [
+        {
+          "key": "prefix",
+          "value": "4006"
+        },
+        {
+          "key": "limit",
+          "value": "25"
+        }
+      ]
+    },
+    "description": "Pincodes in ascending order. Paginate with `after` = the last pincode. Filters: `state`, `cityId`, `prefix`. Staff only. Reading needs catalog read access (ops lead, compliance, support); changes need catalog manage access (ops lead, super admin). Every change is audited and clears the public catalog cache immediately."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/geo/pincodes?prefix=4006&limit=25",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "geo",
+            "pincodes"
+          ],
+          "query": [
+            {
+              "key": "prefix",
+              "value": "4006"
+            },
+            {
+              "key": "limit",
+              "value": "25"
+            }
+          ]
+        },
+        "description": "Pincodes in ascending order. Paginate with `after` = the last pincode. Filters: `state`, `cityId`, `prefix`. Staff only. Reading needs catalog read access (ops lead, compliance, support); changes need catalog manage access (ops lead, super admin). Every change is audited and clears the public catalog cache immediately."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"pincode\": \"400601\",\n      \"district\": \"Thane\",\n      \"status\": \"active\",\n      \"state\": {\n        \"gstCode\": \"27\",\n        \"name\": \"Maharashtra\"\n      },\n      \"city\": {\n        \"id\": \"01a1216a-2d3e-7a60-8c72-8394a5b6c7d8\",\n        \"name\": \"Thane\"\n      }\n    }\n  ],\n  \"nextCursor\": null\n}"
+    }
+  ]
+}

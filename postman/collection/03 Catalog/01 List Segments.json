@@ -1,0 +1,65 @@
+{
+  "name": "List Segments",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/catalog/segments",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "catalog",
+        "segments"
+      ]
+    },
+    "description": "Borrower segments with their sub-segments (constitution or employment type), in display order. Labels follow `Accept-Language` or `?locale=` (`en`, `hi`), falling back to English.",
+    "auth": {
+      "type": "noauth"
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/catalog/segments",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "catalog",
+            "segments"
+          ]
+        },
+        "description": "Borrower segments with their sub-segments (constitution or employment type), in display order. Labels follow `Accept-Language` or `?locale=` (`en`, `hi`), falling back to English.",
+        "auth": {
+          "type": "noauth"
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"key\": \"msme\",\n      \"label\": \"Business / MSME\",\n      \"description\": \"Proprietor, Partnership, LLP Or Pvt Ltd\",\n      \"icon\": \"business\",\n      \"subSegments\": [\n        {\n          \"key\": \"proprietorship\",\n          \"label\": \"Proprietor\"\n        },\n        {\n          \"key\": \"partnership\",\n          \"label\": \"Partnership\"\n        },\n        {\n          \"key\": \"llp\",\n          \"label\": \"LLP\"\n        },\n        {\n          \"key\": \"private_limited\",\n          \"label\": \"Pvt Ltd\"\n        }\n      ]\n    }\n  ]\n}"
+    }
+  ]
+}

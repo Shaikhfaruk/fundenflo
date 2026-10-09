@@ -1,0 +1,103 @@
+{
+  "name": "Delete Alias",
+  "request": {
+    "method": "DELETE",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/lookup-aliases/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "lookup-aliases",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{aliasId}}"
+        }
+      ]
+    },
+    "description": "Removes an alias. Staff only. Reading needs catalog read access (ops lead, compliance, support); changes need catalog manage access (ops lead, super admin). Every change is audited and clears the public catalog cache immediately."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 204', () => pm.response.to.have.status(204));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "204 No Content",
+      "originalRequest": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/lookup-aliases/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "lookup-aliases",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{aliasId}}"
+            }
+          ]
+        },
+        "description": "Removes an alias. Staff only. Reading needs catalog read access (ops lead, compliance, support); changes need catalog manage access (ops lead, super admin). Every change is audited and clears the public catalog cache immediately."
+      },
+      "status": "No Content",
+      "code": 204,
+      "_postman_previewlanguage": "text",
+      "header": [],
+      "body": ""
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/lookup-aliases/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "lookup-aliases",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{aliasId}}"
+            }
+          ]
+        },
+        "description": "Removes an alias. Staff only. Reading needs catalog read access (ops lead, compliance, support); changes need catalog manage access (ops lead, super admin). Every change is audited and clears the public catalog cache immediately."
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

@@ -1,0 +1,133 @@
+{
+  "name": "Upsert Pincode",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/geo/pincodes",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "geo",
+        "pincodes"
+      ]
+    },
+    "description": "Creates or updates one pincode. The city, when given, must belong to the state. Bulk loading comes with the import pipeline. Staff only. Reading needs catalog read access (ops lead, compliance, support); changes need catalog manage access (ops lead, super admin). Every change is audited and clears the public catalog cache immediately.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"pincode\": \"400601\",\n  \"stateGstCode\": \"27\",\n  \"cityId\": \"{{cityId}}\",\n  \"district\": \"Thane\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.collectionVariables.set('pincode', pm.response.json().pincode);"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/geo/pincodes",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "geo",
+            "pincodes"
+          ]
+        },
+        "description": "Creates or updates one pincode. The city, when given, must belong to the state. Bulk loading comes with the import pipeline. Staff only. Reading needs catalog read access (ops lead, compliance, support); changes need catalog manage access (ops lead, super admin). Every change is audited and clears the public catalog cache immediately.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"pincode\": \"400601\",\n  \"stateGstCode\": \"27\",\n  \"cityId\": \"{{cityId}}\",\n  \"district\": \"Thane\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"pincode\": \"400601\",\n  \"district\": \"Thane\",\n  \"status\": \"active\",\n  \"state\": {\n    \"gstCode\": \"27\",\n    \"name\": \"Maharashtra\"\n  },\n  \"city\": {\n    \"id\": \"01a1216a-2d3e-7a60-8c72-8394a5b6c7d8\",\n    \"name\": \"Thane\"\n  }\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/geo/pincodes",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "geo",
+            "pincodes"
+          ]
+        },
+        "description": "Creates or updates one pincode. The city, when given, must belong to the state. Bulk loading comes with the import pipeline. Staff only. Reading needs catalog read access (ops lead, compliance, support); changes need catalog manage access (ops lead, super admin). Every change is audited and clears the public catalog cache immediately.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"pincode\": \"400601\",\n  \"stateGstCode\": \"27\",\n  \"cityId\": \"{{cityId}}\",\n  \"district\": \"Thane\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"cityId\",\n      \"code\": \"city_state_mismatch\",\n      \"message\": \"city must belong to the state\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

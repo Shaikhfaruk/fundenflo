@@ -1,0 +1,3 @@
+{
+  "description": "Public reference data for every client: segments, loan categories with limits and purposes, states, cities and pincodes. Responses are cached and refreshed as soon as an admin changes the data."
+}

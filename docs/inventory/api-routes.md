@@ -78,12 +78,15 @@ Controller: `backend/src/modules/auth/http/me.controller.ts` · Postman: `02 Me/
 
 ## 03 Catalog
 
+Controller: `backend/src/modules/catalog/http/catalog.controller.ts` · Postman: `03 Catalog/`
+
 | Method | Path | Module | Context | Milestone | Status |
 |---|---|---|---|---|---|
-| `GET` | `/catalog/segments` | catalog | public | M1 | `planned` |
-| `GET` | `/catalog/loan-categories` | catalog | public | M1 | `planned` |
-| `GET` | `/catalog/geo/cities` | catalog | public | M1 | `planned` |
-| `GET` | `/catalog/geo/pincodes/:pin` | catalog | public | M1 | `planned` |
+| `GET` | `/catalog/segments` | catalog | public | M1 | `useful` |
+| `GET` | `/catalog/loan-categories` | catalog | public | M1 | `useful` |
+| `GET` | `/catalog/geo/states` | catalog | public | M1 | `useful` |
+| `GET` | `/catalog/geo/cities` | catalog | public | M1 | `useful` |
+| `GET` | `/catalog/geo/pincodes/:pincode` | catalog | public | M1 | `useful` |
 | `GET` | `/catalog/consent-templates` | consents | public | M1 | `planned` |
 | `GET` | `/catalog/document-types` | documents | public | M2 | `planned` |
 
@@ -257,6 +260,24 @@ Built in M0 (Postman `44 Admin - Users, Access & Audit/`). Controllers: `backend
 | `GET` | `/admin/audit-events` | audit | staff | M0 | `useful` |
 | `GET` | `/admin/audit-events/verify` | audit | staff | M0 | `useful` |
 
+Built in M1.1 (Postman `45 Admin - Catalog & Geography/`). Controllers: `backend/src/modules/catalog/http/admin-catalog.controller.ts`, `admin-geo.controller.ts`.
+
+| Method | Path | Module | Context | Milestone | Status |
+|---|---|---|---|---|---|
+| `GET` `POST` | `/admin/segments` | catalog | staff | M1 | `useful` |
+| `PATCH` | `/admin/segments/:id` | catalog | staff | M1 | `useful` |
+| `POST` | `/admin/segments/:id/sub-segments` | catalog | staff | M1 | `useful` |
+| `PATCH` | `/admin/sub-segments/:id` | catalog | staff | M1 | `useful` |
+| `GET` `POST` | `/admin/loan-categories` | catalog | staff | M1 | `useful` |
+| `GET` `PATCH` | `/admin/loan-categories/:id` | catalog | staff | M1 | `useful` |
+| `POST` | `/admin/loan-categories/:id/purposes` | catalog | staff | M1 | `useful` |
+| `PATCH` | `/admin/loan-categories/:id/purposes/:purposeId` | catalog | staff | M1 | `useful` |
+| `GET` `POST` | `/admin/geo/cities` | catalog | staff | M1 | `useful` |
+| `PATCH` | `/admin/geo/cities/:id` | catalog | staff | M1 | `useful` |
+| `GET` `POST` | `/admin/geo/pincodes` | catalog | staff | M1 | `useful` |
+| `GET` `POST` | `/admin/lookup-aliases` | catalog | staff | M1 | `useful` |
+| `DELETE` | `/admin/lookup-aliases/:id` | catalog | staff | M1 | `useful` |
+
 Planned:
 
 | Method | Path | Module | Context | Milestone | Status |
@@ -267,11 +288,6 @@ Planned:
 | `GET` `PATCH` | `/admin/attributes/:id` | attributes | staff | M1 | `planned` |
 | `GET` `POST` | `/admin/questions` | questionnaires | staff | M1 | `planned` |
 | `GET` `PATCH` | `/admin/questions/:id` | questionnaires | staff | M1 | `planned` |
-| `GET` `POST` | `/admin/loan-categories` | catalog | staff | M1 | `planned` |
-| `GET` `PATCH` | `/admin/loan-categories/:id` | catalog | staff | M1 | `planned` |
-| `GET` `POST` | `/admin/geo/cities` | catalog | staff | M1 | `planned` |
-| `GET` `POST` | `/admin/geo/pincodes` | catalog | staff | M1 | `planned` |
-| `GET` `POST` | `/admin/lookup-aliases` | catalog | staff | M1 | `planned` |
 | `GET` | `/admin/partners` | partners | staff | M1 | `planned` |
 | `GET` | `/admin/partners/:id` | partners | staff | M1 | `planned` |
 | `POST` | `/admin/partners/:id/verify` | partners | staff | M1 | `planned` |

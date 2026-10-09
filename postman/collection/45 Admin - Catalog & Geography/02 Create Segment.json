@@ -1,0 +1,143 @@
+{
+  "name": "Create Segment",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "Idempotency-Key",
+        "value": "{{$guid}}"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/segments",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "segments"
+      ]
+    },
+    "description": "Creates a borrower segment. `key` is permanent (2-41 lowercase letters, digits, `-` or `_`). Staff only. Reading needs catalog read access (ops lead, compliance, support); changes need catalog manage access (ops lead, super admin). Every change is audited and clears the public catalog cache immediately.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"key\": \"seg{{$timestamp}}\",\n  \"label\": {\n    \"en\": \"Trust Or Society\"\n  },\n  \"description\": {\n    \"en\": \"Registered trusts and societies\"\n  },\n  \"icon\": \"groups\",\n  \"sortOrder\": 9\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "pm.collectionVariables.set('segmentId', String(pm.response.json().id));",
+          "pm.collectionVariables.set('segmentVersion', String(pm.response.json().version));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "{{$guid}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/segments",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "segments"
+          ]
+        },
+        "description": "Creates a borrower segment. `key` is permanent (2-41 lowercase letters, digits, `-` or `_`). Staff only. Reading needs catalog read access (ops lead, compliance, support); changes need catalog manage access (ops lead, super admin). Every change is audited and clears the public catalog cache immediately.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"key\": \"seg{{$timestamp}}\",\n  \"label\": {\n    \"en\": \"Trust Or Society\"\n  },\n  \"description\": {\n    \"en\": \"Registered trusts and societies\"\n  },\n  \"icon\": \"groups\",\n  \"sortOrder\": 9\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a1216a-0b1c-7d2e-8f30-415263748596\",\n  \"key\": \"trust\",\n  \"label\": {\n    \"en\": \"Trust Or Society\"\n  },\n  \"description\": {\n    \"en\": \"Proprietor, Partnership, LLP Or Pvt Ltd\"\n  },\n  \"icon\": \"business\",\n  \"sortOrder\": 0,\n  \"status\": \"active\",\n  \"version\": 1,\n  \"subSegments\": [],\n  \"updatedAt\": \"2026-10-09T16:34:22.118Z\"\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "{{$guid}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/segments",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "segments"
+          ]
+        },
+        "description": "Creates a borrower segment. `key` is permanent (2-41 lowercase letters, digits, `-` or `_`). Staff only. Reading needs catalog read access (ops lead, compliance, support); changes need catalog manage access (ops lead, super admin). Every change is audited and clears the public catalog cache immediately.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"key\": \"seg{{$timestamp}}\",\n  \"label\": {\n    \"en\": \"Trust Or Society\"\n  },\n  \"description\": {\n    \"en\": \"Registered trusts and societies\"\n  },\n  \"icon\": \"groups\",\n  \"sortOrder\": 9\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

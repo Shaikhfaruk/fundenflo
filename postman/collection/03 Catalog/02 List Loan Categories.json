@@ -1,0 +1,77 @@
+{
+  "name": "List Loan Categories",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/catalog/loan-categories?segment={{segment}}",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "catalog",
+        "loan-categories"
+      ],
+      "query": [
+        {
+          "key": "segment",
+          "value": "{{segment}}"
+        }
+      ]
+    },
+    "description": "Loan categories with amount limits (integer paise), tenure options (months), purposes and availability. With `segment`, only that segment's categories in its display order. `illustrativeRateBps` is only for clearly labelled example EMIs, never an offer. `availability.available` stays false until a verified lender route covers the category (lender module, M4). Optional `pincode` is used for availability.",
+    "auth": {
+      "type": "noauth"
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/catalog/loan-categories?segment={{segment}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "catalog",
+            "loan-categories"
+          ],
+          "query": [
+            {
+              "key": "segment",
+              "value": "{{segment}}"
+            }
+          ]
+        },
+        "description": "Loan categories with amount limits (integer paise), tenure options (months), purposes and availability. With `segment`, only that segment's categories in its display order. `illustrativeRateBps` is only for clearly labelled example EMIs, never an offer. `availability.available` stays false until a verified lender route covers the category (lender module, M4). Optional `pincode` is used for availability.",
+        "auth": {
+          "type": "noauth"
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"key\": \"working-capital\",\n      \"label\": \"Working Capital\",\n      \"icon\": \"sync-alt\",\n      \"segments\": [\n        \"msme\"\n      ],\n      \"minAmountPaise\": 50000000,\n      \"maxAmountPaise\": 2000000000,\n      \"stepPaise\": 25000000,\n      \"defaultAmountPaise\": 250000000,\n      \"tenureOptionsMonths\": [\n        12,\n        24,\n        36,\n        60\n      ],\n      \"illustrativeRateBps\": 1400,\n      \"purposes\": [\n        {\n          \"key\": \"operations\",\n          \"label\": \"Day-To-Day Operations\",\n          \"requiresNote\": false\n        },\n        {\n          \"key\": \"other\",\n          \"label\": \"Something Else\",\n          \"requiresNote\": true\n        }\n      ],\n      \"availability\": {\n        \"available\": false,\n        \"reason\": \"NO_VERIFIED_LENDER_ROUTE\"\n      }\n    }\n  ]\n}"
+    }
+  ]
+}

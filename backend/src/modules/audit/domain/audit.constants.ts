@@ -18,6 +18,9 @@ export const AuditAction = {
   InvitationAccepted: 'invitation.accepted',
   InvitationRevoked: 'invitation.revoked',
   PartyMatchReviewOpened: 'party.match_review_opened',
+  CatalogCreated: 'catalog.created',
+  CatalogChanged: 'catalog.changed',
+  CatalogDeleted: 'catalog.deleted',
 } as const;
 
 export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction];
@@ -30,6 +33,13 @@ export const AuditEntity = {
   Party: 'party',
   UserLogin: 'user_login',
   StaffCredential: 'staff_credential',
+  Segment: 'segment',
+  SubSegment: 'sub_segment',
+  LoanCategory: 'loan_category',
+  CategoryPurpose: 'category_purpose',
+  GeoCity: 'geo_city',
+  GeoPincode: 'geo_pincode',
+  LookupAlias: 'lookup_alias',
 } as const;
 
 export type AuditEntity = (typeof AuditEntity)[keyof typeof AuditEntity];

@@ -1,0 +1,166 @@
+enum CatalogStatus {
+  active
+  inactive
+}
+
+enum GeoStateKind {
+  state
+  union_territory
+}
+
+enum AliasKind {
+  city
+  state
+  category
+}
+
+model Segment {
+  id          String        @id @default(uuid(7)) @db.Uuid
+  key         String        @unique
+  label       Json
+  description Json?
+  icon        String?
+  sortOrder   Int           @default(0) @map("sort_order")
+  status      CatalogStatus @default(active)
+  version     Int           @default(1)
+  createdAt   DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime      @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  subSegments SubSegment[]
+  categories  CategorySegment[]
+
+  @@map("segments")
+}
+
+model SubSegment {
+  id        String        @id @default(uuid(7)) @db.Uuid
+  segmentId String        @map("segment_id") @db.Uuid
+  key       String        @unique
+  label     Json
+  sortOrder Int           @default(0) @map("sort_order")
+  status    CatalogStatus @default(active)
+  version   Int           @default(1)
+  createdAt DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime      @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  segment Segment @relation(fields: [segmentId], references: [id], onDelete: Restrict)
+
+  @@index([segmentId])
+  @@map("sub_segments")
+}
+
+model LoanCategory {
+  id                  String        @id @default(uuid(7)) @db.Uuid
+  key                 String        @unique
+  label               Json
+  icon                String
+  minAmountPaise      BigInt        @map("min_amount_paise")
+  maxAmountPaise      BigInt        @map("max_amount_paise")
+  stepPaise           BigInt        @map("step_paise")
+  defaultAmountPaise  BigInt        @map("default_amount_paise")
+  tenureOptionsMonths Int[]         @map("tenure_options_months")
+  illustrativeRateBps Int?          @map("illustrative_rate_bps")
+  sortOrder           Int           @default(0) @map("sort_order")
+  status              CatalogStatus @default(active)
+  version             Int           @default(1)
+  createdAt           DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt           DateTime      @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  segments CategorySegment[]
+  purposes CategoryPurpose[]
+
+  @@map("loan_categories")
+}
+
+model CategorySegment {
+  categoryId String @map("category_id") @db.Uuid
+  segmentId  String @map("segment_id") @db.Uuid
+  sortOrder  Int    @default(0) @map("sort_order")
+
+  category LoanCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  segment  Segment      @relation(fields: [segmentId], references: [id], onDelete: Cascade)
+
+  @@id([categoryId, segmentId])
+  @@index([segmentId, sortOrder])
+  @@map("category_segments")
+}
+
+model CategoryPurpose {
+  id           String        @id @default(uuid(7)) @db.Uuid
+  categoryId   String        @map("category_id") @db.Uuid
+  key          String
+  label        Json
+  requiresNote Boolean       @default(false) @map("requires_note")
+  sortOrder    Int           @default(0) @map("sort_order")
+  status       CatalogStatus @default(active)
+  version      Int           @default(1)
+  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime      @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  category LoanCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+
+  @@unique([categoryId, key])
+  @@map("category_purposes")
+}
+
+model GeoState {
+  id        String        @id @default(uuid(7)) @db.Uuid
+  gstCode   String        @unique @map("gst_code")
+  name      String        @unique
+  kind      GeoStateKind
+  status    CatalogStatus @default(active)
+  createdAt DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime      @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  cities   GeoCity[]
+  pincodes GeoPincode[]
+
+  @@map("geo_states")
+}
+
+model GeoCity {
+  id        String        @id @default(uuid(7)) @db.Uuid
+  stateId   String        @map("state_id") @db.Uuid
+  name      String
+  status    CatalogStatus @default(active)
+  version   Int           @default(1)
+  createdAt DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime      @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  state    GeoState     @relation(fields: [stateId], references: [id], onDelete: Restrict)
+  pincodes GeoPincode[]
+
+  @@unique([stateId, name])
+  @@index([name])
+  @@map("geo_cities")
+}
+
+model GeoPincode {
+  pincode   String        @id
+  stateId   String        @map("state_id") @db.Uuid
+  cityId    String?       @map("city_id") @db.Uuid
+  district  String?
+  status    CatalogStatus @default(active)
+  createdAt DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime      @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  state GeoState @relation(fields: [stateId], references: [id], onDelete: Restrict)
+  city  GeoCity? @relation(fields: [cityId], references: [id], onDelete: SetNull)
+
+  @@index([cityId])
+  @@index([stateId])
+  @@map("geo_pincodes")
+}
+
+model LookupAlias {
+  id              String    @id @default(uuid(7)) @db.Uuid
+  kind            AliasKind
+  alias           String
+  targetId        String    @map("target_id") @db.Uuid
+  createdByUserId String?   @map("created_by_user_id") @db.Uuid
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  @@unique([kind, alias])
+  @@index([targetId])
+  @@map("lookup_aliases")
+}
