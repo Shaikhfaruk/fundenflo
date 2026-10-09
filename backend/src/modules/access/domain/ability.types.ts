@@ -10,6 +10,7 @@ import type {
   ImportBatch,
   Invitation,
   Lead,
+  LeadAssignment,
   LeadSource,
   Membership,
   Organization,
@@ -29,6 +30,7 @@ export const AppAction = {
   Delete: 'delete',
   Approve: 'approve',
   Publish: 'publish',
+  Assign: 'assign',
 } as const;
 
 export type AppAction = (typeof AppAction)[keyof typeof AppAction];
@@ -55,6 +57,7 @@ export type AppSubjects =
       PartnerProfile: PartnerProfile;
       ApiClient: ApiClient;
       Lead: Lead;
+      LeadAssignment: LeadAssignment;
       LeadSource: LeadSource;
       ImportBatch: ImportBatch;
     }>;

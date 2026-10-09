@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { decideMatch } from './decide.js';
 import { decideLeadMatch, namesCompatible } from './lead-match.js';
-import { maskEmail, maskMobile } from './mask.js';
+import { maskEmail, maskMobile, maskName } from './mask.js';
 import { normaliseEmail, normaliseLandline, normaliseMobile } from './normalise.js';
 
 describe('normaliseMobile', () => {
@@ -44,6 +44,13 @@ describe('masking', () => {
   it('keeps the first two characters of an email local part', () => {
     expect(maskEmail('ops.lead@example.com')).toBe('op•••@example.com');
     expect(maskEmail('a@example.com')).toBe('a•••@example.com');
+  });
+
+  it('keeps the first name and initials, dropping honorifics', () => {
+    expect(maskName('Ramesh Kumar Sharma')).toBe('Ramesh K. S.');
+    expect(maskName('Dr. Gita rao')).toBe('Gita R.');
+    expect(maskName('Ishaan')).toBe('I•••');
+    expect(maskName('  ')).toBe('');
   });
 });
 

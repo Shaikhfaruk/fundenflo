@@ -4,7 +4,7 @@ import { CatalogStatus, ConsentBasis, LeadConsentStatus, LeadFlag, LeadLostReaso
 import { SUPPORTED_LOCALES } from '../../../common/i18n/locale.js';
 import { pageQuerySchema } from '../../../common/listing/cursor-page.js';
 import { CONFIG_KEY_PATTERN } from '../../config-publishing/domain/config.constants.js';
-import { BULK_ROUTE_MAX } from '../domain/lead-routing.constants.js';
+import { AssignmentDeclineReason, AssignmentReturnReason, BULK_ROUTE_MAX, OTHER_REASON, PartnerInboxView } from '../domain/lead-routing.constants.js';
 import { LEAD_MERGE_MAX, LEAD_NOTE_MAX_LENGTH, LEAD_SOURCE_KEY_PATTERN, LEAD_TEXT_MAX_LENGTH } from '../domain/lead.constants.js';
 
 const key = z.string().trim().regex(/^[a-z0-9][a-z0-9_-]{0,63}$/);
@@ -129,6 +129,22 @@ export const bulkAssignSchema = z.object({ leadIds: z.array(z.uuid()).min(1).max
 export type BulkAssignDto = z.output<typeof bulkAssignSchema>;
 
 export const simulateRoutingSchema = z.object({ leadId: z.uuid() }).strict();
+
+const otherNeedsNote = (value: { reason: string; note?: string }) => value.reason !== OTHER_REASON || value.note !== undefined;
+
+const OTHER_NEEDS_NOTE = { path: ['note'], message: 'explain the reason when it is other' };
+
+export const declineAssignmentSchema = z.object({ reason: z.enum(Object.values(AssignmentDeclineReason)), note: note.optional() }).strict().refine(otherNeedsNote, OTHER_NEEDS_NOTE);
+export type DeclineAssignmentDto = z.output<typeof declineAssignmentSchema>;
+
+export const returnAssignmentSchema = z.object({ reason: z.enum(Object.values(AssignmentReturnReason)), note: note.optional() }).strict().refine(otherNeedsNote, OTHER_NEEDS_NOTE);
+export type ReturnAssignmentDto = z.output<typeof returnAssignmentSchema>;
+
+export const subAssignSchema = z.object({ membershipId: z.uuid() }).strict();
+export type SubAssignDto = z.output<typeof subAssignSchema>;
+
+export const partnerInboxQuerySchema = pageQuerySchema.extend({ view: z.enum(Object.values(PartnerInboxView)).optional() });
+export type PartnerInboxQuery = z.output<typeof partnerInboxQuerySchema>;
 export type SimulateRoutingDto = z.output<typeof simulateRoutingSchema>;
 
 export const consentRequestSchema = z.object({ context: z.string().trim().regex(CONFIG_KEY_PATTERN).optional() }).strict();

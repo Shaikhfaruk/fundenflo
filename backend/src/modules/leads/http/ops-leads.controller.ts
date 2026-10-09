@@ -95,8 +95,7 @@ export class OpsLeadsController {
   @HttpCode(HttpStatus.ACCEPTED)
   @canUpdate
   async bulkRoute(@ValidBody(bulkRouteSchema) body: BulkRouteDto) {
-    for (const leadId of new Set(body.leadIds)) await this.routing.enqueueRoute(leadId);
-    return { queued: new Set(body.leadIds).size };
+    return { queued: await this.routing.enqueue(body.leadIds) };
   }
 
   @Post('bulk-assign')
@@ -119,7 +118,7 @@ export class OpsLeadsController {
   @HttpCode(HttpStatus.OK)
   @canUpdate
   revoke(@ValidParam('assignmentId', uuidSchema) assignmentId: string, @ValidBody(revokeAssignmentSchema) body: RevokeAssignmentDto) {
-    return this.routing.revoke(assignmentId, body.reason);
+    return this.leads.revokeAssignment(assignmentId, body.reason);
   }
 
   @Get(':id')

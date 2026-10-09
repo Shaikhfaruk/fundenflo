@@ -1,11 +1,11 @@
 import { ClsService } from 'nestjs-cls';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
-import { OrganizationStatus, OrganizationType, PartnerKind, PartnerLevel, PartnerVerificationStatus, PartyKind, Role } from '../../src/common/enums/db.enums.js';
+import { Role } from '../../src/common/enums/db.enums.js';
 import { QueueName } from '../../src/infrastructure/queue/queue-names.js';
 import { QueueRegistry } from '../../src/infrastructure/queue/queue-registry.service.js';
-import { LeadRoutingService } from '../../src/modules/leads/application/lead-routing.service.js';
-import { bearer, createStaffSession, randomMobile, type StaffSession } from './support/fixtures.js';
+import { LeadAssignmentService } from '../../src/modules/leads/application/lead-assignment.service.js';
+import { bearer, createPartnerFirm, createStaffSession, type PartnerFirmInput, randomMobile, type StaffSession } from './support/fixtures.js';
 import { startTestApp, type TestApp } from './support/test-app.js';
 
 const CAMPAIGN = 'routing-spec';
@@ -28,24 +28,7 @@ describe('lead routing to CAs', () => {
 
   const inContext = <T>(work: () => Promise<T>) => t.app.get(ClsService).run(work);
 
-  const partner = async (name: string, options: { cityId: string; level?: PartnerLevel; maxOpenLeads?: number | null; categories?: string[] }) => {
-    const party = await t.prisma.party.create({ data: { kind: PartyKind.business, displayName: name } });
-    const organization = await t.prisma.organization.create({ data: { partyId: party.id, type: OrganizationType.partner, name, status: OrganizationStatus.active } });
-    await t.prisma.partnerProfile.create({
-      data: {
-        organizationId: organization.id,
-        kind: PartnerKind.ca,
-        level: options.level ?? PartnerLevel.active,
-        verificationStatus: PartnerVerificationStatus.verified,
-        maxOpenLeads: options.maxOpenLeads ?? null,
-        segments: ['msme'],
-        categories: options.categories ?? [],
-        signedUpByUserId: ops.user.id,
-        serviceAreas: { create: [{ cityId: options.cityId }] },
-      },
-    });
-    return organization.id;
-  };
+  const partner = (name: string, options: Omit<PartnerFirmInput, 'name' | 'signedUpByUserId'>) => createPartnerFirm(t, { name, signedUpByUserId: ops.user.id, ...options });
 
   const lead = async (body: Record<string, unknown>) =>
     (await t.api().post('/v1/ops/leads').set(bearer(ops.accessToken)).send({ mobile: randomMobile(), segment: 'msme', category: 'business', campaign: CAMPAIGN, ...body }).expect(201)).body;
@@ -122,8 +105,8 @@ describe('lead routing to CAs', () => {
     const created = await lead({ name: 'Ishaan Bedi', city: 'Gurgaon', consent: fullConsent });
     const first = (await t.api().post(`/v1/ops/leads/${created.id}/route`).set(bearer(ops.accessToken)).expect(200)).body.assignments[0];
     await t.prisma.leadAssignment.update({ where: { id: first.id }, data: { respondBy: new Date(Date.now() - 1_000) } });
-    expect(await inContext(() => t.app.get(LeadRoutingService).expire(first.id))).toBe(true);
-    expect(await inContext(() => t.app.get(LeadRoutingService).expire(first.id))).toBe(false);
+    expect(await inContext(() => t.app.get(LeadAssignmentService).expire(first.id))).toBe(true);
+    expect(await inContext(() => t.app.get(LeadAssignmentService).expire(first.id))).toBe(false);
 
     const second = (await t.api().post(`/v1/ops/leads/${created.id}/route`).set(bearer(ops.accessToken)).expect(200)).body.assignments[0];
     expect(second.organizationId).not.toBe(first.organizationId);

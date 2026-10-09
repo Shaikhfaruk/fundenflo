@@ -41,6 +41,48 @@ export const RoutingOutcome = {
 
 export type RoutingOutcome = (typeof RoutingOutcome)[keyof typeof RoutingOutcome];
 
+export const OTHER_REASON = 'other';
+
+export const AssignmentDeclineReason = {
+  OutsideServiceArea: 'outside_service_area',
+  CategoryNotHandled: 'category_not_handled',
+  CapacityFull: 'capacity_full',
+  ConflictOfInterest: 'conflict_of_interest',
+  Other: OTHER_REASON,
+} as const;
+
+export type AssignmentDeclineReason = (typeof AssignmentDeclineReason)[keyof typeof AssignmentDeclineReason];
+
+export const AssignmentReturnReason = {
+  Unreachable: 'unreachable',
+  NotInterested: 'not_interested',
+  NotEligible: 'not_eligible',
+  WrongDetails: 'wrong_details',
+  CapacityFull: 'capacity_full',
+  Other: OTHER_REASON,
+} as const;
+
+export type AssignmentReturnReason = (typeof AssignmentReturnReason)[keyof typeof AssignmentReturnReason];
+
+export const AssignmentCloseReason = {
+  AcceptDeadlineMissed: 'accept_sla_missed',
+  AcceptedByAnotherPartner: 'accepted_by_another_partner',
+  ConsentWithdrawn: 'consent_withdrawn',
+  LeadStatusChanged: 'lead_status_changed',
+  LeadLost: 'lead_lost',
+  RevokedByOps: 'revoked_by_ops',
+} as const;
+
+export type AssignmentCloseReason = (typeof AssignmentCloseReason)[keyof typeof AssignmentCloseReason];
+
+export const PartnerInboxView = {
+  Offered: 'offered',
+  Active: 'active',
+  Closed: 'closed',
+} as const;
+
+export type PartnerInboxView = (typeof PartnerInboxView)[keyof typeof PartnerInboxView];
+
 export const ROUTE_JOB = 'route';
 
 export const EXPIRE_OFFER_JOB = 'expire_offer';

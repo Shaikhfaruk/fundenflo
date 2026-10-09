@@ -1,0 +1,183 @@
+{
+  "name": "Accept Partner Lead",
+  "request": {
+    "method": "POST",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/partner/leads/:id/accept",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "partner",
+        "leads",
+        ":id",
+        "accept"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{leadId}}"
+        }
+      ]
+    },
+    "description": "Accepts an offer before `respondBy` (409 `INVALID_TRANSITION` with reason `accept_sla_missed` after it). The person must still allow sharing with the firm (403 `CONSENT_REQUIRED`). When the lead was offered to several CAs at once, the first to accept wins and the other offers are withdrawn. The lead moves to `in_progress` and the accepting member becomes the assignee. Partner context. The firm owner sees every lead offered to the firm; a firm member (agent) sees only leads the owner handed to them. Lead protection: before acceptance the name is shortened (e.g. `Ramesh K.`) and the business name and notes are hidden; contact details stay masked until revealed, and every reveal is logged."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/partner/leads/:id/accept",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "leads",
+            ":id",
+            "accept"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{leadId}}"
+            }
+          ]
+        },
+        "description": "Accepts an offer before `respondBy` (409 `INVALID_TRANSITION` with reason `accept_sla_missed` after it). The person must still allow sharing with the firm (403 `CONSENT_REQUIRED`). When the lead was offered to several CAs at once, the first to accept wins and the other offers are withdrawn. The lead moves to `in_progress` and the accepting member becomes the assignee. Partner context. The firm owner sees every lead offered to the firm; a firm member (agent) sees only leads the owner handed to them. Lead protection: before acceptance the name is shortened (e.g. `Ramesh K.`) and the business name and notes are hidden; contact details stay masked until revealed, and every reveal is logged."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"assignment\": {\n    \"id\": \"01a121f9-3c4d-7e5f-8061-728394a5b6c7\",\n    \"status\": \"accepted\",\n    \"strategy\": \"round_robin\",\n    \"assigneeMembershipId\": \"01a121d0-3c4d-7e5f-8061-728394a5b6c7\",\n    \"offeredAt\": \"2026-10-10T09:30:00.000Z\",\n    \"respondBy\": \"2026-10-10T13:30:00.000Z\",\n    \"acceptedAt\": \"2026-10-10T10:05:00.000Z\",\n    \"firstContactBy\": \"2026-10-11T13:30:00.000Z\",\n    \"closedAt\": null,\n    \"reason\": null\n  },\n  \"lead\": {\n    \"id\": \"01a121e0-1a2b-7c3d-8e4f-5061728394a5\",\n    \"ref\": \"LD-26-000123\",\n    \"status\": \"in_progress\",\n    \"name\": \"Ramesh Kumar\",\n    \"businessName\": \"Kumar Traders\",\n    \"segmentKey\": \"msme\",\n    \"subSegmentKey\": \"proprietorship\",\n    \"categoryKey\": \"business\",\n    \"purposeKey\": \"expansion\",\n    \"purposeNote\": \"Second outlet in Sector 29\",\n    \"amount\": {\n      \"minPaise\": 200000000,\n      \"maxPaise\": 250000000,\n      \"text\": \"20-25 lakh\"\n    },\n    \"tenureMonths\": null,\n    \"location\": {\n      \"state\": {\n        \"gstCode\": \"06\",\n        \"name\": \"Haryana\"\n      },\n      \"city\": {\n        \"id\": \"01a12184-0bb1-773e-ba9c-a22c64991340\",\n        \"name\": \"Gurugram\"\n      },\n      \"pincode\": \"122001\"\n    },\n    \"urgency\": \"within_month\",\n    \"preferredLanguage\": \"hi\",\n    \"preferredContactTime\": \"After 6 pm\",\n    \"createdAt\": \"2026-10-10T09:30:00.000Z\"\n  },\n  \"contacts\": [\n    {\n      \"type\": \"mobile\",\n      \"masked\": \"+91 98•••••210\",\n      \"primary\": true,\n      \"doNotContact\": false,\n      \"invalid\": false\n    }\n  ],\n  \"availableActions\": [\n    \"reveal_contact\",\n    \"return\",\n    \"lost\",\n    \"sub_assign\"\n  ]\n}"
+    },
+    {
+      "name": "409 INVALID_TRANSITION",
+      "originalRequest": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/partner/leads/:id/accept",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "leads",
+            ":id",
+            "accept"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{leadId}}"
+            }
+          ]
+        },
+        "description": "Accepts an offer before `respondBy` (409 `INVALID_TRANSITION` with reason `accept_sla_missed` after it). The person must still allow sharing with the firm (403 `CONSENT_REQUIRED`). When the lead was offered to several CAs at once, the first to accept wins and the other offers are withdrawn. The lead moves to `in_progress` and the accepting member becomes the assignee. Partner context. The firm owner sees every lead offered to the firm; a firm member (agent) sees only leads the owner handed to them. Lead protection: before acceptance the name is shortened (e.g. `Ramesh K.`) and the business name and notes are hidden; contact details stay masked until revealed, and every reveal is logged."
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"INVALID_TRANSITION\",\n  \"message\": \"This action is not allowed in the current state.\",\n  \"details\": {\n    \"from\": \"offered\",\n    \"event\": \"accept\",\n    \"reason\": \"accept_sla_missed\"\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "403 CONSENT_REQUIRED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/partner/leads/:id/accept",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "leads",
+            ":id",
+            "accept"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{leadId}}"
+            }
+          ]
+        },
+        "description": "Accepts an offer before `respondBy` (409 `INVALID_TRANSITION` with reason `accept_sla_missed` after it). The person must still allow sharing with the firm (403 `CONSENT_REQUIRED`). When the lead was offered to several CAs at once, the first to accept wins and the other offers are withdrawn. The lead moves to `in_progress` and the accepting member becomes the assignee. Partner context. The firm owner sees every lead offered to the firm; a firm member (agent) sees only leads the owner handed to them. Lead protection: before acceptance the name is shortened (e.g. `Ramesh K.`) and the business name and notes are hidden; contact details stay masked until revealed, and every reveal is logged."
+      },
+      "status": "Forbidden",
+      "code": 403,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"CONSENT_REQUIRED\",\n  \"message\": \"Consent for this purpose is needed first.\",\n  \"details\": {\n    \"purpose\": \"partner_sharing\",\n    \"organizationId\": \"01a121c0-6f70-7b82-a394-a5b6c7d8e9fa\"\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/partner/leads/:id/accept",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "leads",
+            ":id",
+            "accept"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{leadId}}"
+            }
+          ]
+        },
+        "description": "Accepts an offer before `respondBy` (409 `INVALID_TRANSITION` with reason `accept_sla_missed` after it). The person must still allow sharing with the firm (403 `CONSENT_REQUIRED`). When the lead was offered to several CAs at once, the first to accept wins and the other offers are withdrawn. The lead moves to `in_progress` and the accepting member becomes the assignee. Partner context. The firm owner sees every lead offered to the firm; a firm member (agent) sees only leads the owner handed to them. Lead protection: before acceptance the name is shortened (e.g. `Ramesh K.`) and the business name and notes are hidden; contact details stay masked until revealed, and every reveal is logged."
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

@@ -18,7 +18,9 @@ import { CatalogQueryService } from '../../catalog/application/catalog-query.ser
 import { ConsentRequestService } from '../../consents/application/consent-request.service.js';
 import { PartyService } from '../../parties/application/party.service.js';
 import { DEFAULT_LEAD_CONSENT_CONTEXT } from '../domain/lead.constants.js';
+import { AssignmentCloseReason } from '../domain/lead-routing.constants.js';
 import { LeadRepository } from '../infrastructure/lead.repository.js';
+import { LeadAssignmentService } from './lead-assignment.service.js';
 import { LeadConsentPolicy } from './lead-consent.policy.js';
 import { LeadLocator } from './lead-locator.service.js';
 import { scoreFor } from './lead-scoring.js';
@@ -59,12 +61,14 @@ export type LeadPatch = {
 };
 
 export type LeadAction =
-  | { event: typeof LeadEvent.Qualify | typeof LeadEvent.Reopen | typeof LeadEvent.Recycle; note?: string }
+  | { event: typeof LeadEvent.Qualify | typeof LeadEvent.Reopen | typeof LeadEvent.Recycle | typeof LeadEvent.Start; note?: string }
   | { event: typeof LeadEvent.Hold; note?: string; holdUntil?: Date }
   | { event: typeof LeadEvent.Disqualify; reason: LeadUnqualifiedReason; note?: string }
   | { event: typeof LeadEvent.Lose; reason: LeadLostReason; note?: string };
 
 const REF_PATTERN = /^LD-\d{2}-\d+$/i;
+
+const KEEPS_ASSIGNMENTS: ReadonlySet<LeadEvent> = new Set([LeadEvent.Qualify, LeadEvent.Start]);
 
 @Injectable()
 export class LeadService {
@@ -77,6 +81,7 @@ export class LeadService {
     private readonly timeline: LeadTimeline,
     private readonly changes: ChangeRecorder,
     private readonly consentRequests: ConsentRequestService,
+    private readonly assignments: LeadAssignmentService,
   ) {}
 
   async list(filters: LeadFilters) {
@@ -158,8 +163,19 @@ export class LeadService {
     if (action.event === LeadEvent.Recycle || action.event === LeadEvent.Reopen) data.consentStatus = await this.consentPolicy.statusFor(lead.partyId);
     const moved = await this.leads.updateFromStatus(id, lead.status, data);
     if (moved.count === 0) throw new AppError(ErrorCode.VERSION_CONFLICT);
+    if (!KEEPS_ASSIGNMENTS.has(action.event)) await this.assignments.closeActive(id, AssignmentCloseReason.LeadStatusChanged);
     await this.statusChanged(lead, next, reason, action.note ?? null);
     return this.get(id);
+  }
+
+  @Transactional()
+  async revokeAssignment(assignmentId: string, note: string) {
+    const assignment = await this.leads.findAssignment(assignmentId);
+    if (!assignment) throw new AppError(ErrorCode.NOT_FOUND);
+    await this.leads.lockLead(assignment.leadId);
+    const status = await this.assignments.revoke(assignment, AssignmentCloseReason.RevokedByOps, note);
+    if (assignment.lead.status === LeadStatus.in_progress) await this.act(assignment.leadId, { event: LeadEvent.Recycle, note });
+    return { id: assignment.id, status };
   }
 
   @Transactional()
@@ -184,6 +200,7 @@ export class LeadService {
         mergedIntoLeadId: survivor.id,
       });
       if (moved.count === 0) throw new AppError(ErrorCode.VERSION_CONFLICT, { details: { leadId: lead.id } });
+      await this.assignments.closeActive(lead.id, AssignmentCloseReason.LeadStatusChanged);
       await this.timeline.record(lead.id, LeadEventType.merged, { fromStatus: lead.status, toStatus: LeadStatus.unqualified, reason: LeadUnqualifiedReason.duplicate, note, data: { into: survivor.id } });
     }
     await this.timeline.record(survivor.id, LeadEventType.merged, { note, data: { merged: others.map((lead) => lead.id) } });
@@ -220,35 +237,41 @@ export class LeadService {
     if (open.length === 0) return 0;
     const status = await this.consentPolicy.statusFor(partyId);
     const changed = open.filter((lead) => lead.consentStatus !== status);
-    if (changed.length === 0) return 0;
-    const presence = await this.presence(partyId, open[0]?.party.displayName ?? null);
-    for (const lead of changed) {
-      await this.leads.update(lead.id, { consentStatus: status, qualityScore: scoreFor({ ...lead, consentStatus: status }, presence) });
-      await this.timeline.record(lead.id, LeadEventType.consent_changed, { data: { from: lead.consentStatus, to: status } });
-      await this.changes.record({
-        action: AuditAction.LeadUpdated,
-        entityType: AuditEntity.Lead,
-        entityId: lead.id,
-        event: EventName.LeadUpdated,
-        metadata: { ref: lead.ref, fields: ['consentStatus'], from: lead.consentStatus, to: status },
-        payload: { leadId: lead.id, consentStatus: status },
-      });
+    if (changed.length > 0) {
+      const presence = await this.presence(partyId, open[0]?.party.displayName ?? null);
+      for (const lead of changed) {
+        await this.leads.update(lead.id, { consentStatus: status, qualityScore: scoreFor({ ...lead, consentStatus: status }, presence) });
+        await this.timeline.record(lead.id, LeadEventType.consent_changed, { data: { from: lead.consentStatus, to: status } });
+        await this.changes.record({
+          action: AuditAction.LeadUpdated,
+          entityType: AuditEntity.Lead,
+          entityId: lead.id,
+          event: EventName.LeadUpdated,
+          metadata: { ref: lead.ref, fields: ['consentStatus'], from: lead.consentStatus, to: status },
+          payload: { leadId: lead.id, consentStatus: status },
+        });
+      }
+    }
+    for (const leadId of await this.assignments.enforceConsent(partyId)) {
+      const lead = open.find((candidate) => candidate.id === leadId);
+      if (lead?.status === LeadStatus.in_progress) await this.act(leadId, { event: LeadEvent.Recycle, note: AssignmentCloseReason.ConsentWithdrawn });
     }
     return changed.length;
   }
 
   @Transactional()
-  async revealContacts(id: string, reason: string) {
+  async revealContacts(id: string, reason: string, assignment?: { id: string; organizationId: string }) {
     const lead = await this.require(id);
     const contacts = await this.parties.listContacts(lead.partyId, true);
-    await this.timeline.record(id, LeadEventType.contact_revealed, { reason });
+    const scope = assignment ? { assignmentId: assignment.id, organizationId: assignment.organizationId } : undefined;
+    await this.timeline.record(id, LeadEventType.contact_revealed, { reason, data: scope });
     await this.changes.record({
       action: AuditAction.LeadContactRevealed,
       entityType: AuditEntity.Lead,
       entityId: id,
       event: EventName.LeadContactRevealed,
-      metadata: { ref: lead.ref, reason, contacts: contacts.length },
-      payload: { leadId: id },
+      metadata: { ref: lead.ref, reason, contacts: contacts.length, ...scope },
+      payload: { leadId: id, ...scope },
     });
     return { leadId: id, contacts };
   }

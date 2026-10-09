@@ -1,7 +1,7 @@
 # FundenFlo Backend — Architecture Diagrams
 
 > Living document. Any change that adds, renames, moves or removes a module, route group, queue, job, channel or worker updates the matching diagram here **and** [`inventory.md`](inventory.md) in the same change.
-> **Built (M0 + M1.1 – M1.8a):** system context, identity & multiple logins (diagrams 3–4, parties/users/memberships/sessions parts), audit, notifications, outbox and the four M0 queues in diagram 9, the `catalog` module (diagram 2; feeds the Category and Requirement steps in diagram 7), the `attributes` module with the `conditions` and `facts` engines (diagram 2; the fact store and rule evaluation behind every step of diagram 7), and `config-publishing` + `questionnaires` with the `state-machines` and `questionnaire` engines (diagram 7: Pre-check step and the config lifecycle), `consents` with the `consents` engine (diagram 7: Consent step; diagram 5: consent gate before sharing), `partners` light with organization lifecycle (diagram 4: partner sign-in states; diagram 5: the CA pool routing will draw from), leads core: capture, lifecycle and the ops queue, and lead routing: versioned routing rules, the `assignment` engine, offers with accept deadlines, manual assign and revoke, and the `leads.route` queue (diagrams 5, 6 and 9, green parts). Everything else is planned. Design rationale: [`BACKEND_ARCHITECTURE_PLAN.md`](BACKEND_ARCHITECTURE_PLAN.md).
+> **Built (M0 + M1.1 – M1.8b):** system context, identity & multiple logins (diagrams 3–4, parties/users/memberships/sessions parts), audit, notifications, outbox and the four M0 queues in diagram 9, the `catalog` module (diagram 2; feeds the Category and Requirement steps in diagram 7), the `attributes` module with the `conditions` and `facts` engines (diagram 2; the fact store and rule evaluation behind every step of diagram 7), and `config-publishing` + `questionnaires` with the `state-machines` and `questionnaire` engines (diagram 7: Pre-check step and the config lifecycle), `consents` with the `consents` engine (diagram 7: Consent step; diagram 5: consent gate before sharing), `partners` light with organization lifecycle (diagram 4: partner sign-in states; diagram 5: the CA pool routing will draw from), leads core: capture, lifecycle and the ops queue, and lead routing: versioned routing rules, the `assignment` engine, offers with accept deadlines, manual assign and revoke, and the `leads.route` queue, and the CA lead inbox: masked offers, accept, decline, return, logged contact reveal, hand-over and lost (diagrams 5, 6 and 9, green parts). Everything else is planned. Design rationale: [`BACKEND_ARCHITECTURE_PLAN.md`](BACKEND_ARCHITECTURE_PLAN.md).
 > Last updated: 2026-10-10
 
 ## Diagrams
@@ -272,23 +272,24 @@ flowchart LR
   ROUTE --> OFFER[Assignment offered - PII masked]
   OFFER -->|accept deadline missed or revoked by ops| ROUTE
   OFFER -->|declined| ROUTE
-  OFFER -->|accepted| WORK[CA works lead: reveal contact, activities, follow-ups]
+  OFFER -->|accepted, first CA wins| WORK[CA works lead: reveal contact, hand-over, activities, follow-ups]
+  WORK -->|ops closes lead or consent withdrawn| REVOKED[Assignment revoked]
   WORK -->|convert| APPL[Loan application on the same party]
   WORK -->|offline conversion| OFF[Offline outcome recorded]
   WORK -->|lost| LOST[Lost with reason]
   WORK -->|returned| ROUTE
   APPL -->|application events| DERIVE[Lead status derived: converted / won / lost]
   classDef built fill:#d8f3dc,stroke:#2d6a4f,color:#081c15
-  class IMP,MAN,WEB,DROP,CAP,RES,LINK,MQ,FACTS,CONS,CP,ROUTE,OPSQ,OFFER built
+  class IMP,MAN,WEB,DROP,CAP,RES,LINK,MQ,FACTS,CONS,CP,ROUTE,OPSQ,OFFER,WORK,LOST,REVOKED built
 ```
 
-Green = built in M1.6a/b, M1.7 and M1.8a: backlog CSV/XLSX imports (upload URL → inspect → map → validate → commit → undo, in the worker), ops entry, the API-key website intake and app drop-offs (delayed check after a borrower sign-up) go through `LeadCaptureService` (person matching with a name check, catalog/city/amount resolution, 30-day dedupe flag, consent and lead-capture answers, quality score, encrypted raw payload). `consent_pending` is the `consentStatus=pending` filter on `GET /ops/leads`; ops can send an SMS consent link (`POST /ops/leads/:id/consent-request` → public `/public/consent-requests/:token`), and `leads.consent-sync` updates open leads whenever consent changes. Routing (M1.8a, `LeadRoutingService`): the worker routes a lead when it is captured, qualified or recycled, or gets consent; the first published routing rule whose `when` matches (by priority) draws verified, active, unpaused CAs from `PartnerService.routingPool` (service area, capabilities), keeps those the person lets `partner_sharing` cover, drops CAs at capacity or that already declined, missed or returned this lead, and offers it by the rule's strategy with accept and first-contact deadlines; a delayed `expire_offer` job moves a missed offer on. Ops can route, simulate, assign (also in bulk) and revoke. Accept, decline, return, contact reveal and CA work come with M1.8b.
+Green = built in M1.6a/b, M1.7 and M1.8a: backlog CSV/XLSX imports (upload URL → inspect → map → validate → commit → undo, in the worker), ops entry, the API-key website intake and app drop-offs (delayed check after a borrower sign-up) go through `LeadCaptureService` (person matching with a name check, catalog/city/amount resolution, 30-day dedupe flag, consent and lead-capture answers, quality score, encrypted raw payload). `consent_pending` is the `consentStatus=pending` filter on `GET /ops/leads`; ops can send an SMS consent link (`POST /ops/leads/:id/consent-request` → public `/public/consent-requests/:token`), and `leads.consent-sync` updates open leads whenever consent changes. Routing (M1.8a, `LeadRoutingService`): the worker routes a lead when it is captured, qualified or recycled, or gets consent; the first published routing rule whose `when` matches (by priority) draws verified, active, unpaused CAs from `PartnerService.routingPool` (service area, capabilities), keeps those the person lets `partner_sharing` cover, drops CAs at capacity or that already declined, missed or returned this lead, and offers it by the rule's strategy with accept and first-contact deadlines; a delayed `expire_offer` job moves a missed offer on. Ops can route, simulate, assign (also in bulk) and revoke. CA side (M1.8b, `/partner/leads`, `PartnerLeadService` → `LeadAssignmentService`): the inbox shows offers with the name shortened and contacts masked; accept locks the lead, re-checks consent and the deadline, withdraws parallel offers and starts the lead; decline and return send the lead on (outbox events → `leads.route`); contact reveal is logged per firm and moves the assignment to `working`; the owner can hand a lead to a firm member; lost completes the assignment. Ops status changes and per-CA consent withdrawal revoke active offers in the same transaction. Activities, follow-ups, offline conversion, first-contact SLA and notifications come with M1.8c.
 
 ---
 
 ## 6. Lead & assignment state machines
 
-Lead (built in M1.6a as `leadMachine`; `start` is used when a CA accepts (M1.8b), `convert` from M3; revoking an in-progress assignment recycles the lead to `new`):
+Lead (built in M1.6a as `leadMachine`; `start` when a CA accepts, `recycle` when a CA returns the lead or ops revokes an in-progress assignment, `convert` from M3; any ops status change except `qualify` revokes active offers):
 
 ```mermaid
 stateDiagram-v2
@@ -321,7 +322,7 @@ stateDiagram-v2
   lost --> [*]
 ```
 
-Assignment (built in M1.8a as `assignmentMachine`; `offered`, `accepted` and `working` are the active states (`ACTIVE_ASSIGNMENT_STATES`), and a DB partial unique index allows one accepted or working assignment per lead; expire and revoke are used now, the CA actions from M1.8b):
+Assignment (built in M1.8a as `assignmentMachine`, every transition used from M1.8b through `LeadAssignmentService`; `offered`, `accepted` and `working` are the active states (`ACTIVE_ASSIGNMENT_STATES`), and a DB partial unique index allows one accepted or working assignment per lead; `start_work` happens on the first contact reveal, `complete` when the CA marks the lead lost):
 
 ```mermaid
 stateDiagram-v2
@@ -468,7 +469,7 @@ flowchart LR
   Q --> RTP[realtime.publish]
   Q --> WHO[webhooks.outbound]
   Q --> SLAQ[sla.timers]
-  Q -->|lead.captured / status_changed / updated| ROUTEQ[leads.route: route, delayed expire_offer]
+  Q -->|lead.captured / status_changed / updated, assignment declined / expired / revoked| ROUTEQ[leads.route: route, delayed expire_offer]
   OPSR[Ops route / revoke / bulk-route, offers] -->|direct and delayed enqueue| ROUTEQ
   Q --> DOCQ[documents.scan → documents.extract]
   DOCQ --> ANQ[analysis.run]

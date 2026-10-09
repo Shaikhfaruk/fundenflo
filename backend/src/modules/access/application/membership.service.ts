@@ -21,7 +21,7 @@ import { RevocationRegistry } from '../../../infrastructure/security/revocation.
 import { AuditService } from '../../audit/application/audit.service.js';
 import { AuditAction, AuditEntity } from '../../audit/domain/audit.constants.js';
 import { AppAction, type AppAbility } from '../domain/ability.types.js';
-import { LOGIN_AS_CONTEXT, ORGANIZATION_CONTEXT } from '../domain/access.constants.js';
+import { CONTEXT_ROLES, LOGIN_AS_CONTEXT, ORGANIZATION_CONTEXT } from '../domain/access.constants.js';
 import { assertRoleAllowed } from '../domain/role-rules.js';
 import { AccessRepository, type MembershipWithOrganization } from '../infrastructure/access.repository.js';
 import { toMemberView } from './access.views.js';
@@ -53,6 +53,14 @@ export class MembershipService {
     await this.invitations.acceptPendingForContact(userId, contact.channel, contact.hash, context);
     if (context === SessionContext.borrower) return this.ensureBorrower(userId);
     return this.repository.findFirstActiveMembership(userId, context);
+  }
+
+  async requireActiveMember(organizationId: string, membershipId: string, context: Exclude<SessionContext, typeof SessionContext.none>) {
+    const membership = await this.repository.findMembership(membershipId);
+    if (membership?.organizationId !== organizationId || membership.status !== MembershipStatus.active || !CONTEXT_ROLES[context].includes(membership.role)) {
+      throw new AppError(ErrorCode.VALIDATION_FAILED, { details: [{ path: 'membershipId', code: 'not_an_active_member', message: 'not an active member of this organization' }] });
+    }
+    return membership;
   }
 
   latestForContext(userId: string, context: SessionContext) {

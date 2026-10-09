@@ -3,7 +3,8 @@ import { createPrismaAbility } from '@casl/prisma/runtime';
 import { ClsService } from 'nestjs-cls';
 import { Secret, TOTP } from 'otpauth';
 
-import { ContactType, LoginAs, OrganizationStatus, OrganizationType, PartyKind, Role } from '../../../src/common/enums/db.enums.js';
+import { ContactType, LoginAs, OrganizationStatus, OrganizationType, PartnerKind, PartnerLevel, PartnerVerificationStatus, PartyKind, Role } from '../../../src/common/enums/db.enums.js';
+import { toInvitationRecipient } from '../../../src/modules/access/application/invitation-recipient.js';
 import { InvitationService } from '../../../src/modules/access/application/invitation.service.js';
 import { AppAction, type AppAbility } from '../../../src/modules/access/domain/ability.types.js';
 import { AccessRepository } from '../../../src/modules/access/infrastructure/access.repository.js';
@@ -56,4 +57,30 @@ export async function createStaffSession(t: TestApp, role: Role = Role.super_adm
   const code = new TOTP({ secret: Secret.fromBase32(totpSecret) }).generate();
   const verified = await t.api().post('/v1/auth/staff/mfa/verify').send({ mfaToken: login.body.mfaToken, code }).expect(200);
   return { ...(verified.body as AuthResult), email, totpSecret };
+}
+
+export type PartnerFirmInput = { name: string; cityId: string; signedUpByUserId: string; level?: PartnerLevel; maxOpenLeads?: number | null; categories?: string[] };
+
+export async function createPartnerFirm(t: TestApp, input: PartnerFirmInput): Promise<string> {
+  const organization = await createOrganization(t, OrganizationType.partner, input.name);
+  await t.prisma.partnerProfile.create({
+    data: {
+      organizationId: organization.id,
+      kind: PartnerKind.ca,
+      level: input.level ?? PartnerLevel.active,
+      verificationStatus: PartnerVerificationStatus.verified,
+      maxOpenLeads: input.maxOpenLeads ?? null,
+      segments: ['msme'],
+      categories: input.categories ?? [],
+      signedUpByUserId: input.signedUpByUserId,
+      serviceAreas: { create: [{ cityId: input.cityId }] },
+    },
+  });
+  return organization.id;
+}
+
+export async function createPartnerSession(t: TestApp, organizationId: string, role: Role = Role.partner_owner): Promise<AuthResult> {
+  const mobile = randomMobile();
+  await inviteBySystem(t, { organizationId, role, ...toInvitationRecipient({ mobile, countryCode: '+91' }) });
+  return otpLogin(t, mobile, LoginAs.ca);
 }

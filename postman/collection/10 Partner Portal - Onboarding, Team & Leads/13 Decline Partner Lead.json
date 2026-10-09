@@ -1,0 +1,153 @@
+{
+  "name": "Decline Partner Lead",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/partner/leads/:id/decline",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "partner",
+        "leads",
+        ":id",
+        "decline"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{leadId}}"
+        }
+      ]
+    },
+    "description": "Declines an offer. `reason`: `outside_service_area`, `category_not_handled`, `capacity_full`, `conflict_of_interest` or `other` (then `note` is required). The lead goes to the next CA straight away and is never offered to this firm again. Partner context. The firm owner sees every lead offered to the firm; a firm member (agent) sees only leads the owner handed to them. Lead protection: before acceptance the name is shortened (e.g. `Ramesh K.`) and the business name and notes are hidden; contact details stay masked until revealed, and every reveal is logged.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"reason\": \"capacity_full\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/partner/leads/:id/decline",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "leads",
+            ":id",
+            "decline"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{leadId}}"
+            }
+          ]
+        },
+        "description": "Declines an offer. `reason`: `outside_service_area`, `category_not_handled`, `capacity_full`, `conflict_of_interest` or `other` (then `note` is required). The lead goes to the next CA straight away and is never offered to this firm again. Partner context. The firm owner sees every lead offered to the firm; a firm member (agent) sees only leads the owner handed to them. Lead protection: before acceptance the name is shortened (e.g. `Ramesh K.`) and the business name and notes are hidden; contact details stay masked until revealed, and every reveal is logged.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reason\": \"capacity_full\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a121f9-3c4d-7e5f-8061-728394a5b6c7\",\n  \"status\": \"declined\"\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/partner/leads/:id/decline",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "leads",
+            ":id",
+            "decline"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{leadId}}"
+            }
+          ]
+        },
+        "description": "Declines an offer. `reason`: `outside_service_area`, `category_not_handled`, `capacity_full`, `conflict_of_interest` or `other` (then `note` is required). The lead goes to the next CA straight away and is never offered to this firm again. Partner context. The firm owner sees every lead offered to the firm; a firm member (agent) sees only leads the owner handed to them. Lead protection: before acceptance the name is shortened (e.g. `Ramesh K.`) and the business name and notes are hidden; contact details stay masked until revealed, and every reveal is logged.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reason\": \"capacity_full\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"note\",\n      \"code\": \"custom\",\n      \"message\": \"explain the reason when it is other\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

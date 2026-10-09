@@ -1,0 +1,79 @@
+{
+  "name": "List Partner Leads",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/partner/leads?view=offered&limit=25",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "partner",
+        "leads"
+      ],
+      "query": [
+        {
+          "key": "view",
+          "value": "offered"
+        },
+        {
+          "key": "limit",
+          "value": "25"
+        }
+      ]
+    },
+    "description": "The CA inbox, newest first. `view`: `offered` (waiting for accept or decline, with `respondBy`), `active` (accepted or being worked), `closed` (completed, declined, expired, revoked or returned); without `view`, offered and active together. Paginate with `cursor`. Partner context. The firm owner sees every lead offered to the firm; a firm member (agent) sees only leads the owner handed to them. Lead protection: before acceptance the name is shortened (e.g. `Ramesh K.`) and the business name and notes are hidden; contact details stay masked until revealed, and every reveal is logged."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/partner/leads?view=offered&limit=25",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "leads"
+          ],
+          "query": [
+            {
+              "key": "view",
+              "value": "offered"
+            },
+            {
+              "key": "limit",
+              "value": "25"
+            }
+          ]
+        },
+        "description": "The CA inbox, newest first. `view`: `offered` (waiting for accept or decline, with `respondBy`), `active` (accepted or being worked), `closed` (completed, declined, expired, revoked or returned); without `view`, offered and active together. Paginate with `cursor`. Partner context. The firm owner sees every lead offered to the firm; a firm member (agent) sees only leads the owner handed to them. Lead protection: before acceptance the name is shortened (e.g. `Ramesh K.`) and the business name and notes are hidden; contact details stay masked until revealed, and every reveal is logged."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"assignment\": {\n        \"id\": \"01a121f9-3c4d-7e5f-8061-728394a5b6c7\",\n        \"status\": \"offered\",\n        \"strategy\": \"round_robin\",\n        \"assigneeMembershipId\": null,\n        \"offeredAt\": \"2026-10-10T09:30:00.000Z\",\n        \"respondBy\": \"2026-10-10T13:30:00.000Z\",\n        \"acceptedAt\": null,\n        \"firstContactBy\": \"2026-10-11T13:30:00.000Z\",\n        \"closedAt\": null,\n        \"reason\": null\n      },\n      \"lead\": {\n        \"id\": \"01a121e0-1a2b-7c3d-8e4f-5061728394a5\",\n        \"ref\": \"LD-26-000123\",\n        \"status\": \"new\",\n        \"name\": \"Ramesh K.\",\n        \"businessName\": null,\n        \"segmentKey\": \"msme\",\n        \"subSegmentKey\": \"proprietorship\",\n        \"categoryKey\": \"business\",\n        \"purposeKey\": \"expansion\",\n        \"purposeNote\": null,\n        \"amount\": {\n          \"minPaise\": 200000000,\n          \"maxPaise\": 250000000,\n          \"text\": \"20-25 lakh\"\n        },\n        \"tenureMonths\": null,\n        \"location\": {\n          \"state\": {\n            \"gstCode\": \"06\",\n            \"name\": \"Haryana\"\n          },\n          \"city\": {\n            \"id\": \"01a12184-0bb1-773e-ba9c-a22c64991340\",\n            \"name\": \"Gurugram\"\n          },\n          \"pincode\": \"122001\"\n        },\n        \"urgency\": \"within_month\",\n        \"preferredLanguage\": \"hi\",\n        \"preferredContactTime\": \"After 6 pm\",\n        \"createdAt\": \"2026-10-10T09:30:00.000Z\"\n      }\n    }\n  ],\n  \"nextCursor\": null\n}"
+    }
+  ]
+}

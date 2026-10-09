@@ -207,7 +207,7 @@ Planned:
 
 ## 10 Partner Portal - Onboarding, Team & Leads
 
-Built in M1.5 (Postman `10 Partner Portal - Onboarding & Team/`). Controllers: `backend/src/modules/partners/http/partner-signup.controller.ts`, `partner-portal.controller.ts`. Reads need any partner membership; writes and members need the firm owner (CASL `PartnerProfile` / `Membership` / `Invitation` scoped to the actor's organization).
+Built in M1.5 (Postman `10 Partner Portal - Onboarding, Team & Leads/`). Controllers: `backend/src/modules/partners/http/partner-signup.controller.ts`, `partner-portal.controller.ts`. Reads need any partner membership; writes and members need the firm owner (CASL `PartnerProfile` / `Membership` / `Invitation` scoped to the actor's organization).
 
 | Method | Path | Module | Context | Milestone | Status |
 |---|---|---|---|---|---|
@@ -218,23 +218,30 @@ Built in M1.5 (Postman `10 Partner Portal - Onboarding & Team/`). Controllers: `
 | `GET` `POST` | `/partner/members` | partners | partner_owner | M1 | `useful` |
 | `PATCH` | `/partner/members/:id` | partners | partner_owner | M1 | `useful` |
 
+Built in M1.8b (Postman `10 Partner Portal - Onboarding, Team & Leads/` 10–17). Controller: `backend/src/modules/leads/http/partner-leads.controller.ts` → `PartnerLeadService`. CASL `LeadAssignment`: the firm owner reads, updates and assigns every assignment of the firm; an agent reads and updates only assignments handed to their membership. `:id` is the lead id.
+
+| Method | Path | Module | Context | Milestone | Status |
+|---|---|---|---|---|---|
+| `GET` | `/partner/leads` | leads | partner | M1 | `useful` |
+| `GET` | `/partner/leads/:id` | leads | partner | M1 | `useful` |
+| `POST` | `/partner/leads/:id/accept` | leads | partner | M1 | `useful` |
+| `POST` | `/partner/leads/:id/decline` | leads | partner | M1 | `useful` |
+| `POST` | `/partner/leads/:id/return` | leads | partner | M1 | `useful` |
+| `POST` | `/partner/leads/:id/reveal-contact` | leads | partner | M1 | `useful` |
+| `POST` | `/partner/leads/:id/sub-assign` | leads | partner_owner | M1 | `useful` |
+| `POST` | `/partner/leads/:id/lost` | leads | partner | M1 | `useful` |
+
 Planned:
 
 | Method | Path | Module | Context | Milestone | Status |
 |---|---|---|---|---|---|
 | `PATCH` | `/partner/profile` | partners | partner_owner | M7 | `planned` |
 | `GET` | `/partner/dashboard` | partners | partner | M1 | `planned` |
-| `GET` `POST` | `/partner/leads` | leads | partner | M1 | `planned` |
-| `GET` `PATCH` | `/partner/leads/:id` | leads | partner | M1 | `planned` |
-| `POST` | `/partner/leads/:id/accept` | leads | partner | M1 | `planned` |
-| `POST` | `/partner/leads/:id/decline` | leads | partner | M1 | `planned` |
-| `POST` | `/partner/leads/:id/return` | leads | partner | M1 | `planned` |
-| `POST` | `/partner/leads/:id/reveal-contact` | leads | partner | M1 | `planned` |
+| `POST` | `/partner/leads` | leads | partner | M1 | `planned` |
+| `PATCH` | `/partner/leads/:id` | leads | partner | M1 | `planned` |
 | `POST` | `/partner/leads/:id/activities` | activities | partner | M1 | `planned` |
 | `POST` | `/partner/leads/:id/follow-ups` | activities | partner | M1 | `planned` |
-| `POST` | `/partner/leads/:id/sub-assign` | leads | partner_owner | M1 | `planned` |
 | `POST` | `/partner/leads/:id/offline-conversion` | leads | partner | M1 | `planned` |
-| `POST` | `/partner/leads/:id/lost` | leads | partner | M1 | `planned` |
 | `POST` | `/partner/leads/:id/convert` | leads | partner | M3 | `planned` |
 
 ## 11 Partner Portal - Applications & Commissions

@@ -62,4 +62,8 @@ These are the places where a second copy is most tempting. Use the one listed.
 | Locale handling | `common/i18n/locale.ts` (`localise`, `resolveLocale`, `@RequestLocale()`) | Per-module locale constants |
 | Which CAs may receive a lead (verified, active, unpaused, service area, capabilities) | `PartnerService.routingPool()` | Partner queries in leads, applications or reports that repeat the eligibility filters |
 | Which organizations a person's consent covers for a purpose | `ConsentService.allowedOrganizations()` | Looping `hasConsent` per organization or reading `consent_records` |
-| Offering, assigning, revoking or expiring a lead assignment | `LeadRoutingService` (`route`, `assign`, `revoke`, `expire`) | Writing `lead_assignments` from other services or controllers |
+| Choosing who gets a lead (rules, pool, strategy) | `LeadRoutingService` (`route`, `assign`) | Picking CAs in controllers, processors or partner code |
+| Any change to a lead assignment (offer, accept, decline, return, revoke, expire, complete, hand-over) | `LeadAssignmentService` | Writing `lead_assignments` from other services or controllers |
+| Adding lead routing or offer-expiry jobs | `LeadRoutingQueue`, and outbox events for re-routing after an assignment closes | `QueueRegistry.get(LeadsRoute).add` elsewhere, or enqueueing inside a transaction |
+| Hiding a person's name before a CA accepts | `maskName()` in `engines/party-matching` | Per-view name truncation |
+| Checking a membership belongs to an organization before handing work to it | `MembershipService.requireActiveMember()` | Reading `memberships` from other modules |

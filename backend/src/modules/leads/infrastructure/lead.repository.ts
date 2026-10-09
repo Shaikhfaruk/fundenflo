@@ -19,7 +19,12 @@ export const leadDetailInclude = {
   assignments: { orderBy: { offeredAt: 'desc' }, take: LEAD_EVENTS_IN_DETAIL, include: { organization: { select: { id: true, name: true } } } },
 } as const satisfies Prisma.LeadInclude;
 
+export const partnerAssignmentInclude = {
+  lead: { include: leadListInclude },
+} as const satisfies Prisma.LeadAssignmentInclude;
+
 export type LeadListRow = Prisma.LeadGetPayload<{ include: typeof leadListInclude }>;
+export type PartnerAssignmentRow = Prisma.LeadAssignmentGetPayload<{ include: typeof partnerAssignmentInclude }>;
 export type LeadDetailRow = Prisma.LeadGetPayload<{ include: typeof leadDetailInclude }>;
 
 @Injectable()
@@ -98,6 +103,22 @@ export class LeadRepository {
 
   updateFromStatus(id: string, status: LeadStatus, data: Prisma.LeadUncheckedUpdateManyInput) {
     return this.txHost.tx.lead.updateMany({ where: { id, status }, data: { ...data, version: { increment: 1 } } });
+  }
+
+  async lockLead(id: string) {
+    await this.txHost.tx.$queryRaw`SELECT id FROM leads WHERE id = ${id}::uuid FOR UPDATE`;
+  }
+
+  listAssignments(where: Prisma.LeadAssignmentWhereInput, take: number) {
+    return this.txHost.tx.leadAssignment.findMany({ where, take, orderBy: { id: 'desc' }, include: partnerAssignmentInclude });
+  }
+
+  findLatestAssignment(where: Prisma.LeadAssignmentWhereInput) {
+    return this.txHost.tx.leadAssignment.findFirst({ where, orderBy: { offeredAt: 'desc' }, include: partnerAssignmentInclude });
+  }
+
+  activeAssignmentsForParty(partyId: string, statuses: readonly AssignmentStatus[]) {
+    return this.txHost.tx.leadAssignment.findMany({ where: { lead: { partyId }, status: { in: [...statuses] } }, include: { lead: true } });
   }
 
   assignmentsForLead(leadId: string) {
