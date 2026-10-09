@@ -1,0 +1,180 @@
+{
+  "name": "Update Routing Rule Draft",
+  "request": {
+    "method": "PATCH",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "If-Match",
+        "value": "\"{{routingRuleVersionRow}}\""
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/routing-rules/:id/versions/:number",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "routing-rules",
+        ":id",
+        "versions",
+        ":number"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{routingRuleId}}"
+        },
+        {
+          "key": "number",
+          "value": "{{routingRuleNumber}}"
+        }
+      ]
+    },
+    "description": "Edits a draft's content or notes; issues are recomputed. `content`: `priority` (lower runs first, default 100; ties by key), `when` (a condition on `lead.*` attributes such as `lead.segment`, `lead.category`, `lead.state` (GST code), `lead.city_id`, `lead.pincode`, `lead.amount_paise`, `lead.source`, `lead.campaign`, `lead.language`, `lead.urgency`, `lead.quality_score`, `lead.flags`, or on any dictionary attribute; omit to match every lead), `strategy` (`round_robin`, `least_loaded`, `weighted`, `sticky`, `broadcast`; `manual` and `pool` leave the lead for ops), `offers` (how many CAs a `broadcast` offers at once), `maxOffers` (offers per lead before ops takes over, default 5), `pool` (`kinds`, `levels`, `organizationIds`; `requireServiceArea` and `requireCapabilities` default true, `requireLanguage` false), `weights` per partner level (`new`, `active`, `strategic`; defaults 1, 2, 3) and `sla` (`acceptHours` default 4, `firstContactHours` default 24). Staff only. Routing rules are versioned config (same lifecycle as question sets): an ops lead makes, a different staff member approves in Change Requests, then it is published. Reading needs config read access; making, publishing and retiring need config maker access for routing rules (ops lead, super admin).",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"notes\": \"Reviewed with the partner team on 10 Oct\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{routingRuleVersionRow}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/routing-rules/:id/versions/:number",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "routing-rules",
+            ":id",
+            "versions",
+            ":number"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{routingRuleId}}"
+            },
+            {
+              "key": "number",
+              "value": "{{routingRuleNumber}}"
+            }
+          ]
+        },
+        "description": "Edits a draft's content or notes; issues are recomputed. `content`: `priority` (lower runs first, default 100; ties by key), `when` (a condition on `lead.*` attributes such as `lead.segment`, `lead.category`, `lead.state` (GST code), `lead.city_id`, `lead.pincode`, `lead.amount_paise`, `lead.source`, `lead.campaign`, `lead.language`, `lead.urgency`, `lead.quality_score`, `lead.flags`, or on any dictionary attribute; omit to match every lead), `strategy` (`round_robin`, `least_loaded`, `weighted`, `sticky`, `broadcast`; `manual` and `pool` leave the lead for ops), `offers` (how many CAs a `broadcast` offers at once), `maxOffers` (offers per lead before ops takes over, default 5), `pool` (`kinds`, `levels`, `organizationIds`; `requireServiceArea` and `requireCapabilities` default true, `requireLanguage` false), `weights` per partner level (`new`, `active`, `strategic`; defaults 1, 2, 3) and `sla` (`acceptHours` default 4, `firstContactHours` default 24). Staff only. Routing rules are versioned config (same lifecycle as question sets): an ops lead makes, a different staff member approves in Change Requests, then it is published. Reading needs config read access; making, publishing and retiring need config maker access for routing rules (ops lead, super admin).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"notes\": \"Reviewed with the partner team on 10 Oct\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a121f9-2b3c-7d4e-9f50-61728394a5b6\",\n  \"resource\": \"routing_rule\",\n  \"documentId\": \"01a121f9-1a2b-7c3d-8e4f-5061728394a5\",\n  \"documentKey\": \"msme_haryana\",\n  \"number\": 1,\n  \"status\": \"draft\",\n  \"content\": {\n    \"priority\": 10,\n    \"when\": {\n      \"all\": [\n        {\n          \"attr\": \"lead.segment\",\n          \"op\": \"eq\",\n          \"value\": \"msme\"\n        },\n        {\n          \"attr\": \"lead.state\",\n          \"op\": \"eq\",\n          \"value\": \"06\"\n        }\n      ]\n    },\n    \"strategy\": \"round_robin\",\n    \"pool\": {\n      \"kinds\": [\n        \"ca\"\n      ],\n      \"requireServiceArea\": true,\n      \"requireCapabilities\": true\n    },\n    \"sla\": {\n      \"acceptHours\": 4,\n      \"firstContactHours\": 24\n    }\n  },\n  \"compiled\": null,\n  \"issues\": [],\n  \"contentHash\": null,\n  \"notes\": \"Reviewed with the partner team on 10 Oct\",\n  \"effectiveFrom\": null,\n  \"publishedAt\": null,\n  \"retiredAt\": null,\n  \"createdByUserId\": \"01a121c0-5e6f-7a71-9283-94a5b6c7d8e9\",\n  \"submittedByUserId\": null,\n  \"approvedByUserId\": null,\n  \"publishedByUserId\": null,\n  \"retiredByUserId\": null,\n  \"changeRequest\": null,\n  \"availableActions\": [\n    \"edit\",\n    \"submit\",\n    \"retire\"\n  ],\n  \"version\": 2,\n  \"createdAt\": \"2026-10-10T09:30:00.000Z\",\n  \"updatedAt\": \"2026-10-10T09:30:00.000Z\"\n}"
+    },
+    {
+      "name": "409 INVALID_TRANSITION",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{routingRuleVersionRow}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/routing-rules/:id/versions/:number",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "routing-rules",
+            ":id",
+            "versions",
+            ":number"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{routingRuleId}}"
+            },
+            {
+              "key": "number",
+              "value": "{{routingRuleNumber}}"
+            }
+          ]
+        },
+        "description": "Edits a draft's content or notes; issues are recomputed. `content`: `priority` (lower runs first, default 100; ties by key), `when` (a condition on `lead.*` attributes such as `lead.segment`, `lead.category`, `lead.state` (GST code), `lead.city_id`, `lead.pincode`, `lead.amount_paise`, `lead.source`, `lead.campaign`, `lead.language`, `lead.urgency`, `lead.quality_score`, `lead.flags`, or on any dictionary attribute; omit to match every lead), `strategy` (`round_robin`, `least_loaded`, `weighted`, `sticky`, `broadcast`; `manual` and `pool` leave the lead for ops), `offers` (how many CAs a `broadcast` offers at once), `maxOffers` (offers per lead before ops takes over, default 5), `pool` (`kinds`, `levels`, `organizationIds`; `requireServiceArea` and `requireCapabilities` default true, `requireLanguage` false), `weights` per partner level (`new`, `active`, `strategic`; defaults 1, 2, 3) and `sla` (`acceptHours` default 4, `firstContactHours` default 24). Staff only. Routing rules are versioned config (same lifecycle as question sets): an ops lead makes, a different staff member approves in Change Requests, then it is published. Reading needs config read access; making, publishing and retiring need config maker access for routing rules (ops lead, super admin).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"notes\": \"Reviewed with the partner team on 10 Oct\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"INVALID_TRANSITION\",\n  \"message\": \"This action is not allowed in the current state.\",\n  \"details\": {\n    \"from\": \"in_review\",\n    \"event\": \"edit\",\n    \"allowed\": [\n      \"approve\",\n      \"reject\",\n      \"retire\"\n    ]\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

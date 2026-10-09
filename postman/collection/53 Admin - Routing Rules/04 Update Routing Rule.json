@@ -1,0 +1,162 @@
+{
+  "name": "Update Routing Rule",
+  "request": {
+    "method": "PATCH",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "If-Match",
+        "value": "\"{{routingRuleDocVersion}}\""
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/routing-rules/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "routing-rules",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{routingRuleId}}"
+        }
+      ]
+    },
+    "description": "Changes the name, description or status. Rule logic changes go through versions. Staff only. Routing rules are versioned config (same lifecycle as question sets): an ops lead makes, a different staff member approves in Change Requests, then it is published. Reading needs config read access; making, publishing and retiring need config maker access for routing rules (ops lead, super admin).",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"description\": {\n    \"en\": \"Checks routing end to end from Postman\"\n  }\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{routingRuleDocVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/routing-rules/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "routing-rules",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{routingRuleId}}"
+            }
+          ]
+        },
+        "description": "Changes the name, description or status. Rule logic changes go through versions. Staff only. Routing rules are versioned config (same lifecycle as question sets): an ops lead makes, a different staff member approves in Change Requests, then it is published. Reading needs config read access; making, publishing and retiring need config maker access for routing rules (ops lead, super admin).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"description\": {\n    \"en\": \"Checks routing end to end from Postman\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a121f9-1a2b-7c3d-8e4f-5061728394a5\",\n  \"resource\": \"routing_rule\",\n  \"key\": \"msme_haryana\",\n  \"name\": {\n    \"en\": \"MSME Leads In Haryana\"\n  },\n  \"description\": {\n    \"en\": \"Checks routing end to end from Postman\"\n  },\n  \"status\": \"active\",\n  \"activeVersion\": null,\n  \"openVersion\": {\n    \"id\": \"01a121f9-2b3c-7d4e-9f50-61728394a5b6\",\n    \"number\": 1,\n    \"status\": \"draft\"\n  },\n  \"versions\": [\n    {\n      \"id\": \"01a121f9-2b3c-7d4e-9f50-61728394a5b6\",\n      \"number\": 1,\n      \"status\": \"draft\",\n      \"effectiveFrom\": null,\n      \"publishedAt\": null,\n      \"retiredAt\": null,\n      \"updatedAt\": \"2026-10-10T09:30:00.000Z\"\n    }\n  ],\n  \"version\": 2,\n  \"createdAt\": \"2026-10-10T09:30:00.000Z\",\n  \"updatedAt\": \"2026-10-10T09:30:00.000Z\"\n}"
+    },
+    {
+      "name": "409 VERSION_CONFLICT",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{routingRuleDocVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/routing-rules/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "routing-rules",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{routingRuleId}}"
+            }
+          ]
+        },
+        "description": "Changes the name, description or status. Rule logic changes go through versions. Staff only. Routing rules are versioned config (same lifecycle as question sets): an ops lead makes, a different staff member approves in Change Requests, then it is published. Reading needs config read access; making, publishing and retiring need config maker access for routing rules (ops lead, super admin).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"description\": {\n    \"en\": \"Checks routing end to end from Postman\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VERSION_CONFLICT\",\n  \"message\": \"This record was changed by someone else. Reload it and try again.\",\n  \"details\": {\n    \"currentVersion\": 2\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

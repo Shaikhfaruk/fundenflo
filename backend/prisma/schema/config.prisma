@@ -72,6 +72,7 @@ model ConfigVersion {
   answers         Answer[]
   consentRecords  ConsentRecord[]
   consentRequests ConsentRequest[]
+  leadAssignments LeadAssignment[]
 
   @@unique([documentId, number])
   @@index([status, effectiveFrom])

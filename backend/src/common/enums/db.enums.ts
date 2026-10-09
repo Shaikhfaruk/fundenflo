@@ -2,6 +2,7 @@ export {
   ActorType,
   AnswerChannel,
   ApiClientStatus,
+  AssignmentStatus,
   AliasKind,
   AttributeDataType,
   AttributeSubject,

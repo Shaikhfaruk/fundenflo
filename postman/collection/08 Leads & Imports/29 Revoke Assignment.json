@@ -1,0 +1,207 @@
+{
+  "name": "Revoke Assignment",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/ops/leads/assignments/:assignmentId/revoke",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "leads",
+        "assignments",
+        ":assignmentId",
+        "revoke"
+      ],
+      "variable": [
+        {
+          "key": "assignmentId",
+          "value": "{{assignmentId}}"
+        }
+      ]
+    },
+    "description": "Takes an offered, accepted or in-progress lead back from a CA. A lead in progress goes back to `new`. The lead is routed again straight away, skipping this CA. Staff only, lead update access (ops lead, ops reviewer).",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"reason\": \"CA asked to pause new leads\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/leads/assignments/:assignmentId/revoke",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "leads",
+            "assignments",
+            ":assignmentId",
+            "revoke"
+          ],
+          "variable": [
+            {
+              "key": "assignmentId",
+              "value": "{{assignmentId}}"
+            }
+          ]
+        },
+        "description": "Takes an offered, accepted or in-progress lead back from a CA. A lead in progress goes back to `new`. The lead is routed again straight away, skipping this CA. Staff only, lead update access (ops lead, ops reviewer).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reason\": \"CA asked to pause new leads\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a121f9-3c4d-7e5f-8061-728394a5b6c7\",\n  \"status\": \"revoked\"\n}"
+    },
+    {
+      "name": "409 INVALID_TRANSITION",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/leads/assignments/:assignmentId/revoke",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "leads",
+            "assignments",
+            ":assignmentId",
+            "revoke"
+          ],
+          "variable": [
+            {
+              "key": "assignmentId",
+              "value": "{{assignmentId}}"
+            }
+          ]
+        },
+        "description": "Takes an offered, accepted or in-progress lead back from a CA. A lead in progress goes back to `new`. The lead is routed again straight away, skipping this CA. Staff only, lead update access (ops lead, ops reviewer).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reason\": \"CA asked to pause new leads\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"INVALID_TRANSITION\",\n  \"message\": \"This action is not allowed in the current state.\",\n  \"details\": {\n    \"from\": \"expired\",\n    \"event\": \"revoke\",\n    \"allowed\": []\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/leads/assignments/:assignmentId/revoke",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "leads",
+            "assignments",
+            ":assignmentId",
+            "revoke"
+          ],
+          "variable": [
+            {
+              "key": "assignmentId",
+              "value": "{{assignmentId}}"
+            }
+          ]
+        },
+        "description": "Takes an offered, accepted or in-progress lead back from a CA. A lead in progress goes back to `new`. The lead is routed again straight away, skipping this CA. Staff only, lead update access (ops lead, ops reviewer).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reason\": \"CA asked to pause new leads\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

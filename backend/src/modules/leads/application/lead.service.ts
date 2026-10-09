@@ -9,6 +9,7 @@ import { transitionOrThrow } from '../../../common/errors/transition.js';
 import { assertVersion } from '../../../common/http/versioning.js';
 import { type PageQuery, pageWindow, toPage } from '../../../common/listing/cursor-page.js';
 import { paiseFromNumber } from '../../../common/money/paise.js';
+import { ACTIVE_ASSIGNMENT_STATES } from '../../../engines/state-machines/machines/assignment.machine.js';
 import { LeadEvent, leadMachine, OPEN_LEAD_STATES } from '../../../engines/state-machines/machines/lead.machine.js';
 import type { Prisma } from '../../../generated/prisma/client.js';
 import { ChangeRecorder } from '../../audit/application/change-recorder.service.js';
@@ -36,6 +37,7 @@ export type LeadFilters = PageQuery & {
   q?: string;
   createdFrom?: Date;
   createdTo?: Date;
+  assigned?: boolean;
 };
 
 export type LeadPatch = {
@@ -91,6 +93,7 @@ export class LeadService {
       cityId: filters.cityId,
       pincode: filters.pincode,
       createdAt: filters.createdFrom || filters.createdTo ? { gte: filters.createdFrom, lt: filters.createdTo } : undefined,
+      ...(filters.assigned === undefined ? {} : { assignments: filters.assigned ? { some: { status: { in: [...ACTIVE_ASSIGNMENT_STATES] } } } : { none: { status: { in: [...ACTIVE_ASSIGNMENT_STATES] } } } }),
       ...(q ? (REF_PATTERN.test(q) ? { ref: q.toUpperCase() } : { party: { displayName: { contains: q, mode: 'insensitive' } } }) : {}),
     };
     return toPage(await this.leads.list(where, window.take), filters.limit, toLeadView);

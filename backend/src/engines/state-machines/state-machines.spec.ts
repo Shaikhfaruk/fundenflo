@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { defineMachine, TransitionError } from './define-machine.js';
+import { assignmentMachine } from './machines/assignment.machine.js';
 import { configVersionMachine } from './machines/config-version.machine.js';
 import { importBatchMachine } from './machines/import-batch.machine.js';
 import { leadMachine } from './machines/lead.machine.js';
@@ -89,5 +90,16 @@ describe('importBatchMachine', () => {
     expect(importBatchMachine.next('failed', 'map')).toBe('mapped');
     expect(importBatchMachine.can('committed', 'commit')).toBe(false);
     expect(importBatchMachine.next('committed', 'undo')).toBe('undoing');
+  });
+});
+
+describe('assignmentMachine', () => {
+  it('offers, accepts, works and completes; offers can be declined or expire; work can be returned or revoked', () => {
+    expect(assignmentMachine.next('offered', 'accept')).toBe('accepted');
+    expect(assignmentMachine.next('accepted', 'start_work')).toBe('working');
+    expect(assignmentMachine.next('working', 'return')).toBe('returned');
+    expect(assignmentMachine.next('offered', 'expire')).toBe('expired');
+    expect(assignmentMachine.can('offered', 'return')).toBe(false);
+    expect(assignmentMachine.events('declined')).toEqual([]);
   });
 });

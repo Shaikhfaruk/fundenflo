@@ -31,6 +31,10 @@ export class PartnerRepository {
     return this.txHost.tx.partnerProfile.findMany({ where, include: partnerInclude, orderBy: { id: 'desc' }, take });
   }
 
+  routingPool(where: Prisma.PartnerProfileWhereInput) {
+    return this.txHost.tx.partnerProfile.findMany({ where, select: { organizationId: true, level: true, maxOpenLeads: true } });
+  }
+
   updateVersioned(id: string, version: number, data: Prisma.PartnerProfileUpdateManyMutationInput) {
     return this.txHost.tx.partnerProfile.updateMany({ where: { id, version }, data: { ...data, version: { increment: 1 } } });
   }

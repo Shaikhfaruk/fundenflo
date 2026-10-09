@@ -1,0 +1,253 @@
+{
+  "name": "Assign Lead",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/ops/leads/:id/assign",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "leads",
+        ":id",
+        "assign"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{leadId}}"
+        }
+      ]
+    },
+    "description": "Offers a lead to a chosen CA, bypassing the rules (strategy `manual`, default SLA). The CA must be verified, active and unpaused, and the person must allow sharing with that CA (403 `CONSENT_REQUIRED`). Refused with 409 while another offer is active; revoke it first. Staff only, lead update access (ops lead, ops reviewer).",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"organizationId\": \"{{partnerOrganizationId}}\",\n  \"note\": \"Known to this CA from an earlier loan\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/leads/:id/assign",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "leads",
+            ":id",
+            "assign"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{leadId}}"
+            }
+          ]
+        },
+        "description": "Offers a lead to a chosen CA, bypassing the rules (strategy `manual`, default SLA). The CA must be verified, active and unpaused, and the person must allow sharing with that CA (403 `CONSENT_REQUIRED`). Refused with 409 while another offer is active; revoke it first. Staff only, lead update access (ops lead, ops reviewer).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"organizationId\": \"{{partnerOrganizationId}}\",\n  \"note\": \"Known to this CA from an earlier loan\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a121f9-3c4d-7e5f-8061-728394a5b6c7\",\n  \"organizationId\": \"01a121c0-6f70-7b82-a394-a5b6c7d8e9fa\",\n  \"organization\": {\n    \"id\": \"01a121c0-6f70-7b82-a394-a5b6c7d8e9fa\",\n    \"name\": \"Mehta & Associates\"\n  },\n  \"status\": \"offered\",\n  \"respondBy\": \"2026-10-10T13:30:00.000Z\"\n}"
+    },
+    {
+      "name": "403 CONSENT_REQUIRED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/leads/:id/assign",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "leads",
+            ":id",
+            "assign"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{leadId}}"
+            }
+          ]
+        },
+        "description": "Offers a lead to a chosen CA, bypassing the rules (strategy `manual`, default SLA). The CA must be verified, active and unpaused, and the person must allow sharing with that CA (403 `CONSENT_REQUIRED`). Refused with 409 while another offer is active; revoke it first. Staff only, lead update access (ops lead, ops reviewer).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"organizationId\": \"{{partnerOrganizationId}}\",\n  \"note\": \"Known to this CA from an earlier loan\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Forbidden",
+      "code": 403,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"CONSENT_REQUIRED\",\n  \"message\": \"Consent for this purpose is needed first.\",\n  \"details\": {\n    \"purpose\": \"partner_sharing\",\n    \"organizationId\": \"01a121c0-6f70-7b82-a394-a5b6c7d8e9fa\"\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "409 CONFLICT",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/leads/:id/assign",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "leads",
+            ":id",
+            "assign"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{leadId}}"
+            }
+          ]
+        },
+        "description": "Offers a lead to a chosen CA, bypassing the rules (strategy `manual`, default SLA). The CA must be verified, active and unpaused, and the person must allow sharing with that CA (403 `CONSENT_REQUIRED`). Refused with 409 while another offer is active; revoke it first. Staff only, lead update access (ops lead, ops reviewer).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"organizationId\": \"{{partnerOrganizationId}}\",\n  \"note\": \"Known to this CA from an earlier loan\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"CONFLICT\",\n  \"message\": \"This record already exists.\",\n  \"details\": {\n    \"reason\": \"the lead already has an active assignment; revoke it first\"\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/leads/:id/assign",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "leads",
+            ":id",
+            "assign"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{leadId}}"
+            }
+          ]
+        },
+        "description": "Offers a lead to a chosen CA, bypassing the rules (strategy `manual`, default SLA). The CA must be verified, active and unpaused, and the person must allow sharing with that CA (403 `CONSENT_REQUIRED`). Refused with 409 while another offer is active; revoke it first. Staff only, lead update access (ops lead, ops reviewer).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"organizationId\": \"{{partnerOrganizationId}}\",\n  \"note\": \"Known to this CA from an earlier loan\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

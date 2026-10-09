@@ -3,6 +3,7 @@ import { Controller, Get, HttpCode, HttpStatus, Patch, Post } from '@nestjs/comm
 import { CurrentActor, StaffOnly } from '../../../common/auth/auth.decorators.js';
 import type { UserActor } from '../../../common/context/actor.js';
 import { AnswerChannel, ConsentChannel } from '../../../common/enums/db.enums.js';
+import { AppError } from '../../../common/errors/app-error.js';
 import { IfMatchVersion } from '../../../common/http/versioning.js';
 import type { Locale } from '../../../common/i18n/locale.js';
 import { RequestLocale } from '../../../common/i18n/locale.decorator.js';
@@ -13,10 +14,19 @@ import { Idempotent } from '../../../infrastructure/idempotency/idempotent.decor
 import { AppAction } from '../../access/domain/ability.types.js';
 import { CheckPolicies } from '../../access/http/policies.guard.js';
 import { LeadCaptureService } from '../application/lead-capture.service.js';
+import { LeadRoutingService } from '../application/lead-routing.service.js';
 import { LeadSourceService } from '../application/lead-source.service.js';
 import { LeadService } from '../application/lead.service.js';
 import { LeadSourceKey } from '../domain/lead.constants.js';
 import {
+  type AssignLeadDto,
+  assignLeadSchema,
+  type BulkAssignDto,
+  bulkAssignSchema,
+  type BulkRouteDto,
+  bulkRouteSchema,
+  type RevokeAssignmentDto,
+  revokeAssignmentSchema,
   type ConsentRequestDto,
   consentRequestSchema,
   type LeadDisqualifyDto,
@@ -49,6 +59,7 @@ export class OpsLeadsController {
     private readonly capture: LeadCaptureService,
     private readonly sources: LeadSourceService,
     private readonly leads: LeadService,
+    private readonly routing: LeadRoutingService,
   ) {}
 
   @Post()
@@ -78,6 +89,37 @@ export class OpsLeadsController {
   @canUpdate
   merge(@ValidBody(leadMergeSchema) body: LeadMergeDto) {
     return this.leads.merge(body.survivorLeadId, body.leadIds, body.note);
+  }
+
+  @Post('bulk-route')
+  @HttpCode(HttpStatus.ACCEPTED)
+  @canUpdate
+  async bulkRoute(@ValidBody(bulkRouteSchema) body: BulkRouteDto) {
+    for (const leadId of new Set(body.leadIds)) await this.routing.enqueueRoute(leadId);
+    return { queued: new Set(body.leadIds).size };
+  }
+
+  @Post('bulk-assign')
+  @HttpCode(HttpStatus.OK)
+  @canUpdate
+  async bulkAssign(@ValidBody(bulkAssignSchema) body: BulkAssignDto, @CurrentActor() actor: UserActor) {
+    const results = [];
+    for (const leadId of new Set(body.leadIds)) {
+      try {
+        results.push({ leadId, assignment: await this.routing.assign(leadId, body.organizationId, body.note, actor.userId), error: null });
+      } catch (error) {
+        if (!(error instanceof AppError)) throw error;
+        results.push({ leadId, assignment: null, error: { code: error.code, message: error.message } });
+      }
+    }
+    return { items: results };
+  }
+
+  @Post('assignments/:assignmentId/revoke')
+  @HttpCode(HttpStatus.OK)
+  @canUpdate
+  revoke(@ValidParam('assignmentId', uuidSchema) assignmentId: string, @ValidBody(revokeAssignmentSchema) body: RevokeAssignmentDto) {
+    return this.routing.revoke(assignmentId, body.reason);
   }
 
   @Get(':id')
@@ -132,6 +174,20 @@ export class OpsLeadsController {
   @canUpdate
   lose(@ValidParam('id', uuidSchema) id: string, @ValidBody(leadLoseSchema) body: LeadLoseDto) {
     return this.leads.act(id, { event: LeadEvent.Lose, reason: body.reason, note: body.note });
+  }
+
+  @Post(':id/route')
+  @HttpCode(HttpStatus.OK)
+  @canUpdate
+  route(@ValidParam('id', uuidSchema) id: string) {
+    return this.routing.route(id, { record: true });
+  }
+
+  @Post(':id/assign')
+  @HttpCode(HttpStatus.CREATED)
+  @canUpdate
+  assign(@ValidParam('id', uuidSchema) id: string, @ValidBody(assignLeadSchema) body: AssignLeadDto, @CurrentActor() actor: UserActor) {
+    return this.routing.assign(id, body.organizationId, body.note, actor.userId);
   }
 
   @Post(':id/consent-request')

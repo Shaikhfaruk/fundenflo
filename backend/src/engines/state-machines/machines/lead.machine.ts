@@ -34,7 +34,7 @@ export const leadMachine = defineMachine<LeadState, LeadEvent>({
   states: Object.values(LeadState),
   transitions: {
     qualify: { from: [New], to: Qualified },
-    start: { from: [Qualified], to: InProgress },
+    start: { from: [New, Qualified], to: InProgress },
     hold: { from: [New, Qualified, InProgress], to: OnHold },
     reopen: { from: [OnHold], to: New },
     recycle: { from: [Qualified, InProgress, OnHold], to: New },

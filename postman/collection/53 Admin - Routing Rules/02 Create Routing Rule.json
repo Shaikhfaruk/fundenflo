@@ -1,0 +1,144 @@
+{
+  "name": "Create Routing Rule",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "Idempotency-Key",
+        "value": "{{$guid}}"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/routing-rules",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "routing-rules"
+      ]
+    },
+    "description": "Creates a rule and its first draft. `content`: `priority` (lower runs first, default 100; ties by key), `when` (a condition on `lead.*` attributes such as `lead.segment`, `lead.category`, `lead.state` (GST code), `lead.city_id`, `lead.pincode`, `lead.amount_paise`, `lead.source`, `lead.campaign`, `lead.language`, `lead.urgency`, `lead.quality_score`, `lead.flags`, or on any dictionary attribute; omit to match every lead), `strategy` (`round_robin`, `least_loaded`, `weighted`, `sticky`, `broadcast`; `manual` and `pool` leave the lead for ops), `offers` (how many CAs a `broadcast` offers at once), `maxOffers` (offers per lead before ops takes over, default 5), `pool` (`kinds`, `levels`, `organizationIds`; `requireServiceArea` and `requireCapabilities` default true, `requireLanguage` false), `weights` per partner level (`new`, `active`, `strategic`; defaults 1, 2, 3) and `sla` (`acceptHours` default 4, `firstContactHours` default 24). Staff only. Routing rules are versioned config (same lifecycle as question sets): an ops lead makes, a different staff member approves in Change Requests, then it is published. Reading needs config read access; making, publishing and retiring need config maker access for routing rules (ops lead, super admin).",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"key\": \"postman_routing_{{$timestamp}}\",\n  \"name\": {\n    \"en\": \"Postman Routing Check\"\n  },\n  \"content\": {\n    \"priority\": 10,\n    \"when\": {\n      \"all\": [\n        {\n          \"attr\": \"lead.segment\",\n          \"op\": \"eq\",\n          \"value\": \"msme\"\n        },\n        {\n          \"attr\": \"lead.campaign\",\n          \"op\": \"eq\",\n          \"value\": \"{{leadCampaign}}\"\n        }\n      ]\n    },\n    \"strategy\": \"round_robin\",\n    \"pool\": {\n      \"organizationIds\": [\n        \"{{partnerOrganizationId}}\"\n      ],\n      \"requireServiceArea\": false,\n      \"requireCapabilities\": false\n    },\n    \"sla\": {\n      \"acceptHours\": 4,\n      \"firstContactHours\": 24\n    }\n  }\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "pm.collectionVariables.set('routingRuleId', String(pm.response.json().id));",
+          "pm.collectionVariables.set('routingRuleDocVersion', String(pm.response.json().version));",
+          "pm.collectionVariables.set('routingRuleNumber', String(pm.response.json().openVersion.number));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "{{$guid}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/routing-rules",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "routing-rules"
+          ]
+        },
+        "description": "Creates a rule and its first draft. `content`: `priority` (lower runs first, default 100; ties by key), `when` (a condition on `lead.*` attributes such as `lead.segment`, `lead.category`, `lead.state` (GST code), `lead.city_id`, `lead.pincode`, `lead.amount_paise`, `lead.source`, `lead.campaign`, `lead.language`, `lead.urgency`, `lead.quality_score`, `lead.flags`, or on any dictionary attribute; omit to match every lead), `strategy` (`round_robin`, `least_loaded`, `weighted`, `sticky`, `broadcast`; `manual` and `pool` leave the lead for ops), `offers` (how many CAs a `broadcast` offers at once), `maxOffers` (offers per lead before ops takes over, default 5), `pool` (`kinds`, `levels`, `organizationIds`; `requireServiceArea` and `requireCapabilities` default true, `requireLanguage` false), `weights` per partner level (`new`, `active`, `strategic`; defaults 1, 2, 3) and `sla` (`acceptHours` default 4, `firstContactHours` default 24). Staff only. Routing rules are versioned config (same lifecycle as question sets): an ops lead makes, a different staff member approves in Change Requests, then it is published. Reading needs config read access; making, publishing and retiring need config maker access for routing rules (ops lead, super admin).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"key\": \"postman_routing_{{$timestamp}}\",\n  \"name\": {\n    \"en\": \"Postman Routing Check\"\n  },\n  \"content\": {\n    \"priority\": 10,\n    \"when\": {\n      \"all\": [\n        {\n          \"attr\": \"lead.segment\",\n          \"op\": \"eq\",\n          \"value\": \"msme\"\n        },\n        {\n          \"attr\": \"lead.campaign\",\n          \"op\": \"eq\",\n          \"value\": \"{{leadCampaign}}\"\n        }\n      ]\n    },\n    \"strategy\": \"round_robin\",\n    \"pool\": {\n      \"organizationIds\": [\n        \"{{partnerOrganizationId}}\"\n      ],\n      \"requireServiceArea\": false,\n      \"requireCapabilities\": false\n    },\n    \"sla\": {\n      \"acceptHours\": 4,\n      \"firstContactHours\": 24\n    }\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a121f9-1a2b-7c3d-8e4f-5061728394a5\",\n  \"resource\": \"routing_rule\",\n  \"key\": \"msme_haryana\",\n  \"name\": {\n    \"en\": \"MSME Leads In Haryana\"\n  },\n  \"description\": null,\n  \"status\": \"active\",\n  \"activeVersion\": null,\n  \"openVersion\": {\n    \"id\": \"01a121f9-2b3c-7d4e-9f50-61728394a5b6\",\n    \"number\": 1,\n    \"status\": \"draft\"\n  },\n  \"versions\": [\n    {\n      \"id\": \"01a121f9-2b3c-7d4e-9f50-61728394a5b6\",\n      \"number\": 1,\n      \"status\": \"draft\",\n      \"effectiveFrom\": null,\n      \"publishedAt\": null,\n      \"retiredAt\": null,\n      \"updatedAt\": \"2026-10-10T09:30:00.000Z\"\n    }\n  ],\n  \"version\": 1,\n  \"createdAt\": \"2026-10-10T09:30:00.000Z\",\n  \"updatedAt\": \"2026-10-10T09:30:00.000Z\"\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "{{$guid}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/routing-rules",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "routing-rules"
+          ]
+        },
+        "description": "Creates a rule and its first draft. `content`: `priority` (lower runs first, default 100; ties by key), `when` (a condition on `lead.*` attributes such as `lead.segment`, `lead.category`, `lead.state` (GST code), `lead.city_id`, `lead.pincode`, `lead.amount_paise`, `lead.source`, `lead.campaign`, `lead.language`, `lead.urgency`, `lead.quality_score`, `lead.flags`, or on any dictionary attribute; omit to match every lead), `strategy` (`round_robin`, `least_loaded`, `weighted`, `sticky`, `broadcast`; `manual` and `pool` leave the lead for ops), `offers` (how many CAs a `broadcast` offers at once), `maxOffers` (offers per lead before ops takes over, default 5), `pool` (`kinds`, `levels`, `organizationIds`; `requireServiceArea` and `requireCapabilities` default true, `requireLanguage` false), `weights` per partner level (`new`, `active`, `strategic`; defaults 1, 2, 3) and `sla` (`acceptHours` default 4, `firstContactHours` default 24). Staff only. Routing rules are versioned config (same lifecycle as question sets): an ops lead makes, a different staff member approves in Change Requests, then it is published. Reading needs config read access; making, publishing and retiring need config maker access for routing rules (ops lead, super admin).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"key\": \"postman_routing_{{$timestamp}}\",\n  \"name\": {\n    \"en\": \"Postman Routing Check\"\n  },\n  \"content\": {\n    \"priority\": 10,\n    \"when\": {\n      \"all\": [\n        {\n          \"attr\": \"lead.segment\",\n          \"op\": \"eq\",\n          \"value\": \"msme\"\n        },\n        {\n          \"attr\": \"lead.campaign\",\n          \"op\": \"eq\",\n          \"value\": \"{{leadCampaign}}\"\n        }\n      ]\n    },\n    \"strategy\": \"round_robin\",\n    \"pool\": {\n      \"organizationIds\": [\n        \"{{partnerOrganizationId}}\"\n      ],\n      \"requireServiceArea\": false,\n      \"requireCapabilities\": false\n    },\n    \"sla\": {\n      \"acceptHours\": 4,\n      \"firstContactHours\": 24\n    }\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"content.strategy\",\n      \"code\": \"invalid_value\",\n      \"message\": \"Invalid option: expected one of \\\"manual\\\"|\\\"round_robin\\\"|\\\"weighted\\\"|\\\"least_loaded\\\"|\\\"pool\\\"|\\\"broadcast\\\"|\\\"sticky\\\"\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

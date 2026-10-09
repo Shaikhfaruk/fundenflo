@@ -22,7 +22,7 @@ Approval and rejection are not per resource: they go through the shared checker 
 
 | Resource | Module | Milestone | Status |
 |---|---|---|---|
-| `routing-rules` | leads | M1 | `planned` |
+| `routing-rules` (plus `/simulate`) | leads | M1 | `useful` |
 | `question-sets` (plus `/versions/:number/preview`) | questionnaires | M1 | `useful` |
 | `consent-templates` | consents | M1 | `useful` |
 | `document-requirements` | documents | M2 | `planned` |
@@ -179,14 +179,20 @@ Built in M1.7 (Postman `08 Leads & Imports/` 17–27; request 19 uploads to the 
 | `POST` | `/admin/imports/:id/undo` | imports | staff | M1 | `useful` |
 | `GET` | `/admin/imports/:id/errors` | imports | staff | M1 | `useful` |
 
+Built in M1.8a (Postman `08 Leads & Imports/` 28–32). Controller: `backend/src/modules/leads/http/ops-leads.controller.ts` → `LeadRoutingService`; lead update access. Automatic routing runs in the worker (`leads.route`).
+
+| Method | Path | Module | Context | Milestone | Status |
+|---|---|---|---|---|---|
+| `POST` | `/ops/leads/:id/route` | leads | staff | M1 | `useful` |
+| `POST` | `/ops/leads/:id/assign` | leads | staff | M1 | `useful` |
+| `POST` | `/ops/leads/assignments/:assignmentId/revoke` | leads | staff | M1 | `useful` |
+| `POST` | `/ops/leads/bulk-assign` | leads | staff | M1 | `useful` |
+| `POST` | `/ops/leads/bulk-route` | leads | staff | M1 | `useful` |
+
 Planned:
 
 | Method | Path | Module | Context | Milestone | Status |
 |---|---|---|---|---|---|
-| `POST` | `/ops/leads/:id/assign` | leads | staff | M1 | `planned` |
-| `POST` | `/ops/leads/:id/route` | leads | staff | M1 | `planned` |
-| `POST` | `/ops/leads/bulk-assign` | leads | staff | M1 | `planned` |
-| `POST` | `/ops/leads/bulk-route` | leads | staff | M1 | `planned` |
 | `GET` | `/ops/party-match-reviews` | parties | staff | M1 | `planned` |
 | `POST` | `/ops/party-match-reviews/:id/resolve` | parties | staff | M1 | `planned` |
 | `GET` | `/ops/reports/leads/funnel` | leads | staff | M1 | `planned` |
@@ -360,6 +366,19 @@ Built in M1.4 (Postman `49 Admin - Consents/`). Controllers: `backend/src/module
 | `POST` | `/admin/consent-templates/:id/versions/:number/submit` | consents | staff | M1 | `useful` |
 | `POST` | `/admin/consent-templates/:id/versions/:number/publish` | consents | staff | M1 | `useful` |
 | `POST` | `/admin/consent-templates/:id/versions/:number/retire` | consents | staff | M1 | `useful` |
+
+Built in M1.8a (Postman `53 Admin - Routing Rules/`). Controllers: routing rules from `createVersionedConfigController` in `leads.module.ts` (handler `routing-rule.handler.ts`), `backend/src/modules/leads/http/admin-routing-simulate.controller.ts` (dry run, routing-rule read access).
+
+| Method | Path | Module | Context | Milestone | Status |
+|---|---|---|---|---|---|
+| `GET` `POST` | `/admin/routing-rules` | leads | staff | M1 | `useful` |
+| `GET` `PATCH` | `/admin/routing-rules/:id` | leads | staff | M1 | `useful` |
+| `POST` | `/admin/routing-rules/:id/versions` | leads | staff | M1 | `useful` |
+| `GET` `PATCH` | `/admin/routing-rules/:id/versions/:number` | leads | staff | M1 | `useful` |
+| `POST` | `/admin/routing-rules/:id/versions/:number/submit` | leads | staff | M1 | `useful` |
+| `POST` | `/admin/routing-rules/:id/versions/:number/publish` | leads | staff | M1 | `useful` |
+| `POST` | `/admin/routing-rules/:id/versions/:number/retire` | leads | staff | M1 | `useful` |
+| `POST` | `/admin/routing-rules/simulate` | leads | staff | M1 | `useful` |
 
 Built in M1.6a (Postman `42 Admin - Lead Sources & API Keys/`). Controllers: `backend/src/modules/leads/http/admin-lead-sources.controller.ts`, `backend/src/modules/access/http/admin-api-clients.controller.ts`.
 

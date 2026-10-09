@@ -1,0 +1,172 @@
+{
+  "name": "Submit Routing Rule Version",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/routing-rules/:id/versions/:number/submit",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "routing-rules",
+        ":id",
+        "versions",
+        ":number",
+        "submit"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{routingRuleId}}"
+        },
+        {
+          "key": "number",
+          "value": "{{routingRuleNumber}}"
+        }
+      ]
+    },
+    "description": "Compiles the draft (every `when` attribute must be a lead attribute or an active dictionary attribute with valid values; `pool.organizationIds` must be partner organizations) and opens a change request. Staff only. Routing rules are versioned config (same lifecycle as question sets): an ops lead makes, a different staff member approves in Change Requests, then it is published. Reading needs config read access; making, publishing and retiring need config maker access for routing rules (ops lead, super admin).",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"reason\": \"Start routing MSME leads to CAs\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.collectionVariables.set('changeRequestId', String(pm.response.json().changeRequest.id));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/routing-rules/:id/versions/:number/submit",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "routing-rules",
+            ":id",
+            "versions",
+            ":number",
+            "submit"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{routingRuleId}}"
+            },
+            {
+              "key": "number",
+              "value": "{{routingRuleNumber}}"
+            }
+          ]
+        },
+        "description": "Compiles the draft (every `when` attribute must be a lead attribute or an active dictionary attribute with valid values; `pool.organizationIds` must be partner organizations) and opens a change request. Staff only. Routing rules are versioned config (same lifecycle as question sets): an ops lead makes, a different staff member approves in Change Requests, then it is published. Reading needs config read access; making, publishing and retiring need config maker access for routing rules (ops lead, super admin).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reason\": \"Start routing MSME leads to CAs\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a121f9-2b3c-7d4e-9f50-61728394a5b6\",\n  \"resource\": \"routing_rule\",\n  \"documentId\": \"01a121f9-1a2b-7c3d-8e4f-5061728394a5\",\n  \"documentKey\": \"msme_haryana\",\n  \"number\": 1,\n  \"status\": \"in_review\",\n  \"content\": {\n    \"priority\": 10,\n    \"when\": {\n      \"all\": [\n        {\n          \"attr\": \"lead.segment\",\n          \"op\": \"eq\",\n          \"value\": \"msme\"\n        },\n        {\n          \"attr\": \"lead.state\",\n          \"op\": \"eq\",\n          \"value\": \"06\"\n        }\n      ]\n    },\n    \"strategy\": \"round_robin\",\n    \"pool\": {\n      \"kinds\": [\n        \"ca\"\n      ],\n      \"requireServiceArea\": true,\n      \"requireCapabilities\": true\n    },\n    \"sla\": {\n      \"acceptHours\": 4,\n      \"firstContactHours\": 24\n    }\n  },\n  \"compiled\": null,\n  \"issues\": [],\n  \"contentHash\": null,\n  \"notes\": null,\n  \"effectiveFrom\": null,\n  \"publishedAt\": null,\n  \"retiredAt\": null,\n  \"createdByUserId\": \"01a121c0-5e6f-7a71-9283-94a5b6c7d8e9\",\n  \"submittedByUserId\": null,\n  \"approvedByUserId\": null,\n  \"publishedByUserId\": null,\n  \"retiredByUserId\": null,\n  \"changeRequest\": null,\n  \"availableActions\": [\n    \"edit\",\n    \"submit\",\n    \"retire\"\n  ],\n  \"version\": 1,\n  \"createdAt\": \"2026-10-10T09:30:00.000Z\",\n  \"updatedAt\": \"2026-10-10T09:30:00.000Z\"\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/routing-rules/:id/versions/:number/submit",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "routing-rules",
+            ":id",
+            "versions",
+            ":number",
+            "submit"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{routingRuleId}}"
+            },
+            {
+              "key": "number",
+              "value": "{{routingRuleNumber}}"
+            }
+          ]
+        },
+        "description": "Compiles the draft (every `when` attribute must be a lead attribute or an active dictionary attribute with valid values; `pool.organizationIds` must be partner organizations) and opens a change request. Staff only. Routing rules are versioned config (same lifecycle as question sets): an ops lead makes, a different staff member approves in Change Requests, then it is published. Reading needs config read access; making, publishing and retiring need config maker access for routing rules (ops lead, super admin).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reason\": \"Start routing MSME leads to CAs\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"content.when.attr\",\n      \"code\": \"unknown_attribute\",\n      \"message\": \"unknown attribute lead.colour\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

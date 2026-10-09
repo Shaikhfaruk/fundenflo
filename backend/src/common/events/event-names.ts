@@ -50,6 +50,9 @@ export const EventName = {
   ImportValidated: 'import.batch.validated',
   ImportCommitted: 'import.batch.committed',
   ImportUndone: 'import.batch.undone',
+  AssignmentOffered: 'lead.assignment.offered',
+  AssignmentExpired: 'lead.assignment.expired',
+  AssignmentRevoked: 'lead.assignment.revoked',
 } as const;
 
 export type EventName = (typeof EventName)[keyof typeof EventName];

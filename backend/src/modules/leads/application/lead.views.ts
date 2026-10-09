@@ -69,6 +69,18 @@ export const toLeadDetailView = (lead: LeadDetailRow, contacts: ContactView[]) =
   capturedByUserId: lead.capturedByUserId,
   apiClientId: lead.apiClientId,
   contacts: contacts.map(({ type, masked, primary, verified, doNotContact, invalid }) => ({ type, masked, primary, verified, doNotContact, invalid })),
+  assignments: lead.assignments.map((assignment) => ({
+    id: assignment.id,
+    organization: assignment.organization,
+    status: assignment.status,
+    strategy: assignment.strategy,
+    routingRuleVersionId: assignment.routingRuleVersionId,
+    offeredAt: assignment.offeredAt.toISOString(),
+    respondBy: iso(assignment.respondBy),
+    acceptedAt: iso(assignment.acceptedAt),
+    closedAt: iso(assignment.closedAt),
+    reason: assignment.reason,
+  })),
   events: lead.events.map((event) => ({
     id: event.id,
     type: event.type,

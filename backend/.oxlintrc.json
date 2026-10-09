@@ -13,7 +13,7 @@
     "typescript/no-unsafe-type-assertion": "off",
     "typescript/no-unnecessary-type-parameters": "off",
     "typescript/no-extraneous-class": ["warn", { "allowWithDecorator": true, "allowStaticOnly": true }],
-    "no-underscore-dangle": ["warn", { "allow": ["_count"] }]
+    "no-underscore-dangle": ["warn", { "allow": ["_count", "_max"] }]
   },
   "ignorePatterns": ["src/generated/**", "dist/**"]
 }

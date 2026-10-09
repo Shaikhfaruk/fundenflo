@@ -64,6 +64,9 @@ export const AuditAction = {
   ImportValidated: 'import.validated',
   ImportCommitted: 'import.committed',
   ImportUndone: 'import.undone',
+  LeadAssigned: 'lead.assigned',
+  AssignmentExpired: 'lead.assignment_expired',
+  AssignmentRevoked: 'lead.assignment_revoked',
 } as const;
 
 export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction];
@@ -98,6 +101,7 @@ export const AuditEntity = {
   LeadSource: 'lead_source',
   ConsentRequest: 'consent_request',
   ImportBatch: 'import_batch',
+  LeadAssignment: 'lead_assignment',
 } as const;
 
 export type AuditEntity = (typeof AuditEntity)[keyof typeof AuditEntity];

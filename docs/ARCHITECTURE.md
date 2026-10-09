@@ -1,8 +1,8 @@
 # FundenFlo Backend — Architecture Diagrams
 
 > Living document. Any change that adds, renames, moves or removes a module, route group, queue, job, channel or worker updates the matching diagram here **and** [`inventory.md`](inventory.md) in the same change.
-> **Built (M0 + M1.1 – M1.7):** system context, identity & multiple logins (diagrams 3–4, parties/users/memberships/sessions parts), audit, notifications, outbox and the four M0 queues in diagram 9, the `catalog` module (diagram 2; feeds the Category and Requirement steps in diagram 7), the `attributes` module with the `conditions` and `facts` engines (diagram 2; the fact store and rule evaluation behind every step of diagram 7), and `config-publishing` + `questionnaires` with the `state-machines` and `questionnaire` engines (diagram 7: Pre-check step and the config lifecycle), `consents` with the `consents` engine (diagram 7: Consent step; diagram 5: consent gate before sharing), `partners` light with organization lifecycle (diagram 4: partner sign-in states; diagram 5: the CA pool routing will draw from), and leads core: capture, lifecycle and the ops queue (diagrams 5 and 6, green parts). Everything else is planned. Design rationale: [`BACKEND_ARCHITECTURE_PLAN.md`](BACKEND_ARCHITECTURE_PLAN.md).
-> Last updated: 2026-10-09
+> **Built (M0 + M1.1 – M1.8a):** system context, identity & multiple logins (diagrams 3–4, parties/users/memberships/sessions parts), audit, notifications, outbox and the four M0 queues in diagram 9, the `catalog` module (diagram 2; feeds the Category and Requirement steps in diagram 7), the `attributes` module with the `conditions` and `facts` engines (diagram 2; the fact store and rule evaluation behind every step of diagram 7), and `config-publishing` + `questionnaires` with the `state-machines` and `questionnaire` engines (diagram 7: Pre-check step and the config lifecycle), `consents` with the `consents` engine (diagram 7: Consent step; diagram 5: consent gate before sharing), `partners` light with organization lifecycle (diagram 4: partner sign-in states; diagram 5: the CA pool routing will draw from), leads core: capture, lifecycle and the ops queue, and lead routing: versioned routing rules, the `assignment` engine, offers with accept deadlines, manual assign and revoke, and the `leads.route` queue (diagrams 5, 6 and 9, green parts). Everything else is planned. Design rationale: [`BACKEND_ARCHITECTURE_PLAN.md`](BACKEND_ARCHITECTURE_PLAN.md).
+> Last updated: 2026-10-10
 
 ## Diagrams
 
@@ -267,9 +267,11 @@ flowchart LR
   CP -->|consent granted| CONS
   CONS -->|yes| ROUTE[Routing rules + assignment engine]
   REF -.->|protected referral| ROUTE
-  ROUTE -->|no eligible CA| OPSQ[Ops queue]
+  ROUTE -->|no rule, manual rule, no eligible CA or offer limit| OPSQ[Ops queue]
+  OPSQ -->|manual or bulk assign| OFFER
   ROUTE --> OFFER[Assignment offered - PII masked]
-  OFFER -->|declined or SLA expired| ROUTE
+  OFFER -->|accept deadline missed or revoked by ops| ROUTE
+  OFFER -->|declined| ROUTE
   OFFER -->|accepted| WORK[CA works lead: reveal contact, activities, follow-ups]
   WORK -->|convert| APPL[Loan application on the same party]
   WORK -->|offline conversion| OFF[Offline outcome recorded]
@@ -277,22 +279,23 @@ flowchart LR
   WORK -->|returned| ROUTE
   APPL -->|application events| DERIVE[Lead status derived: converted / won / lost]
   classDef built fill:#d8f3dc,stroke:#2d6a4f,color:#081c15
-  class IMP,MAN,WEB,DROP,CAP,RES,LINK,MQ,FACTS,CONS,CP built
+  class IMP,MAN,WEB,DROP,CAP,RES,LINK,MQ,FACTS,CONS,CP,ROUTE,OPSQ,OFFER built
 ```
 
-Green = built in M1.6a/b and M1.7: backlog CSV/XLSX imports (upload URL → inspect → map → validate → commit → undo, in the worker), ops entry, the API-key website intake and app drop-offs (delayed check after a borrower sign-up) go through `LeadCaptureService` (person matching with a name check, catalog/city/amount resolution, 30-day dedupe flag, consent and lead-capture answers, quality score, encrypted raw payload). `consent_pending` is the `consentStatus=pending` filter on `GET /ops/leads`; ops can send an SMS consent link (`POST /ops/leads/:id/consent-request` → public `/public/consent-requests/:token`), and `leads.consent-sync` updates open leads whenever consent changes.
+Green = built in M1.6a/b, M1.7 and M1.8a: backlog CSV/XLSX imports (upload URL → inspect → map → validate → commit → undo, in the worker), ops entry, the API-key website intake and app drop-offs (delayed check after a borrower sign-up) go through `LeadCaptureService` (person matching with a name check, catalog/city/amount resolution, 30-day dedupe flag, consent and lead-capture answers, quality score, encrypted raw payload). `consent_pending` is the `consentStatus=pending` filter on `GET /ops/leads`; ops can send an SMS consent link (`POST /ops/leads/:id/consent-request` → public `/public/consent-requests/:token`), and `leads.consent-sync` updates open leads whenever consent changes. Routing (M1.8a, `LeadRoutingService`): the worker routes a lead when it is captured, qualified or recycled, or gets consent; the first published routing rule whose `when` matches (by priority) draws verified, active, unpaused CAs from `PartnerService.routingPool` (service area, capabilities), keeps those the person lets `partner_sharing` cover, drops CAs at capacity or that already declined, missed or returned this lead, and offers it by the rule's strategy with accept and first-contact deadlines; a delayed `expire_offer` job moves a missed offer on. Ops can route, simulate, assign (also in bulk) and revoke. Accept, decline, return, contact reveal and CA work come with M1.8b.
 
 ---
 
 ## 6. Lead & assignment state machines
 
-Lead (built in M1.6a as `leadMachine`; `start` and `convert` are used from M1.8 / M3):
+Lead (built in M1.6a as `leadMachine`; `start` is used when a CA accepts (M1.8b), `convert` from M3; revoking an in-progress assignment recycles the lead to `new`):
 
 ```mermaid
 stateDiagram-v2
   direction LR
   [*] --> new
   new --> qualified: qualify
+  new --> in_progress: start (assignment accepted)
   qualified --> in_progress: start (assignment accepted)
   new --> on_hold: hold
   qualified --> on_hold: hold
@@ -318,18 +321,23 @@ stateDiagram-v2
   lost --> [*]
 ```
 
+Assignment (built in M1.8a as `assignmentMachine`; `offered`, `accepted` and `working` are the active states (`ACTIVE_ASSIGNMENT_STATES`), and a DB partial unique index allows one accepted or working assignment per lead; expire and revoke are used now, the CA actions from M1.8b):
+
 ```mermaid
 stateDiagram-v2
   direction LR
   [*] --> offered
-  offered --> accepted
-  offered --> declined
-  offered --> expired
-  offered --> revoked
-  accepted --> working
-  working --> completed
-  working --> returned
-  working --> revoked
+  offered --> accepted: accept
+  offered --> declined: decline
+  offered --> expired: expire (accept deadline)
+  offered --> revoked: revoke
+  accepted --> working: start_work
+  accepted --> completed: complete
+  working --> completed: complete
+  accepted --> returned: return
+  working --> returned: return
+  accepted --> revoked: revoke
+  working --> revoked: revoke
   declined --> [*]
   expired --> [*]
   revoked --> [*]
@@ -379,7 +387,7 @@ flowchart LR
   RULES --> OUT
 ```
 
-Every dynamic resource (question sets now; routing rules, consent templates, document requirements, lender products, scoring models, commission schemes next) shares one lifecycle (built in M1.3, `configVersionMachine` + `ConfigPublishingService`):
+Every dynamic resource (question sets, consent templates and routing rules now; document requirements, lender products, scoring models, commission schemes next) shares one lifecycle (built in M1.3, `configVersionMachine` + `ConfigPublishingService`):
 
 ```mermaid
 stateDiagram-v2
@@ -460,7 +468,8 @@ flowchart LR
   Q --> RTP[realtime.publish]
   Q --> WHO[webhooks.outbound]
   Q --> SLAQ[sla.timers]
-  Q --> ROUTEQ[leads.route]
+  Q -->|lead.captured / status_changed / updated| ROUTEQ[leads.route: route, delayed expire_offer]
+  OPSR[Ops route / revoke / bulk-route, offers] -->|direct and delayed enqueue| ROUTEQ
   Q --> DOCQ[documents.scan → documents.extract]
   DOCQ --> ANQ[analysis.run]
   ANQ --> MQ2[matching.run]
@@ -472,7 +481,7 @@ flowchart LR
   SCHED -->|15 min| REP[reports.refresh]
   API[API request: OTP, invitation, consent link] -->|direct enqueue| NOTIF
   classDef built fill:#d8f3dc,stroke:#2d6a4f,color:#081c15
-  class UC,OB,RELAY,SCHED,MAINT,Q,REVOKE,CSYNC,DROPQ,NOTIF,API,IMPAPI,IMPQ built
+  class UC,OB,RELAY,SCHED,MAINT,Q,REVOKE,CSYNC,DROPQ,NOTIF,API,IMPAPI,IMPQ,ROUTEQ,OPSR built
 ```
 
 Queue and job details (producers, consumers, triggers) are in [`inventory/worker-queues-jobs.md`](inventory/worker-queues-jobs.md).

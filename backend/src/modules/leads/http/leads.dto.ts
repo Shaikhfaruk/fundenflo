@@ -4,6 +4,7 @@ import { CatalogStatus, ConsentBasis, LeadConsentStatus, LeadFlag, LeadLostReaso
 import { SUPPORTED_LOCALES } from '../../../common/i18n/locale.js';
 import { pageQuerySchema } from '../../../common/listing/cursor-page.js';
 import { CONFIG_KEY_PATTERN } from '../../config-publishing/domain/config.constants.js';
+import { BULK_ROUTE_MAX } from '../domain/lead-routing.constants.js';
 import { LEAD_MERGE_MAX, LEAD_NOTE_MAX_LENGTH, LEAD_SOURCE_KEY_PATTERN, LEAD_TEXT_MAX_LENGTH } from '../domain/lead.constants.js';
 
 const key = z.string().trim().regex(/^[a-z0-9][a-z0-9_-]{0,63}$/);
@@ -72,6 +73,7 @@ export const leadListSchema = pageQuerySchema.extend({
   q: z.string().trim().min(2).max(120).optional(),
   createdFrom: z.coerce.date().optional(),
   createdTo: z.coerce.date().optional(),
+  assigned: z.enum(['true', 'false']).transform((value) => value === 'true').optional(),
 });
 export type LeadListQuery = z.output<typeof leadListSchema>;
 
@@ -113,6 +115,21 @@ export const leadMergeSchema = z.object({ survivorLeadId: z.uuid(), leadIds: z.a
 export type LeadMergeDto = z.output<typeof leadMergeSchema>;
 
 export const revealContactSchema = z.object({ reason: note }).strict();
+
+export const assignLeadSchema = z.object({ organizationId: z.uuid(), note: note.optional() }).strict();
+export type AssignLeadDto = z.output<typeof assignLeadSchema>;
+
+export const revokeAssignmentSchema = z.object({ reason: note }).strict();
+export type RevokeAssignmentDto = z.output<typeof revokeAssignmentSchema>;
+
+export const bulkRouteSchema = z.object({ leadIds: z.array(z.uuid()).min(1).max(BULK_ROUTE_MAX) }).strict();
+export type BulkRouteDto = z.output<typeof bulkRouteSchema>;
+
+export const bulkAssignSchema = z.object({ leadIds: z.array(z.uuid()).min(1).max(BULK_ROUTE_MAX), organizationId: z.uuid(), note: note.optional() }).strict();
+export type BulkAssignDto = z.output<typeof bulkAssignSchema>;
+
+export const simulateRoutingSchema = z.object({ leadId: z.uuid() }).strict();
+export type SimulateRoutingDto = z.output<typeof simulateRoutingSchema>;
 
 export const consentRequestSchema = z.object({ context: z.string().trim().regex(CONFIG_KEY_PATTERN).optional() }).strict();
 export type ConsentRequestDto = z.output<typeof consentRequestSchema>;

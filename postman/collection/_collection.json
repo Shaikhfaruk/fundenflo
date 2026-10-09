@@ -354,6 +354,30 @@
     {
       "key": "importRun",
       "value": ""
+    },
+    {
+      "key": "leadCampaign",
+      "value": ""
+    },
+    {
+      "key": "assignmentId",
+      "value": ""
+    },
+    {
+      "key": "routingRuleId",
+      "value": ""
+    },
+    {
+      "key": "routingRuleDocVersion",
+      "value": ""
+    },
+    {
+      "key": "routingRuleNumber",
+      "value": ""
+    },
+    {
+      "key": "routingRuleVersionRow",
+      "value": ""
     }
   ]
 }

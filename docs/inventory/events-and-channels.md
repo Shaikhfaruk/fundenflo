@@ -23,10 +23,11 @@
 | `partner.registered` · `partner.verification_recommended` · `partner.verified` · `partner.rejected` · `partner.suspended` · `partner.reinstated` · `partner.level_changed` · `partner.capacity_changed` · `partner.service_areas_changed` | partners (`partner.service.ts`, `partner-admin.service.ts`) | none yet (M1.8: routing pool refresh; notifications to the owner) | — | M1 | `useful` | §7.4 |
 | `consent_purpose.changed` | consents (`consent-purpose.service.ts`) | none yet (purpose cache is invalidated directly after commit) | — | M1 | `useful` | §14 |
 | `import.changed` · `import.batch.validated` · `import.batch.committed` · `import.batch.undone` | imports (`import.service.ts`) | none yet (M1.9: notify the uploader, user room, reports) | user room (M1.9) | M1 | `useful` | §7.1 |
-| `lead.captured` · `lead.updated` · `lead.status_changed` · `lead.merged` · `lead.contact_revealed` | leads (`lead-capture.service.ts`, `lead.service.ts`) | none yet (M1.8: `leads.route` on captured / status_changed to `new`/`qualified`; M1.9: reports, sync) | org room (when assigned, M1.9) | M1 | `useful` | §7.3; spec `leads` |
+| `lead.captured` · `lead.updated` · `lead.status_changed` · `lead.merged` · `lead.contact_revealed` | leads (`lead-capture.service.ts`, `lead.service.ts`) | `leads.route` (captured; status_changed to `new`/`qualified`; updated with consent `ok`); M1.9: reports, sync | org room (when assigned, M1.9) | M1 | `useful` | §7.3; spec `leads` |
 | `consent.requested` | consents (`consent-request.service.ts`; on send and on completion) | none yet | — | M1 | `useful` | §7.2 |
 | `lead_source.changed` · `api_client.changed` | leads, access | none yet | — | M1 | `useful` | §7.1 |
-| `lead.assignment.offered` · `accepted` · `declined` · `expired` · `revoked` · `returned` · `completed` | leads | sla, `leads.route`, notifications, reports | partner org + assignee membership rooms | M1 | `planned` | §7.3 |
+| `lead.assignment.offered` · `expired` · `revoked` | leads (`lead-routing.service.ts`, via `ChangeRecorder`) | none yet (M1.8b: notifications to the CA, SLA; M1.9: reports, realtime) | partner org + assignee membership rooms (M1.9) | M1 | `useful` | spec `lead-routing` |
+| `lead.assignment.accepted` · `declined` · `returned` · `completed` | leads | sla, `leads.route`, notifications, reports | partner org + assignee membership rooms | M1 | `planned` | §7.3 |
 | `lead.activity.logged` · `follow_up.due` | activities | sla, notifications | assignee room | M1 | `planned` | §7.5 |
 | `lead.converted` · `lead.offline_conversion.recorded` | leads | commissions (lead terms), reports | org room | M1 / M3 | `planned` | §7.5 |
 | `sla.warning` · `sla.breached` | sla | leads, applications, notifications | assignee room | M1 | `planned` | §7.6 |

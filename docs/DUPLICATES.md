@@ -19,7 +19,7 @@ These are the places where a second copy is most tempting. Use the one listed.
 |---|---|---|
 | Custom fields on leads, campaigns or lender-specific forms | `questionnaires` (question sets with stage `lead_capture` / `lender_specific`) | A separate lead-form or custom-field system |
 | Contact details, PAN, GSTIN of anyone | `parties` | Name, mobile or PAN columns copied onto leads, users or applications |
-| Assigning leads to CAs, cases to reviewers, fraud reviews to staff | `engines/assignment` | Per-module round-robin or picker code |
+| Assigning leads to CAs, cases to reviewers, fraud reviews to staff | `engines/assignment` (`pickAssignees`) + the module's routing service (`LeadRoutingService` for leads) | Per-module round-robin or picker code, or a second lead-offer path that skips the consent and partner checks |
 | Calls, notes, follow-ups, case notes | `activities` | `lead_notes`, `case_comments` or similar per-module tables |
 | SLA deadlines and breach handling | `sla` | Per-module timers or cron checks |
 | Bulk uploads (leads, coverage, geography, partners) | `imports` with one handler per type | A separate CSV parser per feature |
@@ -39,7 +39,7 @@ These are the places where a second copy is most tempting. Use the one listed.
 | Clearing caches after a write | `runThenInvalidate()` | Invalidating inside the transaction (readers can re-cache old data before commit) |
 | Borrower data points (turnover, vintage, income, GST status, …) | `attributes` dictionary + `FactService.record()` | Columns on leads, applications or partner tables, or per-feature JSON blobs |
 | Choosing the current value among several facts | `engines/facts` `resolveFact()` with `PROVENANCE_RANK` | Ad-hoc "latest wins" queries |
-| Day and time arithmetic constants | `common/constants/time.constants.ts` | Local `DAY_MS`-style constants |
+| Day and time arithmetic constants | `common/constants/time.constants.ts` (`HOUR_MS`, `DAY_MS`) | Local `DAY_MS`-style constants or inline `3600_000` |
 | Draft → review → publish for a new dynamic resource | A `@ConfigHandler(resource)` + `createVersionedConfigController` (and approve/reject via `/admin/change-requests`) | Resource-specific version tables, status columns or approval routes |
 | Checking that a party exists | `PartyService.assertExists()` | Counting `parties` rows inside other modules' repositories |
 | Validating admin-supplied regular expressions | `isValidPattern()` | Local `try { new RegExp() }` blocks |
@@ -60,3 +60,6 @@ These are the places where a second copy is most tempting. Use the one listed.
 | Finding providers by a key decorator (handlers per resource or kind) | `collectKeyedProviders()` | Hand-written `DiscoveryService` loops |
 | Reading CSV or XLSX uploads | `readTable()` in `modules/imports/infrastructure/table-reader.ts` | Per-feature spreadsheet parsing |
 | Locale handling | `common/i18n/locale.ts` (`localise`, `resolveLocale`, `@RequestLocale()`) | Per-module locale constants |
+| Which CAs may receive a lead (verified, active, unpaused, service area, capabilities) | `PartnerService.routingPool()` | Partner queries in leads, applications or reports that repeat the eligibility filters |
+| Which organizations a person's consent covers for a purpose | `ConsentService.allowedOrganizations()` | Looping `hasConsent` per organization or reading `consent_records` |
+| Offering, assigning, revoking or expiring a lead assignment | `LeadRoutingService` (`route`, `assign`, `revoke`, `expire`) | Writing `lead_assignments` from other services or controllers |

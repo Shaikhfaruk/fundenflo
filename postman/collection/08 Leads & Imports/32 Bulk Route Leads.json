@@ -1,0 +1,89 @@
+{
+  "name": "Bulk Route Leads",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/ops/leads/bulk-route",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "leads",
+        "bulk-route"
+      ]
+    },
+    "description": "Queues up to 500 leads for routing by the worker (duplicates are ignored), for example after publishing a new rule or clearing the consent backlog. Outcomes appear on each lead's timeline. Staff only, lead update access (ops lead, ops reviewer).",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"leadIds\": [\n    \"{{leadId}}\"\n  ]\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 202', () => pm.response.to.have.status(202));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "202 Accepted",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/leads/bulk-route",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "leads",
+            "bulk-route"
+          ]
+        },
+        "description": "Queues up to 500 leads for routing by the worker (duplicates are ignored), for example after publishing a new rule or clearing the consent backlog. Outcomes appear on each lead's timeline. Staff only, lead update access (ops lead, ops reviewer).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"leadIds\": [\n    \"{{leadId}}\"\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Accepted",
+      "code": 202,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"queued\": 1\n}"
+    }
+  ]
+}

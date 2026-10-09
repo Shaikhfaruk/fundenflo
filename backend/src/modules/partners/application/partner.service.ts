@@ -2,12 +2,13 @@ import { TransactionHost } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
 
 import type { UserActor } from '../../../common/context/actor.js';
-import { InvitationStatus, OrganizationType, type PartnerKind } from '../../../common/enums/db.enums.js';
+import { InvitationStatus, OrganizationStatus, OrganizationType, type PartnerKind, type PartnerLevel, PartnerVerificationStatus } from '../../../common/enums/db.enums.js';
 import { EventName } from '../../../common/events/event-names.js';
 import { AppError } from '../../../common/errors/app-error.js';
 import { ErrorCode } from '../../../common/errors/error-codes.js';
 import { assertVersion } from '../../../common/http/versioning.js';
 import { type PageQuery } from '../../../common/listing/cursor-page.js';
+import type { Prisma } from '../../../generated/prisma/client.js';
 import type { PrismaTx } from '../../../infrastructure/database/database.types.js';
 import { toInvitationRecipient } from '../../access/application/invitation-recipient.js';
 import { InvitationService } from '../../access/application/invitation.service.js';
@@ -35,6 +36,21 @@ export type CapacityInput = Capabilities & {
 export type ServiceAreaInput = { stateGstCode?: string; cityId?: string; pincode?: string };
 
 type ResolvedArea = { stateId?: string; cityId?: string; pincode?: string | null };
+
+export type RoutingPoolFilter = {
+  kinds?: PartnerKind[];
+  levels?: PartnerLevel[];
+  organizationIds?: string[];
+  location: { stateId: string | null; cityId: string | null; pincode: string | null };
+  segment: string | null;
+  category: string | null;
+  language: string | null;
+  requireServiceArea: boolean;
+  requireCapabilities: boolean;
+  requireLanguage: boolean;
+};
+
+const listAllows = (field: 'segments' | 'categories' | 'languages', value: string): Prisma.PartnerProfileWhereInput => ({ OR: [{ [field]: { isEmpty: true } }, { [field]: { has: value } }] });
 
 export type SignupInput = Capabilities & {
   kind: PartnerKind;
@@ -168,6 +184,27 @@ export class PartnerService {
   async updateMember(actor: UserActor, ability: AppAbility, membershipId: string, status: NonNullable<MembershipPatch['status']>, expectedVersion: number | undefined) {
     this.organizationOf(actor);
     return this.memberships.adminUpdate(membershipId, { status }, expectedVersion, ability);
+  }
+
+  routingPool(filter: RoutingPoolFilter) {
+    const places: Prisma.PartnerServiceAreaWhereInput[] = [];
+    if (filter.location.stateId) places.push({ stateId: filter.location.stateId });
+    if (filter.location.cityId) places.push({ cityId: filter.location.cityId });
+    if (filter.location.pincode) places.push({ pincode: filter.location.pincode });
+    const conditions: Prisma.PartnerProfileWhereInput[] = [];
+    if (filter.requireServiceArea) conditions.push({ serviceAreas: { some: { OR: places } } });
+    if (filter.requireCapabilities && filter.segment) conditions.push(listAllows('segments', filter.segment));
+    if (filter.requireCapabilities && filter.category) conditions.push(listAllows('categories', filter.category));
+    if (filter.requireLanguage && filter.language) conditions.push(listAllows('languages', filter.language));
+    return this.partners.routingPool({
+      verificationStatus: PartnerVerificationStatus.verified,
+      paused: false,
+      organization: { status: OrganizationStatus.active },
+      kind: filter.kinds ? { in: filter.kinds } : undefined,
+      level: filter.levels ? { in: filter.levels } : undefined,
+      organizationId: filter.organizationIds ? { in: filter.organizationIds } : undefined,
+      AND: conditions,
+    });
   }
 
   private organizationOf(actor: UserActor): string {

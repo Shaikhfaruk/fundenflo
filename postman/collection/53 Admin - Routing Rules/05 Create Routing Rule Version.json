@@ -1,0 +1,154 @@
+{
+  "name": "Create Routing Rule Version",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/routing-rules/:id/versions",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "routing-rules",
+        ":id",
+        "versions"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{routingRuleId}}"
+        }
+      ]
+    },
+    "description": "Opens the next draft, copying the latest published version unless `content` or `fromNumber` is given. One version can be in progress at a time. Staff only. Routing rules are versioned config (same lifecycle as question sets): an ops lead makes, a different staff member approves in Change Requests, then it is published. Reading needs config read access; making, publishing and retiring need config maker access for routing rules (ops lead, super admin).",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"notes\": \"Give strategic CAs more leads\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "pm.collectionVariables.set('routingRuleNumber', String(pm.response.json().number));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/routing-rules/:id/versions",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "routing-rules",
+            ":id",
+            "versions"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{routingRuleId}}"
+            }
+          ]
+        },
+        "description": "Opens the next draft, copying the latest published version unless `content` or `fromNumber` is given. One version can be in progress at a time. Staff only. Routing rules are versioned config (same lifecycle as question sets): an ops lead makes, a different staff member approves in Change Requests, then it is published. Reading needs config read access; making, publishing and retiring need config maker access for routing rules (ops lead, super admin).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"notes\": \"Give strategic CAs more leads\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a121f9-2b3c-7d4e-9f50-61728394a5b6\",\n  \"resource\": \"routing_rule\",\n  \"documentId\": \"01a121f9-1a2b-7c3d-8e4f-5061728394a5\",\n  \"documentKey\": \"msme_haryana\",\n  \"number\": 2,\n  \"status\": \"draft\",\n  \"content\": {\n    \"priority\": 10,\n    \"when\": {\n      \"all\": [\n        {\n          \"attr\": \"lead.segment\",\n          \"op\": \"eq\",\n          \"value\": \"msme\"\n        },\n        {\n          \"attr\": \"lead.state\",\n          \"op\": \"eq\",\n          \"value\": \"06\"\n        }\n      ]\n    },\n    \"strategy\": \"round_robin\",\n    \"pool\": {\n      \"kinds\": [\n        \"ca\"\n      ],\n      \"requireServiceArea\": true,\n      \"requireCapabilities\": true\n    },\n    \"sla\": {\n      \"acceptHours\": 4,\n      \"firstContactHours\": 24\n    }\n  },\n  \"compiled\": null,\n  \"issues\": [],\n  \"contentHash\": null,\n  \"notes\": null,\n  \"effectiveFrom\": null,\n  \"publishedAt\": null,\n  \"retiredAt\": null,\n  \"createdByUserId\": \"01a121c0-5e6f-7a71-9283-94a5b6c7d8e9\",\n  \"submittedByUserId\": null,\n  \"approvedByUserId\": null,\n  \"publishedByUserId\": null,\n  \"retiredByUserId\": null,\n  \"changeRequest\": null,\n  \"availableActions\": [\n    \"edit\",\n    \"submit\",\n    \"retire\"\n  ],\n  \"version\": 1,\n  \"createdAt\": \"2026-10-10T09:30:00.000Z\",\n  \"updatedAt\": \"2026-10-10T09:30:00.000Z\"\n}"
+    },
+    {
+      "name": "409 OPEN_VERSION_EXISTS",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/routing-rules/:id/versions",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "routing-rules",
+            ":id",
+            "versions"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{routingRuleId}}"
+            }
+          ]
+        },
+        "description": "Opens the next draft, copying the latest published version unless `content` or `fromNumber` is given. One version can be in progress at a time. Staff only. Routing rules are versioned config (same lifecycle as question sets): an ops lead makes, a different staff member approves in Change Requests, then it is published. Reading needs config read access; making, publishing and retiring need config maker access for routing rules (ops lead, super admin).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"notes\": \"Give strategic CAs more leads\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"OPEN_VERSION_EXISTS\",\n  \"message\": \"A version is already in progress. Publish or retire it first.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

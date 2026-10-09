@@ -40,7 +40,8 @@
         "type": "text/javascript",
         "exec": [
           "pm.test('responds 201', () => pm.response.to.have.status(201));",
-          "pm.collectionVariables.set('partnerId', String(pm.response.json().id));"
+          "pm.collectionVariables.set('partnerId', String(pm.response.json().id));",
+          "pm.collectionVariables.set('partnerOrganizationId', String(pm.response.json().organizationId));"
         ]
       }
     }

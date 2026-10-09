@@ -25,7 +25,7 @@
     "description": "Manual entry by ops or a telecaller (source `manual` unless `source` names another lead source). `consent` records what the person agreed to with `basis` and `evidence`; with contact and partner-sharing consent the lead is `consentStatus: ok`, otherwise it waits in the consent queue. `flags` may mark `test` or `spam`. At least one valid mobile, landline or email is required; an invalid extra number is kept as the `invalid_number` flag. The person is matched by contact (same contact and a compatible name links to the same person; a different name on the same contact opens a review). `category` may be a key or an alias, and `city` free text is resolved through aliases; anything unrecognised is kept and flagged (`unmapped_category`, `unmapped_location`). `amountText` such as \"20-25 lakh\" or \"upto 1 cr\" is parsed into paise. A repeat open enquiry for the same person and category within 30 days is flagged `duplicate`. `answers` go through the lead-capture questionnaire for the source and become declared facts. The original payload is stored encrypted. Staff only. Reading needs lead read access (ops lead, ops reviewer, compliance, support); changes need lead update access (ops lead, ops reviewer).",
     "body": {
       "mode": "raw",
-      "raw": "{\n  \"name\": \"Ramesh Kumar\",\n  \"mobile\": \"{{leadMobile}}\",\n  \"businessName\": \"Kumar Traders\",\n  \"segment\": \"msme\",\n  \"category\": \"business\",\n  \"amountText\": \"20-25 lakh\",\n  \"city\": \"Gurgaon\",\n  \"urgency\": \"within_month\",\n  \"preferredLanguage\": \"hi\",\n  \"consent\": {\n    \"basis\": \"consent\",\n    \"evidence\": \"Agreed on call, 9 Oct\",\n    \"items\": [\n      {\n        \"purpose\": \"contact\",\n        \"granted\": true\n      },\n      {\n        \"purpose\": \"partner_sharing\",\n        \"granted\": true\n      }\n    ]\n  }\n}",
+      "raw": "{\n  \"name\": \"Ramesh Kumar\",\n  \"mobile\": \"{{leadMobile}}\",\n  \"businessName\": \"Kumar Traders\",\n  \"segment\": \"msme\",\n  \"category\": \"business\",\n  \"amountText\": \"20-25 lakh\",\n  \"city\": \"Gurgaon\",\n  \"urgency\": \"within_month\",\n  \"preferredLanguage\": \"hi\",\n  \"consent\": {\n    \"basis\": \"consent\",\n    \"evidence\": \"Agreed on call, 9 Oct\",\n    \"items\": [\n      {\n        \"purpose\": \"contact\",\n        \"granted\": true\n      },\n      {\n        \"purpose\": \"partner_sharing\",\n        \"granted\": true\n      }\n    ]\n  },\n  \"campaign\": \"{{leadCampaign}}\"\n}",
       "options": {
         "raw": {
           "language": "json"
@@ -39,7 +39,8 @@
       "script": {
         "type": "text/javascript",
         "exec": [
-          "if (!pm.collectionVariables.get('leadMobile')) pm.collectionVariables.set('leadMobile', '96' + String(Math.floor(Math.random() * 1e8)).padStart(8, '0'));"
+          "if (!pm.collectionVariables.get('leadMobile')) pm.collectionVariables.set('leadMobile', '96' + String(Math.floor(Math.random() * 1e8)).padStart(8, '0'));",
+          "if (!pm.collectionVariables.get('leadCampaign')) pm.collectionVariables.set('leadCampaign', 'ops_outbound');"
         ]
       }
     },

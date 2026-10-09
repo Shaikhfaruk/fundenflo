@@ -1,7 +1,7 @@
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
 
-import type { LeadStatus, Prisma } from '../../../generated/prisma/client.js';
+import type { AssignmentStatus, LeadStatus, Prisma } from '../../../generated/prisma/client.js';
 import type { PrismaTx } from '../../../infrastructure/database/database.types.js';
 import { LEAD_EVENTS_IN_DETAIL } from '../domain/lead.constants.js';
 
@@ -16,6 +16,7 @@ export const leadListInclude = {
 export const leadDetailInclude = {
   ...leadListInclude,
   events: { orderBy: { createdAt: 'desc' }, take: LEAD_EVENTS_IN_DETAIL },
+  assignments: { orderBy: { offeredAt: 'desc' }, take: LEAD_EVENTS_IN_DETAIL, include: { organization: { select: { id: true, name: true } } } },
 } as const satisfies Prisma.LeadInclude;
 
 export type LeadListRow = Prisma.LeadGetPayload<{ include: typeof leadListInclude }>;
@@ -97,6 +98,34 @@ export class LeadRepository {
 
   updateFromStatus(id: string, status: LeadStatus, data: Prisma.LeadUncheckedUpdateManyInput) {
     return this.txHost.tx.lead.updateMany({ where: { id, status }, data: { ...data, version: { increment: 1 } } });
+  }
+
+  assignmentsForLead(leadId: string) {
+    return this.txHost.tx.leadAssignment.findMany({ where: { leadId }, orderBy: { offeredAt: 'asc' } });
+  }
+
+  workedOrganizationsForParty(partyId: string, statuses: readonly AssignmentStatus[]) {
+    return this.txHost.tx.leadAssignment.findMany({ where: { lead: { partyId }, status: { in: [...statuses] } }, select: { organizationId: true }, distinct: ['organizationId'] });
+  }
+
+  openAssignmentCounts(organizationIds: string[], statuses: readonly AssignmentStatus[]) {
+    return this.txHost.tx.leadAssignment.groupBy({ by: ['organizationId'], where: { organizationId: { in: organizationIds }, status: { in: [...statuses] } }, _count: { organizationId: true } });
+  }
+
+  lastOffers(organizationIds: string[]) {
+    return this.txHost.tx.leadAssignment.groupBy({ by: ['organizationId'], where: { organizationId: { in: organizationIds } }, _max: { offeredAt: true } });
+  }
+
+  createAssignment(data: Prisma.LeadAssignmentUncheckedCreateInput) {
+    return this.txHost.tx.leadAssignment.create({ data, include: { organization: { select: { id: true, name: true } } } });
+  }
+
+  findAssignment(id: string) {
+    return this.txHost.tx.leadAssignment.findUnique({ where: { id }, include: { lead: true, organization: { select: { id: true, name: true } } } });
+  }
+
+  updateAssignmentFromStatus(id: string, status: AssignmentStatus, data: Prisma.LeadAssignmentUncheckedUpdateManyInput) {
+    return this.txHost.tx.leadAssignment.updateMany({ where: { id, status }, data: { ...data, version: { increment: 1 } } });
   }
 
   createEvent(data: Prisma.LeadEventUncheckedCreateInput) {

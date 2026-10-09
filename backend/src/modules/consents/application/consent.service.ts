@@ -177,6 +177,11 @@ export class ConsentService {
     );
   }
 
+  async allowedOrganizations(partyId: string, purpose: string, organizationIds: string[]): Promise<Set<string>> {
+    const entry = (await this.states(partyId, [purpose])).get(purpose);
+    return new Set(entry ? organizationIds.filter((organizationId) => consentAllows(entry.state, organizationId)) : []);
+  }
+
   async assertConsent(partyId: string, purpose: string, check: ConsentCheck = {}): Promise<void> {
     if (!(await this.hasConsent(partyId, purpose, check))) throw new AppError(ErrorCode.CONSENT_REQUIRED, { details: { purpose, organizationId: check.organizationId ?? null } });
   }

@@ -27,7 +27,7 @@
         }
       ]
     },
-    "description": "The ops lead queue, newest first. Filters: `status` (repeat for several), `source` (key), `consentStatus` (`pending` is the consent queue for the backlog), `flag`, `segment`, `category`, `cityId`, `pincode`, `q` (a ref such as `LD-26-000123`, or part of the name), `createdFrom`, `createdTo`. Paginate with `cursor`. Contacts are not included. Staff only. Reading needs lead read access (ops lead, ops reviewer, compliance, support); changes need lead update access (ops lead, ops reviewer)."
+    "description": "The ops lead queue, newest first. Filters: `status` (repeat for several), `source` (key), `consentStatus` (`pending` is the consent queue for the backlog), `flag`, `segment`, `category`, `cityId`, `pincode`, `q` (a ref such as `LD-26-000123`, or part of the name), `createdFrom`, `createdTo`, `assigned` (`true`: has an active offer or CA; `false`: none). Paginate with `cursor`. Contacts are not included. Staff only. Reading needs lead read access (ops lead, ops reviewer, compliance, support); changes need lead update access (ops lead, ops reviewer)."
   },
   "event": [
     {

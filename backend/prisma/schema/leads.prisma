@@ -66,6 +66,8 @@ enum LeadEventType {
   status_changed
   consent_changed
   consent_requested
+  routed
+  assignment_changed
   merged
   contact_revealed
 }
@@ -138,17 +140,18 @@ model Lead {
   createdAt              DateTime               @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt              DateTime               @updatedAt @map("updated_at") @db.Timestamptz(3)
 
-  party         Party       @relation("lead_person", fields: [partyId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  businessParty Party?      @relation("lead_business", fields: [businessPartyId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  source        LeadSource  @relation(fields: [sourceId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  apiClient     ApiClient?  @relation(fields: [apiClientId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  state         GeoState?   @relation(fields: [stateId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  city          GeoCity?    @relation(fields: [cityId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  duplicateOf   Lead?       @relation("lead_duplicate", fields: [duplicateOfLeadId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  duplicates    Lead[]      @relation("lead_duplicate")
-  mergedInto    Lead?       @relation("lead_merge", fields: [mergedIntoLeadId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  mergedLeads   Lead[]      @relation("lead_merge")
+  party         Party            @relation("lead_person", fields: [partyId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  businessParty Party?           @relation("lead_business", fields: [businessPartyId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  source        LeadSource       @relation(fields: [sourceId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  apiClient     ApiClient?       @relation(fields: [apiClientId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  state         GeoState?        @relation(fields: [stateId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  city          GeoCity?         @relation(fields: [cityId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  duplicateOf   Lead?            @relation("lead_duplicate", fields: [duplicateOfLeadId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  duplicates    Lead[]           @relation("lead_duplicate")
+  mergedInto    Lead?            @relation("lead_merge", fields: [mergedIntoLeadId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  mergedLeads   Lead[]           @relation("lead_merge")
   events        LeadEvent[]
+  assignments   LeadAssignment[]
 
   @@unique([sourceId, externalRef])
   @@index([status, createdAt])
@@ -177,4 +180,45 @@ model LeadEvent {
 
   @@index([leadId, createdAt])
   @@map("lead_events")
+}
+
+enum AssignmentStatus {
+  offered
+  accepted
+  working
+  completed
+  declined
+  expired
+  revoked
+  returned
+}
+
+model LeadAssignment {
+  id                   String           @id @default(uuid(7)) @db.Uuid
+  leadId               String           @map("lead_id") @db.Uuid
+  organizationId       String           @map("organization_id") @db.Uuid
+  assigneeMembershipId String?          @map("assignee_membership_id") @db.Uuid
+  routingRuleVersionId String?          @map("routing_rule_version_id") @db.Uuid
+  strategy             String
+  status               AssignmentStatus @default(offered)
+  offeredAt            DateTime         @default(now()) @map("offered_at") @db.Timestamptz(3)
+  respondBy            DateTime?        @map("respond_by") @db.Timestamptz(3)
+  acceptedAt           DateTime?        @map("accepted_at") @db.Timestamptz(3)
+  firstContactBy       DateTime?        @map("first_contact_by") @db.Timestamptz(3)
+  closedAt             DateTime?        @map("closed_at") @db.Timestamptz(3)
+  reason               String?
+  note                 String?
+  assignedByUserId     String?          @map("assigned_by_user_id") @db.Uuid
+  version              Int              @default(1)
+  createdAt            DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt            DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  lead               Lead           @relation(fields: [leadId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  organization       Organization   @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  routingRuleVersion ConfigVersion? @relation(fields: [routingRuleVersionId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([organizationId, status])
+  @@index([leadId, status])
+  @@index([status, respondBy])
+  @@map("lead_assignments")
 }
