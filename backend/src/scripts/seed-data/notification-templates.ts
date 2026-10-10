@@ -119,4 +119,9 @@ export const NOTIFICATION_TEMPLATE_SEEDS: TemplateSeed[] = [
     subject: null,
     body: 'FundenFlo reminder: follow-up on lead {{ref}} is due at {{dueAt}}.',
   },
+  { key: NotificationTemplateKey.LeadOffered, channel: NotificationChannel.push, locale: 'en', subject: 'New lead {{ref}}', body: '{{category}} lead in {{city}}. Accept or decline before {{respondBy}}.' },
+  { key: NotificationTemplateKey.LeadOfferExpiring, channel: NotificationChannel.push, locale: 'en', subject: 'Lead {{ref}} expires soon', body: 'Accept or decline before {{respondBy}}, or it moves to another partner.' },
+  { key: NotificationTemplateKey.LeadHandedOver, channel: NotificationChannel.push, locale: 'en', subject: 'Lead {{ref}} assigned to you', body: 'Contact the borrower before {{firstContactBy}}.' },
+  { key: NotificationTemplateKey.LeadFirstContactDue, channel: NotificationChannel.push, locale: 'en', subject: 'Call the borrower for {{ref}}', body: 'First contact is due by {{firstContactBy}}.' },
+  { key: NotificationTemplateKey.FollowUpDue, channel: NotificationChannel.push, locale: 'en', subject: 'Follow-up due', body: 'Follow-up on lead {{ref}} is due at {{dueAt}}.' },
 ];

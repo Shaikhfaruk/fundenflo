@@ -72,7 +72,7 @@ Controller: `backend/src/modules/auth/http/me.controller.ts` · Postman: `02 Me/
 | `DELETE` | `/me/logins/:id` | auth | any (incl. none) | M0 | `useful` |
 | `POST` | `/me/mobile-change` | auth | any (incl. none) | M0 | `useful` |
 | `POST` | `/me/mobile-change/verify` | auth | any (incl. none) | M0 | `useful` |
-| `PUT` | `/me/sessions/current/push-token` | sync | any | M1 | `planned` |
+| `PUT` | `/me/sessions/current/push-token` | auth (`me.controller.ts` → `SessionService.setPushToken`) | any | M1 | `useful` |
 | `GET` `POST` | `/me/consents` | consents (`me-consents.controller.ts`) | any (incl. none) | M1 | `useful` |
 | `POST` | `/me/consents/:purpose/withdraw` | consents | any (incl. none) | M1 | `useful` |
 | `PUT` | `/me/notification-preferences` | notifications | any | M1 | `planned` |
@@ -214,10 +214,11 @@ Planned:
 
 ## 09 Sync & Sessions
 
+The WebSocket namespace `/v1/realtime` (built in M1.9a) is documented with its rooms in [`events-and-channels.md`](events-and-channels.md#real-time-channels-websocket-namespace-v1realtime); it is not an HTTP route.
+
 | Method | Path | Module | Context | Milestone | Status |
 |---|---|---|---|---|---|
 | `GET` | `/sync/changes` | sync | any | M1 | `planned` |
-| `WS` | `/v1/realtime` | infrastructure/realtime | any | M1 | `planned` |
 
 ## 10 Partner Portal - Onboarding, Team & Leads
 

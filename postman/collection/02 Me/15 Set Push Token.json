@@ -1,0 +1,135 @@
+{
+  "name": "Set Push Token",
+  "request": {
+    "method": "PUT",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/me/sessions/current/push-token",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "me",
+        "sessions",
+        "current",
+        "push-token"
+      ]
+    },
+    "description": "Registers the Expo push token of this app session (`null` removes it). A token moves to the newest session that registers it, so a re-installed app does not get the same push twice. When a user has a push token, transactional messages (new lead, follow-up due and similar) go by push instead of SMS; email is unchanged. Realtime updates for open screens use the WebSocket namespace `/v1/realtime` (Socket.IO, send the access token as `auth.token`; rooms per user, session, membership, organization and staff; events carry ids only, refetch the resource). Any signed-in context.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"token\": \"ExponentPushToken[xYz123AbC456dEf789]\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/me/sessions/current/push-token",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "me",
+            "sessions",
+            "current",
+            "push-token"
+          ]
+        },
+        "description": "Registers the Expo push token of this app session (`null` removes it). A token moves to the newest session that registers it, so a re-installed app does not get the same push twice. When a user has a push token, transactional messages (new lead, follow-up due and similar) go by push instead of SMS; email is unchanged. Realtime updates for open screens use the WebSocket namespace `/v1/realtime` (Socket.IO, send the access token as `auth.token`; rooms per user, session, membership, organization and staff; events carry ids only, refetch the resource). Any signed-in context.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"token\": \"ExponentPushToken[xYz123AbC456dEf789]\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"registered\": true\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/me/sessions/current/push-token",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "me",
+            "sessions",
+            "current",
+            "push-token"
+          ]
+        },
+        "description": "Registers the Expo push token of this app session (`null` removes it). A token moves to the newest session that registers it, so a re-installed app does not get the same push twice. When a user has a push token, transactional messages (new lead, follow-up due and similar) go by push instead of SMS; email is unchanged. Realtime updates for open screens use the WebSocket namespace `/v1/realtime` (Socket.IO, send the access token as `auth.token`; rooms per user, session, membership, organization and staff; events carry ids only, refetch the resource). Any signed-in context.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"token\": \"ExponentPushToken[xYz123AbC456dEf789]\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"token\",\n      \"code\": \"invalid_format\",\n      \"message\": \"must be an Expo push token\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

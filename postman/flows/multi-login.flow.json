@@ -1,17 +1,51 @@
 {
   "name": "One person, several logins",
   "steps": [
-    { "request": "01 Auth/01 Request OTP.json", "variables": { "loginAs": "borrower" } },
-    { "request": "01 Auth/02 Verify OTP.json" },
-    { "request": "02 Me/01 Get Me.json" },
-    { "request": "02 Me/02 Update Profile.json" },
-    { "request": "01 Auth/03 Refresh Token.json" },
-    { "request": "01 Auth/01 Request OTP.json", "variables": { "loginAs": "ca" }, "waitSeconds": 31 },
-    { "request": "01 Auth/02 Verify OTP.json" },
-    { "request": "01 Auth/04 Switch Context.json" },
-    { "request": "02 Me/03 List Sessions.json" },
-    { "request": "02 Me/04 Revoke Session.json" },
-    { "request": "02 Me/05 Revoke Other Sessions.json" },
-    { "request": "01 Auth/05 Logout.json" }
+    {
+      "request": "01 Auth/01 Request OTP.json",
+      "variables": {
+        "loginAs": "borrower"
+      }
+    },
+    {
+      "request": "01 Auth/02 Verify OTP.json"
+    },
+    {
+      "request": "02 Me/01 Get Me.json"
+    },
+    {
+      "request": "02 Me/02 Update Profile.json"
+    },
+    {
+      "request": "01 Auth/03 Refresh Token.json"
+    },
+    {
+      "request": "01 Auth/01 Request OTP.json",
+      "variables": {
+        "loginAs": "ca"
+      },
+      "waitSeconds": 31
+    },
+    {
+      "request": "01 Auth/02 Verify OTP.json"
+    },
+    {
+      "request": "01 Auth/04 Switch Context.json"
+    },
+    {
+      "request": "02 Me/15 Set Push Token.json"
+    },
+    {
+      "request": "02 Me/03 List Sessions.json"
+    },
+    {
+      "request": "02 Me/04 Revoke Session.json"
+    },
+    {
+      "request": "02 Me/05 Revoke Other Sessions.json"
+    },
+    {
+      "request": "01 Auth/05 Logout.json"
+    }
   ]
 }

@@ -44,11 +44,16 @@
 
 ## Real-time channels (WebSocket namespace `/v1/realtime`)
 
+Built in M1.9a. Gateway: `backend/src/modules/realtime/http/realtime.gateway.ts` (Socket.IO on the API, `RedisIoAdapter` so every API instance sees every emit; CORS from `CORS_ORIGINS`). Clients connect with the access token in `auth.token` (or an `Authorization` header); invalid or revoked tokens get an `error` event with the error code and are disconnected; valid ones get `ready` with the session context. The worker emits through `@socket.io/redis-emitter` from `realtime.publish`; the event → room map is `backend/src/infrastructure/realtime/realtime-routes.ts`. Events carry ids, `eventId` and `occurredAt` only; clients refetch the resource.
+
 | Room | Who joins | Server → client events | Milestone | Status |
 |---|---|---|---|---|
-| `user:{userId}` | the signed-in user (all sessions) | `session.revoked`, `import.updated`, `document.updated`, `application.updated` | M1 | `planned` |
-| `membership:{membershipId}` | sessions acting as that membership | `lead.offered`, `lead.updated`, `follow_up.due`, `sla.warning` | M1 | `planned` |
-| `org:{organizationId}` | members with the matching CASL ability | `lead.assigned`, `lead.updated`, `submission.updated`, `payout.updated` | M1 | `planned` |
+| `user:{userId}` | every session of the user | `follow_up.due`; disconnected when the user is suspended | M1 | `useful` |
+| `session:{sessionId}` | that session | (reserved for session-level pushes) | M1 | `useful` |
+| `membership:{membershipId}` | sessions acting as that membership | `lead.assignment.changed`, `lead.sla` for leads handed to the member; disconnected when the membership stops being active | M1 | `useful` |
+| `org:{organizationId}` | partner and lender sessions of that organization | `lead.assignment.changed`, `lead.sla`, `lead.conversion.changed`; later `submission.updated`, `payout.updated` | M1 | `useful` |
+| `staff` | staff sessions | `lead.changed`, `lead.assignment.changed`, `lead.sla`, `lead.conversion.changed`, `import.changed` | M1 | `useful` |
+
 
 Room joins are authorised on connect, using the same CASL abilities as HTTP.
 

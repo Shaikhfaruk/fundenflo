@@ -15,11 +15,23 @@ import type { TemplateParams } from '../domain/template-renderer.js';
 
 export type NotificationRequest = {
   templateKey: NotificationTemplateKey;
-  channel: typeof NotificationChannel.sms | typeof NotificationChannel.email;
+  channel: typeof NotificationChannel.sms | typeof NotificationChannel.email | typeof NotificationChannel.push;
   recipient: string;
   params: TemplateParams;
   locale?: string;
   priority?: number;
+};
+
+const RECIPIENT_DOMAIN = {
+  [NotificationChannel.sms]: BlindIndexDomain.Mobile,
+  [NotificationChannel.email]: BlindIndexDomain.Email,
+  [NotificationChannel.push]: BlindIndexDomain.PushToken,
+} as const;
+
+const MASK: Record<NotificationRequest['channel'], (recipient: string) => string> = {
+  [NotificationChannel.sms]: maskMobile,
+  [NotificationChannel.email]: maskEmail,
+  [NotificationChannel.push]: (token) => `${token.slice(0, 18)}…`,
 };
 
 export type DispatchJob = {
@@ -42,14 +54,13 @@ export class NotificationService {
   ) {}
 
   async send(request: NotificationRequest): Promise<{ deliveryId: string }> {
-    const isSms = request.channel === NotificationChannel.sms;
     const delivery = await this.prisma.notificationDelivery.create({
       data: {
         templateKey: request.templateKey,
         channel: request.channel,
         locale: request.locale ?? DEFAULT_LOCALE,
-        recipientHash: this.blindIndex.hash(isSms ? BlindIndexDomain.Mobile : BlindIndexDomain.Email, request.recipient),
-        recipientMasked: isSms ? maskMobile(request.recipient) : maskEmail(request.recipient),
+        recipientHash: this.blindIndex.hash(RECIPIENT_DOMAIN[request.channel], request.recipient),
+        recipientMasked: MASK[request.channel](request.recipient),
       },
     });
     const payload: DispatchPayload = { recipient: request.recipient, params: request.params };

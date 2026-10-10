@@ -210,4 +210,10 @@ export class SessionService {
       refreshExpiresIn: Math.floor((refreshExpiresAt.getTime() - now) / 1000),
     };
   }
+
+  @Transactional()
+  async setPushToken(sessionId: string, pushToken: string | null) {
+    await this.sessions.setPushToken(sessionId, pushToken);
+    return { registered: pushToken !== null };
+  }
 }

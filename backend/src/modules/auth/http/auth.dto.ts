@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { EXPO_PUSH_TOKEN_PATTERN } from '../../../integrations/push/push.port.js';
+
 import { LoginAs, UserStatus } from '../../../common/enums/db.enums.js';
 import { pageQuerySchema } from '../../../common/listing/cursor-page.js';
 import { deviceSchema, localeSchema, otpCodeSchema, personNameSchema } from '../../../common/validation/common.schemas.js';
@@ -106,3 +108,6 @@ export type AdminUsersQuery = z.output<typeof adminUsersQuerySchema>;
 export const adminUpdateUserSchema = z.object({ status: z.enum(Object.values(UserStatus)) }).strict();
 
 export type AdminUpdateUserDto = z.output<typeof adminUpdateUserSchema>;
+
+export const pushTokenSchema = z.object({ token: z.string().regex(EXPO_PUSH_TOKEN_PATTERN, 'must be an Expo push token').nullable() }).strict();
+export type PushTokenDto = z.output<typeof pushTokenSchema>;

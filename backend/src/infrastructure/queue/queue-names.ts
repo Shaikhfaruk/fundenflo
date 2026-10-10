@@ -9,6 +9,7 @@ export const QueueName = {
   LeadsRoute: 'leads.route',
   SlaTimers: 'sla.timers',
   LeadsNotify: 'leads.notify',
+  RealtimePublish: 'realtime.publish',
 } as const;
 
 export type QueueName = (typeof QueueName)[keyof typeof QueueName];

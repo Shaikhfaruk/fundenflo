@@ -10,6 +10,7 @@ import { PrismaService } from '../../../infrastructure/database/prisma.service.j
 import { ContextualProcessor } from '../../../infrastructure/queue/contextual.processor.js';
 import { QueueName } from '../../../infrastructure/queue/queue-names.js';
 import { type EmailSender, InjectEmailSender } from '../../../integrations/email/email.port.js';
+import { InjectPushSender, type PushSender, PushTokenRejectedError } from '../../../integrations/push/push.port.js';
 import { InjectSmsSender, type SmsSender } from '../../../integrations/sms/sms.port.js';
 import type { DispatchJob, DispatchPayload } from '../application/notification.service.js';
 import { DEFAULT_LOCALE } from '../../../common/i18n/locale.js';
@@ -24,6 +25,7 @@ export class NotificationDispatchProcessor extends ContextualProcessor<DispatchJ
     private readonly cipher: FieldCipher,
     @InjectSmsSender() private readonly sms: SmsSender,
     @InjectEmailSender() private readonly email: EmailSender,
+    @InjectPushSender() private readonly push: PushSender,
   ) {
     super(cls);
   }
@@ -56,21 +58,28 @@ export class NotificationDispatchProcessor extends ContextualProcessor<DispatchJ
     }
 
     try {
-      const result =
-        delivery.channel === NotificationChannel.sms
-          ? await this.sms.send({ to: payload.recipient, body, providerTemplateId: template.providerTemplateId })
-          : await this.email.send({ to: payload.recipient, subject, text: body });
+      const result = await this.deliver(delivery.channel, payload.recipient, subject, body, template.providerTemplateId);
       await this.prisma.notificationDelivery.update({
         where: { id: delivery.id },
         data: { status: DeliveryStatus.sent, provider: result.provider, providerMessageId: result.providerMessageId, sentAt: new Date(), error: null },
       });
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
+      if (error instanceof PushTokenRejectedError) {
+        await this.fail(delivery.id, message);
+        return;
+      }
       const finalAttempt = job.attemptsMade + 1 >= (job.opts.attempts ?? 1);
       if (finalAttempt) await this.fail(delivery.id, message);
       else await this.prisma.notificationDelivery.update({ where: { id: delivery.id }, data: { error: message } });
       throw error;
     }
+  }
+
+  private deliver(channel: NotificationChannel, recipient: string, subject: string, body: string, providerTemplateId: string | null) {
+    if (channel === NotificationChannel.sms) return this.sms.send({ to: recipient, body, providerTemplateId });
+    if (channel === NotificationChannel.push) return this.push.send({ to: recipient, title: subject, body });
+    return this.email.send({ to: recipient, subject, text: body });
   }
 
   private async fail(deliveryId: string, reason: string) {

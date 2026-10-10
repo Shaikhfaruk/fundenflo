@@ -80,6 +80,8 @@ export const envSchema = z
     SMS_DLT_TEMPLATE_LEAD_FIRST_CONTACT_DUE: optional(z.string().regex(/^\d{10,30}$/, 'must be a numeric DLT template ID')),
     SMS_DLT_TEMPLATE_FOLLOW_UP_DUE: optional(z.string().regex(/^\d{10,30}$/, 'must be a numeric DLT template ID')),
     EMAIL_DRIVER: z.enum(['smtp', 'log']),
+    PUSH_DRIVER: z.enum(['log', 'expo']).default('log'),
+    EXPO_ACCESS_TOKEN: optional(z.string().min(10)),
     SMTP_URL: optional(z.url()),
     EMAIL_FROM: optional(z.string().min(3)),
 
@@ -122,6 +124,7 @@ export const envSchema = z
     if (env.NODE_ENV === 'production') {
       if (env.SMS_DRIVER === 'log') issue('SMS_DRIVER', 'a real SMS provider is required in production');
       if (env.EMAIL_DRIVER === 'log') issue('EMAIL_DRIVER', 'a real email provider is required in production');
+      if (env.PUSH_DRIVER === 'log') issue('PUSH_DRIVER', 'expo is required in production');
       if (env.CRYPTO_DRIVER === 'local') issue('CRYPTO_DRIVER', 'azure_key_vault is required in production');
       if (env.AUTH_OTP_STATIC_CODE) issue('AUTH_OTP_STATIC_CODE', 'must be empty in production');
     }

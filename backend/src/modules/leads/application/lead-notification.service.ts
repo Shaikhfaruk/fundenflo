@@ -13,7 +13,7 @@ import { LeadRepository } from '../infrastructure/lead.repository.js';
 
 type AssignmentPayload = { assignmentId?: string; leadId?: string; entityId?: string; entityType?: string; assigneeUserId?: string; dueAt?: string; followUpId?: string };
 
-const { sms, email } = NotificationChannel;
+const { sms, email, push } = NotificationChannel;
 
 const display = (value: Date | string | null | undefined, locale: string | null) => (value ? formatDisplayDateTime(new Date(value), locale) : '');
 
@@ -49,13 +49,13 @@ export class LeadNotificationService {
     };
     switch (event.name) {
       case EventName.AssignmentOffered:
-        return this.notifier.notify(await owners(), NotificationTemplateKey.LeadOffered, params, [sms, email]);
+        return this.notifier.notify(await owners(), NotificationTemplateKey.LeadOffered, params, [push, sms, email]);
       case EventName.AssignmentOfferExpiring:
-        return assignment.status === AssignmentStatus.offered ? this.notifier.notify(await owners(), NotificationTemplateKey.LeadOfferExpiring, params, [sms]) : 0;
+        return assignment.status === AssignmentStatus.offered ? this.notifier.notify(await owners(), NotificationTemplateKey.LeadOfferExpiring, params, [push, sms]) : 0;
       case EventName.AssignmentReassigned:
-        return this.notifier.notify(await assignee(), NotificationTemplateKey.LeadHandedOver, params, [sms, email]);
+        return this.notifier.notify(await assignee(), NotificationTemplateKey.LeadHandedOver, params, [push, sms, email]);
       case EventName.LeadSlaWarned:
-        return assignment.firstContactedAt ? 0 : this.notifier.notify(await assignee(), NotificationTemplateKey.LeadFirstContactDue, params, [sms]);
+        return assignment.firstContactedAt ? 0 : this.notifier.notify(await assignee(), NotificationTemplateKey.LeadFirstContactDue, params, [push, sms]);
       case EventName.LeadSlaBreached:
         return this.notifier.notify(await this.memberships.activeStaffUserIds([Role.ops_lead]), NotificationTemplateKey.LeadFirstContactMissed, params, [email]);
       default:
@@ -67,7 +67,7 @@ export class LeadNotificationService {
     if (payload.entityType !== ActivityEntityType.lead || !payload.entityId || !payload.assigneeUserId) return 0;
     const [lead] = await this.leads.findSummaries([payload.entityId]);
     if (!lead) return 0;
-    return this.notifier.notify([payload.assigneeUserId], NotificationTemplateKey.FollowUpDue, (locale) => ({ ref: lead.ref, dueAt: display(payload.dueAt, locale) }), [sms]);
+    return this.notifier.notify([payload.assigneeUserId], NotificationTemplateKey.FollowUpDue, (locale) => ({ ref: lead.ref, dueAt: display(payload.dueAt, locale) }), [push, sms]);
   }
 
   private async paramsByLocale(build: (locale: string | null) => Promise<Record<string, string>>) {

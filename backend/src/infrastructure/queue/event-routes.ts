@@ -1,7 +1,8 @@
 import { EventName } from '../../common/events/event-names.js';
+import { REALTIME_EVENTS } from '../realtime/realtime-routes.js';
 import { QueueName } from './queue-names.js';
 
-export const EVENT_ROUTES: Partial<Record<EventName, QueueName[]>> = {
+const ROUTES: Partial<Record<EventName, QueueName[]>> = {
   [EventName.MembershipChanged]: [QueueName.AuthSessionRevocations],
   [EventName.UserStatusChanged]: [QueueName.AuthSessionRevocations],
   [EventName.OrganizationStatusChanged]: [QueueName.AuthSessionRevocations],
@@ -23,3 +24,7 @@ export const EVENT_ROUTES: Partial<Record<EventName, QueueName[]>> = {
   [EventName.LeadSlaBreached]: [QueueName.LeadsNotify],
   [EventName.FollowUpDue]: [QueueName.LeadsNotify],
 };
+
+export const EVENT_ROUTES: Partial<Record<EventName, QueueName[]>> = { ...ROUTES };
+
+for (const name of REALTIME_EVENTS) EVENT_ROUTES[name] = [...(ROUTES[name] ?? []), QueueName.RealtimePublish];

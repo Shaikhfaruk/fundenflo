@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, HttpCode, HttpStatus, Patch, Post } from '@nestjs/common';
+import { Controller, Delete, Get, HttpCode, HttpStatus, Patch, Post, Put } from '@nestjs/common';
 
 import { AnyContext, CurrentActor } from '../../../common/auth/auth.decorators.js';
 import type { UserActor } from '../../../common/context/actor.js';
@@ -7,6 +7,7 @@ import { uuidSchema } from '../../../common/validation/common.schemas.js';
 import { ValidBody, ValidParam } from '../../../common/validation/zod-validation.pipe.js';
 import { LoginMethodsService } from '../application/login-methods.service.js';
 import { MeService } from '../application/me.service.js';
+import { SessionService } from '../application/session.service.js';
 import {
   type ChallengeVerifyDto,
   challengeVerifySchema,
@@ -14,6 +15,8 @@ import {
   linkEmailSchema,
   type MobileChangeDto,
   mobileChangeSchema,
+  type PushTokenDto,
+  pushTokenSchema,
   type UpdateProfileDto,
   updateProfileSchema,
 } from './auth.dto.js';
@@ -24,6 +27,7 @@ export class MeController {
   constructor(
     private readonly me: MeService,
     private readonly loginMethods: LoginMethodsService,
+    private readonly sessionService: SessionService,
   ) {}
 
   @Get()
@@ -43,6 +47,11 @@ export class MeController {
   @Get('sessions')
   async sessions(@CurrentActor() actor: UserActor) {
     return { items: await this.me.listSessions(actor) };
+  }
+
+  @Put('sessions/current/push-token')
+  setPushToken(@CurrentActor() actor: UserActor, @ValidBody(pushTokenSchema) body: PushTokenDto) {
+    return this.sessionService.setPushToken(actor.sessionId, body.token);
   }
 
   @Delete('sessions/:id')

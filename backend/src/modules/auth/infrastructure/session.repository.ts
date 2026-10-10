@@ -57,4 +57,14 @@ export class SessionRepository {
   revokeRefreshTokens(where: Prisma.RefreshTokenWhereInput) {
     return this.txHost.tx.refreshToken.updateMany({ where: { ...where, revokedAt: null }, data: { revokedAt: new Date() } });
   }
+
+  async setPushToken(sessionId: string, pushToken: string | null) {
+    if (pushToken) await this.txHost.tx.session.updateMany({ where: { pushToken, id: { not: sessionId } }, data: { pushToken: null } });
+    return this.txHost.tx.session.update({ where: { id: sessionId }, data: { pushToken } });
+  }
+
+  async activePushTokens(userId: string, now = new Date()) {
+    const sessions = await this.txHost.tx.session.findMany({ where: { userId, revokedAt: null, expiresAt: { gt: now }, pushToken: { not: null } }, select: { pushToken: true } });
+    return [...new Set(sessions.flatMap((session) => (session.pushToken ? [session.pushToken] : [])))];
+  }
 }
