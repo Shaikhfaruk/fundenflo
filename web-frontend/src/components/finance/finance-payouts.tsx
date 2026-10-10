@@ -28,7 +28,6 @@ import { REVIEW_STATUS_TONE, toneOf } from '@/lib/constants/status.constants';
 import { formatDate, formatDateTime, todayIsoDate } from '@/lib/format/date';
 import { formatPaise } from '@/lib/format/money';
 
-import { usePartyNames } from './use-party-names';
 
 const BPS_PER_PERCENT = 100;
 
@@ -39,7 +38,6 @@ type Dialog = 'approve' | 'paid' | 'reverse';
 function PayoutSheet({ row, onClose }: { row: Payout; onClose: () => void }) {
   const t = useTranslations('finance.payouts');
   const locale = useLocale();
-  const names = usePartyNames();
   const queryClient = useQueryClient();
   const errorToast = useErrorToast();
   const utrId = useId();
@@ -65,7 +63,7 @@ function PayoutSheet({ row, onClose }: { row: Payout; onClose: () => void }) {
       open
       onOpenChange={(open) => (open ? null : onClose())}
       title={payout.ref}
-      description={names.partner(payout.partnerOrganizationId)}
+      description={payout.partnerName ?? undefined}
       footer={
         <>
           {payout.status === PayoutStatus.Pending ? <Button size="sm" onClick={() => setDialog('approve')}>{t('approve')}</Button> : null}
@@ -115,7 +113,6 @@ export function FinancePayouts() {
   const t = useTranslations('finance.payouts');
   const enumLabel = useEnumLabels();
   const locale = useLocale();
-  const names = usePartyNames();
   const [status, setStatus] = useState<string>(ANY_VALUE);
   const [opened, setOpened] = useState<Payout | null>(null);
   const payouts = useInfiniteQuery(payoutsQuery(anyToUndefined(status)));
@@ -126,7 +123,7 @@ export function FinancePayouts() {
   );
   const columns: Column<Payout>[] = [
     { key: 'ref', header: t('ref'), cell: title, hideOnCard: true },
-    { key: 'partner', header: t('partner'), cell: (row) => names.partner(row.partnerOrganizationId) },
+    { key: 'partner', header: t('partner'), cell: (row) => row.partnerName ?? '—' },
     { key: 'gross', header: t('gross'), cell: (row) => <span className="tabular">{formatPaise(row.grossPaise, locale)}</span>, className: 'text-right' },
     { key: 'net', header: t('net'), cell: (row) => <span className="tabular">{formatPaise(row.netPaise, locale)}</span>, className: 'text-right' },
     { key: 'status', header: t('status'), cell: (row) => <StatusBadge status={row.status} tone={toneOf(REVIEW_STATUS_TONE, row.status)} /> },

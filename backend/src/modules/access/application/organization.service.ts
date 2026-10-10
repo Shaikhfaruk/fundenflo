@@ -28,6 +28,12 @@ export class OrganizationService {
     private readonly audit: AuditService,
   ) {}
 
+  async names(ids: string[]): Promise<Map<string, string>> {
+    const unique = [...new Set(ids)];
+    if (unique.length === 0) return new Map();
+    return new Map((await this.repository.findOrganizations(unique)).map((organization) => [organization.id, organization.name]));
+  }
+
   @Transactional()
   async registerPending(input: PendingOrganizationInput) {
     const context = ORGANIZATION_CONTEXT[input.type];

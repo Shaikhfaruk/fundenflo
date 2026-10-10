@@ -544,14 +544,14 @@ Planned:
 
 | Method | Path | Module | Context | Milestone | Status |
 |---|---|---|---|---|---|
-| `GET` | `/admin/finance/receivables` | commissions (`admin-finance.controller.ts` → `ReceivableService.list`) | staff | M7 | `useful` |
+| `GET` | `/admin/finance/receivables` | commissions (`admin-finance.controller.ts` → `ReceivableService.list`; each row names the lender, `lenderName` via `OrganizationService.names`, 2026-10-11) | staff | M7 | `useful` |
 | `GET` `PATCH` | `/admin/finance/receivables/:id` | commissions (`ReceivableService.get` / `act`: invoice, receive (partial allowed), reconcile, write off with payout reversal; GET added for the finance view) | staff | M7 | `useful` |
-| `GET` | `/admin/finance/payouts` | commissions (`PayoutService.list`) | staff | M7 | `useful` |
+| `GET` | `/admin/finance/payouts` | commissions (`PayoutService.list`; staff views name the firm, `partnerName`, 2026-10-11) | staff | M7 | `useful` |
 | `GET` | `/admin/finance/payouts/:id` | commissions (`PayoutService.detail` with the decrypted bank account, audited; added so finance can pay) | staff | M7 | `useful` |
 | `POST` | `/admin/finance/payouts/:id/approve` | commissions (`PayoutService.approve`: lender paid, firm KYC verified, attribution not disputed, TDS recomputed) | staff | M7 | `useful` |
 | `POST` | `/admin/finance/payouts/:id/mark-paid` | commissions (`PayoutService.markPaid`: UTR, a second person, ledger payable → bank and TDS) | staff | M7 | `useful` |
 | `POST` | `/admin/finance/payouts/:id/reverse` | commissions (`PayoutService.reverse` for unpaid payouts; added for clawbacks) | staff | M7 | `useful` |
-| `GET` `POST` | `/admin/finance/reconciliation` | commissions (`ReconciliationService.list` / `run`: statement lines matched by receivable ref or invoice number) | staff | M7 | `useful` |
+| `GET` `POST` | `/admin/finance/reconciliation` | commissions (`ReconciliationService.list` / `run`: statement lines matched by receivable ref or invoice number; runs name the lender, `lenderName`, 2026-10-11) | staff | M7 | `useful` |
 | `GET` | `/admin/finance/ledger/trial-balance` | commissions (`LedgerService.trialBalance`; added for finance close) | staff | M7 | `useful` |
 
 ## 90 Webhooks

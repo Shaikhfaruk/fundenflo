@@ -20,7 +20,7 @@
         }
       ]
     },
-    "description": "Commission receivables from lenders, one per disbursal tranche (accrued by the `commissions.accrue` worker on `submission.disbursed` with the scheme version pinned), filterable by `status`, `lenderId`, `submissionId`. Staff context: finance acts; compliance reads. Money is in paise."
+    "description": "Commission receivables from lenders, one per disbursal tranche (accrued by the `commissions.accrue` worker on `submission.disbursed` with the scheme version pinned), filterable by `status`, `lenderId`, `submissionId`. Staff context: finance acts; compliance reads. Money is in paise. Each row includes `lenderName`."
   },
   "event": [
     {

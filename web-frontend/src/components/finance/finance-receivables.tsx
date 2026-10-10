@@ -28,7 +28,6 @@ import { REVIEW_STATUS_TONE, StatusTone, toneOf } from '@/lib/constants/status.c
 import { formatDate, formatDateTime, todayIsoDate } from '@/lib/format/date';
 import { formatPaise, paiseFromRupees, rupeesFromPaiseValue } from '@/lib/format/money';
 
-import { usePartyNames } from './use-party-names';
 
 const TONE = { ...REVIEW_STATUS_TONE, accrued: StatusTone.Warning, invoiced: StatusTone.Info, received: StatusTone.Success, reconciled: StatusTone.Success, written_off: StatusTone.Neutral };
 
@@ -41,7 +40,6 @@ type Dialog = 'invoice' | 'receive' | 'reconcile' | 'write_off';
 function ReceivableSheet({ row, onClose }: { row: Receivable; onClose: () => void }) {
   const t = useTranslations('finance.receivables');
   const locale = useLocale();
-  const names = usePartyNames();
   const queryClient = useQueryClient();
   const errorToast = useErrorToast();
   const invoiceId = useId();
@@ -74,7 +72,7 @@ function ReceivableSheet({ row, onClose }: { row: Receivable; onClose: () => voi
       open
       onOpenChange={(open) => (open ? null : onClose())}
       title={receivable.ref}
-      description={names.lender(receivable.lenderId)}
+      description={receivable.lenderName ?? undefined}
       footer={
         <>
           {status === ReceivableStatus.Accrued ? <Button size="sm" onClick={() => setDialog('invoice')}>{t('invoice')}</Button> : null}
@@ -140,7 +138,6 @@ export function FinanceReceivables() {
   const t = useTranslations('finance.receivables');
   const enumLabel = useEnumLabels();
   const locale = useLocale();
-  const names = usePartyNames();
   const [status, setStatus] = useState<string>(ANY_VALUE);
   const [opened, setOpened] = useState<Receivable | null>(null);
   const receivables = useInfiniteQuery(receivablesQuery(anyToUndefined(status)));
@@ -151,7 +148,7 @@ export function FinanceReceivables() {
   );
   const columns: Column<Receivable>[] = [
     { key: 'ref', header: t('ref'), cell: title, hideOnCard: true },
-    { key: 'lender', header: t('lender'), cell: (row) => names.lender(row.lenderId) },
+    { key: 'lender', header: t('lender'), cell: (row) => row.lenderName ?? '—' },
     { key: 'total', header: t('total'), cell: (row) => <span className="tabular">{formatPaise(row.totalPaise, locale)}</span>, className: 'text-right' },
     { key: 'outstanding', header: t('outstanding'), cell: (row) => <span className="tabular">{formatPaise(row.outstandingPaise, locale)}</span>, className: 'text-right' },
     { key: 'status', header: t('status'), cell: (row) => <StatusBadge status={row.status} tone={toneOf(TONE, row.status)} namespace="enums.receivableStatus" /> },

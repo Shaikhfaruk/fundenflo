@@ -26,14 +26,14 @@ import { formatDateTime } from '@/lib/format/date';
 import { formatPaise } from '@/lib/format/money';
 import { parseStatementLines } from '@/lib/format/statement-lines';
 
-import { usePartyNames } from './use-party-names';
+import { useLenderOptions } from './use-lender-options';
 
 const ANY_LENDER = '__any__';
 
 function RunDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
   const t = useTranslations('finance.reconciliation');
   const enumLabel = useEnumLabels();
-  const names = usePartyNames();
+  const lenders = useLenderOptions();
   const queryClient = useQueryClient();
   const errorToast = useErrorToast();
   const linesId = useId();
@@ -62,11 +62,11 @@ function RunDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (open:
         <FieldLabel>{t('lender')}</FieldLabel>
         <Select value={lenderId} onValueChange={(value) => setLenderId(String(value))}>
           <SelectTrigger size="sm" className="h-11 w-full" aria-label={t('lender')}>
-            <SelectValue>{(current: string | null) => (current && current !== ANY_LENDER ? names.lender(current) : t('anyLender'))}</SelectValue>
+            <SelectValue>{(current: string | null) => (current && current !== ANY_LENDER ? (lenders.find((lender) => lender.id === current)?.name ?? current) : t('anyLender'))}</SelectValue>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value={ANY_LENDER}>{t('anyLender')}</SelectItem>
-            {names.lenders.map((lender) => (
+            {lenders.map((lender) => (
               <SelectItem key={lender.id} value={lender.id}>
                 {lender.name}
               </SelectItem>
@@ -87,13 +87,12 @@ export function FinanceReconciliation() {
   const t = useTranslations('finance.reconciliation');
   const enumLabel = useEnumLabels();
   const locale = useLocale();
-  const names = usePartyNames();
   const runs = useInfiniteQuery(reconciliationRunsQuery());
   const [running, setRunning] = useState(false);
   const columns: Column<ReconciliationRun>[] = [
     { key: 'when', header: t('when'), cell: (row) => <span className="font-semibold text-navy">{formatDateTime(row.createdAt, locale)}</span>, hideOnCard: true },
     { key: 'source', header: t('source'), cell: (row) => enumLabel('reconciliationSource', row.source) },
-    { key: 'lender', header: t('lender'), cell: (row) => (row.lenderOrganizationId ? names.lender(row.lenderOrganizationId) : t('anyLender')) },
+    { key: 'lender', header: t('lender'), cell: (row) => row.lenderName ?? t('anyLender') },
     { key: 'matched', header: t('matched'), cell: (row) => <span className="tabular">{t('matchedLine', { matched: row.matchedCount, total: row.lineCount })}</span> },
     { key: 'amount', header: t('amount'), cell: (row) => <span className="tabular">{`${formatPaise(row.matchedPaise, locale)} / ${formatPaise(row.totalPaise, locale)}`}</span>, className: 'text-right' },
     { key: 'unmatched', header: t('unmatched'), cell: (row) => (row.unmatched.length === 0 ? '—' : <span className="text-[13px] text-destructive">{row.unmatched.map((line) => `${line.reference} (${enumLabel('unmatchedReason', line.reason)})`).join(', ')}</span>) },

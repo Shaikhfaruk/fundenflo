@@ -20,7 +20,7 @@
         }
       ]
     },
-    "description": "Partner payouts (one per receivable when the case belongs to a firm: partner-filed or an unended attribution), filterable by `status` and `partnerOrganizationId`. Staff context: finance acts; compliance reads. Money is in paise."
+    "description": "Partner payouts (one per receivable when the case belongs to a firm: partner-filed or an unended attribution), filterable by `status` and `partnerOrganizationId`. Staff context: finance acts; compliance reads. Money is in paise. Each row includes the firm name as `partnerName`."
   },
   "event": [
     {

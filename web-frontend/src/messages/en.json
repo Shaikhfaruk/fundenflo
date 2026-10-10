@@ -646,7 +646,8 @@
       "upcoming": "Coming up",
       "continue": "Continue",
       "comingNext": "This step opens in the next update.",
-      "edit": "Edit"
+      "edit": "Edit",
+      "journeyPartner": "Case Progress"
     },
     "blockers": {
       "category_missing": "Choose the loan type",

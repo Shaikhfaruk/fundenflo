@@ -12,6 +12,7 @@ import { type PageQuery, pageWindow, toPage } from '../../../common/listing/curs
 import { paiseFromNumber } from '../../../common/money/paise.js';
 import { ReceivableEvent, receivableMachine } from '../../../engines/state-machines/machines/commission.machine.js';
 import type { PartnerPayout, Prisma, Receivable } from '../../../generated/prisma/client.js';
+import { OrganizationService } from '../../access/application/organization.service.js';
 import { AppAction, type AppAbility } from '../../access/domain/ability.types.js';
 import { AuditService } from '../../audit/application/audit.service.js';
 import { ChangeRecorder } from '../../audit/application/change-recorder.service.js';
@@ -38,16 +39,19 @@ export class ReceivableService {
     private readonly payouts: PayoutService,
     private readonly audit: AuditService,
     private readonly changes: ChangeRecorder,
+    private readonly organizations: OrganizationService,
   ) {}
 
   async list(ability: AppAbility, query: PageQuery & ReceivableFilters) {
     const window = pageWindow(query);
     const rows = await this.commissions.listReceivables({ AND: [accessibleBy(ability, AppAction.Read).ofType('Receivable'), { id: window.idFilter, status: query.status, lenderId: query.lenderId, submissionId: query.submissionId }] }, window.take);
-    return toPage(rows, query.limit, toReceivableView);
+    const names = await this.organizations.names(rows.map((row) => row.lenderOrganizationId));
+    return toPage(rows, query.limit, (row) => toReceivableView(row, names.get(row.lenderOrganizationId) ?? null));
   }
 
   async get(id: string, ability: AppAbility) {
-    return toReceivableView(await this.visible(id, ability, AppAction.Read));
+    const receivable = await this.visible(id, ability, AppAction.Read);
+    return toReceivableView(receivable, (await this.organizations.names([receivable.lenderOrganizationId])).get(receivable.lenderOrganizationId) ?? null);
   }
 
   @Transactional()

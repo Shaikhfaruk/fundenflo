@@ -10,6 +10,7 @@ import { type PageQuery, pageWindow, toPage } from '../../../common/listing/curs
 import { paiseFromNumber } from '../../../common/money/paise.js';
 import { OPEN_RECEIVABLE_STATES } from '../../../engines/state-machines/machines/commission.machine.js';
 import type { Prisma } from '../../../generated/prisma/client.js';
+import { OrganizationService } from '../../access/application/organization.service.js';
 import { AppAction, type AppAbility } from '../../access/domain/ability.types.js';
 import { ChangeRecorder } from '../../audit/application/change-recorder.service.js';
 import { AuditAction, AuditEntity } from '../../audit/domain/audit.constants.js';
@@ -30,12 +31,14 @@ export class ReconciliationService {
     private readonly receivables: ReceivableService,
     private readonly lenders: LenderService,
     private readonly changes: ChangeRecorder,
+    private readonly organizations: OrganizationService,
   ) {}
 
   async list(ability: AppAbility, query: PageQuery) {
     const window = pageWindow(query);
     const rows = await this.commissions.listRuns({ AND: [accessibleBy(ability, AppAction.Read).ofType('ReconciliationRun'), { id: window.idFilter }] }, window.take);
-    return toPage(rows, query.limit, toRunView);
+    const names = await this.organizations.names(rows.flatMap((row) => (row.lenderOrganizationId ? [row.lenderOrganizationId] : [])));
+    return toPage(rows, query.limit, (row) => toRunView(row, row.lenderOrganizationId ? (names.get(row.lenderOrganizationId) ?? null) : null));
   }
 
   @Transactional()
@@ -88,6 +91,7 @@ export class ReconciliationService {
       metadata: { lineCount: run.lineCount, matchedCount: run.matchedCount, reconciled: reconciled.length },
       payload: { reconciliationRunId: run.id, lenderOrganizationId },
     });
-    return { ...toRunView(run), reconciledReceivableIds: reconciled };
+    const lenderName = lenderOrganizationId ? ((await this.organizations.names([lenderOrganizationId])).get(lenderOrganizationId) ?? null) : null;
+    return { ...toRunView(run, lenderName), reconciledReceivableIds: reconciled };
   }
 }

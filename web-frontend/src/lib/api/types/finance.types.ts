@@ -4,6 +4,7 @@ export type Receivable = {
   status: string;
   lenderId: string;
   lenderOrganizationId: string;
+  lenderName: string | null;
   submissionId: string | null;
   applicationId: string | null;
   basePaise: number;
@@ -30,6 +31,7 @@ export type Payout = {
   ref: string;
   status: string;
   partnerOrganizationId: string;
+  partnerName: string | null;
   receivable: { id: string; ref: string; status: string };
   submissionId: string | null;
   applicationId: string | null;
@@ -51,6 +53,7 @@ export type Payout = {
 export type ReconciliationRun = {
   id: string;
   lenderOrganizationId: string | null;
+  lenderName: string | null;
   source: string;
   lineCount: number;
   matchedCount: number;

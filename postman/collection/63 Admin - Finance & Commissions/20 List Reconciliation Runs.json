@@ -14,7 +14,7 @@
         "reconciliation"
       ]
     },
-    "description": "Reconciliation runs, newest first. Staff context: finance acts; compliance reads. Money is in paise."
+    "description": "Reconciliation runs, newest first. Staff context: finance acts; compliance reads. Money is in paise. Runs include `lenderName` when they were for one lender."
   },
   "event": [
     {

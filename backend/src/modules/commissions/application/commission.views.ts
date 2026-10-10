@@ -8,12 +8,13 @@ const money = (value: bigint) => paiseToNumber(value);
 
 export const toPayoutSummary = (payout: PartnerPayout) => ({ id: payout.id, ref: payout.ref, status: payout.status, partnerOrganizationId: payout.partnerOrganizationId, grossPaise: money(payout.grossPaise), netPaise: money(payout.netPaise) });
 
-export const toReceivableView = (receivable: Receivable & { payouts: PartnerPayout[] }) => ({
+export const toReceivableView = (receivable: Receivable & { payouts: PartnerPayout[] }, lenderName: string | null = null) => ({
   id: receivable.id,
   ref: receivable.ref,
   status: receivable.status,
   lenderId: receivable.lenderId,
   lenderOrganizationId: receivable.lenderOrganizationId,
+  lenderName,
   submissionId: receivable.submissionId,
   applicationId: receivable.applicationId,
   scheme: { documentId: receivable.schemeDocumentId, versionId: receivable.schemeVersionId },
@@ -37,11 +38,12 @@ export const toReceivableView = (receivable: Receivable & { payouts: PartnerPayo
   createdAt: receivable.createdAt.toISOString(),
 });
 
-export const toPayoutView = (payout: PartnerPayout & { receivable: Receivable }, staff: boolean) => ({
+export const toPayoutView = (payout: PartnerPayout & { receivable: Receivable }, staff: boolean, partnerName: string | null = null) => ({
   id: payout.id,
   ref: payout.ref,
   status: payout.status,
   partnerOrganizationId: payout.partnerOrganizationId,
+  ...(staff ? { partnerName } : {}),
   receivable: { id: payout.receivable.id, ref: payout.receivable.ref, status: payout.receivable.status },
   submissionId: payout.submissionId,
   applicationId: payout.applicationId,
@@ -61,9 +63,10 @@ export const toPayoutView = (payout: PartnerPayout & { receivable: Receivable },
   createdAt: payout.createdAt.toISOString(),
 });
 
-export const toRunView = (run: ReconciliationRun) => ({
+export const toRunView = (run: ReconciliationRun, lenderName: string | null = null) => ({
   id: run.id,
   lenderOrganizationId: run.lenderOrganizationId,
+  lenderName,
   source: run.source,
   lineCount: run.lineCount,
   matchedCount: run.matchedCount,

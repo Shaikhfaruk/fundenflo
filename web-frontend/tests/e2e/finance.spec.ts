@@ -42,6 +42,7 @@ test('finance invoices and collects a lender fee, pays the partner with two peop
   await page.getByRole('button', { name: seeded.receivableRef, exact: true }).filter({ visible: true }).first().click();
   const sheet = page.getByRole('dialog');
   await expect(sheet.getByText('Accrued', { exact: true }).first()).toBeVisible();
+  await expect(sheet.getByText(lender.name)).toBeVisible();
   await sheet.getByRole('button', { name: 'Record Invoice' }).click();
   await page.getByRole('dialog').last().getByLabel('Invoice number').fill(invoiceNumber);
   await page.getByRole('dialog').last().getByRole('button', { name: 'Record Invoice' }).click();

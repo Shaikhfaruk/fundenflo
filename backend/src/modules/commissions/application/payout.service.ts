@@ -14,6 +14,7 @@ import { applyBps } from '../../../engines/commissions/commission-math.js';
 import type { CompiledCommissionScheme } from '../../../engines/commissions/commissions.types.js';
 import { COLLECTED_RECEIVABLE_STATES, PayoutEvent, payoutMachine } from '../../../engines/state-machines/machines/commission.machine.js';
 import type { PartnerPayout, Prisma } from '../../../generated/prisma/client.js';
+import { OrganizationService } from '../../access/application/organization.service.js';
 import { AppAction, type AppAbility } from '../../access/domain/ability.types.js';
 import { AuditService } from '../../audit/application/audit.service.js';
 import { ChangeRecorder } from '../../audit/application/change-recorder.service.js';
@@ -44,19 +45,21 @@ export class PayoutService {
     private readonly audit: AuditService,
     private readonly changes: ChangeRecorder,
     private readonly risk: RiskService,
+    private readonly organizations: OrganizationService,
   ) {}
 
   async list(ability: AppAbility, query: PageQuery & PayoutFilters) {
     const window = pageWindow(query);
     const rows = await this.commissions.listPayouts({ AND: [accessibleBy(ability, AppAction.Read).ofType('PartnerPayout'), { id: window.idFilter, status: query.status, partnerOrganizationId: query.partnerOrganizationId }] }, window.take);
-    return toPage(rows, query.limit, (row) => toPayoutView(row, true));
+    const names = await this.organizations.names(rows.map((row) => row.partnerOrganizationId));
+    return toPage(rows, query.limit, (row) => toPayoutView(row, true, names.get(row.partnerOrganizationId) ?? null));
   }
 
   async detail(id: string, ability: AppAbility) {
     const payout = await this.visible(id, ability, AppAction.Read);
     const bankAccount = await this.kyc.bankAccount(payout.partnerOrganizationId);
     await this.audit.record({ action: AuditAction.PayoutBankAccountViewed, entityType: AuditEntity.PartnerPayout, entityId: id, metadata: { partnerOrganizationId: payout.partnerOrganizationId } });
-    return { ...toPayoutView(payout, true), bankAccount };
+    return { ...toPayoutView(payout, true, await this.partnerName(payout.partnerOrganizationId)), bankAccount };
   }
 
   @Transactional()
@@ -125,7 +128,12 @@ export class PayoutService {
   }
 
   private async view(id: string, ability: AppAbility) {
-    return toPayoutView(await this.visible(id, ability, AppAction.Read), true);
+    const payout = await this.visible(id, ability, AppAction.Read);
+    return toPayoutView(payout, true, await this.partnerName(payout.partnerOrganizationId));
+  }
+
+  private async partnerName(organizationId: string) {
+    return (await this.organizations.names([organizationId])).get(organizationId) ?? null;
   }
 
   private async visible(id: string, ability: AppAbility, action: AppAction) {

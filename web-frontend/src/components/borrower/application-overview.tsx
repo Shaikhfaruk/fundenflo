@@ -6,7 +6,7 @@ import { useParams } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 
-import { useJourneyPaths } from '@/components/journey/journey-mode';
+import { useJourneyPaths, usePartnerMode } from '@/components/journey/journey-mode';
 import { ApplicationActivity } from '@/components/borrower/application-activity';
 import { useCategoryLabel } from '@/components/borrower/category-labels';
 import { JourneyStepper } from '@/components/borrower/journey-stepper';
@@ -32,6 +32,7 @@ const rise = (delay: number) => ({ initial: { opacity: 0, y: -14 }, animate: { o
 export function ApplicationOverview() {
   const paths = useJourneyPaths();
   const t = useTranslations('borrower.overview');
+  const partner = usePartnerMode();
   const tBlockers = useTranslations('borrower.blockers');
   const tJourney = useTranslations('journey');
   const locale = useLocale();
@@ -125,7 +126,7 @@ export function ApplicationOverview() {
           <ApplicationActivity applicationId={app.id} open={!CLOSED_APPLICATION_STATUSES.includes(app.status)} />
         </div>
         <motion.section {...rise(0.14)} className="rounded-xl bg-card p-4 shadow-card">
-          <h2 className="mb-3 font-heading text-lg font-semibold text-navy">{t('journey')}</h2>
+          <h2 className="mb-3 font-heading text-lg font-semibold text-navy">{partner ? t('journeyPartner') : t('journey')}</h2>
           {nextStep.data ? (
             <JourneyStepper
               current={nextStep.data.stage ?? app.journeyStage}

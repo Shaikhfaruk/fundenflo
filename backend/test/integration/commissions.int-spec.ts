@@ -131,6 +131,7 @@ describe('commission schemes, accrual, receivables, reconciliation and partner p
     const receivable = await as(finance).get(`/admin/finance/receivables/${accrued?.receivableId}`).expect(200);
     expect(receivable.body).toMatchObject({ status: 'accrued', basePaise: 10 * LAKH, feePaise: 1_000_000, gstRateBps: 1800, gstPaise: 180_000, totalPaise: 1_180_000, outstandingPaise: 1_180_000, payout: { status: 'pending', grossPaise: 500_000, netPaise: 400_000 } });
     expect(receivable.body.ref).toMatch(/^RC-/);
+    expect(receivable.body.lenderName).toBe('Commission Finance');
     const payoutId = accrued?.payoutId as string;
     await as(owner).get('/admin/finance/receivables').expect(403);
 
@@ -140,7 +141,7 @@ describe('commission schemes, accrual, receivables, reconciliation and partner p
     expect(partial.body).toMatchObject({ status: 'invoiced', receivedPaise: 500_000, outstandingPaise: 680_000 });
     expect((await as(finance).patch(`/admin/finance/receivables/${accrued?.receivableId}`, { action: 'receive', amountPaise: 700_000 }).expect(400)).body.details[0].code).toBe('over_payment');
     const run = await as(finance).post('/admin/finance/reconciliation', { lenderId: lender.id, source: 'lender_statement', lines: [{ reference: 'FF/26/0001', amountPaise: 680_000, utr: 'HDFC00012399' }, { reference: 'RC-99-999999', amountPaise: 1_000 }] }).expect(201);
-    expect(run.body).toMatchObject({ lineCount: 2, matchedCount: 1, matchedPaise: 680_000, reconciledReceivableIds: [accrued?.receivableId], unmatched: [{ reference: 'RC-99-999999', reason: 'not_found' }] });
+    expect(run.body).toMatchObject({ lenderName: 'Commission Finance', lineCount: 2, matchedCount: 1, matchedPaise: 680_000, reconciledReceivableIds: [accrued?.receivableId], unmatched: [{ reference: 'RC-99-999999', reason: 'not_found' }] });
     expect((await as(finance).get(`/admin/finance/receivables/${accrued?.receivableId}`).expect(200)).body).toMatchObject({ status: 'reconciled', reconciliationRunId: run.body.id, outstandingPaise: 0 });
     expect((await as(finance).get('/admin/finance/reconciliation').expect(200)).body.items[0].id).toBe(run.body.id);
 
@@ -150,6 +151,7 @@ describe('commission schemes, accrual, receivables, reconciliation and partner p
     expect(approved.body).toMatchObject({ status: 'approved', tdsRateBps: 500, tdsPaise: 25_000, netPaise: 475_000 });
     const detail = await as(treasurer).get(`/admin/finance/payouts/${payoutId}`).expect(200);
     expect(detail.body.bankAccount).toEqual({ accountNumber: '502000987654321', ifsc: 'ICIC0004321', holderName: 'Rao Tax Consultants' });
+    expect(detail.body.partnerName).toBe('Rao Tax Consultants');
     expect((await as(finance).post(`/admin/finance/payouts/${payoutId}/mark-paid`, { utr: 'NEFT00098765' }).expect(403)).body.details.reason).toBe('second_person_required');
     const paid = await as(treasurer).post(`/admin/finance/payouts/${payoutId}/mark-paid`, { utr: 'NEFT00098765' }).expect(200);
     expect(paid.body).toMatchObject({ status: 'paid', utr: 'NEFT00098765' });
