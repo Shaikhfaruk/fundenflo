@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { DiscoveryModule } from '@nestjs/core';
 
 import { ConfigResource } from '../../common/enums/db.enums.js';
 import { AttributesModule } from '../attributes/attributes.module.js';
@@ -7,6 +8,7 @@ import { ConfigPublishingModule } from '../config-publishing/config-publishing.m
 import { createVersionedConfigController } from '../config-publishing/http/versioned-config.controller.js';
 import { PartiesModule } from '../parties/parties.module.js';
 import { AnswerMergeParticipant } from './application/answer-merge.participant.js';
+import { AttributeNeedRegistry } from './application/attribute-need.registry.js';
 import { QuestionSetHandler } from './application/question-set.handler.js';
 import { QuestionService } from './application/question.service.js';
 import { QuestionnaireService } from './application/questionnaire.service.js';
@@ -24,9 +26,9 @@ const AdminQuestionSetsController = createVersionedConfigController({
 });
 
 @Module({
-  imports: [AttributesModule, CatalogModule, ConfigPublishingModule, PartiesModule],
+  imports: [AttributesModule, CatalogModule, ConfigPublishingModule, DiscoveryModule, PartiesModule],
   controllers: [AdminQuestionsController, AdminQuestionSetsController, AdminQuestionSetPreviewController, CatalogQuestionsController, OpsAnswersController],
-  providers: [AnswerMergeParticipant, QuestionRepository, AnswerRepository, QuestionService, QuestionSetHandler, QuestionnaireService],
+  providers: [AnswerMergeParticipant, AttributeNeedRegistry, QuestionRepository, AnswerRepository, QuestionService, QuestionSetHandler, QuestionnaireService],
   exports: [QuestionnaireService],
 })
 export class QuestionnairesModule {}

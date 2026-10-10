@@ -1,0 +1,144 @@
+{
+  "name": "Create Document Type",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "Idempotency-Key",
+        "value": "{{$guid}}"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/document-types",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "document-types"
+      ]
+    },
+    "description": "Adds a document type. `key` never changes. `producesAttributes` must be active dictionary attributes (what extraction will fill in later). Staff only. Reading needs document type read access; changes need manage access (ops lead, super admin). Descriptions may use `{{assessmentYear}}` (the latest ITR assessment year, e.g. 2026–27).",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"key\": \"export_invoices_{{$timestamp}}\",\n  \"label\": {\n    \"en\": \"Export Invoices\"\n  },\n  \"description\": {\n    \"en\": \"Last 6 Months Of Export Invoices\"\n  },\n  \"icon\": \"receipt\",\n  \"acceptedMimeTypes\": [\n    \"application/pdf\"\n  ],\n  \"maxSizeBytes\": 5000000,\n  \"periodRule\": \"last_6_months\",\n  \"sensitivity\": \"financial\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "pm.collectionVariables.set('documentTypeId', String(pm.response.json().id));",
+          "pm.collectionVariables.set('documentTypeVersion', String(pm.response.json().version));",
+          "pm.collectionVariables.set('documentTypeKey', String(pm.response.json().key));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "{{$guid}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/document-types",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "document-types"
+          ]
+        },
+        "description": "Adds a document type. `key` never changes. `producesAttributes` must be active dictionary attributes (what extraction will fill in later). Staff only. Reading needs document type read access; changes need manage access (ops lead, super admin). Descriptions may use `{{assessmentYear}}` (the latest ITR assessment year, e.g. 2026–27).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"key\": \"export_invoices_{{$timestamp}}\",\n  \"label\": {\n    \"en\": \"Export Invoices\"\n  },\n  \"description\": {\n    \"en\": \"Last 6 Months Of Export Invoices\"\n  },\n  \"icon\": \"receipt\",\n  \"acceptedMimeTypes\": [\n    \"application/pdf\"\n  ],\n  \"maxSizeBytes\": 5000000,\n  \"periodRule\": \"last_6_months\",\n  \"sensitivity\": \"financial\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12250-1a2b-7c3d-8e4f-5061728394a5\",\n  \"key\": \"export_invoices\",\n  \"label\": {\n    \"en\": \"Export Invoices\"\n  },\n  \"description\": {\n    \"en\": \"Last 6 Months Of Export Invoices\"\n  },\n  \"icon\": \"receipt\",\n  \"acceptedMimeTypes\": [\n    \"application/pdf\"\n  ],\n  \"maxSizeBytes\": 5000000,\n  \"periodRule\": \"last_6_months\",\n  \"freshnessDays\": null,\n  \"extractorKey\": null,\n  \"producesAttributes\": [],\n  \"retentionDays\": null,\n  \"sensitivity\": \"financial\",\n  \"status\": \"active\",\n  \"version\": 1,\n  \"updatedAt\": \"2026-10-10T15:00:00.000Z\"\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "{{$guid}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/document-types",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "document-types"
+          ]
+        },
+        "description": "Adds a document type. `key` never changes. `producesAttributes` must be active dictionary attributes (what extraction will fill in later). Staff only. Reading needs document type read access; changes need manage access (ops lead, super admin). Descriptions may use `{{assessmentYear}}` (the latest ITR assessment year, e.g. 2026–27).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"key\": \"export_invoices_{{$timestamp}}\",\n  \"label\": {\n    \"en\": \"Export Invoices\"\n  },\n  \"description\": {\n    \"en\": \"Last 6 Months Of Export Invoices\"\n  },\n  \"icon\": \"receipt\",\n  \"acceptedMimeTypes\": [\n    \"application/pdf\"\n  ],\n  \"maxSizeBytes\": 5000000,\n  \"periodRule\": \"last_6_months\",\n  \"sensitivity\": \"financial\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"description.en\",\n      \"code\": \"unknown_placeholder\",\n      \"message\": \"{{financialYear}} is not available; use {{assessmentYear}}\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

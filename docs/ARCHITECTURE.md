@@ -1,7 +1,7 @@
 # FundenFlo Backend — Architecture Diagrams
 
 > Living document. Any change that adds, renames, moves or removes a module, route group, queue, job, channel or worker updates the matching diagram here **and** [`inventory.md`](inventory.md) in the same change.
-> **Built (M0 + all of M1):** system context, identity & multiple logins (diagrams 3–4, parties/users/memberships/sessions parts), audit, notifications, outbox and the four M0 queues in diagram 9, the `catalog` module (diagram 2; feeds the Category and Requirement steps in diagram 7), the `attributes` module with the `conditions` and `facts` engines (diagram 2; the fact store and rule evaluation behind every step of diagram 7), and `config-publishing` + `questionnaires` with the `state-machines` and `questionnaire` engines (diagram 7: Pre-check step and the config lifecycle), `consents` with the `consents` engine (diagram 7: Consent step; diagram 5: consent gate before sharing), `partners` light with organization lifecycle (diagram 4: partner sign-in states; diagram 5: the CA pool routing will draw from), leads core: capture, lifecycle and the ops queue, and lead routing: versioned routing rules, the `assignment` engine, offers with accept deadlines, manual assign and revoke, and the `leads.route` queue, the CA lead inbox: masked offers, accept, decline, return, logged contact reveal, hand-over and lost, the `sla` (generic timers, swept every 30 s) and `activities` (activity log, follow-ups) modules, lead notifications, partner referrals with protection, CA lead edits and offline conversions, the party match review queue with undoable merges, realtime (Socket.IO gateway with the Redis adapter, `realtime.publish` via the Redis emitter) with push notifications, delta sync and lead / CA reports (diagrams 2, 3, 5, 6 and 9, green parts). Everything else is planned. Design rationale: [`BACKEND_ARCHITECTURE_PLAN.md`](BACKEND_ARCHITECTURE_PLAN.md).
+> **Built (M0, M1, M2):** system context, identity & multiple logins (diagrams 3–4, parties/users/memberships/sessions parts), audit, notifications, outbox and the four M0 queues in diagram 9, the `catalog` module (diagram 2; feeds the Category and Requirement steps in diagram 7), the `attributes` module with the `conditions` and `facts` engines (diagram 2; the fact store and rule evaluation behind every step of diagram 7), and `config-publishing` + `questionnaires` with the `state-machines` and `questionnaire` engines (diagram 7: Pre-check step and the config lifecycle), `consents` with the `consents` engine (diagram 7: Consent step; diagram 5: consent gate before sharing), `partners` light with organization lifecycle (diagram 4: partner sign-in states; diagram 5: the CA pool routing will draw from), leads core: capture, lifecycle and the ops queue, and lead routing: versioned routing rules, the `assignment` engine, offers with accept deadlines, manual assign and revoke, and the `leads.route` queue, the CA lead inbox: masked offers, accept, decline, return, logged contact reveal, hand-over and lost, the `sla` (generic timers, swept every 30 s) and `activities` (activity log, follow-ups) modules, lead notifications, partner referrals with protection, CA lead edits and offline conversions, the party match review queue with undoable merges, realtime (Socket.IO gateway with the Redis adapter, `realtime.publish` via the Redis emitter) with push notifications, delta sync and lead / CA reports, and M2 config core: document types, versioned document requirements with the `documents` checklist engine, and the progressive profiling hook (diagrams 2, 3, 5, 6, 7 and 9, green parts). Everything else is planned. Design rationale: [`BACKEND_ARCHITECTURE_PLAN.md`](BACKEND_ARCHITECTURE_PLAN.md).
 > Last updated: 2026-10-10
 
 ## Diagrams
@@ -158,7 +158,7 @@ flowchart TB
   LeadsGroup --> Ports
   Platform --> Ports
   classDef built fill:#d8f3dc,stroke:#2d6a4f,color:#081c15
-  class auth,access,parties,catalog,attributes,questionnaires,consents,partners,leads,imports,activities,sla,realtime,sync,notifications,audit,configPublishing,conditions,facts,questionnaire,partyMatching,stateMachines,consentFold,assignment,database,queue,storage,crypto,cache built
+  class auth,access,parties,catalog,attributes,questionnaires,consents,partners,leads,imports,activities,sla,realtime,sync,documents,notifications,audit,configPublishing,conditions,facts,questionnaire,partyMatching,stateMachines,consentFold,assignment,docChecklist,database,queue,storage,crypto,cache built
 ```
 
 Green = built (M0 – M1.8c). Rules: engines import nothing from Nest, modules or infrastructure. Modules talk only through exported façade services or domain events. Integrations are reached only through ports.
@@ -366,6 +366,8 @@ flowchart LR
   S11 --> S12[Submission]
   S12 -->|lender events| S13[Sanction / disbursal]
   S13 -->|ledger| S14[Commission]
+  classDef built fill:#d8f3dc,stroke:#2d6a4f,color:#081c15
+  class S1,S2,S3,S4,S5 built
 ```
 
 Every step reads and writes borrower data through one fact store and one rule format (built in M1.2):
@@ -389,7 +391,7 @@ flowchart LR
   RULES --> OUT
 ```
 
-Every dynamic resource (question sets, consent templates and routing rules now; document requirements, lender products, scoring models, commission schemes next) shares one lifecycle (built in M1.3, `configVersionMachine` + `ConfigPublishingService`):
+Every dynamic resource (question sets, consent templates, routing rules and document requirements now; lender products, scoring models, commission schemes next) shares one lifecycle (built in M1.3, `configVersionMachine` + `ConfigPublishingService`):
 
 ```mermaid
 stateDiagram-v2

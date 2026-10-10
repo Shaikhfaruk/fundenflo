@@ -19,6 +19,7 @@ export const EventName = {
   CatalogChanged: 'catalog.changed',
   GeoChanged: 'geo.changed',
   AttributeChanged: 'attribute.changed',
+  DocumentTypeChanged: 'document_type.changed',
   FactsRecorded: 'facts.recorded',
   ConfigChanged: 'config.changed',
   ConfigChangeRequested: 'config.change_requested',

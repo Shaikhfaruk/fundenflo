@@ -1,0 +1,150 @@
+{
+  "name": "Get Document Checklist",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/catalog/document-checklist?stage=assessment&segment=msme&category=lap&fact=business.gst_registered:true",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "catalog",
+        "document-checklist"
+      ],
+      "query": [
+        {
+          "key": "stage",
+          "value": "assessment"
+        },
+        {
+          "key": "segment",
+          "value": "msme"
+        },
+        {
+          "key": "category",
+          "value": "lap"
+        },
+        {
+          "key": "fact",
+          "value": "business.gst_registered:true"
+        }
+      ]
+    },
+    "description": "The documents needed for a segment, sub-segment and category at a `stage` (default `assessment`), built from published document requirements; seeded from the v0.1 app documents step. `fact=attribute.key:value` (repeatable) supplies known answers so conditional slots resolve, otherwise they come back with `conditional: true`. Slots with several document types are satisfied by any one (`anyOf`). Labels follow `Accept-Language`. Public.",
+    "auth": {
+      "type": "noauth"
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/catalog/document-checklist?stage=assessment&segment=msme&category=lap&fact=business.gst_registered:true",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "catalog",
+            "document-checklist"
+          ],
+          "query": [
+            {
+              "key": "stage",
+              "value": "assessment"
+            },
+            {
+              "key": "segment",
+              "value": "msme"
+            },
+            {
+              "key": "category",
+              "value": "lap"
+            },
+            {
+              "key": "fact",
+              "value": "business.gst_registered:true"
+            }
+          ]
+        },
+        "description": "The documents needed for a segment, sub-segment and category at a `stage` (default `assessment`), built from published document requirements; seeded from the v0.1 app documents step. `fact=attribute.key:value` (repeatable) supplies known answers so conditional slots resolve, otherwise they come back with `conditional: true`. Slots with several document types are satisfied by any one (`anyOf`). Labels follow `Accept-Language`. Public.",
+        "auth": {
+          "type": "noauth"
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"stage\": \"assessment\",\n  \"requirements\": [\n    {\n      \"key\": \"assessment.base\",\n      \"versionId\": \"01a12250-3c4d-7e5f-8061-728394a5b6c7\"\n    }\n  ],\n  \"items\": [\n    {\n      \"key\": \"income_proof\",\n      \"label\": \"ITR Or GST Returns\",\n      \"description\": \"Assessment Year 2026–27 Or Last 12 Months GSTR-3B\",\n      \"required\": true,\n      \"minCount\": 1,\n      \"anyOf\": true,\n      \"conditional\": false,\n      \"documentTypes\": [\n        {\n          \"key\": \"itr\",\n          \"label\": \"Income Tax Return\",\n          \"description\": \"ITR For Assessment Year 2026–27\",\n          \"icon\": \"receipt\",\n          \"acceptedMimeTypes\": [\n            \"application/pdf\",\n            \"image/jpeg\",\n            \"image/png\"\n          ],\n          \"maxSizeBytes\": 10485760,\n          \"periodRule\": \"latest_assessment_year\"\n        },\n        {\n          \"key\": \"gstr_3b\",\n          \"label\": \"GST Returns\",\n          \"description\": \"Last 12 Months GSTR-3B\",\n          \"icon\": \"receipt\",\n          \"acceptedMimeTypes\": [\n            \"application/pdf\",\n            \"image/jpeg\",\n            \"image/png\"\n          ],\n          \"maxSizeBytes\": 10485760,\n          \"periodRule\": \"last_12_months\"\n        }\n      ],\n      \"neededBy\": [\n        \"assessment.msme\"\n      ]\n    }\n  ],\n  \"hidden\": []\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/catalog/document-checklist?stage=assessment&segment=msme&category=lap&fact=business.gst_registered:true",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "catalog",
+            "document-checklist"
+          ],
+          "query": [
+            {
+              "key": "stage",
+              "value": "assessment"
+            },
+            {
+              "key": "segment",
+              "value": "msme"
+            },
+            {
+              "key": "category",
+              "value": "lap"
+            },
+            {
+              "key": "fact",
+              "value": "business.gst_registered:true"
+            }
+          ]
+        },
+        "description": "The documents needed for a segment, sub-segment and category at a `stage` (default `assessment`), built from published document requirements; seeded from the v0.1 app documents step. `fact=attribute.key:value` (repeatable) supplies known answers so conditional slots resolve, otherwise they come back with `conditional: true`. Slots with several document types are satisfied by any one (`anyOf`). Labels follow `Accept-Language`. Public.",
+        "auth": {
+          "type": "noauth"
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"fact.0\",\n      \"code\": \"unknown_attribute\",\n      \"message\": \"unknown or inactive attribute nope.attr\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

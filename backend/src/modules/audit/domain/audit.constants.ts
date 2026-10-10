@@ -102,6 +102,7 @@ export const AuditEntity = {
   GeoPincode: 'geo_pincode',
   LookupAlias: 'lookup_alias',
   AttributeDefinition: 'attribute_definition',
+  DocumentType: 'document_type',
   BorrowerFact: 'borrower_fact',
   ConfigDocument: 'config_document',
   ConfigVersion: 'config_version',

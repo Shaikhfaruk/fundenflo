@@ -77,6 +77,7 @@ export type ResolvedQuestionnaire = {
   sections: QuestionSection[];
   questions: ResolvedQuestion[];
   hidden: string[];
+  progressive?: Array<{ questionKey: string; attributeKey: string; weight: number; neededBy: string[] }>;
 };
 
 export type AnswerResult = { ok: true; value: FactValue } | { ok: false; message: string };

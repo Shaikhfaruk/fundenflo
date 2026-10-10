@@ -1,0 +1,109 @@
+{
+  "name": "Get Document Type",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/document-types/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "document-types",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{documentTypeId}}"
+        }
+      ]
+    },
+    "description": "One document type. Staff only. Reading needs document type read access; changes need manage access (ops lead, super admin). Descriptions may use `{{assessmentYear}}` (the latest ITR assessment year, e.g. 2026–27)."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.collectionVariables.set('documentTypeVersion', String(pm.response.json().version));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/document-types/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "document-types",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{documentTypeId}}"
+            }
+          ]
+        },
+        "description": "One document type. Staff only. Reading needs document type read access; changes need manage access (ops lead, super admin). Descriptions may use `{{assessmentYear}}` (the latest ITR assessment year, e.g. 2026–27)."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12250-1a2b-7c3d-8e4f-5061728394a5\",\n  \"key\": \"export_invoices\",\n  \"label\": {\n    \"en\": \"Export Invoices\"\n  },\n  \"description\": {\n    \"en\": \"Last 6 Months Of Export Invoices\"\n  },\n  \"icon\": \"receipt\",\n  \"acceptedMimeTypes\": [\n    \"application/pdf\"\n  ],\n  \"maxSizeBytes\": 5000000,\n  \"periodRule\": \"last_6_months\",\n  \"freshnessDays\": null,\n  \"extractorKey\": null,\n  \"producesAttributes\": [],\n  \"retentionDays\": null,\n  \"sensitivity\": \"financial\",\n  \"status\": \"active\",\n  \"version\": 1,\n  \"updatedAt\": \"2026-10-10T15:00:00.000Z\"\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/document-types/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "document-types",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{documentTypeId}}"
+            }
+          ]
+        },
+        "description": "One document type. Staff only. Reading needs document type read access; changes need manage access (ops lead, super admin). Descriptions may use `{{assessmentYear}}` (the latest ITR assessment year, e.g. 2026–27)."
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

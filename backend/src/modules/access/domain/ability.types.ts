@@ -8,6 +8,7 @@ import type {
   AuditEvent,
   ConfigDocument,
   ConsentPurpose,
+  DocumentType,
   FollowUp,
   ImportBatch,
   Invitation,
@@ -66,6 +67,7 @@ export type AppSubjects =
       Activity: Activity;
       FollowUp: FollowUp;
       OfflineConversion: OfflineConversion;
+      DocumentType: DocumentType;
     }>;
 
 export type AppAbility = Ability<[AppAction, AppSubjects], PrismaQueryOf<Prisma.TypeMap>>;

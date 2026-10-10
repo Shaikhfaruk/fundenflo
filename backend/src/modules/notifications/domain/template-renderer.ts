@@ -22,3 +22,7 @@ export function renderTemplate(template: string, params: TemplateParams): string
   if (missing.size > 0) throw new MissingTemplateParamsError([...missing]);
   return rendered;
 }
+
+export function templatePlaceholders(template: string): string[] {
+  return [...new Set([...template.matchAll(TEMPLATE_PLACEHOLDER)].map((match) => match[1] ?? ''))];
+}

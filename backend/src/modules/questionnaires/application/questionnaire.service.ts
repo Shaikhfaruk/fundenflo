@@ -1,7 +1,7 @@
 import { Transactional } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
 
-import { type AnswerChannel, ConfigResource, FactProvenance } from '../../../common/enums/db.enums.js';
+import { type AnswerChannel, CatalogStatus, ConfigResource, FactProvenance } from '../../../common/enums/db.enums.js';
 import { EventName } from '../../../common/events/event-names.js';
 import { AppError } from '../../../common/errors/app-error.js';
 import { ErrorCode } from '../../../common/errors/error-codes.js';
@@ -10,6 +10,7 @@ import { type PageQuery, pageWindow, toPage } from '../../../common/listing/curs
 import type { FactValue } from '../../../engines/conditions/condition.types.js';
 import { answerToFact } from '../../../engines/questionnaire/answer.js';
 import { QuestionKind, type CompiledQuestionSet, type QuestionnaireContext, type ResolvedQuestion, type ResolvedQuestionnaire } from '../../../engines/questionnaire/questionnaire.types.js';
+import { addProgressiveQuestions } from '../../../engines/questionnaire/progressive.js';
 import { remainingRequired, resolveQuestionnaire } from '../../../engines/questionnaire/resolve.js';
 import type { Prisma } from '../../../generated/prisma/client.js';
 import { FactService } from '../../attributes/application/fact.service.js';
@@ -22,8 +23,10 @@ import { PartyService } from '../../parties/application/party.service.js';
 import type { ConfigIssue } from '../../config-publishing/domain/config.types.js';
 import { MAX_ANSWERS_PER_WRITE } from '../domain/questionnaire.constants.js';
 import { AnswerRepository } from '../infrastructure/answer.repository.js';
+import { QuestionRepository } from '../infrastructure/question.repository.js';
+import { AttributeNeedRegistry } from './attribute-need.registry.js';
 import { QuestionSetHandler } from './question-set.handler.js';
-import { toAnswerView } from './questionnaire.views.js';
+import { compileQuestion, toAnswerView } from './questionnaire.views.js';
 
 export type AnswerInput = { questionKey: string; value: unknown };
 
@@ -46,13 +49,22 @@ export class QuestionnaireService {
     private readonly geo: GeoService,
     private readonly changes: ChangeRecorder,
     private readonly parties: PartyService,
+    private readonly needs: AttributeNeedRegistry,
+    private readonly questions: QuestionRepository,
   ) {}
 
   async resolve(context: QuestionnaireContext, partyId?: string, overlay?: Overlay): Promise<ResolvedQuestionnaire> {
     const published = await this.config.active<CompiledQuestionSet>(ConfigResource.question_set);
     const sets = published.map((entry) => ({ key: entry.key, versionId: entry.versionId, number: entry.number, set: entry.compiled }));
     const lookup = partyId || overlay ? await this.facts.lookup(partyId ?? null, overlay) : undefined;
-    return resolveQuestionnaire(sets, context, lookup);
+    const resolved = resolveQuestionnaire(sets, context, lookup);
+    if (!partyId || !lookup || this.needs.empty) return resolved;
+    const needs = await this.needs.needs({ ...context, partyId });
+    if (needs.length === 0) return resolved;
+    const bank = new Map<string, ReturnType<typeof compileQuestion>>();
+    for (const question of await this.questions.list({ attributeKey: { in: [...new Set(needs.map((need) => need.attributeKey))] }, status: CatalogStatus.active })) if (!bank.has(question.attributeKey)) bank.set(question.attributeKey, compileQuestion(question));
+    const { questionnaire, added } = addProgressiveQuestions(resolved, needs, bank, (attribute) => lookup(attribute) !== undefined);
+    return { ...questionnaire, progressive: added };
   }
 
   async preview(documentId: string, number: number, context: Omit<QuestionnaireContext, 'stage'>, partyId?: string, overlay?: Overlay) {

@@ -1,0 +1,22 @@
+model DocumentType {
+  id                 String          @id @default(uuid(7)) @db.Uuid
+  key                String          @unique
+  label              Json
+  description        Json?
+  icon               String?
+  acceptedMimeTypes  String[]        @map("accepted_mime_types")
+  maxSizeBytes       Int             @map("max_size_bytes")
+  periodRule         String?         @map("period_rule")
+  freshnessDays      Int?            @map("freshness_days")
+  extractorKey       String?         @map("extractor_key")
+  producesAttributes String[]        @map("produces_attributes")
+  retentionDays      Int?            @map("retention_days")
+  sensitivity        DataSensitivity
+  status             CatalogStatus   @default(active)
+  version            Int             @default(1)
+  createdAt          DateTime        @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt          DateTime        @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([status])
+  @@map("document_types")
+}

@@ -1,0 +1,84 @@
+{
+  "name": "Document types, versioned document requirements and the checklist",
+  "requires": [
+    "staffInvitation",
+    "checkerInvitation"
+  ],
+  "steps": [
+    {
+      "request": "03 Catalog/08 Get Document Checklist.json"
+    },
+    {
+      "request": "01 Auth/06 Accept Staff Invitation.json"
+    },
+    {
+      "request": "01 Auth/07 Staff Login.json"
+    },
+    {
+      "request": "01 Auth/08 Verify Staff MFA.json"
+    },
+    {
+      "request": "56 Admin - Documents/01 List Document Types.json"
+    },
+    {
+      "request": "56 Admin - Documents/02 Create Document Type.json"
+    },
+    {
+      "request": "56 Admin - Documents/03 Get Document Type.json"
+    },
+    {
+      "request": "56 Admin - Documents/04 Update Document Type.json"
+    },
+    {
+      "request": "56 Admin - Documents/05 List Document Requirements.json"
+    },
+    {
+      "request": "56 Admin - Documents/06 Create Document Requirement.json"
+    },
+    {
+      "request": "56 Admin - Documents/07 Get Document Requirement.json"
+    },
+    {
+      "request": "56 Admin - Documents/08 Update Document Requirement.json"
+    },
+    {
+      "request": "56 Admin - Documents/10 Get Document Requirement Version.json"
+    },
+    {
+      "request": "56 Admin - Documents/11 Update Document Requirement Draft.json"
+    },
+    {
+      "request": "56 Admin - Documents/12 Submit Document Requirement Version.json"
+    },
+    {
+      "request": "01 Auth/06 Accept Staff Invitation.json",
+      "identity": "checker"
+    },
+    {
+      "request": "01 Auth/07 Staff Login.json",
+      "identity": "checker"
+    },
+    {
+      "request": "01 Auth/08 Verify Staff MFA.json",
+      "identity": "checker"
+    },
+    {
+      "request": "48 Admin - Change Requests/03 Approve Change Request.json",
+      "identity": "checker"
+    },
+    {
+      "request": "56 Admin - Documents/13 Publish Document Requirement Version.json",
+      "identity": "maker"
+    },
+    {
+      "request": "03 Catalog/08 Get Document Checklist.json",
+      "variables": {}
+    },
+    {
+      "request": "56 Admin - Documents/09 Create Document Requirement Version.json"
+    },
+    {
+      "request": "56 Admin - Documents/14 Retire Document Requirement Version.json"
+    }
+  ]
+}

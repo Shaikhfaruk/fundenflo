@@ -1,0 +1,115 @@
+{
+  "name": "Retire Document Requirement Version",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/document-requirements/:id/versions/:number/retire",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "document-requirements",
+        ":id",
+        "versions",
+        ":number",
+        "retire"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{documentRequirementId}}"
+        },
+        {
+          "key": "number",
+          "value": "{{documentRequirementNumber}}"
+        }
+      ]
+    },
+    "description": "Takes a version out of use; a published one falls back to the previous published version. Staff only. Document requirements are versioned config (same lifecycle as question sets: an ops lead makes, a different staff member approves in Change Requests, then it is published). `content`: `stage` (`assessment`, `submission`, `post_sanction`), `scope` (`segments`, `subSegments`, `categories`; empty = everyone) and `items[]` slots: `key`, `documentTypes` (any one of them satisfies the slot), `required` (default true), `minCount` (default 1), optional `when` condition on facts, and `label` / `description` overrides. A more specific requirement replaces a slot with the same key.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"reason\": \"No longer asked by lenders\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/document-requirements/:id/versions/:number/retire",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "document-requirements",
+            ":id",
+            "versions",
+            ":number",
+            "retire"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{documentRequirementId}}"
+            },
+            {
+              "key": "number",
+              "value": "{{documentRequirementNumber}}"
+            }
+          ]
+        },
+        "description": "Takes a version out of use; a published one falls back to the previous published version. Staff only. Document requirements are versioned config (same lifecycle as question sets: an ops lead makes, a different staff member approves in Change Requests, then it is published). `content`: `stage` (`assessment`, `submission`, `post_sanction`), `scope` (`segments`, `subSegments`, `categories`; empty = everyone) and `items[]` slots: `key`, `documentTypes` (any one of them satisfies the slot), `required` (default true), `minCount` (default 1), optional `when` condition on facts, and `label` / `description` overrides. A more specific requirement replaces a slot with the same key.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reason\": \"No longer asked by lenders\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12250-3c4d-7e5f-8061-728394a5b6c7\",\n  \"resource\": \"document_requirement\",\n  \"documentId\": \"01a12250-2b3c-7d4e-9f50-61728394a5b6\",\n  \"documentKey\": \"assessment.msme.exporters\",\n  \"number\": 1,\n  \"status\": \"retired\",\n  \"content\": {\n    \"stage\": \"assessment\",\n    \"scope\": {\n      \"segments\": [\n        \"msme\"\n      ],\n      \"categories\": [\n        \"business\"\n      ]\n    },\n    \"items\": [\n      {\n        \"key\": \"export_invoices\",\n        \"documentTypes\": [\n          \"export_invoices\"\n        ],\n        \"required\": false,\n        \"when\": {\n          \"attr\": \"business.gst_registered\",\n          \"op\": \"eq\",\n          \"value\": true\n        }\n      }\n    ]\n  },\n  \"compiled\": null,\n  \"issues\": [],\n  \"contentHash\": null,\n  \"notes\": null,\n  \"effectiveFrom\": null,\n  \"publishedAt\": null,\n  \"retiredAt\": \"2026-10-10T15:00:00.000Z\",\n  \"createdByUserId\": \"01a121c0-5e6f-7a71-9283-94a5b6c7d8e9\",\n  \"submittedByUserId\": null,\n  \"approvedByUserId\": null,\n  \"publishedByUserId\": null,\n  \"retiredByUserId\": null,\n  \"changeRequest\": null,\n  \"availableActions\": [\n    \"edit\",\n    \"submit\",\n    \"retire\"\n  ],\n  \"version\": 1,\n  \"createdAt\": \"2026-10-10T15:00:00.000Z\",\n  \"updatedAt\": \"2026-10-10T15:00:00.000Z\"\n}"
+    }
+  ]
+}

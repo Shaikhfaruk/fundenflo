@@ -39,7 +39,7 @@ export const INVITATION_TOKEN_BYTES = 32;
 
 export const FUNDENFLO_ORGANIZATION_NAME = 'FundenFlo';
 
-export const OPS_CONFIG_RESOURCES: ConfigResource[] = [ConfigResource.question_set, ConfigResource.routing_rule];
+export const OPS_CONFIG_RESOURCES: ConfigResource[] = [ConfigResource.question_set, ConfigResource.routing_rule, ConfigResource.document_requirement];
 
 export const COMPLIANCE_CONFIG_RESOURCES: ConfigResource[] = [ConfigResource.consent_template];
 

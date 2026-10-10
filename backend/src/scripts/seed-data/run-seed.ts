@@ -5,6 +5,7 @@ import { sha256 } from '../../infrastructure/crypto/secure-random.js';
 import { FUNDENFLO_ORGANIZATION_NAME } from '../../modules/access/domain/access.constants.js';
 import { normaliseLookupText } from '../../modules/catalog/domain/alias.js';
 import { compileConsentTemplate } from '../../modules/consents/application/compile-consent-template.js';
+import { documentRequirementContentSchema, toCompiledRequirement } from '../../modules/documents/domain/document-requirement.schema.js';
 import { SYSTEM_LEAD_SOURCES } from '../../modules/leads/domain/lead.constants.js';
 import { compileQuestion } from '../../modules/questionnaires/application/questionnaire.views.js';
 import type { NotificationTemplateKey } from '../../modules/notifications/domain/notification.constants.js';
@@ -12,6 +13,7 @@ import { ATTRIBUTE_SEEDS, SEED_ATTRIBUTE_PROVENANCE } from './attributes.js';
 import { CONSENT_PURPOSE_SEEDS, JOURNEY_CONSENT_TEMPLATE } from './consents.js';
 import { CATEGORY_SEEDS, categoryAmounts, SEGMENT_CATEGORY_ORDER, SEGMENT_SEEDS } from './catalog.js';
 import { CITY_ALIAS_SEEDS, CITY_SEEDS, STATE_SEEDS } from './geo.js';
+import { DOCUMENT_REQUIREMENT_SEEDS, DOCUMENT_TYPE_SEEDS } from './documents.js';
 import { DLT_TEMPLATE_ENV, NOTIFICATION_TEMPLATE_SEEDS, type TemplateSeed } from './notification-templates.js';
 import { QUESTION_SEEDS, QUESTION_SET_SEEDS } from './questionnaires.js';
 
@@ -29,6 +31,8 @@ export type SeedResult = {
   consentPurposes: number;
   consentTemplates: number;
   leadSources: number;
+  documentTypes: number;
+  documentRequirements: number;
 };
 
 function dltTemplateId(template: TemplateSeed, env: NodeJS.ProcessEnv): string | null {
@@ -221,6 +225,17 @@ async function seedLeadSources(prisma: PrismaClient) {
   }
 }
 
+async function seedDocuments(prisma: PrismaClient) {
+  for (const seed of DOCUMENT_TYPE_SEEDS) {
+    await prisma.documentType.upsert({ where: { key: seed.key }, create: seed, update: {} });
+  }
+  for (const seed of DOCUMENT_REQUIREMENT_SEEDS) {
+    if (await configExists(prisma, ConfigResource.document_requirement, seed.key)) continue;
+    const content = documentRequirementContentSchema.parse(seed.content);
+    await seedPublishedConfig(prisma, { resource: ConfigResource.document_requirement, key: seed.key, name: seed.name, notes: 'Seeded from the v0.1 app documentsFor() checklist', content, compiled: toCompiledRequirement(content) });
+  }
+}
+
 export async function runSeed(prisma: PrismaClient, env: NodeJS.ProcessEnv): Promise<SeedResult> {
   const organization = await seedOrganization(prisma);
   await seedTemplates(prisma, env);
@@ -232,6 +247,7 @@ export async function runSeed(prisma: PrismaClient, env: NodeJS.ProcessEnv): Pro
   await seedQuestionSets(prisma);
   await seedConsents(prisma);
   await seedLeadSources(prisma);
+  await seedDocuments(prisma);
   return {
     organizationId: organization.id,
     templates: NOTIFICATION_TEMPLATE_SEEDS.length,
@@ -246,5 +262,7 @@ export async function runSeed(prisma: PrismaClient, env: NodeJS.ProcessEnv): Pro
     consentPurposes: CONSENT_PURPOSE_SEEDS.length,
     consentTemplates: 1,
     leadSources: SYSTEM_LEAD_SOURCES.length,
+    documentTypes: DOCUMENT_TYPE_SEEDS.length,
+    documentRequirements: DOCUMENT_REQUIREMENT_SEEDS.length,
   };
 }

@@ -1,0 +1,98 @@
+{
+  "name": "Create Document Requirement",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "Idempotency-Key",
+        "value": "{{$guid}}"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/document-requirements",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "document-requirements"
+      ]
+    },
+    "description": "Creates a requirement and its first draft. Staff only. Document requirements are versioned config (same lifecycle as question sets: an ops lead makes, a different staff member approves in Change Requests, then it is published). `content`: `stage` (`assessment`, `submission`, `post_sanction`), `scope` (`segments`, `subSegments`, `categories`; empty = everyone) and `items[]` slots: `key`, `documentTypes` (any one of them satisfies the slot), `required` (default true), `minCount` (default 1), optional `when` condition on facts, and `label` / `description` overrides. A more specific requirement replaces a slot with the same key.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"key\": \"assessment.msme.exporters_{{$timestamp}}\",\n  \"name\": {\n    \"en\": \"Exporters\"\n  },\n  \"content\": {\n    \"stage\": \"assessment\",\n    \"scope\": {\n      \"segments\": [\n        \"msme\"\n      ],\n      \"categories\": [\n        \"business\"\n      ]\n    },\n    \"items\": [\n      {\n        \"key\": \"export_invoices\",\n        \"documentTypes\": [\n          \"{{documentTypeKey}}\"\n        ],\n        \"required\": false,\n        \"when\": {\n          \"attr\": \"business.gst_registered\",\n          \"op\": \"eq\",\n          \"value\": true\n        }\n      }\n    ]\n  }\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "pm.collectionVariables.set('documentRequirementId', String(pm.response.json().id));",
+          "pm.collectionVariables.set('documentRequirementDocVersion', String(pm.response.json().version));",
+          "pm.collectionVariables.set('documentRequirementNumber', String(pm.response.json().openVersion.number));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "{{$guid}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/document-requirements",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "document-requirements"
+          ]
+        },
+        "description": "Creates a requirement and its first draft. Staff only. Document requirements are versioned config (same lifecycle as question sets: an ops lead makes, a different staff member approves in Change Requests, then it is published). `content`: `stage` (`assessment`, `submission`, `post_sanction`), `scope` (`segments`, `subSegments`, `categories`; empty = everyone) and `items[]` slots: `key`, `documentTypes` (any one of them satisfies the slot), `required` (default true), `minCount` (default 1), optional `when` condition on facts, and `label` / `description` overrides. A more specific requirement replaces a slot with the same key.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"key\": \"assessment.msme.exporters_{{$timestamp}}\",\n  \"name\": {\n    \"en\": \"Exporters\"\n  },\n  \"content\": {\n    \"stage\": \"assessment\",\n    \"scope\": {\n      \"segments\": [\n        \"msme\"\n      ],\n      \"categories\": [\n        \"business\"\n      ]\n    },\n    \"items\": [\n      {\n        \"key\": \"export_invoices\",\n        \"documentTypes\": [\n          \"{{documentTypeKey}}\"\n        ],\n        \"required\": false,\n        \"when\": {\n          \"attr\": \"business.gst_registered\",\n          \"op\": \"eq\",\n          \"value\": true\n        }\n      }\n    ]\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12250-2b3c-7d4e-9f50-61728394a5b6\",\n  \"resource\": \"document_requirement\",\n  \"key\": \"assessment.msme.exporters\",\n  \"name\": {\n    \"en\": \"Exporters\"\n  },\n  \"description\": null,\n  \"status\": \"active\",\n  \"activeVersion\": null,\n  \"openVersion\": {\n    \"id\": \"01a12250-3c4d-7e5f-8061-728394a5b6c7\",\n    \"number\": 1,\n    \"status\": \"draft\"\n  },\n  \"versions\": [\n    {\n      \"id\": \"01a12250-3c4d-7e5f-8061-728394a5b6c7\",\n      \"number\": 1,\n      \"status\": \"draft\",\n      \"effectiveFrom\": null,\n      \"publishedAt\": null,\n      \"retiredAt\": null,\n      \"updatedAt\": \"2026-10-10T15:00:00.000Z\"\n    }\n  ],\n  \"version\": 1,\n  \"createdAt\": \"2026-10-10T15:00:00.000Z\",\n  \"updatedAt\": \"2026-10-10T15:00:00.000Z\"\n}"
+    }
+  ]
+}

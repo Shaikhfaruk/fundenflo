@@ -25,7 +25,7 @@ Approval and rejection are not per resource: they go through the shared checker 
 | `routing-rules` (plus `/simulate`) | leads | M1 | `useful` |
 | `question-sets` (plus `/versions/:number/preview`) | questionnaires | M1 | `useful` |
 | `consent-templates` | consents | M1 | `useful` |
-| `document-requirements` | documents | M2 | `planned` |
+| `document-requirements` | documents | M2 | `useful` |
 | `lender-products` | lenders | M4 | `planned` |
 | `scoring-models` | assessments | M5 | `planned` |
 | `improvement-rules` | assessments | M5 | `planned` |
@@ -91,7 +91,7 @@ Controller: `backend/src/modules/catalog/http/catalog.controller.ts` · Postman:
 | `GET` | `/catalog/geo/pincodes/:pincode` | catalog | public | M1 | `useful` |
 | `GET` | `/catalog/questions` | questionnaires (`catalog-questions.controller.ts`) | public | M1 | `useful` |
 | `GET` | `/catalog/consent-templates` | consents (`catalog-consent-templates.controller.ts`) | public | M1 | `useful` |
-| `GET` | `/catalog/document-types` | documents | public | M2 | `planned` |
+| `GET` | `/catalog/document-checklist` | documents (`catalog-document-checklist.controller.ts` → `DocumentChecklistService`; replaces the planned `/catalog/document-types`, the checklist carries every type it lists) | public | M2 | `useful` |
 
 ## 04 Borrower Journey
 
@@ -418,6 +418,20 @@ Built in M1.4 (Postman `49 Admin - Consents/`). Controllers: `backend/src/module
 | `POST` | `/admin/consent-templates/:id/versions/:number/publish` | consents | staff | M1 | `useful` |
 | `POST` | `/admin/consent-templates/:id/versions/:number/retire` | consents | staff | M1 | `useful` |
 
+Built in M2 (Postman `56 Admin - Documents/`). Controllers: `backend/src/modules/documents/http/admin-document-types.controller.ts` (CASL `DocumentType`), document requirements from `createVersionedConfigController` in `documents.module.ts` (handler `document-requirement.handler.ts`).
+
+| Method | Path | Module | Context | Milestone | Status |
+|---|---|---|---|---|---|
+| `GET` `POST` | `/admin/document-types` | documents | staff | M2 | `useful` |
+| `GET` `PATCH` | `/admin/document-types/:id` | documents | staff | M2 | `useful` |
+| `GET` `POST` | `/admin/document-requirements` | documents | staff | M2 | `useful` |
+| `GET` `PATCH` | `/admin/document-requirements/:id` | documents | staff | M2 | `useful` |
+| `POST` | `/admin/document-requirements/:id/versions` | documents | staff | M2 | `useful` |
+| `GET` `PATCH` | `/admin/document-requirements/:id/versions/:number` | documents | staff | M2 | `useful` |
+| `POST` | `/admin/document-requirements/:id/versions/:number/submit` | documents | staff | M2 | `useful` |
+| `POST` | `/admin/document-requirements/:id/versions/:number/publish` | documents | staff | M2 | `useful` |
+| `POST` | `/admin/document-requirements/:id/versions/:number/retire` | documents | staff | M2 | `useful` |
+
 Built in M1.8a (Postman `53 Admin - Routing Rules/`). Controllers: routing rules from `createVersionedConfigController` in `leads.module.ts` (handler `routing-rule.handler.ts`), `backend/src/modules/leads/http/admin-routing-simulate.controller.ts` (dry run, routing-rule read access).
 
 | Method | Path | Module | Context | Milestone | Status |
@@ -457,8 +471,6 @@ Planned:
 |---|---|---|---|---|---|
 | `GET` `POST` | `/admin/notification-templates` | notifications | staff | M1 | `planned` |
 | `PATCH` | `/admin/notification-templates/:id` | notifications | staff | M1 | `planned` |
-| `GET` `POST` | `/admin/document-types` | documents | staff | M2 | `planned` |
-| `GET` `PATCH` | `/admin/document-types/:id` | documents | staff | M2 | `planned` |
 | `GET` `POST` | `/admin/lenders` | lenders | staff | M4 | `planned` |
 | `GET` `PATCH` | `/admin/lenders/:id` | lenders | staff | M4 | `planned` |
 | `GET` `POST` | `/admin/lenders/:id/agreements` | lenders | staff | M4 | `planned` |

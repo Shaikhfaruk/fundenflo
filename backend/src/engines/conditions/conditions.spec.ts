@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
+import { coerceFactText } from './coerce.js';
+
 import type { AttributeSpec, Condition, FactValue } from './condition.types.js';
 import { collectMessages, evaluateCondition, referencedAttributes } from './evaluate.js';
 import { validateCondition } from './validate.js';
@@ -143,5 +145,17 @@ describe('validateCondition', () => {
     let deep: Condition = { attr: 'gst', op: 'exists' };
     for (let level = 0; level < 12; level += 1) deep = { not: deep };
     expect(validateCondition(deep, resolve).some((issue) => issue.message.startsWith('nesting deeper'))).toBe(true);
+  });
+});
+
+describe('coerceFactText', () => {
+  it('turns query text into typed fact values', () => {
+    expect(coerceFactText({ dataType: 'boolean' }, 'true')).toBe(true);
+    expect(coerceFactText({ dataType: 'boolean' }, 'yes')).toBeUndefined();
+    expect(coerceFactText({ dataType: 'money' }, '2500000')).toBe(2_500_000);
+    expect(coerceFactText({ dataType: 'integer' }, 'ten')).toBeUndefined();
+    expect(coerceFactText({ dataType: 'enum', enumValues: ['salaried'] }, 'salaried')).toBe('salaried');
+    expect(coerceFactText({ dataType: 'enum', enumValues: ['salaried'] }, 'retired')).toBeUndefined();
+    expect(coerceFactText({ dataType: 'string' }, ' Pune ')).toBe('Pune');
   });
 });

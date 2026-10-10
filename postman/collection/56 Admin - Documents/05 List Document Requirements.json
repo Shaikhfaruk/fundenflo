@@ -1,0 +1,71 @@
+{
+  "name": "List Document Requirements",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/document-requirements?limit=25",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "document-requirements"
+      ],
+      "query": [
+        {
+          "key": "limit",
+          "value": "25"
+        }
+      ]
+    },
+    "description": "Document requirements with their active and open versions; the seeded ones reproduce the v0.1 app checklist. Staff only. Document requirements are versioned config (same lifecycle as question sets: an ops lead makes, a different staff member approves in Change Requests, then it is published). `content`: `stage` (`assessment`, `submission`, `post_sanction`), `scope` (`segments`, `subSegments`, `categories`; empty = everyone) and `items[]` slots: `key`, `documentTypes` (any one of them satisfies the slot), `required` (default true), `minCount` (default 1), optional `when` condition on facts, and `label` / `description` overrides. A more specific requirement replaces a slot with the same key."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/document-requirements?limit=25",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "document-requirements"
+          ],
+          "query": [
+            {
+              "key": "limit",
+              "value": "25"
+            }
+          ]
+        },
+        "description": "Document requirements with their active and open versions; the seeded ones reproduce the v0.1 app checklist. Staff only. Document requirements are versioned config (same lifecycle as question sets: an ops lead makes, a different staff member approves in Change Requests, then it is published). `content`: `stage` (`assessment`, `submission`, `post_sanction`), `scope` (`segments`, `subSegments`, `categories`; empty = everyone) and `items[]` slots: `key`, `documentTypes` (any one of them satisfies the slot), `required` (default true), `minCount` (default 1), optional `when` condition on facts, and `label` / `description` overrides. A more specific requirement replaces a slot with the same key."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a12250-2b3c-7d4e-9f50-61728394a5b6\",\n      \"resource\": \"document_requirement\",\n      \"key\": \"assessment.msme.exporters\",\n      \"name\": {\n        \"en\": \"Exporters\"\n      },\n      \"description\": null,\n      \"status\": \"active\",\n      \"activeVersion\": null,\n      \"openVersion\": {\n        \"id\": \"01a12250-3c4d-7e5f-8061-728394a5b6c7\",\n        \"number\": 1,\n        \"status\": \"draft\"\n      },\n      \"versions\": [\n        {\n          \"id\": \"01a12250-3c4d-7e5f-8061-728394a5b6c7\",\n          \"number\": 1,\n          \"status\": \"draft\",\n          \"effectiveFrom\": null,\n          \"publishedAt\": null,\n          \"retiredAt\": null,\n          \"updatedAt\": \"2026-10-10T15:00:00.000Z\"\n        }\n      ],\n      \"version\": 1,\n      \"createdAt\": \"2026-10-10T15:00:00.000Z\",\n      \"updatedAt\": \"2026-10-10T15:00:00.000Z\"\n    }\n  ],\n  \"nextCursor\": null\n}"
+    }
+  ]
+}

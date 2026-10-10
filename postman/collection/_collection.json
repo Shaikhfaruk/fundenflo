@@ -446,6 +446,34 @@
     {
       "key": "syncCursor",
       "value": ""
+    },
+    {
+      "key": "documentTypeId",
+      "value": ""
+    },
+    {
+      "key": "documentTypeVersion",
+      "value": ""
+    },
+    {
+      "key": "documentTypeKey",
+      "value": ""
+    },
+    {
+      "key": "documentRequirementId",
+      "value": ""
+    },
+    {
+      "key": "documentRequirementDocVersion",
+      "value": ""
+    },
+    {
+      "key": "documentRequirementNumber",
+      "value": ""
+    },
+    {
+      "key": "documentRequirementVersionRow",
+      "value": ""
     }
   ]
 }
