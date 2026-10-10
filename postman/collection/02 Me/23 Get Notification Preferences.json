@@ -1,0 +1,60 @@
+{
+  "name": "Get Notification Preferences",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/me/notification-preferences",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "me",
+        "notification-preferences"
+      ]
+    },
+    "description": "The signed-in user's update channels; every channel is on until the user changes it (`version` 0). Channels for case and work updates (application status, analysis results, document requests, lead offers, payouts). Security and consent messages (sign-in and consent codes, invitations, consent links) are always sent. At least one of SMS, email or push stays on. WhatsApp and marketing opt-ins are consents: use `POST /me/consents` and `POST /me/consents/:purpose/withdraw`. Any context."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.collectionVariables.set('notificationPreferencesVersion', String(pm.response.json().version));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/me/notification-preferences",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "me",
+            "notification-preferences"
+          ]
+        },
+        "description": "The signed-in user's update channels; every channel is on until the user changes it (`version` 0). Channels for case and work updates (application status, analysis results, document requests, lead offers, payouts). Security and consent messages (sign-in and consent codes, invitations, consent links) are always sent. At least one of SMS, email or push stays on. WhatsApp and marketing opt-ins are consents: use `POST /me/consents` and `POST /me/consents/:purpose/withdraw`. Any context."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"sms\": true,\n  \"email\": true,\n  \"push\": true,\n  \"version\": 0,\n  \"updatedAt\": null\n}"
+    }
+  ]
+}

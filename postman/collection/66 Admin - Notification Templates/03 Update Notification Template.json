@@ -1,0 +1,249 @@
+{
+  "name": "Update Notification Template",
+  "request": {
+    "method": "PATCH",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/notification-templates/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "notification-templates",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{notificationTemplateId}}"
+        }
+      ]
+    },
+    "description": "Changes the subject, text, provider (DLT) template id or `active`. Optional `If-Match: \"<version>\"`. Every change is audited with the fields changed and the previous DLT id. Message templates per key, channel (`sms`, `email`, `push`) and language. Placeholders must be ones the sender provides (`availableParams`); sign-in and consent codes must keep `{{code}}`, staff invitations `{{token}}` and consent requests `{{link}}`. Email and push need a subject, SMS has none. A changed SMS text that already has a DLT template id needs its new id in the same change. The English template is the fallback and stays active. Compliance officers manage templates; ops leads and support read them.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"body\": \"आपके केस {{ref}} का विश्लेषण तैयार है\",\n  \"active\": false\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.collectionVariables.set('notificationTemplateVersion', String(pm.response.json().version));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/notification-templates/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "notification-templates",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{notificationTemplateId}}"
+            }
+          ]
+        },
+        "description": "Changes the subject, text, provider (DLT) template id or `active`. Optional `If-Match: \"<version>\"`. Every change is audited with the fields changed and the previous DLT id. Message templates per key, channel (`sms`, `email`, `push`) and language. Placeholders must be ones the sender provides (`availableParams`); sign-in and consent codes must keep `{{code}}`, staff invitations `{{token}}` and consent requests `{{link}}`. Email and push need a subject, SMS has none. A changed SMS text that already has a DLT template id needs its new id in the same change. The English template is the fallback and stays active. Compliance officers manage templates; ops leads and support read them.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"body\": \"आपके केस {{ref}} का विश्लेषण तैयार है\",\n  \"active\": false\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12800-2b3c-7d4e-8f50-6172839405b6\",\n  \"key\": \"analysis.completed\",\n  \"channel\": \"sms\",\n  \"locale\": \"hi\",\n  \"subject\": null,\n  \"body\": \"आपके केस {{ref}} का विश्लेषण तैयार है\",\n  \"providerTemplateId\": null,\n  \"active\": false,\n  \"placeholders\": [\n    \"ref\"\n  ],\n  \"availableParams\": [\n    \"ref\"\n  ],\n  \"version\": 2,\n  \"updatedAt\": \"2026-10-11T12:00:00.000Z\"\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/notification-templates/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "notification-templates",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{notificationTemplateId}}"
+            }
+          ]
+        },
+        "description": "Changes the subject, text, provider (DLT) template id or `active`. Optional `If-Match: \"<version>\"`. Every change is audited with the fields changed and the previous DLT id. Message templates per key, channel (`sms`, `email`, `push`) and language. Placeholders must be ones the sender provides (`availableParams`); sign-in and consent codes must keep `{{code}}`, staff invitations `{{token}}` and consent requests `{{link}}`. Email and push need a subject, SMS has none. A changed SMS text that already has a DLT template id needs its new id in the same change. The English template is the fallback and stays active. Compliance officers manage templates; ops leads and support read them.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"body\": \"आपके केस {{ref}} का विश्लेषण तैयार है\",\n  \"active\": false\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"providerTemplateId\",\n      \"code\": \"dlt_template_required\",\n      \"message\": \"register the new SMS text with DLT and send its template id in the same change\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/notification-templates/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "notification-templates",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{notificationTemplateId}}"
+            }
+          ]
+        },
+        "description": "Changes the subject, text, provider (DLT) template id or `active`. Optional `If-Match: \"<version>\"`. Every change is audited with the fields changed and the previous DLT id. Message templates per key, channel (`sms`, `email`, `push`) and language. Placeholders must be ones the sender provides (`availableParams`); sign-in and consent codes must keep `{{code}}`, staff invitations `{{token}}` and consent requests `{{link}}`. Email and push need a subject, SMS has none. A changed SMS text that already has a DLT template id needs its new id in the same change. The English template is the fallback and stays active. Compliance officers manage templates; ops leads and support read them.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"body\": \"आपके केस {{ref}} का विश्लेषण तैयार है\",\n  \"active\": false\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"active\",\n      \"code\": \"default_locale_required\",\n      \"message\": \"the en template is the fallback for every language and stays active\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "409 VERSION_CONFLICT",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/notification-templates/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "notification-templates",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{notificationTemplateId}}"
+            }
+          ]
+        },
+        "description": "Changes the subject, text, provider (DLT) template id or `active`. Optional `If-Match: \"<version>\"`. Every change is audited with the fields changed and the previous DLT id. Message templates per key, channel (`sms`, `email`, `push`) and language. Placeholders must be ones the sender provides (`availableParams`); sign-in and consent codes must keep `{{code}}`, staff invitations `{{token}}` and consent requests `{{link}}`. Email and push need a subject, SMS has none. A changed SMS text that already has a DLT template id needs its new id in the same change. The English template is the fallback and stays active. Compliance officers manage templates; ops leads and support read them.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"body\": \"आपके केस {{ref}} का विश्लेषण तैयार है\",\n  \"active\": false\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VERSION_CONFLICT\",\n  \"message\": \"This record was changed by someone else. Reload it and try again.\",\n  \"details\": {\n    \"currentVersion\": 3\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

@@ -9,6 +9,7 @@ export const PrivacySection = {
   Borrowers: 'borrower_profiles',
   Applications: 'applications',
   Sharing: 'shared_with_lenders',
+  NotificationPreferences: 'notification_preferences',
   Account: 'account',
   Profile: 'profile',
 } as const;
@@ -24,6 +25,7 @@ export const ERASURE_ORDER: readonly PrivacySection[] = [
   PrivacySection.Borrowers,
   PrivacySection.Applications,
   PrivacySection.Sharing,
+  PrivacySection.NotificationPreferences,
   PrivacySection.Account,
   PrivacySection.Profile,
 ];

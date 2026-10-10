@@ -1,0 +1,55 @@
+{
+  "name": "Notification settings: a borrower turns SMS updates off, an admin adds and edits a Hindi template",
+  "requires": [
+    "staffInvitation"
+  ],
+  "steps": [
+    {
+      "request": "01 Auth/06 Accept Staff Invitation.json",
+      "identity": "maker"
+    },
+    {
+      "request": "01 Auth/07 Staff Login.json",
+      "identity": "maker"
+    },
+    {
+      "request": "01 Auth/08 Verify Staff MFA.json",
+      "identity": "maker"
+    },
+    {
+      "request": "66 Admin - Notification Templates/01 List Notification Templates.json",
+      "identity": "maker"
+    },
+    {
+      "request": "66 Admin - Notification Templates/02 Create Notification Template.json",
+      "identity": "maker"
+    },
+    {
+      "request": "66 Admin - Notification Templates/03 Update Notification Template.json",
+      "identity": "maker"
+    },
+    {
+      "request": "01 Auth/01 Request OTP.json",
+      "identity": "borrower",
+      "variables": {
+        "loginAs": "borrower"
+      }
+    },
+    {
+      "request": "01 Auth/02 Verify OTP.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "02 Me/23 Get Notification Preferences.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "02 Me/24 Update Notification Preferences.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "02 Me/23 Get Notification Preferences.json",
+      "identity": "borrower"
+    }
+  ]
+}

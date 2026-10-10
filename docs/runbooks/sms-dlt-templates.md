@@ -30,4 +30,4 @@ The texts are seeded from `backend/src/scripts/seed-data/notification-templates.
 
 1. Register the new text with DLT and wait for approval.
 2. Change the text in the seed file so new environments get it.
-3. The seed does not overwrite the text of a template that already exists (it only sets a new id). In existing environments update the `notification_templates` row (`key`, `channel = 'sms'`, `locale`) with the new `body` and `provider_template_id` in one statement, then check the notification deliveries for failures.
+3. The seed does not overwrite the text of a template that already exists (it only sets a new id). In existing environments a compliance officer sends the new text and its DLT id together with `PATCH /admin/notification-templates/:id` (`{ "body": "…", "providerTemplateId": "…" }`); a changed SMS text without a new id is refused. Then check the notification deliveries for failures.

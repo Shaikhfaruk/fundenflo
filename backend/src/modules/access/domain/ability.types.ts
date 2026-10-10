@@ -27,6 +27,7 @@ import type {
   PartnerPayout,
   ReconciliationRun,
   LedgerEntry,
+  NotificationTemplate,
   RiskSignal,
   FraudReview,
   DataSubjectRequest,
@@ -101,6 +102,7 @@ export type AppSubjects =
       RiskSignal: RiskSignal;
       FraudReview: FraudReview;
       DataSubjectRequest: DataSubjectRequest;
+      NotificationTemplate: NotificationTemplate;
     }>;
 
 export type AppAbility = Ability<[AppAction, AppSubjects], PrismaQueryOf<Prisma.TypeMap>>;

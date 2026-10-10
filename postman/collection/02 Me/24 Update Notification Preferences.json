@@ -1,0 +1,172 @@
+{
+  "name": "Update Notification Preferences",
+  "request": {
+    "method": "PUT",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/me/notification-preferences",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "me",
+        "notification-preferences"
+      ]
+    },
+    "description": "Replaces the update channels (all three fields required). Optional `If-Match: \"<version>\"` from the last read. Channels for case and work updates (application status, analysis results, document requests, lead offers, payouts). Security and consent messages (sign-in and consent codes, invitations, consent links) are always sent. At least one of SMS, email or push stays on. WhatsApp and marketing opt-ins are consents: use `POST /me/consents` and `POST /me/consents/:purpose/withdraw`.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"sms\": false,\n  \"email\": true,\n  \"push\": true\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.test('sms is off', () => pm.expect(pm.response.json().sms).to.eql(false));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/me/notification-preferences",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "me",
+            "notification-preferences"
+          ]
+        },
+        "description": "Replaces the update channels (all three fields required). Optional `If-Match: \"<version>\"` from the last read. Channels for case and work updates (application status, analysis results, document requests, lead offers, payouts). Security and consent messages (sign-in and consent codes, invitations, consent links) are always sent. At least one of SMS, email or push stays on. WhatsApp and marketing opt-ins are consents: use `POST /me/consents` and `POST /me/consents/:purpose/withdraw`.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"sms\": false,\n  \"email\": true,\n  \"push\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"sms\": false,\n  \"email\": true,\n  \"push\": true,\n  \"version\": 1,\n  \"updatedAt\": \"2026-10-11T12:00:00.000Z\"\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/me/notification-preferences",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "me",
+            "notification-preferences"
+          ]
+        },
+        "description": "Replaces the update channels (all three fields required). Optional `If-Match: \"<version>\"` from the last read. Channels for case and work updates (application status, analysis results, document requests, lead offers, payouts). Security and consent messages (sign-in and consent codes, invitations, consent links) are always sent. At least one of SMS, email or push stays on. WhatsApp and marketing opt-ins are consents: use `POST /me/consents` and `POST /me/consents/:purpose/withdraw`.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"sms\": false,\n  \"email\": true,\n  \"push\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"channels\",\n      \"code\": \"one_channel_required\",\n      \"message\": \"keep at least one of SMS, email or push on so case updates reach you\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "409 VERSION_CONFLICT",
+      "originalRequest": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/me/notification-preferences",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "me",
+            "notification-preferences"
+          ]
+        },
+        "description": "Replaces the update channels (all three fields required). Optional `If-Match: \"<version>\"` from the last read. Channels for case and work updates (application status, analysis results, document requests, lead offers, payouts). Security and consent messages (sign-in and consent codes, invitations, consent links) are always sent. At least one of SMS, email or push stays on. WhatsApp and marketing opt-ins are consents: use `POST /me/consents` and `POST /me/consents/:purpose/withdraw`.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"sms\": false,\n  \"email\": true,\n  \"push\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VERSION_CONFLICT\",\n  \"message\": \"This record was changed by someone else. Reload it and try again.\",\n  \"details\": {\n    \"currentVersion\": 2\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

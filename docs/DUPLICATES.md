@@ -17,6 +17,9 @@ These are the places where a second copy is most tempting. Use the one listed.
 
 | Need | Use only | Do not build |
 |---|---|---|
+| WhatsApp or marketing opt-in | Consent purposes `whatsapp` / `marketing` through `POST /me/consents` and withdraw | A preference flag for the same opt-in |
+| Choosing which channels carry updates | `NotificationPreferenceService`, applied once in `UserNotifier.notify` | Channel checks in each sending module |
+| Changing message text or DLT ids | `PATCH /admin/notification-templates/:id` | Direct SQL, or reseeding to overwrite text |
 | Custom fields on leads, campaigns or lender-specific forms | `questionnaires` (question sets with stage `lead_capture` / `lender_specific`) | A separate lead-form or custom-field system |
 | Contact details, PAN, GSTIN of anyone | `parties` | Name, mobile or PAN columns copied onto leads, users or applications |
 | Assigning leads to CAs, cases to reviewers, fraud reviews to staff | `engines/assignment` (`pickAssignees`) + the module's routing service (`LeadRoutingService` for leads) | Per-module round-robin or picker code, or a second lead-offer path that skips the consent and partner checks |

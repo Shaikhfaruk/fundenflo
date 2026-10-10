@@ -75,7 +75,7 @@ Controller: `backend/src/modules/auth/http/me.controller.ts` · Postman: `02 Me/
 | `PUT` | `/me/sessions/current/push-token` | auth (`me.controller.ts` → `SessionService.setPushToken`) | any | M1 | `useful` |
 | `GET` `POST` | `/me/consents` | consents (`me-consents.controller.ts`) | any (incl. none) | M1 | `useful` |
 | `POST` | `/me/consents/:purpose/withdraw` | consents | any (incl. none) | M1 | `useful` |
-| `PUT` | `/me/notification-preferences` | notifications | any | M1 | `planned` |
+| `GET` `PUT` | `/me/notification-preferences` | notifications (`me-notification-preferences.controller.ts` → `NotificationPreferenceService.get` / `update`: SMS, email and push choices for updates, one channel stays on, optional `If-Match`; GET added so the app can show the current choice; WhatsApp and marketing opt-ins stay in `/me/consents`) | any (incl. none) | M1 (built 2026-10-10) | `useful` |
 | `POST` `GET` | `/me/data-requests` | privacy (`me-data-requests.controller.ts` → `DataRequestService.create` / `mine`; module `privacy` instead of `audit` so erasure can reach every module through participants) | any | M8 | `useful` |
 | `GET` | `/me/data-requests/:id/export-url` | privacy (`DataRequestService.exportUrl`: 5-minute link to a completed access export, audited) | any | M8 | `useful` |
 
@@ -533,12 +533,17 @@ Built in M1.5 (Postman `43 Admin - Partners/`). Controller: `backend/src/modules
 | `POST` | `/admin/partners/:id/suspend` | partners | staff | M1 | `useful` |
 | `POST` | `/admin/partners/:id/reinstate` | partners | staff | M1 | `useful` |
 
+Built 2026-10-10 (missed M1 item; Postman `66 Admin - Notification Templates/`). Controller: `backend/src/modules/notifications/http/admin-notification-templates.controller.ts`.
+
+| Method | Path | Module | Context | Milestone | Status |
+|---|---|---|---|---|---|
+| `GET` `POST` | `/admin/notification-templates` | notifications (`NotificationTemplateService.list` / `create`: filters key, channel, locale, active; one template per key, channel and language; placeholders limited to `TEMPLATE_PARAMS`, codes and links kept; email and push need a subject) | staff | M1 | `useful` |
+| `PATCH` | `/admin/notification-templates/:id` | notifications (`NotificationTemplateService.update`: subject, body, DLT id, active; changed SMS text needs a new DLT id; English stays active; audited) | staff | M1 | `useful` |
+
 Planned:
 
 | Method | Path | Module | Context | Milestone | Status |
 |---|---|---|---|---|---|
-| `GET` `POST` | `/admin/notification-templates` | notifications | staff | M1 | `planned` |
-| `PATCH` | `/admin/notification-templates/:id` | notifications | staff | M1 | `planned` |
 | `GET` | `/admin/finance/receivables` | commissions (`admin-finance.controller.ts` → `ReceivableService.list`) | staff | M7 | `useful` |
 | `GET` `PATCH` | `/admin/finance/receivables/:id` | commissions (`ReceivableService.get` / `act`: invoice, receive (partial allowed), reconcile, write off with payout reversal; GET added for the finance view) | staff | M7 | `useful` |
 | `GET` | `/admin/finance/payouts` | commissions (`PayoutService.list`) | staff | M7 | `useful` |

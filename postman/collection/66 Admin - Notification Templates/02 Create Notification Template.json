@@ -1,0 +1,182 @@
+{
+  "name": "Create Notification Template",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/notification-templates",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "notification-templates"
+      ]
+    },
+    "description": "Adds a template for a key, channel and language that has none yet (skipped when `notificationTemplateId` is already set). Send `Idempotency-Key` to retry safely. Message templates per key, channel (`sms`, `email`, `push`) and language. Placeholders must be ones the sender provides (`availableParams`); sign-in and consent codes must keep `{{code}}`, staff invitations `{{token}}` and consent requests `{{link}}`. Email and push need a subject, SMS has none. A changed SMS text that already has a DLT template id needs its new id in the same change. The English template is the fallback and stays active. Compliance officers manage templates; ops leads and support read them.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"key\": \"analysis.completed\",\n  \"channel\": \"sms\",\n  \"locale\": \"hi\",\n  \"body\": \"केस {{ref}} का विश्लेषण तैयार है\",\n  \"providerTemplateId\": null\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "if (pm.collectionVariables.get('notificationTemplateId')) pm.execution.skipRequest();"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "pm.collectionVariables.set('notificationTemplateId', pm.response.json().id);",
+          "pm.collectionVariables.set('notificationTemplateVersion', String(pm.response.json().version));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/notification-templates",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "notification-templates"
+          ]
+        },
+        "description": "Adds a template for a key, channel and language that has none yet (skipped when `notificationTemplateId` is already set). Send `Idempotency-Key` to retry safely. Message templates per key, channel (`sms`, `email`, `push`) and language. Placeholders must be ones the sender provides (`availableParams`); sign-in and consent codes must keep `{{code}}`, staff invitations `{{token}}` and consent requests `{{link}}`. Email and push need a subject, SMS has none. A changed SMS text that already has a DLT template id needs its new id in the same change. The English template is the fallback and stays active. Compliance officers manage templates; ops leads and support read them.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"key\": \"analysis.completed\",\n  \"channel\": \"sms\",\n  \"locale\": \"hi\",\n  \"body\": \"केस {{ref}} का विश्लेषण तैयार है\",\n  \"providerTemplateId\": null\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12800-2b3c-7d4e-8f50-6172839405b6\",\n  \"key\": \"analysis.completed\",\n  \"channel\": \"sms\",\n  \"locale\": \"hi\",\n  \"subject\": null,\n  \"body\": \"केस {{ref}} का विश्लेषण तैयार है\",\n  \"providerTemplateId\": null,\n  \"active\": true,\n  \"placeholders\": [\n    \"ref\"\n  ],\n  \"availableParams\": [\n    \"ref\"\n  ],\n  \"version\": 1,\n  \"updatedAt\": \"2026-10-11T12:00:00.000Z\"\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/notification-templates",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "notification-templates"
+          ]
+        },
+        "description": "Adds a template for a key, channel and language that has none yet (skipped when `notificationTemplateId` is already set). Send `Idempotency-Key` to retry safely. Message templates per key, channel (`sms`, `email`, `push`) and language. Placeholders must be ones the sender provides (`availableParams`); sign-in and consent codes must keep `{{code}}`, staff invitations `{{token}}` and consent requests `{{link}}`. Email and push need a subject, SMS has none. A changed SMS text that already has a DLT template id needs its new id in the same change. The English template is the fallback and stays active. Compliance officers manage templates; ops leads and support read them.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"key\": \"analysis.completed\",\n  \"channel\": \"sms\",\n  \"locale\": \"hi\",\n  \"body\": \"केस {{ref}} का विश्लेषण तैयार है\",\n  \"providerTemplateId\": null\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"body\",\n      \"code\": \"unknown_placeholder\",\n      \"message\": \"{{name}} is not available; use {{ref}}\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "409 CONFLICT",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/notification-templates",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "notification-templates"
+          ]
+        },
+        "description": "Adds a template for a key, channel and language that has none yet (skipped when `notificationTemplateId` is already set). Send `Idempotency-Key` to retry safely. Message templates per key, channel (`sms`, `email`, `push`) and language. Placeholders must be ones the sender provides (`availableParams`); sign-in and consent codes must keep `{{code}}`, staff invitations `{{token}}` and consent requests `{{link}}`. Email and push need a subject, SMS has none. A changed SMS text that already has a DLT template id needs its new id in the same change. The English template is the fallback and stays active. Compliance officers manage templates; ops leads and support read them.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"key\": \"analysis.completed\",\n  \"channel\": \"sms\",\n  \"locale\": \"hi\",\n  \"body\": \"केस {{ref}} का विश्लेषण तैयार है\",\n  \"providerTemplateId\": null\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"CONFLICT\",\n  \"message\": \"This record already exists.\",\n  \"details\": [\n    {\n      \"path\": \"locale\",\n      \"code\": \"duplicate\",\n      \"message\": \"analysis.completed already has a sms template in hi; edit that one\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

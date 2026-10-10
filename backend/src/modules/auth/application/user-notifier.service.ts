@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { ContactType, NotificationChannel, UserStatus } from '../../../common/enums/db.enums.js';
 import { NotificationService } from '../../notifications/application/notification.service.js';
+import { NotificationPreferenceService } from '../../notifications/application/notification-preference.service.js';
 import type { NotificationTemplateKey } from '../../notifications/domain/notification.constants.js';
 import type { TemplateParams } from '../../notifications/domain/template-renderer.js';
 import { PartyService } from '../../parties/application/party.service.js';
@@ -22,6 +23,7 @@ export class UserNotifier {
     private readonly parties: PartyService,
     private readonly notifications: NotificationService,
     private readonly sessions: SessionRepository,
+    private readonly preferences: NotificationPreferenceService,
   ) {}
 
   async notifyParties(partyIds: Iterable<string>, templateKey: NotificationTemplateKey, params: (locale: string | null) => TemplateParams, channels: readonly UserChannel[]): Promise<number> {
@@ -39,12 +41,14 @@ export class UserNotifier {
       const user = await this.identity.findUser(userId);
       if (user?.status !== UserStatus.active) continue;
       const locale = user.party.preferredLanguage;
-      const tokens = channels.includes(NotificationChannel.push) ? await this.sessions.activePushTokens(userId) : [];
+      const enabled = await this.preferences.enabledChannels(userId);
+      const allowed = channels.filter((channel) => enabled.has(channel));
+      const tokens = allowed.includes(NotificationChannel.push) ? await this.sessions.activePushTokens(userId) : [];
       for (const token of tokens) {
         await this.notifications.send({ templateKey, channel: NotificationChannel.push, recipient: token, params: params(locale), locale: locale ?? undefined });
         sent += 1;
       }
-      for (const channel of channels) {
+      for (const channel of allowed) {
         if (channel === NotificationChannel.push || (channel === NotificationChannel.sms && tokens.length > 0)) continue;
         const recipient = await this.parties.getPrimaryContactValue(user.partyId, CONTACT_FOR[channel]);
         if (!recipient) continue;

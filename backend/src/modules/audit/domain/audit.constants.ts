@@ -138,6 +138,9 @@ export const AuditAction = {
   PersonalDataErased: 'privacy.personal_data_erased',
   DocumentExpired: 'document.expired',
   DocumentPurged: 'document.purged',
+  NotificationTemplateCreated: 'notification_template.created',
+  NotificationTemplateChanged: 'notification_template.changed',
+  NotificationPreferencesChanged: 'notification_preferences.changed',
 } as const;
 
 export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction];
@@ -199,6 +202,8 @@ export const AuditEntity = {
   DataSubjectRequest: 'data_subject_request',
   LenderAgreement: 'lender_agreement',
   LenderContact: 'lender_contact',
+  NotificationTemplate: 'notification_template',
+  NotificationPreference: 'notification_preference',
 } as const;
 
 export type AuditEntity = (typeof AuditEntity)[keyof typeof AuditEntity];

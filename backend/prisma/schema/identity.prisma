@@ -45,11 +45,12 @@ model User {
   createdAt          DateTime   @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt          DateTime   @updatedAt @map("updated_at") @db.Timestamptz(3)
 
-  party           Party            @relation(fields: [partyId], references: [id], onDelete: Restrict)
-  logins          UserLogin[]
-  sessions        Session[]
-  memberships     Membership[]
-  staffCredential StaffCredential?
+  party                  Party                   @relation(fields: [partyId], references: [id], onDelete: Restrict)
+  logins                 UserLogin[]
+  sessions               Session[]
+  memberships            Membership[]
+  staffCredential        StaffCredential?
+  notificationPreference NotificationPreference?
 
   @@index([status, createdAt])
   @@map("users")

@@ -1,0 +1,90 @@
+{
+  "name": "List Notification Templates",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/notification-templates?key=analysis.completed&channel=sms&locale=hi",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "notification-templates"
+      ],
+      "query": [
+        {
+          "key": "key",
+          "value": "analysis.completed"
+        },
+        {
+          "key": "channel",
+          "value": "sms"
+        },
+        {
+          "key": "locale",
+          "value": "hi"
+        }
+      ]
+    },
+    "description": "All templates, filterable by `key`, `channel`, `locale` and `active` (`true` / `false`). Message templates per key, channel (`sms`, `email`, `push`) and language. Placeholders must be ones the sender provides (`availableParams`); sign-in and consent codes must keep `{{code}}`, staff invitations `{{token}}` and consent requests `{{link}}`. Email and push need a subject, SMS has none. A changed SMS text that already has a DLT template id needs its new id in the same change. The English template is the fallback and stays active. Compliance officers manage templates; ops leads and support read them. Staff context."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "const found = pm.response.json().items[0];",
+          "pm.collectionVariables.set('notificationTemplateId', found ? found.id : '');",
+          "pm.collectionVariables.set('notificationTemplateVersion', found ? String(found.version) : '');"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/notification-templates?key=analysis.completed&channel=sms&locale=hi",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "notification-templates"
+          ],
+          "query": [
+            {
+              "key": "key",
+              "value": "analysis.completed"
+            },
+            {
+              "key": "channel",
+              "value": "sms"
+            },
+            {
+              "key": "locale",
+              "value": "hi"
+            }
+          ]
+        },
+        "description": "All templates, filterable by `key`, `channel`, `locale` and `active` (`true` / `false`). Message templates per key, channel (`sms`, `email`, `push`) and language. Placeholders must be ones the sender provides (`availableParams`); sign-in and consent codes must keep `{{code}}`, staff invitations `{{token}}` and consent requests `{{link}}`. Email and push need a subject, SMS has none. A changed SMS text that already has a DLT template id needs its new id in the same change. The English template is the fallback and stays active. Compliance officers manage templates; ops leads and support read them. Staff context."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a12800-2b3c-7d4e-8f50-6172839405b6\",\n      \"key\": \"analysis.completed\",\n      \"channel\": \"sms\",\n      \"locale\": \"hi\",\n      \"subject\": null,\n      \"body\": \"केस {{ref}} का विश्लेषण तैयार है\",\n      \"providerTemplateId\": null,\n      \"active\": true,\n      \"placeholders\": [\n        \"ref\"\n      ],\n      \"availableParams\": [\n        \"ref\"\n      ],\n      \"version\": 1,\n      \"updatedAt\": \"2026-10-11T12:00:00.000Z\"\n    }\n  ]\n}"
+    }
+  ]
+}

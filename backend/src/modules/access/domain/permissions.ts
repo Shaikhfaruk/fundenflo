@@ -34,7 +34,7 @@ export const ROLE_GRANTS: Partial<Record<Role, Grant>> = {
   },
   [Role.ops_lead]: ({ can }) => {
     can([AppAction.Read, AppAction.Update], 'User');
-    can(AppAction.Read, ['Membership', 'Invitation', 'Organization', 'AuditEvent']);
+    can(AppAction.Read, ['Membership', 'Invitation', 'Organization', 'AuditEvent', 'NotificationTemplate']);
     can(AppAction.Manage, NonModelSubject.Catalog);
     can(AppAction.Manage, 'AttributeDefinition');
     can([AppAction.Read, AppAction.Update], 'Party');
@@ -77,6 +77,7 @@ export const ROLE_GRANTS: Partial<Record<Role, Grant>> = {
     can(AppAction.Read, ['User', 'Membership', 'Invitation', 'Organization', 'AuditEvent', 'AttributeDefinition', 'Party', 'Question', 'DocumentType', NonModelSubject.Catalog]);
     can(AppAction.Manage, 'ConsentPurpose');
     can(AppAction.Manage, 'DataSubjectRequest');
+    can(AppAction.Manage, 'NotificationTemplate');
     can(AppAction.Read, ['PartnerProfile', 'ApiClient', 'Lead', 'LeadAssignment', 'LeadSource', 'ImportBatch', 'Activity', 'FollowUp', 'OfflineConversion', 'BorrowerProfile', 'LoanApplication']);
     can([AppAction.Read, AppAction.Download], 'Document');
     can(AppAction.Read, ['Lender', 'LenderAgreement', 'LenderContact', 'LenderSubmission', 'DocumentRequest', 'AttributionDispute', 'Receivable', 'PartnerPayout', 'ReconciliationRun', 'LedgerEntry', 'RiskSignal', 'FraudReview']);
@@ -84,7 +85,7 @@ export const ROLE_GRANTS: Partial<Record<Role, Grant>> = {
     can(CONFIG_MAKER, 'ConfigDocument', { resource: { in: COMPLIANCE_CONFIG_RESOURCES } });
   },
   [Role.support]: ({ can }) => {
-    can(AppAction.Read, ['User', 'Membership', 'AttributeDefinition', 'Party', 'Question', 'ConfigDocument', 'ConsentPurpose', 'PartnerProfile', 'Lead', 'LeadAssignment', 'LeadSource', 'Activity', 'FollowUp', 'OfflineConversion', 'DocumentType', 'BorrowerProfile', 'LoanApplication', 'Document', 'Lender', 'LenderSubmission', 'DocumentRequest', 'DataSubjectRequest', NonModelSubject.Catalog]);
+    can(AppAction.Read, ['User', 'Membership', 'AttributeDefinition', 'Party', 'Question', 'ConfigDocument', 'ConsentPurpose', 'PartnerProfile', 'Lead', 'LeadAssignment', 'LeadSource', 'Activity', 'FollowUp', 'OfflineConversion', 'DocumentType', 'BorrowerProfile', 'LoanApplication', 'Document', 'Lender', 'LenderSubmission', 'DocumentRequest', 'DataSubjectRequest', 'NotificationTemplate', NonModelSubject.Catalog]);
   },
   [Role.partner_manager]: (builder, actor) => {
     manageOrganizationMembers(OrganizationType.partner)(builder, actor);

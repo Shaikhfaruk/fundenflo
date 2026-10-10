@@ -553,6 +553,7 @@ flowchart LR
   Q -->|user.signed_up with a referral code| REFQ[leads.referrals: attribute or open a dispute]
   Q --> PROJ[projections: derived statuses, report views]
   Q --> NOTIF[notifications.dispatch]
+  PREFS[(notification_preferences: SMS / email / push per user)] -.->|UserNotifier sends updates on enabled channels only| NOTIF
   Q -->|offer, hand-over, SLA, follow-up events| LNOTIFY[leads.notify] --> NOTIF
   Q --> RTP[realtime.publish]
   Q --> WHO[webhooks.outbound]
@@ -579,7 +580,7 @@ flowchart LR
   GW --> ROOMS((rooms: user / membership / org))
   IMPAPI[Admin import validate / commit / undo] -->|direct enqueue| IMPQ[imports.process]
   SCHED -->|15 min| REP[reports.refresh]
-  API[API request: OTP, invitation, consent link] -->|direct enqueue| NOTIF
+  API[API request: OTP, invitation, consent link] -->|direct enqueue, always sent| NOTIF
   classDef built fill:#d8f3dc,stroke:#2d6a4f,color:#081c15
   class UC,OB,RELAY,SCHED,MAINT,Q,REVOKE,CSYNC,DROPQ,NOTIF,API,IMPAPI,IMPQ,ROUTEQ,OPSR,SLAQ,LNOTIFY,RTP,GW,ROOMS,SCANQ,APPREF,ANALYSE,SUBQ2,DOCQ,MQ2,SUBQ,SNOTIFY,SSYNC,REFQ,COMQ,CNOTIFY,RISKQ,PRIVQ built
 ```
