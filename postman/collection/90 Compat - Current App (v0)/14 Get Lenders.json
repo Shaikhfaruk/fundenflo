@@ -1,0 +1,89 @@
+{
+  "name": "Compat Get Lenders",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{rootUrl}}/v0/lenders",
+      "host": [
+        "{{rootUrl}}"
+      ],
+      "path": [
+        "v0",
+        "lenders"
+      ]
+    },
+    "description": "Runs matching for the analysis's application (or reads the latest run once submitted). `id` is the match result to apply with, `verified` marks eligible products (the app shows only those), `interest` is the product's pricing disclosure. Compat layer for the current app (plan §10.3): the app sets `EXPO_PUBLIC_API_URL=<host>/v0`. The case is the borrower's newest open application, resolved server side because the app never sends one. Removed once the app moves to `/v1`.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"analysisId\": \"{{compatAnalysisId}}\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "const offer = pm.response.json().lenders.find((item) => item.verified);",
+          "if (offer) pm.collectionVariables.set('compatLenderId', offer.id);"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{rootUrl}}/v0/lenders",
+          "host": [
+            "{{rootUrl}}"
+          ],
+          "path": [
+            "v0",
+            "lenders"
+          ]
+        },
+        "description": "Runs matching for the analysis's application (or reads the latest run once submitted). `id` is the match result to apply with, `verified` marks eligible products (the app shows only those), `interest` is the product's pricing disclosure. Compat layer for the current app (plan §10.3): the app sets `EXPO_PUBLIC_API_URL=<host>/v0`. The case is the borrower's newest open application, resolved server side because the app never sends one. Removed once the app moves to `/v1`.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"analysisId\": \"{{compatAnalysisId}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"lenders\": [\n    {\n      \"id\": \"01a122d0-2b3c-7d4e-9f50-61728394a5b6\",\n      \"name\": \"Lender X Finance Ltd\",\n      \"kind\": \"NBFC\",\n      \"product\": \"Lender X Working Capital\",\n      \"verified\": true,\n      \"interest\": \"As per lender policy\",\n      \"documentsStillNeeded\": 1,\n      \"reasons\": [\n        \"They lend in your area\"\n      ]\n    }\n  ]\n}"
+    }
+  ]
+}

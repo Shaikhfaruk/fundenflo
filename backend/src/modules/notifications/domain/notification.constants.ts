@@ -14,6 +14,7 @@ export const NotificationTemplateKey = {
   ApplicationStatusChanged: 'application.status_changed',
   SubmissionReceived: 'submission.received',
   DocumentRequested: 'document.requested',
+  SubmissionStatusChanged: 'submission.status_changed',
 } as const;
 
 export type NotificationTemplateKey = (typeof NotificationTemplateKey)[keyof typeof NotificationTemplateKey];

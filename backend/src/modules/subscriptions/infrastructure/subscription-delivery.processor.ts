@@ -13,6 +13,8 @@ import { SubscriptionEvent } from '../domain/subscription.constants.js';
 const EVENTS: Partial<Record<string, SubscriptionEvent>> = {
   [EventName.AnalysisCompleted]: SubscriptionEvent.AnalysisCompleted,
   [EventName.ApplicationStatusChanged]: SubscriptionEvent.ApplicationStatusChanged,
+  [EventName.SubmissionStatusChanged]: SubscriptionEvent.SubmissionStatusChanged,
+  [EventName.SubmissionDisbursed]: SubscriptionEvent.SubmissionStatusChanged,
 };
 
 @Processor(QueueName.NotificationsSubscriptions)

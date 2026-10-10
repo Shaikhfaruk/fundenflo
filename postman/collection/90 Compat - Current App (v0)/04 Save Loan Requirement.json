@@ -1,0 +1,132 @@
+{
+  "name": "Compat Save Loan Requirement",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{rootUrl}}/v0/loan/requirement",
+      "host": [
+        "{{rootUrl}}"
+      ],
+      "path": [
+        "v0",
+        "loan",
+        "requirement"
+      ]
+    },
+    "description": "Creates the application (MSME cases start as a proprietorship; the business is named after its owner once the PAN is verified) or updates the open one: rupees → paise, years → months, the city before the comma located through the catalog. Compat layer for the current app (plan §10.3): the app sets `EXPO_PUBLIC_API_URL=<host>/v0`. The case is the borrower's newest open application, resolved server side because the app never sends one. Removed once the app moves to `/v1`.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"entityType\": \"msme\",\n  \"loanCategory\": \"business\",\n  \"amount\": 2500000,\n  \"tenureYears\": 3,\n  \"location\": \"Gurugram, Haryana\",\n  \"purpose\": \"expansion\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{rootUrl}}/v0/loan/requirement",
+          "host": [
+            "{{rootUrl}}"
+          ],
+          "path": [
+            "v0",
+            "loan",
+            "requirement"
+          ]
+        },
+        "description": "Creates the application (MSME cases start as a proprietorship; the business is named after its owner once the PAN is verified) or updates the open one: rupees → paise, years → months, the city before the comma located through the catalog. Compat layer for the current app (plan §10.3): the app sets `EXPO_PUBLIC_API_URL=<host>/v0`. The case is the borrower's newest open application, resolved server side because the app never sends one. Removed once the app moves to `/v1`.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"entityType\": \"msme\",\n  \"loanCategory\": \"business\",\n  \"amount\": 2500000,\n  \"tenureYears\": 3,\n  \"location\": \"Gurugram, Haryana\",\n  \"purpose\": \"expansion\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12260-2b3c-7d4e-9f50-61728394a5b6\"\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{rootUrl}}/v0/loan/requirement",
+          "host": [
+            "{{rootUrl}}"
+          ],
+          "path": [
+            "v0",
+            "loan",
+            "requirement"
+          ]
+        },
+        "description": "Creates the application (MSME cases start as a proprietorship; the business is named after its owner once the PAN is verified) or updates the open one: rupees → paise, years → months, the city before the comma located through the catalog. Compat layer for the current app (plan §10.3): the app sets `EXPO_PUBLIC_API_URL=<host>/v0`. The case is the borrower's newest open application, resolved server side because the app never sends one. Removed once the app moves to `/v1`.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"entityType\": \"msme\",\n  \"loanCategory\": \"business\",\n  \"amount\": 2500000,\n  \"tenureYears\": 3,\n  \"location\": \"Gurugram, Haryana\",\n  \"purpose\": \"expansion\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"amountPaise\",\n      \"code\": \"out_of_range\",\n      \"message\": \"must be between 50000000 and 2000000000 paise\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

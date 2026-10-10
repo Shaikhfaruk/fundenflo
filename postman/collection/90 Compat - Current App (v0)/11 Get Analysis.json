@@ -1,0 +1,73 @@
+{
+  "name": "Compat Get Analysis",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{rootUrl}}/v0/analysis/:id",
+      "host": [
+        "{{rootUrl}}"
+      ],
+      "path": [
+        "v0",
+        "analysis",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{compatAnalysisId}}"
+        }
+      ]
+    },
+    "description": "Analysis progress in the app's shape: `running`, `done` or `failed` with `done` / `active` / `pending` steps. Compat layer for the current app (plan §10.3): the app sets `EXPO_PUBLIC_API_URL=<host>/v0`. The case is the borrower's newest open application, resolved server side because the app never sends one. Removed once the app moves to `/v1`."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{rootUrl}}/v0/analysis/:id",
+          "host": [
+            "{{rootUrl}}"
+          ],
+          "path": [
+            "v0",
+            "analysis",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{compatAnalysisId}}"
+            }
+          ]
+        },
+        "description": "Analysis progress in the app's shape: `running`, `done` or `failed` with `done` / `active` / `pending` steps. Compat layer for the current app (plan §10.3): the app sets `EXPO_PUBLIC_API_URL=<host>/v0`. The case is the borrower's newest open application, resolved server side because the app never sends one. Removed once the app moves to `/v1`."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"status\": \"done\",\n  \"steps\": [\n    {\n      \"id\": \"documents\",\n      \"label\": \"Reading Your Documents\",\n      \"state\": \"done\"\n    },\n    {\n      \"id\": \"consistency\",\n      \"label\": \"Checking Your Figures Match\",\n      \"state\": \"done\"\n    },\n    {\n      \"id\": \"score\",\n      \"label\": \"Calculating Your Financial Health Score\",\n      \"state\": \"done\"\n    }\n  ]\n}"
+    }
+  ]
+}

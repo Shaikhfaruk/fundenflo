@@ -1,9 +1,7 @@
 import { Module } from '@nestjs/common';
 import { DiscoveryModule } from '@nestjs/core';
-import { MulterModule } from '@nestjs/platform-express';
 
 import { ConfigResource } from '../../common/enums/db.enums.js';
-import { OBJECT_STORAGE, type ObjectStorage } from '../../infrastructure/storage/storage.port.js';
 import { AntivirusModule } from '../../integrations/antivirus/antivirus.module.js';
 import { ExtractionModule } from '../../integrations/extraction/extraction.module.js';
 import { AttributesModule } from '../attributes/attributes.module.js';
@@ -22,7 +20,6 @@ import { DocumentScanService } from './application/document-scan.service.js';
 import { DocumentTypeService } from './application/document-type.service.js';
 import { DocumentService } from './application/document.service.js';
 import { ExtractionService } from './application/extraction.service.js';
-import { DOCUMENT_UPLOAD_LIMITS } from './domain/document.constants.js';
 import { AdminDocumentTypesController } from './http/admin-document-types.controller.js';
 import { CatalogDocumentChecklistController } from './http/catalog-document-checklist.controller.js';
 import { DocumentsController } from './http/documents.controller.js';
@@ -30,7 +27,7 @@ import { OpsDocumentsController } from './http/ops-documents.controller.js';
 import { DocumentExtractProcessor } from './infrastructure/document-extract.processor.js';
 import { DocumentScanProcessor } from './infrastructure/document-scan.processor.js';
 import { DocumentTypeRepository } from './infrastructure/document-type.repository.js';
-import { DocumentUploadEngine } from './infrastructure/document-upload.engine.js';
+import { DocumentUploadMulterModule } from './infrastructure/document-upload.multer.js';
 import { DocumentRepository } from './infrastructure/document.repository.js';
 
 const AdminDocumentRequirementsController = createVersionedConfigController({ resource: ConfigResource.document_requirement, path: 'document-requirements', name: 'AdminDocumentRequirementsController' });
@@ -48,7 +45,7 @@ export const DOCUMENT_PROCESSORS = [DocumentScanProcessor, DocumentExtractProces
     DiscoveryModule,
     ExtractionModule,
     SlaModule,
-    MulterModule.registerAsync({ inject: [OBJECT_STORAGE], useFactory: (storage: ObjectStorage) => ({ storage: new DocumentUploadEngine(storage), limits: DOCUMENT_UPLOAD_LIMITS }) }),
+    DocumentUploadMulterModule,
   ],
   controllers: [AdminDocumentTypesController, AdminDocumentRequirementsController, CatalogDocumentChecklistController, DocumentsController, OpsDocumentsController],
   providers: [

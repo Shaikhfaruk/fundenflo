@@ -2,6 +2,10 @@ export const API_PREFIX = 'v1';
 
 export const UNPREFIXED_ROUTES = ['health/live', 'health/ready'];
 
+export const COMPAT_PREFIX = 'v0';
+
+export const COMPAT_ROUTES = `${COMPAT_PREFIX}/{*splat}`;
+
 export const JSON_BODY_LIMIT_BYTES = 1_048_576;
 
 export const BODYLESS_METHODS: ReadonlySet<string> = new Set(['GET', 'HEAD', 'OPTIONS']);

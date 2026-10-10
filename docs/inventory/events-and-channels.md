@@ -50,7 +50,7 @@
 | `score.computed` | assessments (`ScoringService.score`) | `matching.run` | — | M5 | `useful` | spec `assessments` |
 | `match.completed` | matching (`MatchingService.persist`) | none yet (submissions use the latest run) | — | M6 | `useful` | spec `matching` |
 | `submission.requested` · `submission.approved` | submissions (`SubmissionService.request` / `approve`) | `submissions.deliver` (approved); `realtime.publish` (`submission.changed`) | staff room, requester's user room, filing partner org room | M6 | `useful` | spec `submissions`; flow `submissions` |
-| `submission.status.changed` | submissions (`SubmissionService.move`; payload from, to, lender organization, `lenderVisible` once sent) | `submissions.notify` (lender users on `sent_to_lender`); `realtime.publish` | staff, requester, partner org and, once sent, lender org rooms | M6 | `useful` | spec `submissions`; flow `submissions` (lender SMS sent) |
+| `submission.status.changed` | submissions (`SubmissionService.move`; payload from, to, lender organization, `lenderVisible` once sent) | `submissions.notify` (lender users on `sent_to_lender`); `notifications.subscriptions`; `realtime.publish` | staff, requester, partner org and, once sent, lender org rooms | M6 | `useful` | spec `submissions`; flow `submissions` (lender SMS sent) |
 | `submission.disbursed` | submissions (every disbursal tranche; amount, total, sanction, lead, partner org) | `realtime.publish`; M7 `commissions.accrue` | same as above | M6 | `useful` | spec `submissions` |
 | `document.requested` · `document.request_fulfilled` | submissions (`DocumentRequestService.create` / fulfilment) | `submissions.notify` (borrower and filing partner, push with SMS fallback) | — | M6 | `useful` | spec `submissions`; flow `submissions` |
 | `case.assigned` | applications (`ApplicationService.assign`) | none yet (ops console reads the case) | — | M6 | `useful` | spec `submissions` |
@@ -91,6 +91,7 @@ Room joins are authorised on connect, using the same CASL abilities as HTTP.
 | `import.completed` | email | uploader | M1 | `planned` |
 | `analysis.completed` | push, SMS (`SMS_DLT_TEMPLATE_ANALYSIS_COMPLETED`) by subscription; WhatsApp needs a provider | subscriber | M5 | `useful` |
 | `application.status_changed` | push, SMS (`SMS_DLT_TEMPLATE_APPLICATION_STATUS`) by subscription | subscriber | M5 | `useful` |
+| `submission.status_changed` | push, SMS (`SMS_DLT_TEMPLATE_SUBMISSION_STATUS`) by subscription, once the file is with the lender | subscriber (the app's "updates on my application") | M3d | `useful` |
 | `submission.received` | email, push, SMS (`SMS_DLT_TEMPLATE_SUBMISSION_RECEIVED`) | lender admins and credit officers of the lender organization | M6 | `useful` |
 | `document.requested` | push with SMS fallback (`SMS_DLT_TEMPLATE_DOCUMENT_REQUESTED`) | applicant and the partner user who filed the case | M6 | `useful` |
 | WhatsApp for `application.status_changed` · `document.requested` | WhatsApp (opt-in) | borrower, partner | M6 | `planned` (needs a provider) |

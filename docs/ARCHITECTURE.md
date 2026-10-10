@@ -66,6 +66,8 @@ Hosting, networking and pipelines are owned by infra (Pradeep, Azure) and are no
 
 ## 2. Module map
 
+The `compat` module (M3d) serves the current app under `/v0`: its controllers only map the app's request and response shapes onto the façades of applications, assessments, matching, submissions, documents, consents and subscriptions, so the journey rules live in one place.
+
 ```mermaid
 flowchart TB
   subgraph Entry
@@ -160,7 +162,7 @@ flowchart TB
   LeadsGroup --> Ports
   Platform --> Ports
   classDef built fill:#d8f3dc,stroke:#2d6a4f,color:#081c15
-  class auth,access,parties,catalog,attributes,questionnaires,consents,partners,leads,imports,activities,sla,realtime,sync,documents,borrowers,applications,submissions,lenders,assessments,matching,notifications,audit,configPublishing,conditions,facts,questionnaire,partyMatching,stateMachines,consentFold,assignment,docChecklist,lendingEngine,scoring,improvement,matchingEngine,database,queue,storage,crypto,cache,avP,kycP built
+  class auth,access,parties,catalog,attributes,questionnaires,consents,partners,leads,imports,activities,sla,realtime,sync,documents,borrowers,applications,submissions,compat,lenders,assessments,matching,notifications,audit,configPublishing,conditions,facts,questionnaire,partyMatching,stateMachines,consentFold,assignment,docChecklist,lendingEngine,scoring,improvement,matchingEngine,database,queue,storage,crypto,cache,avP,kycP built
 ```
 
 Green = built (M0 – M6a). Rules: engines import nothing from Nest, modules or infrastructure. Modules talk only through exported façade services or domain events. Integrations are reached only through ports.
@@ -533,7 +535,7 @@ flowchart LR
   SCANQ -->|document.scanned| DOCQ[documents.extract]
   Q -->|analysis.requested| ANALYSE[analysis.run: documents step, score step]
   ANALYSE -->|analysis.completed| SUBQ2[notifications.subscriptions: push / SMS]
-  Q -->|application.status.changed| SUBQ2
+  Q -->|application.status.changed, submission.status.changed, submission.disbursed| SUBQ2
   SLAQ -->|document_scan overdue| SCANQ
   Q -->|document uploaded / rejected / deleted, consent granted / withdrawn| APPREF[applications.refresh: journey stage, request_documents]
   DOCQ --> ANQ[analysis.run]

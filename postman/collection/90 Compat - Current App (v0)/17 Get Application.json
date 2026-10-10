@@ -1,0 +1,108 @@
+{
+  "name": "Compat Get Application",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{rootUrl}}/v0/applications/:ref",
+      "host": [
+        "{{rootUrl}}"
+      ],
+      "path": [
+        "v0",
+        "applications",
+        ":ref"
+      ],
+      "variable": [
+        {
+          "key": "ref",
+          "value": "{{compatApplicationId}}"
+        }
+      ]
+    },
+    "description": "The submission by reference with its timeline (sent, review, sanctioned, disbursed) and the first open document request as `pendingDocument`. Compat layer for the current app (plan §10.3): the app sets `EXPO_PUBLIC_API_URL=<host>/v0`. The case is the borrower's newest open application, resolved server side because the app never sends one. Removed once the app moves to `/v1`."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{rootUrl}}/v0/applications/:ref",
+          "host": [
+            "{{rootUrl}}"
+          ],
+          "path": [
+            "v0",
+            "applications",
+            ":ref"
+          ],
+          "variable": [
+            {
+              "key": "ref",
+              "value": "{{compatApplicationId}}"
+            }
+          ]
+        },
+        "description": "The submission by reference with its timeline (sent, review, sanctioned, disbursed) and the first open document request as `pendingDocument`. Compat layer for the current app (plan §10.3): the app sets `EXPO_PUBLIC_API_URL=<host>/v0`. The case is the borrower's newest open application, resolved server side because the app never sends one. Removed once the app moves to `/v1`."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"SB-26-000041\",\n  \"lenderId\": \"01a122d0-2b3c-7d4e-9f50-61728394a5b6\",\n  \"lenderName\": \"Lender X Finance Ltd\",\n  \"product\": \"Lender X Working Capital\",\n  \"amount\": 2500000,\n  \"status\": \"under_review\",\n  \"createdAt\": \"2026-10-10T23:00:00.000Z\",\n  \"timeline\": [\n    {\n      \"id\": \"documents\",\n      \"title\": \"Documents Complete\",\n      \"detail\": \"Your Uploaded File Is Ready.\",\n      \"state\": \"done\",\n      \"at\": \"10 Oct\"\n    },\n    {\n      \"id\": \"sent\",\n      \"title\": \"Sent To Lender\",\n      \"detail\": \"This Lender Has Your File.\",\n      \"state\": \"active\"\n    },\n    {\n      \"id\": \"review\",\n      \"title\": \"Under Review\",\n      \"detail\": \"The Lender Is Reviewing Your File.\",\n      \"state\": \"pending\"\n    },\n    {\n      \"id\": \"sanctioned\",\n      \"title\": \"Sanctioned\",\n      \"detail\": \"The Lender Approves The Loan.\",\n      \"state\": \"pending\"\n    },\n    {\n      \"id\": \"disbursed\",\n      \"title\": \"Disbursed\",\n      \"detail\": \"Funds Are Sent To Your Account.\",\n      \"state\": \"pending\"\n    }\n  ]\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{rootUrl}}/v0/applications/:ref",
+          "host": [
+            "{{rootUrl}}"
+          ],
+          "path": [
+            "v0",
+            "applications",
+            ":ref"
+          ],
+          "variable": [
+            {
+              "key": "ref",
+              "value": "{{compatApplicationId}}"
+            }
+          ]
+        },
+        "description": "The submission by reference with its timeline (sent, review, sanctioned, disbursed) and the first open document request as `pendingDocument`. Compat layer for the current app (plan §10.3): the app sets `EXPO_PUBLIC_API_URL=<host>/v0`. The case is the borrower's newest open application, resolved server side because the app never sends one. Removed once the app moves to `/v1`."
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

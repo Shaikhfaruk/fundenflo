@@ -159,6 +159,18 @@ export class SubmissionService {
     return { ...(await this.view(submission, locale, audience)), events: visibleEvents(await this.submissions.events(id, SUBMISSION_EVENTS_LIMIT), audience), documentRequests: await this.requests.forSubmission(id, locale) };
   }
 
+  async byRef(ref: string, ability: AppAbility, locale: Locale, context: SessionContext) {
+    const submission = await this.submissions.findOne({ AND: [accessibleBy(ability, AppAction.Read).ofType('LenderSubmission'), { ref: ref.toUpperCase() }] });
+    if (!submission) throw new AppError(ErrorCode.NOT_FOUND);
+    return this.get(submission.applicationId, submission.id, ability, locale, context);
+  }
+
+  async subject(id: string) {
+    const submission = await this.require(id);
+    const lender = (await this.lenders.summaries([submission.lenderId])).get(submission.lenderId);
+    return { id: submission.id, ref: submission.ref, applicationId: submission.applicationId, status: submission.status, sentAt: submission.sentAt, lenderName: lender?.name ?? null };
+  }
+
   async browse(ability: AppAbility, query: PageQuery & SubmissionFilters, locale: Locale, context: SessionContext) {
     const window = pageWindow(query);
     const filters: Prisma.LenderSubmissionWhereInput = { id: window.idFilter, status: query.status, lenderId: query.lenderId, applicationId: query.applicationId, ...(context === SessionContext.lender ? { sentAt: { not: null } } : {}) };
@@ -431,6 +443,10 @@ export class SubmissionService {
     const submission = await this.visible(id, ability, action);
     if (context === SessionContext.lender && submission.sentAt === null) throw new AppError(ErrorCode.NOT_FOUND);
     return submission;
+  }
+
+  visibleFor(id: string, ability: AppAbility, action: AppAction) {
+    return this.visible(id, ability, action);
   }
 
   private async visible(id: string, ability: AppAbility, action: AppAction) {

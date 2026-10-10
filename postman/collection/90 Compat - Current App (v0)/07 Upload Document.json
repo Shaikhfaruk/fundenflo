@@ -1,0 +1,148 @@
+{
+  "name": "Compat Upload Document",
+  "request": {
+    "method": "POST",
+    "header": [],
+    "url": {
+      "raw": "{{rootUrl}}/v0/documents",
+      "host": [
+        "{{rootUrl}}"
+      ],
+      "path": [
+        "v0",
+        "documents"
+      ]
+    },
+    "description": "Multipart upload with the app fields `docType` (`pan`, `bankStatement`, `itrGst`, `itr`, `salarySlips`, `property`, `vehicleQuote`, `machineryQuote`), `consentVersion` and `file`, stored on the open application with the same checks as `POST /v1/documents`. Compat layer for the current app (plan §10.3): the app sets `EXPO_PUBLIC_API_URL=<host>/v0`. The case is the borrower's newest open application, resolved server side because the app never sends one. Removed once the app moves to `/v1`.",
+    "body": {
+      "mode": "formdata",
+      "formdata": [
+        {
+          "key": "docType",
+          "value": "bankStatement",
+          "type": "text"
+        },
+        {
+          "key": "consentVersion",
+          "value": "2026-10-v1",
+          "type": "text"
+        },
+        {
+          "key": "file",
+          "type": "file",
+          "src": "fixtures/sample-bank-statement.pdf"
+        }
+      ]
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "pm.collectionVariables.set('compatDocumentId', String(pm.response.json().id));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{rootUrl}}/v0/documents",
+          "host": [
+            "{{rootUrl}}"
+          ],
+          "path": [
+            "v0",
+            "documents"
+          ]
+        },
+        "description": "Multipart upload with the app fields `docType` (`pan`, `bankStatement`, `itrGst`, `itr`, `salarySlips`, `property`, `vehicleQuote`, `machineryQuote`), `consentVersion` and `file`, stored on the open application with the same checks as `POST /v1/documents`. Compat layer for the current app (plan §10.3): the app sets `EXPO_PUBLIC_API_URL=<host>/v0`. The case is the borrower's newest open application, resolved server side because the app never sends one. Removed once the app moves to `/v1`.",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "docType",
+              "value": "bankStatement",
+              "type": "text"
+            },
+            {
+              "key": "consentVersion",
+              "value": "2026-10-v1",
+              "type": "text"
+            },
+            {
+              "key": "file",
+              "type": "file",
+              "src": "fixtures/sample-bank-statement.pdf"
+            }
+          ]
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12210-3c4d-7e5f-8061-728394a5b6c7\",\n  \"status\": \"processing\"\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{rootUrl}}/v0/documents",
+          "host": [
+            "{{rootUrl}}"
+          ],
+          "path": [
+            "v0",
+            "documents"
+          ]
+        },
+        "description": "Multipart upload with the app fields `docType` (`pan`, `bankStatement`, `itrGst`, `itr`, `salarySlips`, `property`, `vehicleQuote`, `machineryQuote`), `consentVersion` and `file`, stored on the open application with the same checks as `POST /v1/documents`. Compat layer for the current app (plan §10.3): the app sets `EXPO_PUBLIC_API_URL=<host>/v0`. The case is the borrower's newest open application, resolved server side because the app never sends one. Removed once the app moves to `/v1`.",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "docType",
+              "value": "bankStatement",
+              "type": "text"
+            },
+            {
+              "key": "consentVersion",
+              "value": "2026-10-v1",
+              "type": "text"
+            },
+            {
+              "key": "file",
+              "type": "file",
+              "src": "fixtures/sample-bank-statement.pdf"
+            }
+          ]
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"documentType\",\n      \"code\": \"unknown_key\",\n      \"message\": \"unknown or inactive document type passport\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

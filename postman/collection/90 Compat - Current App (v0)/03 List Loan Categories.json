@@ -1,0 +1,79 @@
+{
+  "name": "Compat Loan Categories",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{rootUrl}}/v0/loan/categories?entityType=msme",
+      "host": [
+        "{{rootUrl}}"
+      ],
+      "path": [
+        "v0",
+        "loan",
+        "categories"
+      ],
+      "query": [
+        {
+          "key": "entityType",
+          "value": "msme"
+        }
+      ]
+    },
+    "description": "Categories for an entity type (`msme` or `individual`) with lender availability; categories without a live lender route say `Not Yet Available In Your Area`. Compat layer for the current app (plan §10.3): the app sets `EXPO_PUBLIC_API_URL=<host>/v0`. The case is the borrower's newest open application, resolved server side because the app never sends one. Removed once the app moves to `/v1`.",
+    "auth": {
+      "type": "noauth"
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{rootUrl}}/v0/loan/categories?entityType=msme",
+          "host": [
+            "{{rootUrl}}"
+          ],
+          "path": [
+            "v0",
+            "loan",
+            "categories"
+          ],
+          "query": [
+            {
+              "key": "entityType",
+              "value": "msme"
+            }
+          ]
+        },
+        "description": "Categories for an entity type (`msme` or `individual`) with lender availability; categories without a live lender route say `Not Yet Available In Your Area`. Compat layer for the current app (plan §10.3): the app sets `EXPO_PUBLIC_API_URL=<host>/v0`. The case is the borrower's newest open application, resolved server side because the app never sends one. Removed once the app moves to `/v1`.",
+        "auth": {
+          "type": "noauth"
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"categories\": [\n    {\n      \"id\": \"business\",\n      \"available\": true\n    },\n    {\n      \"id\": \"invoice\",\n      \"available\": false,\n      \"reason\": \"Not Yet Available In Your Area\"\n    }\n  ]\n}"
+    }
+  ]
+}

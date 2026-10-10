@@ -1,0 +1,87 @@
+{
+  "name": "Compat Record Consent",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{rootUrl}}/v0/consent",
+      "host": [
+        "{{rootUrl}}"
+      ],
+      "path": [
+        "v0",
+        "consent"
+      ]
+    },
+    "description": "The consent screen's choices (`aiDocuments`, `creditBureau`, `lenderSharing`) recorded against the current journey consent template with server time; the app's version and timestamps are kept only as sent. Compat layer for the current app (plan §10.3): the app sets `EXPO_PUBLIC_API_URL=<host>/v0`. The case is the borrower's newest open application, resolved server side because the app never sends one. Removed once the app moves to `/v1`.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"version\": \"2026-10-v1\",\n  \"submittedAt\": \"{{$isoTimestamp}}\",\n  \"items\": {\n    \"aiDocuments\": {\n      \"granted\": true,\n      \"at\": \"{{$isoTimestamp}}\"\n    },\n    \"creditBureau\": {\n      \"granted\": false,\n      \"at\": \"{{$isoTimestamp}}\"\n    },\n    \"lenderSharing\": {\n      \"granted\": false,\n      \"at\": \"{{$isoTimestamp}}\"\n    }\n  }\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{rootUrl}}/v0/consent",
+          "host": [
+            "{{rootUrl}}"
+          ],
+          "path": [
+            "v0",
+            "consent"
+          ]
+        },
+        "description": "The consent screen's choices (`aiDocuments`, `creditBureau`, `lenderSharing`) recorded against the current journey consent template with server time; the app's version and timestamps are kept only as sent. Compat layer for the current app (plan §10.3): the app sets `EXPO_PUBLIC_API_URL=<host>/v0`. The case is the borrower's newest open application, resolved server side because the app never sends one. Removed once the app moves to `/v1`.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"version\": \"2026-10-v1\",\n  \"submittedAt\": \"{{$isoTimestamp}}\",\n  \"items\": {\n    \"aiDocuments\": {\n      \"granted\": true,\n      \"at\": \"{{$isoTimestamp}}\"\n    },\n    \"creditBureau\": {\n      \"granted\": false,\n      \"at\": \"{{$isoTimestamp}}\"\n    },\n    \"lenderSharing\": {\n      \"granted\": false,\n      \"at\": \"{{$isoTimestamp}}\"\n    }\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"ok\": true\n}"
+    }
+  ]
+}

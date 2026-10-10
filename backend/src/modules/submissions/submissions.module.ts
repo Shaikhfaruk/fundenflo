@@ -14,6 +14,7 @@ import { DocumentRequestService } from './application/document-request.service.j
 import { SubmissionDocumentOwner } from './application/submission-document.owner.js';
 import { SubmissionNotificationService } from './application/submission-notification.service.js';
 import { SubmissionPacketBuilder } from './application/submission-packet.builder.js';
+import { SubmissionStatusSubscriptionTarget } from './application/submission-status-subscription.target.js';
 import { SubmissionService } from './application/submission.service.js';
 import { ApplicationSubmissionsController } from './http/application-submissions.controller.js';
 import { LenderSubmissionsController } from './http/lender-submissions.controller.js';
@@ -28,7 +29,7 @@ export const SUBMISSION_PROCESSORS = [SubmissionDeliverProcessor, SubmissionNoti
 @Module({
   imports: [AccessModule, ApplicationsModule, AssessmentsModule, AttributesModule, AuthModule, ConfigPublishingModule, ConsentsModule, DocumentsModule, LendersModule, MatchingModule],
   controllers: [ApplicationSubmissionsController, LenderSubmissionsController, OpsSubmissionsController],
-  providers: [SubmissionRepository, SubmissionPacketBuilder, DocumentRequestService, SubmissionService, SubmissionNotificationService, SubmissionDocumentOwner],
+  providers: [SubmissionRepository, SubmissionPacketBuilder, DocumentRequestService, SubmissionService, SubmissionNotificationService, SubmissionDocumentOwner, SubmissionStatusSubscriptionTarget],
   exports: [SubmissionService, DocumentRequestService, SubmissionNotificationService],
 })
 export class SubmissionsModule {}

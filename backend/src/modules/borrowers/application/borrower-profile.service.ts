@@ -14,7 +14,7 @@ import { ChangeRecorder } from '../../audit/application/change-recorder.service.
 import { AuditAction, AuditEntity } from '../../audit/domain/audit.constants.js';
 import { CatalogQueryService } from '../../catalog/application/catalog-query.service.js';
 import { PartyService } from '../../parties/application/party.service.js';
-import { BorrowerSegment, DEFAULT_BUSINESS_RELATIONSHIP, SUB_SEGMENT_RELATIONSHIP } from '../domain/borrower.constants.js';
+import { BorrowerSegment, DEFAULT_BUSINESS_RELATIONSHIP, OWNER_NAMED_SUB_SEGMENTS, SUB_SEGMENT_RELATIONSHIP } from '../domain/borrower.constants.js';
 import { BorrowerProfileRepository } from '../infrastructure/borrower-profile.repository.js';
 import { toBorrowerProfileView } from './borrower.views.js';
 
@@ -91,10 +91,12 @@ export class BorrowerProfileService {
 
   private async businessFor(actingPartyId: string, input: BorrowerProfileInput) {
     const name = input.businessName?.trim();
-    if (!name) throw new AppError(ErrorCode.VALIDATION_FAILED, { details: [{ path: 'businessName', code: 'required', message: 'a business borrower needs the business name' }] });
-    const existing = (await this.parties.businessesOf(actingPartyId)).find((party) => party.displayName?.trim().toLowerCase() === name.toLowerCase());
+    const ownerNamed = input.subSegment !== undefined && OWNER_NAMED_SUB_SEGMENTS.has(input.subSegment);
+    if (!name && !ownerNamed) throw new AppError(ErrorCode.VALIDATION_FAILED, { details: [{ path: 'businessName', code: 'required', message: 'a business borrower needs the business name' }] });
+    const businesses = await this.parties.businessesOf(actingPartyId);
+    const existing = name ? businesses.find((party) => party.displayName?.trim().toLowerCase() === name.toLowerCase()) : businesses.find((party) => !party.displayName);
     if (existing) return existing.id;
-    const business = await this.parties.createBusiness({ displayName: name });
+    const business = await this.parties.createBusiness({ displayName: name ?? null });
     await this.parties.linkRelationship(actingPartyId, business.id, (input.subSegment ? SUB_SEGMENT_RELATIONSHIP[input.subSegment] : undefined) ?? DEFAULT_BUSINESS_RELATIONSHIP);
     return business.id;
   }

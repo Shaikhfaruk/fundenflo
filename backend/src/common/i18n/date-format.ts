@@ -13,6 +13,18 @@ export function formatDisplayDateTime(date: Date, locale?: string | null): strin
   return formatter.format(date);
 }
 
+const dateFormatters = new Map<Locale, Intl.DateTimeFormat>();
+
+export function formatDisplayDate(date: Date, locale?: string | null): string {
+  const resolved = locale ? resolveLocale(locale) : DEFAULT_LOCALE;
+  let formatter = dateFormatters.get(resolved);
+  if (!formatter) {
+    formatter = new Intl.DateTimeFormat(`${resolved}-IN`, { timeZone: DISPLAY_TIME_ZONE, day: 'numeric', month: 'short' });
+    dateFormatters.set(resolved, formatter);
+  }
+  return formatter.format(date);
+}
+
 const shift = (date: Date, minutes: number) => new Date(date.getTime() + minutes * MINUTE_MS);
 
 export function startOfDisplayDay(date: Date): Date {

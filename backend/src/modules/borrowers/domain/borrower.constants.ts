@@ -14,6 +14,8 @@ export const SUB_SEGMENT_RELATIONSHIP: Record<string, RelationshipType> = {
 
 export const DEFAULT_BUSINESS_RELATIONSHIP = RelationshipType.signatory_of;
 
+export const OWNER_NAMED_SUB_SEGMENTS: ReadonlySet<string> = new Set(['proprietorship']);
+
 export const PanHolder = {
   Person: 'P',
   Company: 'C',

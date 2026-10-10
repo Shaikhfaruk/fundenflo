@@ -1,0 +1,169 @@
+{
+  "name": "Compat /v0: the current app journey from OTP to applying to a lender, on the real services",
+  "requires": [
+    "staffInvitation",
+    "checkerInvitation"
+  ],
+  "steps": [
+    {
+      "request": "01 Auth/06 Accept Staff Invitation.json",
+      "identity": "maker"
+    },
+    {
+      "request": "01 Auth/07 Staff Login.json",
+      "identity": "maker"
+    },
+    {
+      "request": "01 Auth/08 Verify Staff MFA.json",
+      "identity": "maker"
+    },
+    {
+      "request": "58 Admin - Lenders/02 Create Lender.json"
+    },
+    {
+      "request": "58 Admin - Lenders/04 Update Lender.json"
+    },
+    {
+      "request": "58 Admin - Lenders/06 Create Lender Agreement.json"
+    },
+    {
+      "request": "58 Admin - Lenders/07 Update Lender Agreement.json"
+    },
+    {
+      "request": "58 Admin - Lenders/12 Create Lender Product.json"
+    },
+    {
+      "request": "58 Admin - Lenders/18 Submit Lender Product Version.json"
+    },
+    {
+      "request": "01 Auth/06 Accept Staff Invitation.json",
+      "identity": "checker"
+    },
+    {
+      "request": "01 Auth/07 Staff Login.json",
+      "identity": "checker"
+    },
+    {
+      "request": "01 Auth/08 Verify Staff MFA.json",
+      "identity": "checker"
+    },
+    {
+      "request": "48 Admin - Change Requests/03 Approve Change Request.json",
+      "identity": "checker"
+    },
+    {
+      "request": "58 Admin - Lenders/19 Publish Lender Product Version.json",
+      "identity": "maker"
+    },
+    {
+      "request": "59 Admin - Scoring & Improvement/02 Create Scoring Model.json",
+      "identity": "maker"
+    },
+    {
+      "request": "59 Admin - Scoring & Improvement/08 Submit Scoring Model Version.json",
+      "identity": "maker"
+    },
+    {
+      "request": "48 Admin - Change Requests/03 Approve Change Request.json",
+      "identity": "checker"
+    },
+    {
+      "request": "59 Admin - Scoring & Improvement/09 Publish Scoring Model Version.json",
+      "identity": "maker"
+    },
+    {
+      "request": "90 Compat - Current App (v0)/01 Request OTP.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "90 Compat - Current App (v0)/02 Verify OTP.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "90 Compat - Current App (v0)/03 List Loan Categories.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "90 Compat - Current App (v0)/04 Save Loan Requirement.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "90 Compat - Current App (v0)/05 Save Pre-Check.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "90 Compat - Current App (v0)/06 Record Consent.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "90 Compat - Current App (v0)/07 Upload Document.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "90 Compat - Current App (v0)/08 Get Document Status.json",
+      "identity": "borrower",
+      "waitSeconds": 3
+    },
+    {
+      "request": "90 Compat - Current App (v0)/09 Save Profile.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "90 Compat - Current App (v0)/10 Start Analysis.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "90 Compat - Current App (v0)/12 Request Analysis Update.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "90 Compat - Current App (v0)/11 Get Analysis.json",
+      "identity": "borrower",
+      "waitSeconds": 3
+    },
+    {
+      "request": "90 Compat - Current App (v0)/13 Get Score.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "90 Compat - Current App (v0)/14 Get Lenders.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "90 Compat - Current App (v0)/15 Record Consent With Sharing.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "90 Compat - Current App (v0)/16 Apply To Lender.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "90 Compat - Current App (v0)/17 Get Application.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "90 Compat - Current App (v0)/18 Request Application Updates.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "90 Compat - Current App (v0)/19 Delete Document.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "59 Admin - Scoring & Improvement/05 Create Scoring Model Version.json",
+      "identity": "maker"
+    },
+    {
+      "request": "59 Admin - Scoring & Improvement/10 Retire Scoring Model Version.json",
+      "identity": "maker"
+    },
+    {
+      "request": "58 Admin - Lenders/15 Create Lender Product Version.json",
+      "identity": "maker"
+    },
+    {
+      "request": "58 Admin - Lenders/20 Retire Lender Product Version.json",
+      "identity": "maker"
+    }
+  ]
+}

@@ -3,7 +3,7 @@ import helmet from 'helmet';
 import type { Redis } from 'ioredis';
 import { Logger } from 'nestjs-pino';
 
-import { API_PREFIX, HttpHeader, UNPREFIXED_ROUTES } from '../common/constants/http.constants.js';
+import { API_PREFIX, COMPAT_ROUTES, HttpHeader, UNPREFIXED_ROUTES } from '../common/constants/http.constants.js';
 import { requestIdMiddleware } from '../common/http/request-id.middleware.js';
 import { APP_CONFIG } from '../config/config.constants.js';
 import type { AppConfig } from '../config/env.schema.js';
@@ -21,7 +21,7 @@ export function configureHttpApp(app: NestExpressApplication): AppConfig {
     origin: config.CORS_ORIGINS.length > 0 ? config.CORS_ORIGINS : false,
     exposedHeaders: [HttpHeader.RequestId, HttpHeader.ETag, HttpHeader.RetryAfter, HttpHeader.IdempotentReplay],
   });
-  app.setGlobalPrefix(API_PREFIX, { exclude: UNPREFIXED_ROUTES });
+  app.setGlobalPrefix(API_PREFIX, { exclude: [...UNPREFIXED_ROUTES, COMPAT_ROUTES] });
   app.useWebSocketAdapter(new RedisIoAdapter(app, app.get<Redis>(REDIS_CLIENT), config.CORS_ORIGINS));
   app.enableShutdownHooks();
   return config;

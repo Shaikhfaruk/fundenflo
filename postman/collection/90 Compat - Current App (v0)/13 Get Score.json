@@ -1,0 +1,129 @@
+{
+  "name": "Compat Get Score",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{rootUrl}}/v0/score",
+      "host": [
+        "{{rootUrl}}"
+      ],
+      "path": [
+        "v0",
+        "score"
+      ]
+    },
+    "description": "The financial health score and improvement plan of the analysis's application in the app's shape; only scored factors are listed. Compat layer for the current app (plan §10.3): the app sets `EXPO_PUBLIC_API_URL=<host>/v0`. The case is the borrower's newest open application, resolved server side because the app never sends one. Removed once the app moves to `/v1`.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"analysisId\": \"{{compatAnalysisId}}\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{rootUrl}}/v0/score",
+          "host": [
+            "{{rootUrl}}"
+          ],
+          "path": [
+            "v0",
+            "score"
+          ]
+        },
+        "description": "The financial health score and improvement plan of the analysis's application in the app's shape; only scored factors are listed. Compat layer for the current app (plan §10.3): the app sets `EXPO_PUBLIC_API_URL=<host>/v0`. The case is the borrower's newest open application, resolved server side because the app never sends one. Removed once the app moves to `/v1`.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"analysisId\": \"{{compatAnalysisId}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"score\": {\n    \"analysisId\": \"01a122c0-1a2b-7c3d-8e4f-5061728394a5\",\n    \"value\": 61,\n    \"band\": \"Good — Ready For Funding\",\n    \"assessedAt\": \"2026-10-10T23:00:00.000Z\",\n    \"factors\": [\n      {\n        \"id\": \"vintage\",\n        \"label\": \"Business Vintage\",\n        \"score\": 8,\n        \"max\": 10\n      }\n    ],\n    \"basedOn\": \"Based On Your Bank Statement.\"\n  },\n  \"improvement\": []\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{rootUrl}}/v0/score",
+          "host": [
+            "{{rootUrl}}"
+          ],
+          "path": [
+            "v0",
+            "score"
+          ]
+        },
+        "description": "The financial health score and improvement plan of the analysis's application in the app's shape; only scored factors are listed. Compat layer for the current app (plan §10.3): the app sets `EXPO_PUBLIC_API_URL=<host>/v0`. The case is the borrower's newest open application, resolved server side because the app never sends one. Removed once the app moves to `/v1`.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"analysisId\": \"{{compatAnalysisId}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"details\": {\n    \"reason\": \"not_assessed\"\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

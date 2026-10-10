@@ -84,6 +84,7 @@ export const envSchema = z
     SMS_DLT_TEMPLATE_APPLICATION_STATUS: optional(z.string().regex(/^\d{10,30}$/, 'must be a numeric DLT template ID')),
     SMS_DLT_TEMPLATE_DOCUMENT_REQUESTED: optional(z.string().regex(/^\d{10,30}$/, 'must be a numeric DLT template ID')),
     SMS_DLT_TEMPLATE_SUBMISSION_RECEIVED: optional(z.string().regex(/^\d{10,30}$/, 'must be a numeric DLT template ID')),
+    SMS_DLT_TEMPLATE_SUBMISSION_STATUS: optional(z.string().regex(/^\d{10,30}$/, 'must be a numeric DLT template ID')),
     EMAIL_DRIVER: z.enum(['smtp', 'log']),
     PUSH_DRIVER: z.enum(['log', 'expo']).default('log'),
     EXPO_ACCESS_TOKEN: optional(z.string().min(10)),

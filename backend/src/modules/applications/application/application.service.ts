@@ -14,7 +14,7 @@ import { paiseFromNumber, paiseToNumber } from '../../../common/money/paise.js';
 import { RefGenerator, RefKind } from '../../../infrastructure/database/ref-generator.js';
 import { remainingRequired } from '../../../engines/questionnaire/resolve.js';
 import type { QuestionnaireContext } from '../../../engines/questionnaire/questionnaire.types.js';
-import { APPLIED_APPLICATION_STATES, ApplicationEvent, applicationMachine, CLOSED_APPLICATION_STATES, PRE_SUBMISSION_APPLICATION_STATES, SUBMITTABLE_APPLICATION_STATES } from '../../../engines/state-machines/machines/application.machine.js';
+import { APPLIED_APPLICATION_STATES, ApplicationEvent, applicationMachine, CLOSED_APPLICATION_STATES, OPEN_APPLICATION_STATES, PRE_SUBMISSION_APPLICATION_STATES, SUBMITTABLE_APPLICATION_STATES } from '../../../engines/state-machines/machines/application.machine.js';
 import type { Prisma } from '../../../generated/prisma/client.js';
 import { AppAction, type AppAbility } from '../../access/domain/ability.types.js';
 import { ChangeRecorder } from '../../audit/application/change-recorder.service.js';
@@ -137,6 +137,11 @@ export class ApplicationService {
     };
     const rows = await this.applications.list({ AND: [accessibleBy(ability, AppAction.Read).ofType('LoanApplication'), filters] }, window.take);
     return toPage(rows, query.limit, toApplicationView);
+  }
+
+  async current(ability: AppAbility) {
+    const [application] = await this.applications.list({ AND: [accessibleBy(ability, AppAction.Update).ofType('LoanApplication'), { status: { in: [...OPEN_APPLICATION_STATES] } }] }, 1);
+    return application ? toApplicationView(application) : null;
   }
 
   async get(id: string, ability: AppAbility) {

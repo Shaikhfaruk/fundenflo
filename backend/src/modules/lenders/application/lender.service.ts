@@ -83,7 +83,7 @@ export class LenderService {
   }
 
   async summaries(ids: string[]) {
-    return new Map((await this.lenders.list({ id: { in: ids } }, ids.length)).map((lender) => [lender.id, { id: lender.id, key: lender.key, name: lender.organization.name, organizationId: lender.organizationId }]));
+    return new Map((await this.lenders.list({ id: { in: ids } }, ids.length)).map((lender) => [lender.id, { id: lender.id, key: lender.key, name: lender.organization.name, organizationId: lender.organizationId, kind: lender.kind }]));
   }
 
   async forOrganization(organizationId: string) {

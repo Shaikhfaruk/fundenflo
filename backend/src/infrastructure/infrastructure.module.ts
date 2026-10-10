@@ -37,7 +37,6 @@ const sharedProviders = [CacheService, OutboxService, RateLimiter, RevocationReg
 @Module({})
 export class InfrastructureModule {
   static forRoot(options: InfrastructureOptions): DynamicModule {
-    const http = options.processName === 'api';
     return {
       module: InfrastructureModule,
       imports: [
@@ -50,7 +49,7 @@ export class InfrastructureModule {
         ClsModule.forRoot({
           global: true,
           middleware: {
-            mount: http,
+            mount: false,
             generateId: true,
             idGenerator: (request: Request) => (typeof request.id === 'string' ? request.id : randomUUID()),
             setup: (cls, request: Request) => {

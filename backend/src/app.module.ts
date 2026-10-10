@@ -1,5 +1,6 @@
 import { type MiddlewareConsumer, Module, type NestModule } from '@nestjs/common';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import { ClsMiddleware } from 'nestjs-cls';
 
 import { ALL_ROUTES } from './common/constants/http.constants.js';
 import { HttpErrorFilter } from './common/errors/http-error.filter.js';
@@ -19,6 +20,7 @@ import { ApplicationsModule } from './modules/applications/applications.module.j
 import { AssessmentsModule } from './modules/assessments/assessments.module.js';
 import { MatchingModule } from './modules/matching/matching.module.js';
 import { SubmissionsModule } from './modules/submissions/submissions.module.js';
+import { CompatModule } from './modules/compat/compat.module.js';
 import { SubscriptionsModule } from './modules/subscriptions/subscriptions.module.js';
 import { LendersModule } from './modules/lenders/lenders.module.js';
 import { BorrowersModule } from './modules/borrowers/borrowers.module.js';
@@ -54,6 +56,7 @@ import { QuestionnairesModule } from './modules/questionnaires/questionnaires.mo
     SubscriptionsModule,
     MatchingModule,
     SubmissionsModule,
+    CompatModule,
     ActivitiesModule,
     SlaModule,
     RealtimeModule.forRoot({ worker: false }),
@@ -68,6 +71,6 @@ import { QuestionnairesModule } from './modules/questionnaires/questionnaires.mo
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(JsonBodyMiddleware).forRoutes(ALL_ROUTES);
+    consumer.apply(ClsMiddleware, JsonBodyMiddleware).forRoutes(ALL_ROUTES);
   }
 }

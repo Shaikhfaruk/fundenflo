@@ -3,6 +3,7 @@ import { NotificationChannel } from '../../../common/enums/db.enums.js';
 export const SubscriptionEvent = {
   AnalysisCompleted: 'analysis.completed',
   ApplicationStatusChanged: 'application.status_changed',
+  SubmissionStatusChanged: 'submission.status_changed',
 } as const;
 
 export type SubscriptionEvent = (typeof SubscriptionEvent)[keyof typeof SubscriptionEvent];

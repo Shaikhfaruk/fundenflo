@@ -1,0 +1,130 @@
+{
+  "name": "Compat Start Analysis",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{rootUrl}}/v0/analysis",
+      "host": [
+        "{{rootUrl}}"
+      ],
+      "path": [
+        "v0",
+        "analysis"
+      ]
+    },
+    "description": "Starts (or returns the running) analysis of the open application; needs the `aiDocuments` consent. Compat layer for the current app (plan §10.3): the app sets `EXPO_PUBLIC_API_URL=<host>/v0`. The case is the borrower's newest open application, resolved server side because the app never sends one. Removed once the app moves to `/v1`.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"documentIds\": [\n    \"{{compatDocumentId}}\"\n  ],\n  \"consentVersion\": \"2026-10-v1\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 202', () => pm.response.to.have.status(202));",
+          "pm.collectionVariables.set('compatAnalysisId', String(pm.response.json().id));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "202 Accepted",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{rootUrl}}/v0/analysis",
+          "host": [
+            "{{rootUrl}}"
+          ],
+          "path": [
+            "v0",
+            "analysis"
+          ]
+        },
+        "description": "Starts (or returns the running) analysis of the open application; needs the `aiDocuments` consent. Compat layer for the current app (plan §10.3): the app sets `EXPO_PUBLIC_API_URL=<host>/v0`. The case is the borrower's newest open application, resolved server side because the app never sends one. Removed once the app moves to `/v1`.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"documentIds\": [\n    \"{{compatDocumentId}}\"\n  ],\n  \"consentVersion\": \"2026-10-v1\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Accepted",
+      "code": 202,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a122c0-1a2b-7c3d-8e4f-5061728394a5\"\n}"
+    },
+    {
+      "name": "403 CONSENT_REQUIRED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{rootUrl}}/v0/analysis",
+          "host": [
+            "{{rootUrl}}"
+          ],
+          "path": [
+            "v0",
+            "analysis"
+          ]
+        },
+        "description": "Starts (or returns the running) analysis of the open application; needs the `aiDocuments` consent. Compat layer for the current app (plan §10.3): the app sets `EXPO_PUBLIC_API_URL=<host>/v0`. The case is the borrower's newest open application, resolved server side because the app never sends one. Removed once the app moves to `/v1`.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"documentIds\": [\n    \"{{compatDocumentId}}\"\n  ],\n  \"consentVersion\": \"2026-10-v1\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Forbidden",
+      "code": 403,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"CONSENT_REQUIRED\",\n  \"message\": \"Consent for this purpose is needed first.\",\n  \"details\": {\n    \"purpose\": \"ai_documents\"\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "name": "Compat Delete Document",
+  "request": {
+    "method": "DELETE",
+    "header": [],
+    "url": {
+      "raw": "{{rootUrl}}/v0/documents/:id",
+      "host": [
+        "{{rootUrl}}"
+      ],
+      "path": [
+        "v0",
+        "documents",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{compatDocumentId}}"
+        }
+      ]
+    },
+    "description": "Removes an uploaded document; files already sent to a lender are locked. Compat layer for the current app (plan §10.3): the app sets `EXPO_PUBLIC_API_URL=<host>/v0`. The case is the borrower's newest open application, resolved server side because the app never sends one. Removed once the app moves to `/v1`."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 204', () => pm.response.to.have.status(204));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "204 No Content",
+      "originalRequest": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{rootUrl}}/v0/documents/:id",
+          "host": [
+            "{{rootUrl}}"
+          ],
+          "path": [
+            "v0",
+            "documents",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{compatDocumentId}}"
+            }
+          ]
+        },
+        "description": "Removes an uploaded document; files already sent to a lender are locked. Compat layer for the current app (plan §10.3): the app sets `EXPO_PUBLIC_API_URL=<host>/v0`. The case is the borrower's newest open application, resolved server side because the app never sends one. Removed once the app moves to `/v1`."
+      },
+      "status": "No Content",
+      "code": 204,
+      "_postman_previewlanguage": "text",
+      "header": [],
+      "body": ""
+    }
+  ]
+}

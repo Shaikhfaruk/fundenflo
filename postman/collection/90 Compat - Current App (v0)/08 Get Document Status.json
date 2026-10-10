@@ -1,0 +1,108 @@
+{
+  "name": "Compat Document Status",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{rootUrl}}/v0/documents/:id",
+      "host": [
+        "{{rootUrl}}"
+      ],
+      "path": [
+        "v0",
+        "documents",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{compatDocumentId}}"
+        }
+      ]
+    },
+    "description": "`processing` until the malware check finishes, then `verified` (clean) or `rejected` with a reason the app shows. Compat layer for the current app (plan §10.3): the app sets `EXPO_PUBLIC_API_URL=<host>/v0`. The case is the borrower's newest open application, resolved server side because the app never sends one. Removed once the app moves to `/v1`."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{rootUrl}}/v0/documents/:id",
+          "host": [
+            "{{rootUrl}}"
+          ],
+          "path": [
+            "v0",
+            "documents",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{compatDocumentId}}"
+            }
+          ]
+        },
+        "description": "`processing` until the malware check finishes, then `verified` (clean) or `rejected` with a reason the app shows. Compat layer for the current app (plan §10.3): the app sets `EXPO_PUBLIC_API_URL=<host>/v0`. The case is the borrower's newest open application, resolved server side because the app never sends one. Removed once the app moves to `/v1`."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"status\": \"verified\"\n}"
+    },
+    {
+      "name": "200 Rejected",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{rootUrl}}/v0/documents/:id",
+          "host": [
+            "{{rootUrl}}"
+          ],
+          "path": [
+            "v0",
+            "documents",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{compatDocumentId}}"
+            }
+          ]
+        },
+        "description": "`processing` until the malware check finishes, then `verified` (clean) or `rejected` with a reason the app shows. Compat layer for the current app (plan §10.3): the app sets `EXPO_PUBLIC_API_URL=<host>/v0`. The case is the borrower's newest open application, resolved server side because the app never sends one. Removed once the app moves to `/v1`."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"status\": \"rejected\",\n  \"reason\": \"This File Could Not Pass Our Safety Check. Please Upload A Fresh Copy.\"\n}"
+    }
+  ]
+}

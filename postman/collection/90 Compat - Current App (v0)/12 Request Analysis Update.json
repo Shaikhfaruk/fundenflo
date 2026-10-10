@@ -1,0 +1,89 @@
+{
+  "name": "Compat Request Update",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{rootUrl}}/v0/notifications/whatsapp",
+      "host": [
+        "{{rootUrl}}"
+      ],
+      "path": [
+        "v0",
+        "notifications",
+        "whatsapp"
+      ]
+    },
+    "description": "Opt in to a message when the analysis finishes (`analysis.completed` with `analysisId`) or when a lender moves the file (`application.status` with the application `id` from Apply To Lender). Delivered by push with SMS fallback until a WhatsApp provider is chosen. Compat layer for the current app (plan §10.3): the app sets `EXPO_PUBLIC_API_URL=<host>/v0`. The case is the borrower's newest open application, resolved server side because the app never sends one. Removed once the app moves to `/v1`.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"analysisId\": \"{{compatAnalysisId}}\",\n  \"event\": \"analysis.completed\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{rootUrl}}/v0/notifications/whatsapp",
+          "host": [
+            "{{rootUrl}}"
+          ],
+          "path": [
+            "v0",
+            "notifications",
+            "whatsapp"
+          ]
+        },
+        "description": "Opt in to a message when the analysis finishes (`analysis.completed` with `analysisId`) or when a lender moves the file (`application.status` with the application `id` from Apply To Lender). Delivered by push with SMS fallback until a WhatsApp provider is chosen. Compat layer for the current app (plan §10.3): the app sets `EXPO_PUBLIC_API_URL=<host>/v0`. The case is the borrower's newest open application, resolved server side because the app never sends one. Removed once the app moves to `/v1`.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"analysisId\": \"{{compatAnalysisId}}\",\n  \"event\": \"analysis.completed\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"ok\": true\n}"
+    }
+  ]
+}

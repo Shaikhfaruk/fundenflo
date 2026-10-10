@@ -41,7 +41,7 @@ export class PartyService {
     return this.createParty(PartyKind.person, input);
   }
 
-  createBusiness(input: { displayName: string; contact?: ContactInput }) {
+  createBusiness(input: { displayName: string | null; contact?: ContactInput }) {
     return this.createParty(PartyKind.business, input);
   }
 

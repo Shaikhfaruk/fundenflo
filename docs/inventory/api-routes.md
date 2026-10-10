@@ -539,6 +539,24 @@ Planned:
 
 ## 99 Compat (v0.1 app)
 
-Served under `/v0` with exactly the paths and shapes the current app uses, so the app only sets `EXPO_PUBLIC_API_URL=<host>/v0` (see [`frontend-api-calls.md`](frontend-api-calls.md)). Module `compat`, context `public` for OTP and `borrower` for the rest, milestone M3, status `planned`. The module is removed once the app moves to `/v1`.
+Built in M3d. Served under `/v0` (excluded from the `v1` global prefix by `COMPAT_ROUTES`) with exactly the paths and shapes the current app uses, so the app only sets `EXPO_PUBLIC_API_URL=<host>/v0` (see [`frontend-api-calls.md`](frontend-api-calls.md)). Module `compat`: controllers map the app shapes onto the v1 services and hold no business rules. The case is the borrower's newest open application. Postman folder `90 Compat - Current App (v0)`, flow `compat`. Remove the module once the app moves to `/v1`.
 
-`POST /auth/otp/request` · `POST /auth/otp/verify` · `PATCH /auth/profile` · `GET /loan/categories` · `POST /loan/requirement` · `POST /loan/pre-check` · `POST /consent` · `POST /documents` · `GET /documents/:id` · `DELETE /documents/:id` · `POST /analysis` · `GET /analysis/:id` · `POST /score` · `POST /lenders` · `POST /applications` · `GET /applications/:id` · `POST /notifications/whatsapp`
+| Method | Path | Module | Context | Milestone | Status |
+|---|---|---|---|---|---|
+| `POST` | `/v0/auth/otp/request` | compat (`compat-auth.controller.ts` → `OtpLoginService.request`, the v1 schema and IP rate limit) | public | M3 | `useful` |
+| `POST` | `/v0/auth/otp/verify` | compat (`CompatAuthService.verify`: v1 result plus `token` and a national `user.mobile`) | public | M3 | `useful` |
+| `PATCH` | `/v0/auth/profile` | compat (`CompatAuthService.profile` → `BorrowerKycService.verifyPan` on the open application's profile, then `MeService.updateProfile`; names an owner-named proprietorship after its verified owner) | borrower | M3 | `useful` |
+| `GET` | `/v0/loan/categories` | compat (`compat-journey.controller.ts` → `CatalogQueryService.categories` with availability) | public | M3 | `useful` |
+| `POST` | `/v0/loan/requirement` | compat (`CompatJourneyService.requirement` → `ApplicationService.create` (MSME as proprietorship) or the open pre-submission case, then `updateRequirement`; rupees → paise, years → months) | borrower | M3 | `useful` |
+| `POST` | `/v0/loan/pre-check` | compat (`ApplicationService.submitAnswers`, app question ids mapped to question keys) | borrower | M3 | `useful` |
+| `POST` | `/v0/consent` | compat (`ApplicationService.recordConsent`, or `ConsentService.record` once submitted, journey template, server time) | borrower | M3 | `useful` |
+| `POST` | `/v0/documents` | compat (`DocumentService.upload` with app `docType` mapped to document types, on the open application) | borrower | M3 | `useful` |
+| `GET` | `/v0/documents/:id` | compat (`DocumentService.get` mapped to processing / verified / rejected) | borrower | M3 | `useful` |
+| `DELETE` | `/v0/documents/:id` | compat (`DocumentService.remove`) | borrower | M3 | `useful` |
+| `POST` | `/v0/analysis` | compat (`AnalysisService.request` on the open application) | borrower | M3 | `useful` |
+| `GET` | `/v0/analysis/:id` | compat (`AnalysisService.get` mapped to running / done / failed) | borrower | M3 | `useful` |
+| `POST` | `/v0/notifications/whatsapp` | compat (`SubscriptionService.subscribe`: `analysis.completed` or `submission.status_changed` for the submission reference, push with SMS fallback until a WhatsApp provider exists) | borrower | M3 | `useful` |
+| `POST` | `/v0/score` | compat (`AnalysisService.assessment` of the analysis's application, scored factors only, `basedOn` from document labels) | borrower | M3 | `useful` |
+| `POST` | `/v0/lenders` | compat (`MatchingService.request` (latest run once submitted); offer id = match result, kind label, pricing disclosure) | borrower | M3 | `useful` |
+| `POST` | `/v0/applications` | compat (records the lender-scoped `lender_sharing` consent when sharing is on, then `SubmissionService.request`; returns the submission reference and timeline) | borrower | M3 | `useful` |
+| `GET` | `/v0/applications/:ref` | compat (`SubmissionService.byRef`) | borrower | M3 | `useful` |

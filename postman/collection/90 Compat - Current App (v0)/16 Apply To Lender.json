@@ -1,0 +1,130 @@
+{
+  "name": "Compat Apply To Lender",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{rootUrl}}/v0/applications",
+      "host": [
+        "{{rootUrl}}"
+      ],
+      "path": [
+        "v0",
+        "applications"
+      ]
+    },
+    "description": "Applies to the chosen offer: records the applicant's consent naming that lender (choosing and confirming in the app is the selection the sharing consent asks for) and creates the submission for ops approval. `id` is the submission reference; `status` stays `under_review` until a final lender decision. Compat layer for the current app (plan §10.3): the app sets `EXPO_PUBLIC_API_URL=<host>/v0`. The case is the borrower's newest open application, resolved server side because the app never sends one. Removed once the app moves to `/v1`.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"lenderId\": \"{{compatLenderId}}\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "pm.collectionVariables.set('compatApplicationId', String(pm.response.json().id));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{rootUrl}}/v0/applications",
+          "host": [
+            "{{rootUrl}}"
+          ],
+          "path": [
+            "v0",
+            "applications"
+          ]
+        },
+        "description": "Applies to the chosen offer: records the applicant's consent naming that lender (choosing and confirming in the app is the selection the sharing consent asks for) and creates the submission for ops approval. `id` is the submission reference; `status` stays `under_review` until a final lender decision. Compat layer for the current app (plan §10.3): the app sets `EXPO_PUBLIC_API_URL=<host>/v0`. The case is the borrower's newest open application, resolved server side because the app never sends one. Removed once the app moves to `/v1`.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"lenderId\": \"{{compatLenderId}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"SB-26-000041\",\n  \"lenderId\": \"01a122d0-2b3c-7d4e-9f50-61728394a5b6\",\n  \"lenderName\": \"Lender X Finance Ltd\",\n  \"product\": \"Lender X Working Capital\",\n  \"amount\": 2500000,\n  \"status\": \"under_review\",\n  \"createdAt\": \"2026-10-10T23:00:00.000Z\",\n  \"timeline\": [\n    {\n      \"id\": \"documents\",\n      \"title\": \"Documents Complete\",\n      \"detail\": \"Your Uploaded File Is Ready.\",\n      \"state\": \"done\",\n      \"at\": \"10 Oct\"\n    },\n    {\n      \"id\": \"sent\",\n      \"title\": \"Sent To Lender\",\n      \"detail\": \"This Lender Has Your File.\",\n      \"state\": \"active\"\n    },\n    {\n      \"id\": \"review\",\n      \"title\": \"Under Review\",\n      \"detail\": \"The Lender Is Reviewing Your File.\",\n      \"state\": \"pending\"\n    },\n    {\n      \"id\": \"sanctioned\",\n      \"title\": \"Sanctioned\",\n      \"detail\": \"The Lender Approves The Loan.\",\n      \"state\": \"pending\"\n    },\n    {\n      \"id\": \"disbursed\",\n      \"title\": \"Disbursed\",\n      \"detail\": \"Funds Are Sent To Your Account.\",\n      \"state\": \"pending\"\n    }\n  ]\n}"
+    },
+    {
+      "name": "403 CONSENT_REQUIRED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{rootUrl}}/v0/applications",
+          "host": [
+            "{{rootUrl}}"
+          ],
+          "path": [
+            "v0",
+            "applications"
+          ]
+        },
+        "description": "Applies to the chosen offer: records the applicant's consent naming that lender (choosing and confirming in the app is the selection the sharing consent asks for) and creates the submission for ops approval. `id` is the submission reference; `status` stays `under_review` until a final lender decision. Compat layer for the current app (plan §10.3): the app sets `EXPO_PUBLIC_API_URL=<host>/v0`. The case is the borrower's newest open application, resolved server side because the app never sends one. Removed once the app moves to `/v1`.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"lenderId\": \"{{compatLenderId}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Forbidden",
+      "code": 403,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"CONSENT_REQUIRED\",\n  \"message\": \"Consent for this purpose is needed first.\",\n  \"details\": {\n    \"purpose\": \"lender_sharing\",\n    \"organizationId\": \"01a122a0-2b3c-7d4e-9f50-61728394a5b6\"\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

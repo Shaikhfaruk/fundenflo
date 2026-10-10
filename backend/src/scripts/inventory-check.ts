@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 import { AppModule } from '../app.module.js';
-import { API_PREFIX } from '../common/constants/http.constants.js';
+import { API_PREFIX, COMPAT_PREFIX } from '../common/constants/http.constants.js';
 import { listRoutes } from './route-catalog.js';
 
 const INVENTORY_FILE = resolve(process.cwd(), '../docs/inventory/api-routes.md');
@@ -18,7 +18,7 @@ function readInventory(): InventoryRoute[] {
     .flatMap((line) => {
       const match = ROW_PATTERN.exec(line.trim());
       if (!match?.[1] || !match[2] || !match[3]) return [];
-      const path = match[2].startsWith('/health') ? match[2] : `/${API_PREFIX}${match[2]}`;
+      const path = match[2].startsWith('/health') || match[2].startsWith(`/${COMPAT_PREFIX}/`) ? match[2] : `/${API_PREFIX}${match[2]}`;
       const status = match[3];
       return [...match[1].matchAll(/`([A-Z]+)`/g)].map((method) => ({ key: toKey(method[1] ?? '', path), status }));
     });

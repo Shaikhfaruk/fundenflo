@@ -1,4 +1,4 @@
-import { Role, SubmissionEventType } from '../../../common/enums/db.enums.js';
+import { Role, SubmissionEventType, SubmissionStatus } from '../../../common/enums/db.enums.js';
 import { SubmissionEvent } from '../../../engines/state-machines/machines/submission.machine.js';
 
 export const RejectionReason = {
@@ -107,3 +107,15 @@ export const DOCUMENT_REQUESTS_LIMIT = 50;
 export const PACKET_FORMAT_VERSION = 1;
 
 export const PACKET_FACTS_MAX = 200;
+
+export const SUBMISSION_STATUS_LABELS: Record<SubmissionStatus, { en: string }> = {
+  [SubmissionStatus.pending_approval]: { en: 'being checked by FundenFlo' },
+  [SubmissionStatus.approved]: { en: 'on its way to the lender' },
+  [SubmissionStatus.sent_to_lender]: { en: 'with the lender' },
+  [SubmissionStatus.under_review]: { en: 'under review' },
+  [SubmissionStatus.query_raised]: { en: 'waiting for more documents' },
+  [SubmissionStatus.sanctioned]: { en: 'sanctioned' },
+  [SubmissionStatus.disbursed]: { en: 'disbursed' },
+  [SubmissionStatus.rejected]: { en: 'not approved' },
+  [SubmissionStatus.withdrawn]: { en: 'withdrawn' },
+};

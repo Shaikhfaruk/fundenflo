@@ -1,0 +1,97 @@
+{
+  "name": "Compat Request OTP",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{rootUrl}}/v0/auth/otp/request",
+      "host": [
+        "{{rootUrl}}"
+      ],
+      "path": [
+        "v0",
+        "auth",
+        "otp",
+        "request"
+      ]
+    },
+    "description": "Same as `POST /v1/auth/otp/request` (borrower sign-in; `referralCode` credits a CA). Compat layer for the current app (plan §10.3): the app sets `EXPO_PUBLIC_API_URL=<host>/v0`. The case is the borrower's newest open application, resolved server side because the app never sends one. Removed once the app moves to `/v1`.",
+    "auth": {
+      "type": "noauth"
+    },
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"mobile\": \"{{mobile}}\",\n  \"countryCode\": \"+91\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{rootUrl}}/v0/auth/otp/request",
+          "host": [
+            "{{rootUrl}}"
+          ],
+          "path": [
+            "v0",
+            "auth",
+            "otp",
+            "request"
+          ]
+        },
+        "description": "Same as `POST /v1/auth/otp/request` (borrower sign-in; `referralCode` credits a CA). Compat layer for the current app (plan §10.3): the app sets `EXPO_PUBLIC_API_URL=<host>/v0`. The case is the borrower's newest open application, resolved server side because the app never sends one. Removed once the app moves to `/v1`.",
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"mobile\": \"{{mobile}}\",\n  \"countryCode\": \"+91\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"challengeId\": \"01a1215b-0d1e-7f2a-9b3c-d4e5f6a7b8c9\",\n  \"resendIn\": 30,\n  \"expiresIn\": 300\n}"
+    }
+  ]
+}

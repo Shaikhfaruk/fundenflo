@@ -23,6 +23,7 @@ export const DLT_TEMPLATE_ENV: Partial<Record<NotificationTemplateKey, string>> 
   [NotificationTemplateKey.ApplicationStatusChanged]: 'SMS_DLT_TEMPLATE_APPLICATION_STATUS',
   [NotificationTemplateKey.DocumentRequested]: 'SMS_DLT_TEMPLATE_DOCUMENT_REQUESTED',
   [NotificationTemplateKey.SubmissionReceived]: 'SMS_DLT_TEMPLATE_SUBMISSION_RECEIVED',
+  [NotificationTemplateKey.SubmissionStatusChanged]: 'SMS_DLT_TEMPLATE_SUBMISSION_STATUS',
 };
 
 export const NOTIFICATION_TEMPLATE_SEEDS: TemplateSeed[] = [
@@ -143,6 +144,8 @@ export const NOTIFICATION_TEMPLATE_SEEDS: TemplateSeed[] = [
   { key: NotificationTemplateKey.SubmissionReceived, channel: NotificationChannel.email, locale: 'en', subject: 'New application {{ref}} on FundenFlo', body: 'A new application ({{ref}}) for {{product}} is waiting for you on the FundenFlo lender portal.' },
   { key: NotificationTemplateKey.SubmissionReceived, channel: NotificationChannel.push, locale: 'en', subject: 'New application {{ref}}', body: '{{product}}: open the lender portal to review it.' },
   { key: NotificationTemplateKey.SubmissionReceived, channel: NotificationChannel.sms, locale: 'en', subject: null, body: 'FundenFlo: new application {{ref}} for {{product}} is waiting on your lender portal.' },
+  { key: NotificationTemplateKey.SubmissionStatusChanged, channel: NotificationChannel.push, locale: 'en', subject: 'Update on {{ref}}', body: 'Your application with {{lender}} is {{status}}.' },
+  { key: NotificationTemplateKey.SubmissionStatusChanged, channel: NotificationChannel.sms, locale: 'en', subject: null, body: 'FundenFlo: your application {{ref}} with {{lender}} is {{status}}.' },
   { key: NotificationTemplateKey.DocumentRequested, channel: NotificationChannel.push, locale: 'en', subject: 'Documents needed for {{ref}}', body: 'Upload {{documents}} to keep your application moving.' },
   { key: NotificationTemplateKey.DocumentRequested, channel: NotificationChannel.sms, locale: 'en', subject: null, body: 'FundenFlo: please upload {{documents}} for application {{ref}} in the app.' },
 ];

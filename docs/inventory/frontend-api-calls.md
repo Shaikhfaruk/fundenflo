@@ -1,7 +1,7 @@
 # Inventory — Frontend app API calls (reference)
 
 > Repo `fundenflo-v1-app` @ `7bc9685`, cloned to `frontend/`. Not edited by us. Checked 2026-10-09 with `grep -rn` over `frontend/src/app` and `frontend/src/components`.
-> Status is about the **frontend function**. The backend serves all of these through `compat` (plan §10.3) until the app moves to `/v1`.
+> Status is about the **frontend function**. The backend serves all of these through `compat` under `/v0` (built in M3d, spec `compat`, flow `compat`) until the app moves to `/v1`; set `EXPO_PUBLIC_API_URL=<host>/v0`. Known differences: the app's WhatsApp opt-ins are delivered by push with SMS fallback until a WhatsApp provider is chosen; `status` stays `under_review` until a final lender decision; MSME cases start as proprietorships named after the owner.
 
 | # | Frontend function | Endpoint called | Call site | Callers (screens) | Status | Backend `compat` → v1 target |
 |---|---|---|---|---|---|---|

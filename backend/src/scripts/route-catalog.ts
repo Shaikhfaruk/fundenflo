@@ -3,7 +3,7 @@ import 'reflect-metadata';
 import { type DynamicModule, RequestMethod, type Type } from '@nestjs/common';
 import { METHOD_METADATA, MODULE_METADATA, PATH_METADATA } from '@nestjs/common/constants.js';
 
-import { API_PREFIX, UNPREFIXED_ROUTES } from '../common/constants/http.constants.js';
+import { API_PREFIX, COMPAT_PREFIX, UNPREFIXED_ROUTES } from '../common/constants/http.constants.js';
 
 export type RouteEntry = {
   method: string;
@@ -56,7 +56,7 @@ export async function listRoutes(root: Type): Promise<RouteEntry[]> {
           const path = joinPath(base, sub);
           routes.push({
             method: RequestMethod[method],
-            path: unprefixed.has(path) ? path : joinPath(API_PREFIX, path),
+            path: unprefixed.has(path) || path.startsWith(`/${COMPAT_PREFIX}/`) ? path : joinPath(API_PREFIX, path),
             controller: controller.name,
             handler,
           });

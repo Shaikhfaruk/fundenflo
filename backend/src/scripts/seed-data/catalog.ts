@@ -1,8 +1,8 @@
 import { rupeesToPaise } from '../../common/money/paise.js';
+import { MONTHS_PER_YEAR } from '../../common/constants/time.constants.js';
 
 const LAKH = 100_000;
 const CRORE = 100 * LAKH;
-const YEAR_MONTHS = 12;
 
 export type SegmentSeed = {
   key: string;
@@ -146,5 +146,5 @@ export const categoryAmounts = (seed: CategorySeed) => ({
   maxAmountPaise: rupeesToPaise(seed.maxRupees),
   stepPaise: rupeesToPaise(seed.stepRupees),
   defaultAmountPaise: rupeesToPaise(seed.defaultRupees),
-  tenureOptionsMonths: seed.tenureYears.map((years) => years * YEAR_MONTHS),
+  tenureOptionsMonths: seed.tenureYears.map((years) => years * MONTHS_PER_YEAR),
 });
