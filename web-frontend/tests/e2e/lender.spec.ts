@@ -1,10 +1,11 @@
 import { expect, test } from '@playwright/test';
 
 import { inviteLender, randomEmail, staticOtp } from './support/backend';
+import { pooledStaffToken } from './support/staff-pool';
 
-test('an invited lender user signs in with an email code and opens the submissions inbox', async ({ page }) => {
+test('an invited lender user signs in with an email code and opens the submissions inbox', async ({ page }, testInfo) => {
   const email = randomEmail('e2e.lender');
-  const organisation = await inviteLender(email);
+  const organisation = await inviteLender(email, await pooledStaffToken(`maker-${testInfo.project.name}`));
 
   await page.goto('/login');
   await page.getByRole('button', { name: 'Login As' }).click();

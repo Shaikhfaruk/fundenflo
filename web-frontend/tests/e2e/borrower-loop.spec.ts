@@ -1,18 +1,19 @@
 import { expect, test } from '@playwright/test';
 
-import { liveTestLender, opsApproveSubmission, opsReviewDocument, randomMobile, randomPan, staffToken, type TestLender } from './support/backend';
+import { liveTestLender, opsReviewDocument, randomMobile, randomPan, type TestLender } from './support/backend';
 import { bff, preparedApplication } from './support/bff';
 import { writePdf } from './support/pdf';
-import { signInWithOtp } from './support/sign-in';
+import { pooledStaffToken } from './support/staff-pool';
+import { signInAsStaff, signInWithOtp } from './support/sign-in';
 
 const LAKH_PAISE = 100_000_00;
 
 let lender: TestLender;
 let ops: string;
 
-test.beforeAll(async () => {
-  const maker = await staffToken('super_admin', 'Lender Maker');
-  ops = await staffToken('ops_lead', 'Case Reviewer');
+test.beforeAll(async ({ browserName: _browser }, testInfo) => {
+  const maker = await pooledStaffToken(`maker-${testInfo.project.name}`);
+  ops = await pooledStaffToken(`checker-${testInfo.project.name}`);
   lender = await liveTestLender(`Sahyadri Finance ${String(Date.now()).slice(-5)}`, maker, ops);
 });
 
@@ -20,7 +21,7 @@ test.afterAll(async () => {
   await lender?.cleanUp();
 });
 
-test('a borrower uploads documents, gets a score, applies to a matched lender and follows the file', async ({ page }, testInfo) => {
+test('a borrower uploads documents, gets a score, applies to a matched lender and follows the file', async ({ page, browser }, testInfo) => {
   test.setTimeout(240_000);
   const stamp = `${Date.now()}-${testInfo.project.name}`;
   const statement = writePdf(testInfo.outputPath('bank-statement.pdf'), `Statement of account ${stamp}. Closing balance 125000.00`);
@@ -96,15 +97,30 @@ test('a borrower uploads documents, gets a score, applies to a matched lender an
   await expect(page.locator('li[aria-current="step"]')).toContainText('Application Received');
   const submissionId = page.url().split('/').pop() ?? '';
 
-  expect((await opsApproveSubmission(ops, submissionId)).status).toBe('approved');
+  const opsContext = await browser.newContext({ ...testInfo.project.use });
+  const opsPage = await opsContext.newPage();
+  await signInAsStaff(opsPage, `approver-${testInfo.project.name}`);
+  await opsPage.goto(`/ops/submissions/${submissionId}`);
+  await opsPage.getByRole('button', { name: 'Approve And Send' }).click();
+  await opsPage.getByRole('dialog').getByRole('button', { name: 'Approve And Send' }).click();
+  await expect(opsPage.getByText('Submission approved')).toBeVisible();
+  await expect(async () => {
+    await opsPage.reload();
+    await expect(opsPage.getByRole('button', { name: 'Acknowledge' })).toBeVisible();
+  }).toPass({ timeout: 30_000 });
+  await opsPage.getByRole('button', { name: 'Acknowledge' }).click();
+  await opsPage.getByLabel('Lender Reference (Optional)').fill('SAH-2026-0042');
+  await opsPage.getByRole('dialog').getByRole('button', { name: 'Save' }).click();
+  await expect(opsPage.getByText('Update recorded')).toBeVisible();
+  await opsContext.close();
   await expect(async () => {
     await page.reload();
-    await expect(page.locator('li[aria-current="step"]')).toContainText('Sent To Lender');
+    await expect(page.locator('li[aria-current="step"]')).toContainText('Lender Review');
   }).toPass({ timeout: 30_000 });
 
   await page.goto(`/app/applications/${id}`);
   await expect(page.getByRole('heading', { name: 'Applications Sent' })).toBeVisible();
-  await expect(page.getByText('Lender application: Sent To Lender')).toBeVisible();
+  await expect(page.getByText('Lender application: Under Review')).toBeVisible();
 
   await page.goto(`/app/applications/${id}/submissions/${submissionId}`);
   await page.getByRole('button', { name: 'Withdraw This Application' }).click();

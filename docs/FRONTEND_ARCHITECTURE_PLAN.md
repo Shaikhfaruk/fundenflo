@@ -158,7 +158,7 @@ Full table: [`inventory/web-frontend.md`](inventory/web-frontend.md). Summary:
 | W3 | Partner I: sign-up, dashboard, leads inbox and detail, activities, follow-ups, own leads, offline conversion, convert to application | A CA accepts a lead and converts it |
 | W4 | Partner II: clients and filed applications (journey in partner mode, borrower consent OTP), referrals and codes, commissions, team, profile, KYC, capacity, service areas, disputes | A CA files a case and sees commission |
 | W5 | Lender portal | A lender acknowledges, queries, sanctions and disburses a submission |
-| W6 | Ops console | Ops can work leads, cases, document review, submissions, parties, risk and data requests |
+| W6 | Ops console (built 2026-10-11) | Ops can work leads, cases, document review, submissions, parties, risk and data requests (Playwright `ops.spec.ts` and the ops approval in `borrower-loop.spec.ts`, desktop and phone) |
 | W7 | Admin: users, access, audit, catalog, attributes, questionnaires, consents, notifications, imports, lead sources, routing, partners, lenders, products, documents, scoring, commission schemes, change requests | Every admin and versioned config route is used from a screen |
 | W8 | Finance, polish and gates | `pnpm api:coverage` passes with 0 missing; all Playwright flows pass on both viewports; accessibility and Lighthouse checks pass |
 

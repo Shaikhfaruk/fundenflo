@@ -3,8 +3,12 @@
 import { useId, useState } from 'react';
 
 import { ConfirmDialog } from '@/components/data/confirm-dialog';
+import { ChipGroup } from '@/components/ui/chip-group';
+import { ChoiceChip } from '@/components/ui/choice';
 import { Field, FieldDescription, FieldLabel } from '@/components/ui/field';
 import { Textarea } from '@/components/ui/textarea';
+
+type Option = { value: string; label: string };
 
 type Props = {
   open: boolean;
@@ -18,18 +22,27 @@ type Props = {
   pending?: boolean;
   minLength: number;
   maxLength: number;
-  onConfirm: (reason: string) => void;
+  options?: Option[];
+  optionsLabel?: string;
+  noteOptional?: boolean;
+  onConfirm: (reason: string, choice: string | null) => void;
 };
 
-export function ReasonDialog({ open, onOpenChange, title, description, label, hint, confirmLabel, destructive, pending, minLength, maxLength, onConfirm }: Props) {
+export function ReasonDialog({ open, onOpenChange, title, description, label, hint, confirmLabel, destructive, pending, minLength, maxLength, options, optionsLabel, noteOptional, onConfirm }: Props) {
   const id = useId();
   const [reason, setReason] = useState('');
-  const valid = reason.trim().length >= minLength;
+  const [choice, setChoice] = useState<string | null>(null);
+  const trimmed = reason.trim();
+  const noteValid = noteOptional ? trimmed.length === 0 || trimmed.length >= minLength : trimmed.length >= minLength;
+  const valid = noteValid && (!options || choice !== null);
   return (
     <ConfirmDialog
       open={open}
       onOpenChange={(next) => {
-        if (!next) setReason('');
+        if (!next) {
+          setReason('');
+          setChoice(null);
+        }
         onOpenChange(next);
       }}
       title={title}
@@ -38,8 +51,15 @@ export function ReasonDialog({ open, onOpenChange, title, description, label, hi
       destructive={destructive}
       pending={pending}
       confirmDisabled={!valid}
-      onConfirm={() => onConfirm(reason.trim())}
+      onConfirm={() => onConfirm(trimmed, choice)}
     >
+      {options ? (
+        <ChipGroup label={optionsLabel ?? title} showLabel={Boolean(optionsLabel)}>
+          {options.map((option) => (
+            <ChoiceChip key={option.value} selected={choice === option.value} label={option.label} onToggle={() => setChoice(option.value)} className="min-h-9 text-[13px]" />
+          ))}
+        </ChipGroup>
+      ) : null}
       <Field>
         <FieldLabel htmlFor={id}>{label}</FieldLabel>
         <Textarea id={id} value={reason} maxLength={maxLength} rows={3} onChange={(event) => setReason(event.target.value)} />

@@ -21,5 +21,8 @@ describe('navigation', () => {
   it('shows staff items only to roles that can use them', () => {
     expect(staffKeys(Role.OpsLead)).toContain('leads');
     expect(staffKeys(Role.Finance)).not.toContain('leads');
+    expect(staffKeys(Role.CreditAnalyst)).toEqual(expect.arrayContaining(['cases', 'signals', 'risk']));
+    expect(staffKeys(Role.CreditAnalyst)).not.toContain('dataRequests');
+    expect(staffKeys(Role.ComplianceOfficer)).toContain('dataRequests');
   });
 });

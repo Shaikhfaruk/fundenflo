@@ -26,7 +26,7 @@ flowchart LR
     APP[Borrower app - Expo, old demo, not developed further]
     PUB[Public lead forms]
   end
-  subgraph Web["web-frontend - Next.js 16.4 (W0, W0.5 native design, W1 borrower journey + realtime, W2 documents to lender submission, 2026-10-11)"]
+  subgraph Web["web-frontend - Next.js 16.4 (W0, W0.5 native design, W1 borrower journey + realtime, W2 documents to lender submission, W6 ops console, 2026-10-11)"]
     UI[Website + installable PWA + native WebView wrapper<br/>borrower, partner, lender, ops, admin, finance]
     BFF[Next.js server: session cookies, /api proxy, refresh]
   end

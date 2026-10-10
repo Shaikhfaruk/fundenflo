@@ -1,6 +1,6 @@
 import { writeFileSync } from 'node:fs';
 
-export function writePdf(path: string, text: string) {
+export function pdfBytes(text: string) {
   const content = `BT /F1 12 Tf 72 720 Td (${text}) Tj ET`;
   const objects = [
     '<< /Type /Catalog /Pages 2 0 R >>',
@@ -18,6 +18,10 @@ export function writePdf(path: string, text: string) {
   const xref = pdf.length;
   pdf += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n${offsets.map((offset) => `${String(offset).padStart(10, '0')} 00000 n \n`).join('')}`;
   pdf += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF\n`;
-  writeFileSync(path, pdf);
+  return pdf;
+}
+
+export function writePdf(path: string, text: string) {
+  writeFileSync(path, pdfBytes(text));
   return path;
 }

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { formatDate, formatRelative } from './date';
+import { factInputOf, formatFactValue, parseFactInput } from './fact';
 import { formatFileSize, formatSizeLimit } from './file-size';
 import { estimateEmiPaise, formatPaise, groupRupees, paiseFromRupees } from './money';
 
@@ -44,5 +45,22 @@ describe('file size', () => {
     expect(formatFileSize(512_000)).toBe('500 KB');
     expect(formatFileSize(3_250_000)).toBe('3.1 MB');
     expect(formatSizeLimit(10_485_760)).toBe('10 MB');
+  });
+});
+
+describe('fact values', () => {
+  const money = { dataType: 'money', enumValues: null };
+  const yesNo = { yes: 'Yes', no: 'No' };
+  it('shows money facts in rupees and ranges with a dash', () => {
+    expect(formatFactValue(1_200_000_00, money, 'en', yesNo)).toBe('₹12,00,000');
+    expect(formatFactValue({ min: 50_000_000, max: 249_999_999 }, money, 'en', yesNo)).toBe('₹5,00,000 – ₹25,00,000');
+    expect(formatFactValue(true, { dataType: 'boolean', enumValues: null }, 'en', yesNo)).toBe('Yes');
+  });
+
+  it('turns typed input back into the stored value', () => {
+    expect(parseFactInput('12,00,000', money)).toEqual({ ok: true, value: 1_200_000_00 });
+    expect(parseFactInput('2.5', { dataType: 'integer' })).toEqual({ ok: false });
+    expect(parseFactInput('true', { dataType: 'boolean' })).toEqual({ ok: true, value: true });
+    expect(factInputOf(1_200_000_00, money)).toBe('1200000');
   });
 });

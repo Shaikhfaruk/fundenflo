@@ -91,4 +91,49 @@ export const DATA_REQUEST_STATUS_TONE: Record<string, StatusTone> = {
   rejected: StatusTone.Danger,
 };
 
+export const SEVERITY_TONE: Record<string, StatusTone> = {
+  low: StatusTone.Neutral,
+  medium: StatusTone.Warning,
+  high: StatusTone.Danger,
+  critical: StatusTone.Danger,
+};
+
+export const REVIEW_STATUS_TONE: Record<string, StatusTone> = {
+  open: StatusTone.Warning,
+  decided: StatusTone.Neutral,
+  resolved: StatusTone.Success,
+  dismissed: StatusTone.Neutral,
+  confirmed: StatusTone.Danger,
+  cleared: StatusTone.Success,
+  linked: StatusTone.Success,
+  done: StatusTone.Success,
+  cancelled: StatusTone.Neutral,
+  reported: StatusTone.Warning,
+  verified: StatusTone.Success,
+  rejected: StatusTone.Danger,
+  granted: StatusTone.Success,
+  pending: StatusTone.Warning,
+  declined: StatusTone.Danger,
+  offered: StatusTone.Info,
+  accepted: StatusTone.Info,
+  working: StatusTone.Warning,
+  completed: StatusTone.Success,
+  expired: StatusTone.Neutral,
+  revoked: StatusTone.Neutral,
+  returned: StatusTone.Neutral,
+  fulfilled: StatusTone.Success,
+};
+
+export const DOCUMENT_STATUS_TONE: Record<string, StatusTone> = {
+  uploaded: StatusTone.Info,
+  scanning: StatusTone.Info,
+  scanned: StatusTone.Info,
+  classifying: StatusTone.Info,
+  extracting: StatusTone.Info,
+  verified: StatusTone.Success,
+  needs_review: StatusTone.Warning,
+  rejected: StatusTone.Danger,
+  expired: StatusTone.Neutral,
+};
+
 export const toneOf = (map: Record<string, StatusTone>, status: string): StatusTone => map[status] ?? StatusTone.Neutral;

@@ -64,4 +64,4 @@ export type DocumentRequest = {
   createdAt: string;
 };
 
-export type UploadInput = { file: File; documentType: string; applicationId: string; password?: string };
+export type UploadInput = { file: File; documentType: string; applicationId?: string; submissionId?: string; password?: string };

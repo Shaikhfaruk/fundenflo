@@ -26,7 +26,8 @@ export const documentRequestsQuery = (applicationId: string) =>
 export function uploadDocument(input: UploadInput, options: { onProgress?: (percent: number) => void; signal?: AbortSignal } = {}) {
   const form = new FormData();
   form.append('documentType', input.documentType);
-  form.append('applicationId', input.applicationId);
+  if (input.applicationId) form.append('applicationId', input.applicationId);
+  if (input.submissionId) form.append('submissionId', input.submissionId);
   if (input.password) form.append('password', input.password);
   form.append('file', input.file, input.file.name);
   return uploadForm<DocumentView>('POST /documents', form, options);

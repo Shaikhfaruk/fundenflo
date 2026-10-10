@@ -1,23 +1,29 @@
 'use client';
 
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 import { useCategoryLabel } from '@/components/borrower/category-labels';
 import { EmptyState } from '@/components/data/empty-state';
 import { type Column, ResponsiveList } from '@/components/data/responsive-list';
 import { SearchInput } from '@/components/data/search-input';
 import { StatusBadge } from '@/components/data/status-badge';
+import { BulkAssignDialog, MergeLeadsDialog, NewLeadDialog } from '@/components/ops/lead-bulk-dialogs';
 import { PageHeader } from '@/components/shell/page-header';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Icon } from '@/components/ui/icon';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useDebouncedValue } from '@/hooks/use-debounced-value';
-import { opsLeadsQuery } from '@/lib/api/leads';
+import { useErrorToast } from '@/hooks/use-error-toast';
+import { Link } from '@/i18n/navigation';
+import { bulkRouteLeads, opsLeadKeys, opsLeadsQuery } from '@/lib/api/leads';
 import type { OpsLead } from '@/lib/api/types/lead.types';
 import { LEAD_CONSENT_STATUSES, LEAD_STATUSES, MIN_SEARCH_LENGTH } from '@/lib/constants/lead.constants';
+import { RoutePath } from '@/lib/constants/routes.constants';
 import { LEAD_CONSENT_TONE, LEAD_STATUS_TONE, toneOf } from '@/lib/constants/status.constants';
 import { formatRelative } from '@/lib/format/date';
 
@@ -38,18 +44,42 @@ export function OpsLeads() {
     opsLeadsQuery({ q: q.length >= MIN_SEARCH_LENGTH ? q : undefined, status: status === ANY ? undefined : status, consentStatus: consent === ANY ? undefined : consent }),
   );
   const rows = leads.data?.pages.flatMap((page) => page.items) ?? [];
+  const queryClient = useQueryClient();
+  const errorToast = useErrorToast();
+  const [selected, setSelected] = useState<string[]>([]);
+  const [newOpen, setNewOpen] = useState(false);
+  const [assignOpen, setAssignOpen] = useState(false);
+  const [mergeOpen, setMergeOpen] = useState(false);
+  const toggle = (id: string) => setSelected((current) => (current.includes(id) ? current.filter((item) => item !== id) : [...current, id]));
+  const route = useMutation({
+    mutationFn: () => bulkRouteLeads(selected),
+    meta: { handlesError: true },
+    onSuccess: () => {
+      toast.success(t('bulkRouted', { count: selected.length }));
+      setSelected([]);
+      void queryClient.invalidateQueries({ queryKey: opsLeadKeys.all });
+    },
+    onError: (failure) => errorToast(failure),
+  });
   const columns: Column<OpsLead>[] = [
+    {
+      key: 'select',
+      header: '',
+      cell: (row) => <Checkbox checked={selected.includes(row.id)} onCheckedChange={() => toggle(row.id)} aria-label={t('select', { name: row.party?.displayName ?? row.ref })} />,
+      className: 'w-10',
+      hideOnCard: true,
+    },
     {
       key: 'name',
       header: t('name'),
       cell: (row) => (
-        <span className="flex items-center gap-3">
+        <Link href={RoutePath.opsLead(row.id)} className="flex items-center gap-3 hover:underline">
           <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-subtle font-heading text-sm font-semibold text-navy">{(row.party?.displayName ?? row.ref).slice(0, 1).toUpperCase()}</span>
           <span className="flex min-w-0 flex-col">
             <span className="truncate font-semibold">{row.party?.displayName ?? '—'}</span>
             <span className="truncate text-xs text-muted-foreground tabular">{[row.ref, row.business?.displayName, row.location.city?.name ?? row.location.state?.name].filter(Boolean).join(' · ')}</span>
           </span>
-        </span>
+        </Link>
       ),
       hideOnCard: true,
     },
@@ -78,7 +108,36 @@ export function OpsLeads() {
   ];
   return (
     <div className="flex flex-col gap-4">
-      <PageHeader eyebrow={t('eyebrow')} title={t('title')} description={t('description')} badge={leads.data ? <span className="rounded-full bg-subtle px-2.5 py-1 text-xs font-semibold text-muted-foreground tabular">{t('loaded', { count: rows.length })}</span> : null} />
+      <PageHeader
+        eyebrow={t('eyebrow')}
+        title={t('title')}
+        description={t('description')}
+        badge={leads.data ? <span className="rounded-full bg-subtle px-2.5 py-1 text-xs font-semibold text-muted-foreground tabular">{t('loaded', { count: rows.length })}</span> : null}
+        actions={
+          <Button size="sm" onClick={() => setNewOpen(true)}>
+            <Icon name="add" size={16} />
+            {t('newLead')}
+          </Button>
+        }
+      />
+      {selected.length > 0 ? (
+        <section className="flex flex-wrap items-center gap-2 rounded-xl bg-navy p-3 text-white shadow-lift" aria-label={t('selection')}>
+          <span className="text-sm font-semibold tabular">{t('selected', { count: selected.length })}</span>
+          <span className="flex-1" />
+          <Button size="xs" variant="hero" onClick={() => route.mutate()} disabled={route.isPending}>
+            {t('routeSelected')}
+          </Button>
+          <Button size="xs" variant="hero" onClick={() => setAssignOpen(true)}>
+            {t('assignSelected')}
+          </Button>
+          <Button size="xs" variant="hero" onClick={() => setMergeOpen(true)} disabled={selected.length < 2}>
+            {t('mergeSelected')}
+          </Button>
+          <Button size="xs" variant="hero" onClick={() => setSelected([])}>
+            {t('clear')}
+          </Button>
+        </section>
+      ) : null}
       <div className="flex flex-col gap-2 rounded-2xl border border-[#eef2f6] bg-card p-3 shadow-card sm:flex-row sm:items-center">
         <SearchInput value={search} onChange={(event) => setSearch(event.target.value)} placeholder={t('search')} aria-label={t('search')} className="w-full sm:flex-1" />
         <Select value={status} onValueChange={(value) => setStatus(String(value))}>
@@ -119,9 +178,12 @@ export function OpsLeads() {
           columns={columns}
           rowKey={(row) => row.id}
           title={(row) => (
-            <span className="flex flex-col">
-              <span>{row.party?.displayName ?? row.ref}</span>
-              <span className="text-xs font-normal text-muted-foreground tabular">{row.ref}{row.business ? ` · ${row.business.displayName}` : ''}</span>
+            <span className="flex items-start gap-3">
+              <Checkbox checked={selected.includes(row.id)} onCheckedChange={() => toggle(row.id)} aria-label={t('select', { name: row.party?.displayName ?? row.ref })} className="mt-1" />
+              <Link href={RoutePath.opsLead(row.id)} className="flex flex-col">
+                <span>{row.party?.displayName ?? row.ref}</span>
+                <span className="text-xs font-normal text-muted-foreground tabular">{row.ref}{row.business ? ` · ${row.business.displayName}` : ''}</span>
+              </Link>
             </span>
           )}
           empty={<EmptyState icon="inbox" title={t('emptyTitle')} body={t('empty')} />}
@@ -132,6 +194,9 @@ export function OpsLeads() {
           {tCommon('loadMore')}
         </Button>
       ) : null}
+      <NewLeadDialog open={newOpen} onOpenChange={setNewOpen} />
+      {assignOpen ? <BulkAssignDialog leadIds={selected} open={assignOpen} onOpenChange={setAssignOpen} onDone={() => { setAssignOpen(false); setSelected([]); }} /> : null}
+      {mergeOpen ? <MergeLeadsDialog leads={rows.filter((row) => selected.includes(row.id))} open={mergeOpen} onOpenChange={setMergeOpen} onDone={() => { setMergeOpen(false); setSelected([]); }} /> : null}
     </div>
   );
 }

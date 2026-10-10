@@ -34,6 +34,10 @@ export type NavItem = { key: string; href: string; icon: IconName; roles?: reado
 
 export type NavGroup = { key: string; items: NavItem[] };
 
+const LEAD_DESK: readonly string[] = [Role.SuperAdmin, Role.OpsLead, Role.OpsReviewer, Role.ComplianceOfficer, Role.Support];
+
+const CASE_DESK: readonly string[] = [Role.SuperAdmin, Role.OpsLead, Role.OpsReviewer, Role.CreditAnalyst, Role.ComplianceOfficer, Role.Support];
+
 const ALL_STAFF: readonly string[] = [Role.SuperAdmin, Role.OpsLead, Role.OpsReviewer, Role.CreditAnalyst, Role.Finance, Role.ComplianceOfficer, Role.Support, Role.LenderManager, Role.PartnerManager];
 
 export const NAVIGATION: Record<NavArea, NavGroup[]> = {
@@ -77,7 +81,30 @@ export const NAVIGATION: Record<NavArea, NavGroup[]> = {
   [ShellArea.Staff]: [
     {
       key: 'ops',
-      items: [{ key: 'leads', href: AppPath.OpsHome, icon: 'group', roles: [Role.SuperAdmin, Role.OpsLead, Role.OpsReviewer, Role.ComplianceOfficer, Role.Support], primary: true }],
+      items: [
+        { key: 'leads', href: AppPath.OpsHome, icon: 'group', roles: LEAD_DESK, primary: true },
+        { key: 'followUps', href: AppPath.OpsFollowUps, icon: 'alarm', roles: LEAD_DESK },
+        { key: 'conversions', href: AppPath.OpsConversions, icon: 'payments', roles: LEAD_DESK },
+        { key: 'disputes', href: AppPath.OpsDisputes, icon: 'gavel', roles: [Role.SuperAdmin, Role.OpsLead, Role.OpsReviewer, Role.ComplianceOfficer] },
+        { key: 'reports', href: AppPath.OpsReports, icon: 'monitoring', roles: [Role.SuperAdmin, Role.OpsLead, Role.OpsReviewer] },
+      ],
+    },
+    {
+      key: 'cases',
+      items: [
+        { key: 'cases', href: AppPath.OpsCases, icon: 'folder', roles: CASE_DESK, primary: true },
+        { key: 'submissions', href: AppPath.OpsSubmissions, icon: 'inbox', roles: [Role.SuperAdmin, Role.OpsLead, Role.OpsReviewer, Role.ComplianceOfficer, Role.Support], primary: true },
+        { key: 'signals', href: AppPath.OpsSignals, icon: 'sync-alt', roles: [Role.SuperAdmin, Role.OpsLead, Role.OpsReviewer, Role.CreditAnalyst] },
+        { key: 'risk', href: AppPath.OpsRisk, icon: 'flag', roles: [Role.SuperAdmin, Role.OpsLead, Role.OpsReviewer, Role.CreditAnalyst, Role.ComplianceOfficer] },
+      ],
+    },
+    {
+      key: 'parties',
+      items: [
+        { key: 'duplicates', href: AppPath.OpsMatchReviews, icon: 'swap', roles: [Role.SuperAdmin, Role.OpsLead, Role.OpsReviewer] },
+        { key: 'merges', href: AppPath.OpsMerges, icon: 'history', roles: [Role.SuperAdmin, Role.OpsLead, Role.OpsReviewer] },
+        { key: 'dataRequests', href: AppPath.OpsDataRequests, icon: 'privacy', roles: [Role.SuperAdmin, Role.OpsLead, Role.ComplianceOfficer, Role.Support] },
+      ],
     },
     {
       key: 'you',

@@ -39,7 +39,7 @@ const EVENT_ICONS: Record<string, IconName> = {
   document_requested: 'document',
 };
 
-function useEventText() {
+export function useEventText() {
   const t = useTranslations('borrower.activity');
   const tJourney = useTranslations('journey');
   const tStatus = useTranslations('status');
