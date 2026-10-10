@@ -18,12 +18,14 @@ import { ChangeRecorder } from '../../audit/application/change-recorder.service.
 import { AuditAction, AuditEntity } from '../../audit/domain/audit.constants.js';
 import { PartnerRepository } from '../infrastructure/partner.repository.js';
 import { toPartnerView } from './partner.views.js';
+import { PartnerKycService } from './partner-kyc.service.js';
 
 export type PartnerFilters = PageQuery & { verificationStatus?: PartnerVerificationStatus; kind?: PartnerKind; level?: PartnerLevel; q?: string };
 
 @Injectable()
 export class PartnerAdminService {
   constructor(
+    private readonly kyc: PartnerKycService,
     private readonly txHost: TransactionHost<PrismaTx>,
     private readonly partners: PartnerRepository,
     private readonly organizations: OrganizationService,
@@ -45,7 +47,7 @@ export class PartnerAdminService {
 
   async get(id: string, ability: AppAbility) {
     const partner = await this.require(id);
-    return { ...toPartnerView(partner), members: await this.memberships.listMembers(partner.organizationId, ability) };
+    return { ...(await this.kyc.profileOf(partner.organizationId)), members: await this.memberships.listMembers(partner.organizationId, ability) };
   }
 
   verify(id: string, decision: VerificationDecision, note: string, actor: UserActor) {

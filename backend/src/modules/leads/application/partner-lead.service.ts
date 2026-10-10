@@ -3,7 +3,7 @@ import { Transactional } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
 
 import type { UserActor } from '../../../common/context/actor.js';
-import { AnswerChannel, AssignmentStatus, AttributionKind, ConsentChannel, FollowUpStatus, OfflineConversionStatus, type LeadLostReason, LeadConsentStatus, LeadEventType, LeadStatus, SessionContext } from '../../../common/enums/db.enums.js';
+import { AnswerChannel, AssignmentStatus, AttributionKind, ConsentChannel, DisputeSource, FollowUpStatus, OfflineConversionStatus, type LeadLostReason, LeadConsentStatus, LeadEventType, LeadStatus, SessionContext } from '../../../common/enums/db.enums.js';
 import { AppError } from '../../../common/errors/app-error.js';
 import { ErrorCode } from '../../../common/errors/error-codes.js';
 import { type PageQuery, pageWindow, toPage } from '../../../common/listing/cursor-page.js';
@@ -21,6 +21,7 @@ import { ConsentPurposeKey } from '../../consents/domain/consent.constants.js';
 import { ActivityService } from '../../activities/application/activity.service.js';
 import type { ActivityInput } from '../../activities/domain/activity.types.js';
 import { PartyService } from '../../parties/application/party.service.js';
+import { AttributionDisputeService } from '../../partners/application/attribution-dispute.service.js';
 import { LeadAttributionService } from '../../partners/application/lead-attribution.service.js';
 import { LeadSourceKey } from '../domain/lead.constants.js';
 import { AssignmentCloseReason, PartnerInboxView } from '../domain/lead-routing.constants.js';
@@ -70,6 +71,7 @@ export class PartnerLeadService {
     private readonly timeline: LeadTimeline,
     private readonly changes: ChangeRecorder,
     private readonly activityStore: ActivityService,
+    private readonly disputes: AttributionDisputeService,
   ) {}
 
   async dashboard(actor: UserActor, ability: AppAbility) {
@@ -122,6 +124,15 @@ export class PartnerLeadService {
     }
     const summary = { id: leadId, ref: captured.lead.ref, status: offer ? LeadStatus.in_progress : captured.lead.status, consentStatus: captured.lead.consentStatus };
     return { lead: summary, attribution: { protectedUntil: attribution.protectedUntil.toISOString() }, assigned: Boolean(offer), consentRequested: !offer && requestConsent && captured.lead.consentStatus !== LeadConsentStatus.ok };
+  }
+
+  async claimAttribution(actor: UserActor, input: { mobile: string; countryCode?: string; note: string }) {
+    const organizationId = this.organizationOf(actor);
+    const open = await this.leads.findOpenForParties(await this.parties.personPartyIdsByMobile(input.mobile, input.countryCode), OPEN_LEAD_STATES);
+    const [held] = (await this.attributions.activeFor(open.map((lead) => lead.id))).filter((attribution) => attribution.organizationId !== organizationId);
+    if (!held) throw new AppError(ErrorCode.VALIDATION_FAILED, { details: [{ path: 'mobile', code: 'not_protected', message: 'no other firm protects this borrower; refer them instead' }] });
+    const dispute = await this.disputes.raise({ attribution: held, claimantOrganizationId: organizationId, source: DisputeSource.partner_claim, note: input.note, raisedByUserId: actor.userId });
+    return dispute ? { id: dispute.id, status: dispute.status, createdAt: dispute.createdAt.toISOString() } : null;
   }
 
   async referrals(actor: UserActor, query: PageQuery) {

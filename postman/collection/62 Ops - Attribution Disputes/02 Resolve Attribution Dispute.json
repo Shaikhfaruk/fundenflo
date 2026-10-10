@@ -1,0 +1,153 @@
+{
+  "name": "Resolve Attribution Dispute",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/ops/attribution-disputes/:id/resolve",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "attribution-disputes",
+        ":id",
+        "resolve"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{disputeId}}"
+        }
+      ]
+    },
+    "description": "`keep_holder` leaves the attribution, `transfer` moves it to the claimant with a fresh protection window (commissions follow it), `void` ends the protection. Recorded in the audit log. Ops lead.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"outcome\": \"transfer\",\n  \"note\": \"Signed engagement letter from the claimant firm\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/attribution-disputes/:id/resolve",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "attribution-disputes",
+            ":id",
+            "resolve"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{disputeId}}"
+            }
+          ]
+        },
+        "description": "`keep_holder` leaves the attribution, `transfer` moves it to the claimant with a fresh protection window (commissions follow it), `void` ends the protection. Recorded in the audit log. Ops lead.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"outcome\": \"transfer\",\n  \"note\": \"Signed engagement letter from the claimant firm\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12400-1a2b-7c3d-8e4f-5061728394a5\",\n  \"leadId\": \"01a121e0-1a2b-7c3d-8e4f-5061728394a5\",\n  \"attribution\": {\n    \"id\": \"01a12400-2b3c-7d4e-9f50-61728394a5b6\",\n    \"organizationId\": \"01a12190-2b3c-7d4e-9f50-61728394a5b6\",\n    \"kind\": \"referral\",\n    \"protectedUntil\": \"2027-01-09T09:00:00.000Z\",\n    \"disputedAt\": null,\n    \"endedAt\": null\n  },\n  \"holderOrganizationId\": \"01a12190-1a2b-7c3d-8e4f-5061728394a5\",\n  \"claimantOrganizationId\": \"01a12190-2b3c-7d4e-9f50-61728394a5b6\",\n  \"source\": \"signup_code\",\n  \"referralCodeId\": \"01a12400-3c4d-7e5f-8061-728394a5b6c7\",\n  \"claimNote\": null,\n  \"status\": \"resolved\",\n  \"outcome\": \"transfer\",\n  \"resolutionNote\": \"Signed engagement letter from the claimant firm\",\n  \"resolvedAt\": \"2026-10-11T09:00:00.000Z\",\n  \"version\": 2,\n  \"createdAt\": \"2026-10-11T09:00:00.000Z\"\n}"
+    },
+    {
+      "name": "409 INVALID_TRANSITION",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/attribution-disputes/:id/resolve",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "attribution-disputes",
+            ":id",
+            "resolve"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{disputeId}}"
+            }
+          ]
+        },
+        "description": "`keep_holder` leaves the attribution, `transfer` moves it to the claimant with a fresh protection window (commissions follow it), `void` ends the protection. Recorded in the audit log. Ops lead.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"outcome\": \"transfer\",\n  \"note\": \"Signed engagement letter from the claimant firm\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"INVALID_TRANSITION\",\n  \"message\": \"This action is not allowed in the current state.\",\n  \"details\": {\n    \"from\": \"resolved\",\n    \"event\": \"resolve\",\n    \"allowed\": []\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

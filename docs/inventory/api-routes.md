@@ -235,7 +235,7 @@ Built in M1.5 (Postman `10 Partner Portal - Onboarding, Team & Leads/`). Control
 | Method | Path | Module | Context | Milestone | Status |
 |---|---|---|---|---|---|
 | `POST` | `/partner/signup` | partners | none, borrower, partner | M1 | `useful` |
-| `GET` | `/partner/profile` | partners | partner | M1 | `useful` |
+| `GET` | `/partner/profile` | partners (M7a: with the KYC block from `PartnerKycService.profile`: masked PAN and GSTIN, bank last four digits) | partner | M1 | `useful` |
 | `GET` `PUT` | `/partner/capacity` | partners | partner (PUT: owner) | M1 | `useful` |
 | `GET` `PUT` | `/partner/service-areas` | partners | partner (PUT: owner) | M1 | `useful` |
 | `GET` `POST` | `/partner/members` | partners | partner_owner | M1 | `useful` |
@@ -277,7 +277,8 @@ Planned:
 
 | Method | Path | Module | Context | Milestone | Status |
 |---|---|---|---|---|---|
-| `PATCH` | `/partner/profile` | partners | partner_owner | M7 | `planned` |
+| `PATCH` | `/partner/profile` | partners (`partner-portal.controller.ts` → `PartnerKycService.update`: firm PAN through the KYC port, GSTIN containing the PAN, encrypted bank account, KYC `verified` when the PAN is verified and a bank account is on file) | partner_owner | M7 | `useful` |
+| `POST` | `/partner/attribution-disputes` | leads (`partner-referrals.controller.ts` → `PartnerLeadService.claimAttribution` → `AttributionDisputeService.raise`; added so a firm refused with `LEAD_PROTECTED` can claim the borrower) | partner | M7 | `useful` |
 | `POST` | `/partner/leads/:id/convert` | applications (`partner-applications.controller.ts` → `ApplicationService.startFromLead`, lead checks in `PartnerLeadService.conversionSource`; lives in applications to avoid a leads → applications cycle) | partner | M3 | `useful` |
 
 ## 11 Partner Portal - Applications & Commissions
@@ -288,7 +289,7 @@ Planned:
 | `POST` | `/partner/applications` | applications (`partner-applications.controller.ts` → `ApplicationService.createForProfile`) | partner | M3 | `useful` |
 | `POST` | `/partner/applications/:id/borrower-consent/send` | applications (`ApplicationPartyService.sendBorrowerConsent` → `ConsentOtpService`) | partner | M3 | `useful` |
 | `POST` | `/partner/applications/:id/borrower-consent/verify` | applications (`ApplicationPartyService.confirmBorrowerConsent`) | partner | M3 | `useful` |
-| `GET` | `/partner/referral-codes` | partners | partner | M7 | `planned` |
+| `GET` | `/partner/referral-codes` | partners (`ReferralCodeService.forActor`: firm code and the member's code, issued on first request, verified active firms only) | partner | M7 | `useful` |
 | `GET` | `/partner/commissions/summary` | commissions | partner | M7 | `planned` |
 | `GET` | `/partner/commissions/ledger` | commissions | partner | M7 | `planned` |
 | `GET` | `/partner/commissions/statement` | commissions | partner_owner | M7 | `planned` |
@@ -346,8 +347,8 @@ Planned:
 | `GET` | `/ops/submissions/:id` | submissions (`SubmissionService.detail` as staff) | staff | M6 | `useful` |
 | `POST` | `/ops/submissions/:id/approve` | submissions (`SubmissionService.approve`: lender-scoped `lender_sharing` consent and the product's assessment and submission documents; replaces the planned `/ops/cases/:id/approve-submission` because the submission id names the file) | staff | M6 | `useful` |
 | `POST` | `/ops/submissions/:id/events` | submissions (`SubmissionService.act` for offline lenders: decisions need a note, sanction and disbursal need an evidence document) | staff | M6 | `useful` |
-| `GET` | `/ops/attribution-disputes` | partners | staff | M7 | `planned` |
-| `POST` | `/ops/attribution-disputes/:id/resolve` | partners | staff | M7 | `planned` |
+| `GET` | `/ops/attribution-disputes` | partners (`ops-attribution-disputes.controller.ts` → `AttributionDisputeService.list`) | staff | M7 | `useful` |
+| `POST` | `/ops/attribution-disputes/:id/resolve` | partners (`AttributionDisputeService.resolve`: keep the holder, transfer with a fresh protection window, or void the protection) | staff | M7 | `useful` |
 | `GET` | `/ops/risk-signals` | risk | staff | M8 | `planned` |
 | `POST` | `/ops/fraud-reviews/:id/decision` | risk | staff | M8 | `planned` |
 

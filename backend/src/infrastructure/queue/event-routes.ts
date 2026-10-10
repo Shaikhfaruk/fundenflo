@@ -10,7 +10,7 @@ const ROUTES: Partial<Record<EventName, QueueName[]>> = {
   [EventName.ConsentWithdrawn]: [QueueName.LeadsConsentSync, QueueName.ApplicationsRefresh],
   [EventName.PartyMerged]: [QueueName.LeadsConsentSync],
   [EventName.PartyMergeReverted]: [QueueName.LeadsConsentSync],
-  [EventName.UserSignedUp]: [QueueName.LeadsDropoff],
+  [EventName.UserSignedUp]: [QueueName.LeadsDropoff, QueueName.LeadsReferrals],
   [EventName.LeadCaptured]: [QueueName.LeadsRoute],
   [EventName.LeadStatusChanged]: [QueueName.LeadsRoute],
   [EventName.LeadUpdated]: [QueueName.LeadsRoute],

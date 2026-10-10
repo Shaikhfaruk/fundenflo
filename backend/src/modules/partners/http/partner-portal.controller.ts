@@ -10,12 +10,16 @@ import { ValidBody, ValidParam, ValidQuery } from '../../../common/validation/zo
 import { toInvitationView, toMembershipView } from '../../access/application/access.views.js';
 import { AppAction, type AppAbility } from '../../access/domain/ability.types.js';
 import { CheckPolicies, CurrentAbility } from '../../access/http/policies.guard.js';
+import { PartnerKycService } from '../application/partner-kyc.service.js';
 import { PartnerService } from '../application/partner.service.js';
+import { ReferralCodeService } from '../application/referral-code.service.js';
 import {
   type CapacityDto,
   capacitySchema,
   type InviteMemberDto,
   inviteMemberSchema,
+  type PartnerKycDto,
+  partnerKycSchema,
   type ServiceAreasDto,
   serviceAreasBodySchema,
   type UpdateMemberDto,
@@ -28,12 +32,28 @@ const canManage = CheckPolicies((ability) => ability.can(AppAction.Update, 'Part
 @Controller('partner')
 @AllowContexts(SessionContext.partner)
 export class PartnerPortalController {
-  constructor(private readonly partners: PartnerService) {}
+  constructor(
+    private readonly partners: PartnerService,
+    private readonly kyc: PartnerKycService,
+    private readonly codes: ReferralCodeService,
+  ) {}
 
   @Get('profile')
   @canRead
   profile(@CurrentActor() actor: UserActor) {
-    return this.partners.profile(actor);
+    return this.kyc.profile(actor);
+  }
+
+  @Patch('profile')
+  @canManage
+  updateProfile(@ValidBody(partnerKycSchema) body: PartnerKycDto, @CurrentActor() actor: UserActor, @IfMatchVersion() version: number | undefined) {
+    return this.kyc.update(actor, body, version);
+  }
+
+  @Get('referral-codes')
+  @canRead
+  referralCodes(@CurrentActor() actor: UserActor) {
+    return this.codes.forActor(actor);
   }
 
   @Get('capacity')

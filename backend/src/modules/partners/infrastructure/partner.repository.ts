@@ -5,7 +5,7 @@ import type { PartnerVerificationStatus, Prisma } from '../../../generated/prism
 import type { PrismaTx } from '../../../infrastructure/database/database.types.js';
 
 export const partnerInclude = {
-  organization: { select: { id: true, name: true, status: true } },
+  organization: { select: { id: true, name: true, status: true, partyId: true } },
   serviceAreas: { include: { state: { select: { gstCode: true, name: true } }, city: { select: { id: true, name: true } } }, orderBy: { createdAt: 'asc' } },
 } as const satisfies Prisma.PartnerProfileInclude;
 

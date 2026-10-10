@@ -29,3 +29,29 @@ export const ServiceAreaType = {
 } as const;
 
 export type ServiceAreaType = (typeof ServiceAreaType)[keyof typeof ServiceAreaType];
+
+export const REFERRAL_CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+
+export const REFERRAL_CODE_LENGTH = 8;
+
+export const REFERRAL_CODE_ATTEMPTS = 5;
+
+export const ATTRIBUTION_NOTE_MAX_LENGTH = 1_000;
+
+export const AttributionEndReason = {
+  Void: 'void',
+} as const;
+
+export const GSTIN_PATTERN = /^\d{2}[A-Z]{5}\d{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/;
+
+export const GSTIN_PAN_SLICE = [2, 12] as const;
+
+export const IFSC_PATTERN = /^[A-Z]{4}0[A-Z0-9]{6}$/;
+
+export const BANK_ACCOUNT_PATTERN = /^\d{9,18}$/;
+
+export const BANK_ACCOUNT_VISIBLE_DIGITS = 4;
+
+export const PARTNER_KYC_SOURCE = 'partner_kyc';
+
+export const DECLARED_SOURCE = 'declared';

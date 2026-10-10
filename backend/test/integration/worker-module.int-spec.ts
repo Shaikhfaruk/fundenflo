@@ -7,6 +7,7 @@ import { ApplicationRefreshProcessor } from '../../src/modules/applications/infr
 import { AnalysisRunProcessor } from '../../src/modules/assessments/infrastructure/analysis-run.processor.js';
 import { DocumentExtractProcessor } from '../../src/modules/documents/infrastructure/document-extract.processor.js';
 import { DocumentScanProcessor } from '../../src/modules/documents/infrastructure/document-scan.processor.js';
+import { LeadReferralProcessor } from '../../src/modules/leads/infrastructure/lead-referral.processor.js';
 import { LeadRoutingProcessor } from '../../src/modules/leads/infrastructure/lead-routing.processor.js';
 import { MatchingRunProcessor } from '../../src/modules/matching/infrastructure/matching-run.processor.js';
 import { SubmissionDeliverProcessor } from '../../src/modules/submissions/infrastructure/submission-deliver.processor.js';
@@ -19,6 +20,7 @@ describe('worker process', () => {
   it('resolves every processor dependency', async () => {
     const moduleRef = await Test.createTestingModule({ imports: [WorkerModule] }).compile();
     expect(moduleRef.get(LeadRoutingProcessor)).toBeInstanceOf(LeadRoutingProcessor);
+    expect(moduleRef.get(LeadReferralProcessor)).toBeInstanceOf(LeadReferralProcessor);
     expect(moduleRef.get(DocumentScanProcessor)).toBeInstanceOf(DocumentScanProcessor);
     expect(moduleRef.get(DocumentExtractProcessor)).toBeInstanceOf(DocumentExtractProcessor);
     expect(moduleRef.get(ApplicationRefreshProcessor)).toBeInstanceOf(ApplicationRefreshProcessor);

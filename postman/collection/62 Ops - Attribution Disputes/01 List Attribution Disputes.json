@@ -1,0 +1,71 @@
+{
+  "name": "List Attribution Disputes",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/ops/attribution-disputes?status=open",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "attribution-disputes"
+      ],
+      "query": [
+        {
+          "key": "status",
+          "value": "open"
+        }
+      ]
+    },
+    "description": "Disputes over which firm a borrower belongs to: raised automatically when a borrower signs up with another firm's code during a protection window, or by a firm's claim. The attribution shows `disputedAt` while any claim is open. Staff context (ops lead resolves; reviewers, compliance and support read)."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/ops/attribution-disputes?status=open",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "attribution-disputes"
+          ],
+          "query": [
+            {
+              "key": "status",
+              "value": "open"
+            }
+          ]
+        },
+        "description": "Disputes over which firm a borrower belongs to: raised automatically when a borrower signs up with another firm's code during a protection window, or by a firm's claim. The attribution shows `disputedAt` while any claim is open. Staff context (ops lead resolves; reviewers, compliance and support read)."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a12400-1a2b-7c3d-8e4f-5061728394a5\",\n      \"leadId\": \"01a121e0-1a2b-7c3d-8e4f-5061728394a5\",\n      \"attribution\": {\n        \"id\": \"01a12400-2b3c-7d4e-9f50-61728394a5b6\",\n        \"organizationId\": \"01a12190-1a2b-7c3d-8e4f-5061728394a5\",\n        \"kind\": \"referral\",\n        \"protectedUntil\": \"2027-01-09T09:00:00.000Z\",\n        \"disputedAt\": \"2026-10-11T09:00:00.000Z\",\n        \"endedAt\": null\n      },\n      \"holderOrganizationId\": \"01a12190-1a2b-7c3d-8e4f-5061728394a5\",\n      \"claimantOrganizationId\": \"01a12190-2b3c-7d4e-9f50-61728394a5b6\",\n      \"source\": \"signup_code\",\n      \"referralCodeId\": \"01a12400-3c4d-7e5f-8061-728394a5b6c7\",\n      \"claimNote\": null,\n      \"status\": \"open\",\n      \"outcome\": null,\n      \"resolutionNote\": null,\n      \"resolvedAt\": null,\n      \"version\": 1,\n      \"createdAt\": \"2026-10-11T09:00:00.000Z\"\n    }\n  ],\n  \"nextCursor\": null\n}"
+    }
+  ]
+}

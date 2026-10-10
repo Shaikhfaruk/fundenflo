@@ -7,7 +7,7 @@ import { ErrorCode } from '../../../common/errors/error-codes.js';
 import { EventName } from '../../../common/events/event-names.js';
 import { namesCompatible } from '../../../engines/party-matching/lead-match.js';
 import { RateLimiter } from '../../../infrastructure/rate-limit/rate-limiter.service.js';
-import { InjectPanVerifier, type PanResult, PanStatus, type PanVerifier } from '../../../integrations/kyc/pan-verifier.port.js';
+import { InjectPanVerifier, PAN_STATUS_MESSAGES, PAN_UNVERIFIED_MESSAGE, type PanResult, PanStatus, type PanVerifier } from '../../../integrations/kyc/pan-verifier.port.js';
 import { AppAction, type AppAbility } from '../../access/domain/ability.types.js';
 import { ChangeRecorder } from '../../audit/application/change-recorder.service.js';
 import { AuditAction, AuditEntity } from '../../audit/domain/audit.constants.js';
@@ -19,11 +19,6 @@ import { BorrowerProfileService } from './borrower-profile.service.js';
 export type PanInput = { pan: string; name?: string; dateOfBirth?: string };
 
 type KycSubject = { segmentKey: string; subSegmentKey: string | null; partyId: string; actingPartyId: string };
-
-const PAN_STATUS_MESSAGE: Record<string, string> = {
-  [PanStatus.Invalid]: 'this PAN is not valid',
-  [PanStatus.NotFound]: 'the income tax records have no such PAN',
-};
 
 @Injectable()
 export class BorrowerKycService {
@@ -48,7 +43,7 @@ export class BorrowerKycService {
     const quota = await this.limiter.consume(`pan-verify:profile:${id}`, PAN_VERIFY_RATE_LIMIT.limit, PAN_VERIFY_RATE_LIMIT.windowSeconds);
     if (!quota.allowed) throw new AppError(ErrorCode.RATE_LIMITED, { retryAfterSeconds: quota.retryAfterSeconds });
     const result = await this.verifier.verify({ pan: input.pan, name, dateOfBirth: input.dateOfBirth });
-    if (result.status !== PanStatus.Valid) throw new AppError(ErrorCode.VALIDATION_FAILED, { details: [{ path: 'pan', code: result.status, message: PAN_STATUS_MESSAGE[result.status] ?? 'the PAN could not be verified' }] });
+    if (result.status !== PanStatus.Valid) throw new AppError(ErrorCode.VALIDATION_FAILED, { details: [{ path: 'pan', code: result.status, message: PAN_STATUS_MESSAGES[result.status] ?? PAN_UNVERIFIED_MESSAGE }] });
     return this.store(id, partyId, input.pan, namesCompatible(result.nameOnRecord, party.displayName ?? name), result);
   }
 

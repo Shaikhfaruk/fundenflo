@@ -41,6 +41,7 @@ export const toPartnerView = (partner: PartnerWithDetails) => ({
     decisionNote: partner.decisionNote,
     decidedAt: iso(partner.decidedAt),
   },
+  kyc: { status: partner.kycStatus, verifiedAt: iso(partner.kycVerifiedAt), bank: partner.bankAccountLast4 ? { accountLast4: partner.bankAccountLast4, ifsc: partner.bankIfsc, updatedAt: iso(partner.bankUpdatedAt) } : null },
   capacity: toCapacityView(partner),
   serviceAreas: partner.serviceAreas.map(toServiceAreaView),
   signedUpByUserId: partner.signedUpByUserId,

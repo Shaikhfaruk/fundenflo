@@ -27,6 +27,8 @@
           "if (!pm.collectionVariables.get('newMobile')) pm.collectionVariables.set('newMobile', '97' + digits());",
           "if (!pm.collectionVariables.get('lenderMobile')) pm.collectionVariables.set('lenderMobile', '96' + digits());",
           "if (!pm.collectionVariables.get('compatPan')) pm.collectionVariables.set('compatPan', 'ABCP' + 'KLMNRSTUVW'[Math.floor(Math.random() * 10)] + digits().slice(0, 4) + 'ABCDEFGHJK'[Math.floor(Math.random() * 10)]);",
+          "if (!pm.collectionVariables.get('referredMobile')) pm.collectionVariables.set('referredMobile', '95' + digits());",
+          "if (!pm.collectionVariables.get('partnerPan')) pm.collectionVariables.set('partnerPan', 'AAAF' + 'KLMNRSTUVW'[Math.floor(Math.random() * 10)] + digits().slice(0, 4) + 'ABCDEFGHJK'[Math.floor(Math.random() * 10)]);",
           "if (!pm.collectionVariables.get('linkEmail')) pm.collectionVariables.set('linkEmail', 'borrower.' + Date.now() + '@sustaininsight.com');"
         ]
       }
@@ -667,6 +669,22 @@
     },
     {
       "key": "compatApplicationId",
+      "value": ""
+    },
+    {
+      "key": "partnerPan",
+      "value": ""
+    },
+    {
+      "key": "referralCode",
+      "value": ""
+    },
+    {
+      "key": "referredMobile",
+      "value": ""
+    },
+    {
+      "key": "disputeId",
       "value": ""
     }
   ]

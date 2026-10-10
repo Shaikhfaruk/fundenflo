@@ -9,7 +9,7 @@
 |---|---|---|---|---|---|---|
 | `party.created` · `party.match_review.opened` | parties (`party.service.ts`, `party-resolver.service.ts`) | none (the review queue reads `party_match_reviews` directly) | — | M0 | `useful` | §3.3 |
 | `party.merged` · `party.merge_reverted` · `party.match_review.resolved` | parties (`party-merge.service.ts`, via `ChangeRecorder`) | `leads.consent-sync` (recompute consent status of the survivor's open leads; on revert also the restored party); M1.9: sync | — | M1 | `useful` | spec `party-merge`; flow `party-merge` |
-| `user.signed_up` | auth (`otp-login.service.ts`) | `leads.dropoff` (borrower sign-ups); M7: referral attribution | — | M0 | `useful` | §3.4 |
+| `user.signed_up` | auth (`otp-login.service.ts`) | `leads.dropoff` (borrower sign-ups); `leads.referrals` (sign-ups with a referral code) | — | M0 | `useful` | §3.4 |
 | `user.status_changed` | auth (`admin-users.service.ts`) | `auth.session-revocations` | — | M0 | `useful` | §3.4 |
 | `user.mobile_changed` · `login.linked` · `login.removed` | auth (`login-methods.service.ts`) | none yet | — | M0 | `useful` | §3.4 |
 | `session.created` · `session.revoked` | auth (`session.service.ts`) | none yet (M1: real-time `session.revoked` → user room) | M1 | M0 | `useful` | §3.4 |
@@ -54,6 +54,8 @@
 | `submission.disbursed` | submissions (every disbursal tranche; amount, total, sanction, lead, partner org) | `realtime.publish`; M7 `commissions.accrue` | same as above | M6 | `useful` | spec `submissions` |
 | `document.requested` · `document.request_fulfilled` | submissions (`DocumentRequestService.create` / fulfilment) | `submissions.notify` (borrower and filing partner, push with SMS fallback) | — | M6 | `useful` | spec `submissions`; flow `submissions` |
 | `case.assigned` | applications (`ApplicationService.assign`) | none yet (ops console reads the case) | — | M6 | `useful` | spec `submissions` |
+| `partner.kyc_updated` · `referral_code.issued` | partners (`PartnerKycService.update`, `ReferralCodeService`) | none yet (M7b payouts read the KYC status) | — | M7 | `useful` | spec `partner-referrals-kyc` |
+| `attribution.disputed` · `attribution.dispute_resolved` | partners (`AttributionDisputeService`) | none yet (ops console reads the queue; M7b holds accrual for disputed attributions) | — | M7 | `useful` | spec `partner-referrals-kyc` |
 | `receivable.received` · `payout.paid` · `payout.reversed` | commissions | notifications, reports | partner org room | M7 | `planned` | §8.5 |
 | `risk.signal.raised` | risk, documents | ops queue (assignment) | ops room | M8 | `planned` | §13 |
 

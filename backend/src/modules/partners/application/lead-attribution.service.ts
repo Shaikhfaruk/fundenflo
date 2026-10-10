@@ -14,8 +14,16 @@ export class LeadAttributionService {
     @InjectConfig() private readonly config: AppConfig,
   ) {}
 
-  create(input: { leadId: string; organizationId: string; kind: AttributionKind; createdByUserId: string }, now = new Date()) {
-    return this.attributions.create({ ...input, protectedUntil: new Date(now.getTime() + this.config.PARTNER_REFERRAL_PROTECTION_DAYS * DAY_MS) });
+  create(input: { leadId: string; organizationId: string; kind: AttributionKind; referralCodeId?: string | null; createdByUserId: string | null }, now = new Date()) {
+    return this.attributions.create({ ...input, protectedUntil: this.protectedUntil(now) });
+  }
+
+  protectedUntil(now = new Date()) {
+    return new Date(now.getTime() + this.config.PARTNER_REFERRAL_PROTECTION_DAYS * DAY_MS);
+  }
+
+  forLeads(leadIds: string[]) {
+    return leadIds.length === 0 ? Promise.resolve([]) : this.attributions.findByLeads(leadIds);
   }
 
   activeFor(leadIds: string[], now = new Date()) {

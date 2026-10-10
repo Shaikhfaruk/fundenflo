@@ -1,0 +1,129 @@
+{
+  "name": "Claim Attribution",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/partner/attribution-disputes",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "partner",
+        "attribution-disputes"
+      ]
+    },
+    "description": "When a referral is refused because another firm protects the borrower, the firm can claim it: an attribution dispute opens for ops with the claim note. One open claim per firm and attribution. Partner context.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"mobile\": \"{{mobile}}\",\n  \"note\": \"We introduced this borrower in September; engagement letter attached by email\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/partner/attribution-disputes",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "attribution-disputes"
+          ]
+        },
+        "description": "When a referral is refused because another firm protects the borrower, the firm can claim it: an attribution dispute opens for ops with the claim note. One open claim per firm and attribution. Partner context.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"mobile\": \"{{mobile}}\",\n  \"note\": \"We introduced this borrower in September; engagement letter attached by email\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12400-1a2b-7c3d-8e4f-5061728394a5\",\n  \"status\": \"open\",\n  \"createdAt\": \"2026-10-11T09:00:00.000Z\"\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/partner/attribution-disputes",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "attribution-disputes"
+          ]
+        },
+        "description": "When a referral is refused because another firm protects the borrower, the firm can claim it: an attribution dispute opens for ops with the claim note. One open claim per firm and attribution. Partner context.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"mobile\": \"{{mobile}}\",\n  \"note\": \"We introduced this borrower in September; engagement letter attached by email\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"mobile\",\n      \"code\": \"not_protected\",\n      \"message\": \"no other firm protects this borrower; refer them instead\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

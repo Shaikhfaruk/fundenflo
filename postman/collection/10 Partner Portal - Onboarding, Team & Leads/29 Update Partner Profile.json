@@ -1,0 +1,171 @@
+{
+  "name": "Update Partner Profile",
+  "request": {
+    "method": "PATCH",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/partner/profile",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "partner",
+        "profile"
+      ]
+    },
+    "description": "Firm KYC by the partner owner: the firm PAN is checked with the KYC provider against the firm name, the GSTIN must contain the PAN (stored as declared), the bank account is stored encrypted (only the last four digits and IFSC are shown). KYC is `verified` once the PAN is verified and a bank account is on file; payouts need it. Partner owner only; optional `If-Match`.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"membershipNumber\": \"ICAI-123456\",\n  \"pan\": \"{{partnerPan}}\",\n  \"gstin\": \"06{{partnerPan}}1Z5\",\n  \"bankAccount\": {\n    \"accountNumber\": \"502000123456789\",\n    \"ifsc\": \"HDFC0001234\",\n    \"holderName\": \"Postman Flow Firm\"\n  }\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/partner/profile",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "profile"
+          ]
+        },
+        "description": "Firm KYC by the partner owner: the firm PAN is checked with the KYC provider against the firm name, the GSTIN must contain the PAN (stored as declared), the bank account is stored encrypted (only the last four digits and IFSC are shown). KYC is `verified` once the PAN is verified and a bank account is on file; payouts need it. Partner owner only; optional `If-Match`.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"membershipNumber\": \"ICAI-123456\",\n  \"pan\": \"{{partnerPan}}\",\n  \"gstin\": \"06{{partnerPan}}1Z5\",\n  \"bankAccount\": {\n    \"accountNumber\": \"502000123456789\",\n    \"ifsc\": \"HDFC0001234\",\n    \"holderName\": \"Postman Flow Firm\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12190-3c4d-7e5f-8061-728394a5b6c7\",\n  \"organizationId\": \"01a12190-1a2b-7c3d-8e4f-5061728394a5\",\n  \"name\": \"Postman Flow Firm\",\n  \"membershipNumber\": \"ICAI-123456\",\n  \"kyc\": {\n    \"status\": \"verified\",\n    \"verifiedAt\": \"2026-10-11T09:00:00.000Z\",\n    \"bank\": {\n      \"accountLast4\": \"6789\",\n      \"ifsc\": \"HDFC0001234\",\n      \"updatedAt\": \"2026-10-11T09:00:00.000Z\"\n    },\n    \"pan\": {\n      \"type\": \"pan\",\n      \"masked\": \"AAA••••34B\",\n      \"verified\": true,\n      \"verifiedAt\": \"2026-10-11T09:00:00.000Z\"\n    },\n    \"gstin\": {\n      \"type\": \"gstin\",\n      \"masked\": \"06A••••••••1Z5\",\n      \"verified\": false,\n      \"verifiedAt\": null\n    }\n  },\n  \"version\": 4\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/partner/profile",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "profile"
+          ]
+        },
+        "description": "Firm KYC by the partner owner: the firm PAN is checked with the KYC provider against the firm name, the GSTIN must contain the PAN (stored as declared), the bank account is stored encrypted (only the last four digits and IFSC are shown). KYC is `verified` once the PAN is verified and a bank account is on file; payouts need it. Partner owner only; optional `If-Match`.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"membershipNumber\": \"ICAI-123456\",\n  \"pan\": \"{{partnerPan}}\",\n  \"gstin\": \"06{{partnerPan}}1Z5\",\n  \"bankAccount\": {\n    \"accountNumber\": \"502000123456789\",\n    \"ifsc\": \"HDFC0001234\",\n    \"holderName\": \"Postman Flow Firm\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"gstin\",\n      \"code\": \"pan_mismatch\",\n      \"message\": \"the GSTIN must contain the firm PAN\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "409 IDENTIFIER_IN_USE",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/partner/profile",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "profile"
+          ]
+        },
+        "description": "Firm KYC by the partner owner: the firm PAN is checked with the KYC provider against the firm name, the GSTIN must contain the PAN (stored as declared), the bank account is stored encrypted (only the last four digits and IFSC are shown). KYC is `verified` once the PAN is verified and a bank account is on file; payouts need it. Partner owner only; optional `If-Match`.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"membershipNumber\": \"ICAI-123456\",\n  \"pan\": \"{{partnerPan}}\",\n  \"gstin\": \"06{{partnerPan}}1Z5\",\n  \"bankAccount\": {\n    \"accountNumber\": \"502000123456789\",\n    \"ifsc\": \"HDFC0001234\",\n    \"holderName\": \"Postman Flow Firm\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"IDENTIFIER_IN_USE\",\n  \"message\": \"This identifier already belongs to someone else.\",\n  \"details\": {\n    \"type\": \"pan\"\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

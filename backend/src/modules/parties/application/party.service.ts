@@ -13,6 +13,7 @@ import { OutboxService } from '../../../infrastructure/outbox/outbox.service.js'
 import { type ContactSource, IDENTIFIER_INDEX_DOMAIN } from '../domain/party.constants.js';
 import { PartyRepository } from '../infrastructure/party.repository.js';
 import { ContactCodec } from './contact-codec.service.js';
+import { normaliseMobile } from '../../../engines/party-matching/normalise.js';
 
 export type ContactInput = {
   type: ContactType;
@@ -103,6 +104,12 @@ export class PartyService {
 
   async assertExists(partyId: string): Promise<void> {
     if (!(await this.parties.findById(partyId))) throw new AppError(ErrorCode.NOT_FOUND, { details: { partyId } });
+  }
+
+  async personPartyIdsByMobile(mobile: string, countryCode?: string): Promise<string[]> {
+    const normalised = normaliseMobile(mobile, countryCode);
+    if (!normalised) return [];
+    return [...new Set((await this.parties.findContactCandidates(ContactType.mobile, this.codec.hash(ContactType.mobile, normalised.e164))).map((row) => row.partyId))];
   }
 
   async contactExists(type: ContactType, value: string): Promise<boolean> {

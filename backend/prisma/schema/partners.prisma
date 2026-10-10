@@ -22,6 +22,12 @@ enum VerificationDecision {
   reject
 }
 
+enum PartnerKycStatus {
+  not_started
+  pending
+  verified
+}
+
 model PartnerProfile {
   id                     String                    @id @default(uuid(7)) @db.Uuid
   organizationId         String                    @unique @map("organization_id") @db.Uuid
@@ -46,6 +52,12 @@ model PartnerProfile {
   workingHoursStart      String?                   @map("working_hours_start")
   workingHoursEnd        String?                   @map("working_hours_end")
   signedUpByUserId       String                    @map("signed_up_by_user_id") @db.Uuid
+  kycStatus              PartnerKycStatus          @default(not_started) @map("kyc_status")
+  kycVerifiedAt          DateTime?                 @map("kyc_verified_at") @db.Timestamptz(3)
+  bankAccountEnc         String?                   @map("bank_account_enc")
+  bankAccountLast4       String?                   @map("bank_account_last4")
+  bankIfsc               String?                   @map("bank_ifsc")
+  bankUpdatedAt          DateTime?                 @map("bank_updated_at") @db.Timestamptz(3)
   version                Int                       @default(1)
   createdAt              DateTime                  @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt              DateTime                  @updatedAt @map("updated_at") @db.Timestamptz(3)
@@ -78,6 +90,28 @@ model PartnerServiceArea {
 
 enum AttributionKind {
   referral
+  referral_code
+}
+
+enum ReferralCodeStatus {
+  active
+  disabled
+}
+
+enum DisputeSource {
+  signup_code
+  partner_claim
+}
+
+enum DisputeStatus {
+  open
+  resolved
+}
+
+enum DisputeOutcome {
+  keep_holder
+  transfer
+  void
 }
 
 model LeadAttribution {
@@ -85,13 +119,63 @@ model LeadAttribution {
   leadId          String          @unique @map("lead_id") @db.Uuid
   organizationId  String          @map("organization_id") @db.Uuid
   kind            AttributionKind
+  referralCodeId  String?         @map("referral_code_id") @db.Uuid
   protectedUntil  DateTime        @map("protected_until") @db.Timestamptz(3)
-  createdByUserId String          @map("created_by_user_id") @db.Uuid
+  disputedAt      DateTime?       @map("disputed_at") @db.Timestamptz(3)
+  endedAt         DateTime?       @map("ended_at") @db.Timestamptz(3)
+  endReason       String?         @map("end_reason")
+  createdByUserId String?         @map("created_by_user_id") @db.Uuid
+  version         Int             @default(1)
   createdAt       DateTime        @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime        @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
 
-  lead         Lead         @relation(fields: [leadId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  lead         Lead                 @relation(fields: [leadId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  organization Organization         @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  referralCode ReferralCode?        @relation(fields: [referralCodeId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  disputes     AttributionDispute[]
 
   @@index([organizationId, createdAt])
   @@map("lead_attributions")
+}
+
+model ReferralCode {
+  id             String             @id @default(uuid(7)) @db.Uuid
+  code           String             @unique
+  organizationId String             @map("organization_id") @db.Uuid
+  membershipId   String?            @map("membership_id") @db.Uuid
+  status         ReferralCodeStatus @default(active)
+  disabledAt     DateTime?          @map("disabled_at") @db.Timestamptz(3)
+  createdAt      DateTime           @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  organization Organization      @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  attributions LeadAttribution[]
+
+  @@index([organizationId, status])
+  @@map("referral_codes")
+}
+
+model AttributionDispute {
+  id                     String          @id @default(uuid(7)) @db.Uuid
+  attributionId          String          @map("attribution_id") @db.Uuid
+  leadId                 String          @map("lead_id") @db.Uuid
+  holderOrganizationId   String          @map("holder_organization_id") @db.Uuid
+  claimantOrganizationId String          @map("claimant_organization_id") @db.Uuid
+  source                 DisputeSource
+  referralCodeId         String?         @map("referral_code_id") @db.Uuid
+  claimNote              String?         @map("claim_note")
+  raisedByUserId         String?         @map("raised_by_user_id") @db.Uuid
+  status                 DisputeStatus   @default(open)
+  outcome                DisputeOutcome?
+  resolutionNote         String?         @map("resolution_note")
+  resolvedByUserId       String?         @map("resolved_by_user_id") @db.Uuid
+  resolvedAt             DateTime?       @map("resolved_at") @db.Timestamptz(3)
+  version                Int             @default(1)
+  createdAt              DateTime        @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt              DateTime        @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  attribution LeadAttribution @relation(fields: [attributionId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([status, createdAt])
+  @@index([claimantOrganizationId, status])
+  @@map("attribution_disputes")
 }

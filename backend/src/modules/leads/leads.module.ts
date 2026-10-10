@@ -49,6 +49,8 @@ import { LeadNotifyProcessor } from './infrastructure/lead-notify.processor.js';
 import { LeadRoutingProcessor } from './infrastructure/lead-routing.processor.js';
 import { LeadRoutingQueue } from './infrastructure/lead-routing.queue.js';
 import { LeadRepository } from './infrastructure/lead.repository.js';
+import { ReferralSignupService } from './application/referral-signup.service.js';
+import { LeadReferralProcessor } from './infrastructure/lead-referral.processor.js';
 
 const AdminRoutingRulesController = createVersionedConfigController({ resource: ConfigResource.routing_rule, path: 'routing-rules', name: 'AdminRoutingRulesController' });
 
@@ -92,9 +94,10 @@ const AdminRoutingRulesController = createVersionedConfigController({ resource: 
     RoutingRuleHandler,
     LeadRoutingService,
     PartnerLeadService,
+    ReferralSignupService,
   ],
-  exports: [LeadAssignmentService, LeadCaptureService, LeadNotificationService, LeadRoutingService, LeadService, LeadSourceService, PartnerLeadService],
+  exports: [LeadAssignmentService, LeadCaptureService, LeadNotificationService, LeadRoutingService, LeadService, LeadSourceService, PartnerLeadService, ReferralSignupService],
 })
 export class LeadsModule {}
 
-export const LEAD_PROCESSORS = [LeadConsentSyncProcessor, LeadDropoffProcessor, LeadNotifyProcessor, LeadRoutingProcessor];
+export const LEAD_PROCESSORS = [LeadConsentSyncProcessor, LeadDropoffProcessor, LeadNotifyProcessor, LeadReferralProcessor, LeadRoutingProcessor];

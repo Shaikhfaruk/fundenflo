@@ -19,6 +19,7 @@ export const QueueName = {
   SubmissionsDeliver: 'submissions.deliver',
   SubmissionsSync: 'submissions.sync',
   SubmissionsNotify: 'submissions.notify',
+  LeadsReferrals: 'leads.referrals',
 } as const;
 
 export type QueueName = (typeof QueueName)[keyof typeof QueueName];

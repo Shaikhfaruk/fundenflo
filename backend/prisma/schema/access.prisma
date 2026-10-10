@@ -57,16 +57,17 @@ model Organization {
   createdAt DateTime           @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt DateTime           @updatedAt @map("updated_at") @db.Timestamptz(3)
 
-  party        Party               @relation(fields: [partyId], references: [id], onDelete: Restrict)
-  memberships  Membership[]
-  invitations  Invitation[]
-  partner      PartnerProfile?
-  lender       Lender?
-  assignments  LeadAssignment[]
-  activities   Activity[]
-  followUps    FollowUp[]
-  attributions LeadAttribution[]
-  conversions  OfflineConversion[]
+  party         Party               @relation(fields: [partyId], references: [id], onDelete: Restrict)
+  memberships   Membership[]
+  invitations   Invitation[]
+  partner       PartnerProfile?
+  lender        Lender?
+  assignments   LeadAssignment[]
+  activities    Activity[]
+  followUps     FollowUp[]
+  attributions  LeadAttribution[]
+  referralCodes ReferralCode[]
+  conversions   OfflineConversion[]
 
   @@index([type, status])
   @@map("organizations")

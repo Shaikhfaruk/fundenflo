@@ -117,6 +117,11 @@ export const AuditAction = {
   DocumentRequested: 'document.requested',
   DocumentRequestFulfilled: 'document.request_fulfilled',
   CaseAssigned: 'case.assigned',
+  PartnerKycUpdated: 'partner.kyc_updated',
+  ReferralCodeIssued: 'referral_code.issued',
+  ReferralAttributed: 'referral.attributed',
+  AttributionDisputed: 'attribution.disputed',
+  AttributionDisputeResolved: 'attribution.dispute_resolved',
 } as const;
 
 export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction];
@@ -167,6 +172,9 @@ export const AuditEntity = {
   MatchRun: 'match_run',
   LenderSubmission: 'lender_submission',
   DocumentRequest: 'document_request',
+  ReferralCode: 'referral_code',
+  LeadAttribution: 'lead_attribution',
+  AttributionDispute: 'attribution_dispute',
   LenderAgreement: 'lender_agreement',
   LenderContact: 'lender_contact',
 } as const;

@@ -1,0 +1,95 @@
+{
+  "name": "Request OTP With Referral Code",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/auth/otp/request",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "auth",
+        "otp",
+        "request"
+      ]
+    },
+    "description": "Borrower sign-up with a partner referral code. The code is kept on the new user; the worker (`leads.referrals`) attributes the borrower's lead to the code's firm with the protection window, or opens an attribution dispute when another firm already protects the borrower. Unknown, disabled or unverified-firm codes are ignored. Public.",
+    "auth": {
+      "type": "noauth"
+    },
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"mobile\": \"{{mobile}}\",\n  \"countryCode\": \"+91\",\n  \"loginAs\": \"borrower\",\n  \"referralCode\": \"{{referralCode}}\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/auth/otp/request",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "otp",
+            "request"
+          ]
+        },
+        "description": "Borrower sign-up with a partner referral code. The code is kept on the new user; the worker (`leads.referrals`) attributes the borrower's lead to the code's firm with the protection window, or opens an attribution dispute when another firm already protects the borrower. Unknown, disabled or unverified-firm codes are ignored. Public.",
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"mobile\": \"{{mobile}}\",\n  \"countryCode\": \"+91\",\n  \"loginAs\": \"borrower\",\n  \"referralCode\": \"{{referralCode}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"challengeId\": \"01a1215b-0d1e-7f2a-9b3c-d4e5f6a7b8c9\",\n  \"resendIn\": 30,\n  \"expiresIn\": 300\n}"
+    }
+  ]
+}

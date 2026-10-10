@@ -97,6 +97,10 @@ export const EventName = {
   DocumentRequested: 'document.requested',
   DocumentRequestFulfilled: 'document.request_fulfilled',
   CaseAssigned: 'case.assigned',
+  PartnerKycUpdated: 'partner.kyc_updated',
+  ReferralCodeIssued: 'referral_code.issued',
+  AttributionDisputed: 'attribution.disputed',
+  AttributionDisputeResolved: 'attribution.dispute_resolved',
 } as const;
 
 export type EventName = (typeof EventName)[keyof typeof EventName];

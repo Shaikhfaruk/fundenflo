@@ -28,6 +28,7 @@ export const CipherPurpose = {
   DocumentPassword: 'documents.password',
   LenderContact: 'lender_contacts.value',
   SubmissionPacket: 'submission_packets.snapshot',
+  PartnerBankAccount: 'partner_profiles.bank_account',
 } as const;
 
 export type CipherPurpose = (typeof CipherPurpose)[keyof typeof CipherPurpose];

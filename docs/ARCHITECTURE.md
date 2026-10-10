@@ -523,6 +523,7 @@ flowchart LR
   Q --> REVOKE[auth.session-revocations]
   Q -->|consent.granted / withdrawn| CSYNC[leads.consent-sync]
   Q -->|user.signed_up| DROPQ[leads.dropoff: delayed check]
+  Q -->|user.signed_up with a referral code| REFQ[leads.referrals: attribute or open a dispute]
   Q --> PROJ[projections: derived statuses, report views]
   Q --> NOTIF[notifications.dispatch]
   Q -->|offer, hand-over, SLA, follow-up events| LNOTIFY[leads.notify] --> NOTIF
@@ -550,7 +551,7 @@ flowchart LR
   SCHED -->|15 min| REP[reports.refresh]
   API[API request: OTP, invitation, consent link] -->|direct enqueue| NOTIF
   classDef built fill:#d8f3dc,stroke:#2d6a4f,color:#081c15
-  class UC,OB,RELAY,SCHED,MAINT,Q,REVOKE,CSYNC,DROPQ,NOTIF,API,IMPAPI,IMPQ,ROUTEQ,OPSR,SLAQ,LNOTIFY,RTP,GW,ROOMS,SCANQ,APPREF,ANALYSE,SUBQ2,DOCQ,MQ2,SUBQ,SNOTIFY,SSYNC built
+  class UC,OB,RELAY,SCHED,MAINT,Q,REVOKE,CSYNC,DROPQ,NOTIF,API,IMPAPI,IMPQ,ROUTEQ,OPSR,SLAQ,LNOTIFY,RTP,GW,ROOMS,SCANQ,APPREF,ANALYSE,SUBQ2,DOCQ,MQ2,SUBQ,SNOTIFY,SSYNC,REFQ built
 ```
 
 Queue and job details (producers, consumers, triggers) are in [`inventory/worker-queues-jobs.md`](inventory/worker-queues-jobs.md).

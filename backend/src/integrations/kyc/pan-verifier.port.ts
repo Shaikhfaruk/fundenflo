@@ -14,6 +14,13 @@ export const PanStatus = {
 
 export type PanStatus = (typeof PanStatus)[keyof typeof PanStatus];
 
+export const PAN_STATUS_MESSAGES: Partial<Record<PanStatus, string>> = {
+  [PanStatus.Invalid]: 'this PAN is not valid',
+  [PanStatus.NotFound]: 'the income tax records have no such PAN',
+};
+
+export const PAN_UNVERIFIED_MESSAGE = 'the PAN could not be verified';
+
 export type PanQuery = { pan: string; name: string; dateOfBirth?: string };
 
 export type PanResult = {

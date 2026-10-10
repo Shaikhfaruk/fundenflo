@@ -1,0 +1,60 @@
+{
+  "name": "List Referral Codes",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/partner/referral-codes",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "partner",
+        "referral-codes"
+      ]
+    },
+    "description": "The firm's referral code and the signed-in member's own code (issued on first request). Only verified, active firms have codes. Borrowers enter a code at OTP sign-up. Partner context."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "const first = pm.response.json().items[0]; if (first) pm.collectionVariables.set('referralCode', first.code);"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/partner/referral-codes",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "referral-codes"
+          ]
+        },
+        "description": "The firm's referral code and the signed-in member's own code (issued on first request). Only verified, active firms have codes. Borrowers enter a code at OTP sign-up. Partner context."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"available\": true,\n  \"items\": [\n    {\n      \"id\": \"01a12400-3c4d-7e5f-8061-728394a5b6c7\",\n      \"code\": \"K7MPQ2XA\",\n      \"scope\": \"firm\",\n      \"membershipId\": null,\n      \"status\": \"active\",\n      \"createdAt\": \"2026-10-11T09:00:00.000Z\"\n    },\n    {\n      \"id\": \"01a12400-4d5e-7f60-8172-8394a5b6c7d8\",\n      \"code\": \"R3TNW8HB\",\n      \"scope\": \"member\",\n      \"membershipId\": \"01a1215a-4ce4-76ef-99ed-b872d6afc844\",\n      \"status\": \"active\",\n      \"createdAt\": \"2026-10-11T09:00:00.000Z\"\n    }\n  ]\n}"
+    }
+  ]
+}

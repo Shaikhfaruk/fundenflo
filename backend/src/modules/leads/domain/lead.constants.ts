@@ -16,6 +16,7 @@ export const LeadSourceKey = {
   Import: 'import',
   AppDropoff: 'app_dropoff',
   PartnerReferral: 'partner_referral',
+  ReferralCode: 'referral_code',
 } as const;
 
 export type LeadSourceKey = (typeof LeadSourceKey)[keyof typeof LeadSourceKey];
@@ -25,6 +26,7 @@ export const SYSTEM_LEAD_SOURCES: Array<{ key: LeadSourceKey; name: string; kind
   { key: LeadSourceKey.Import, name: 'Backlog and file imports', kind: LeadSourceKind.import },
   { key: LeadSourceKey.AppDropoff, name: 'App users who stopped mid-journey', kind: LeadSourceKind.app_dropoff },
   { key: LeadSourceKey.PartnerReferral, name: 'Referred by a partner firm', kind: LeadSourceKind.partner_referral },
+  { key: LeadSourceKey.ReferralCode, name: 'Signed up with a partner referral code', kind: LeadSourceKind.partner_referral },
 ];
 
 export const LEAD_SOURCE_KEY_PATTERN = /^[a-z][a-z0-9_]{1,49}$/;
@@ -83,3 +85,11 @@ export const LEAD_CLOSE_FOR_APPLICATION: Partial<Record<ApplicationStatus, LeadL
   [ApplicationStatus.withdrawn]: LeadLostReason.not_interested,
   [ApplicationStatus.expired]: LeadLostReason.other,
 };
+
+export const ReferralOutcome = {
+  AlreadyAttributed: 'already_attributed',
+  Disputed: 'disputed',
+  Attributed: 'attributed',
+} as const;
+
+export type ReferralOutcome = (typeof ReferralOutcome)[keyof typeof ReferralOutcome];

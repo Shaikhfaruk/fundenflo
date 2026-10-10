@@ -1,9 +1,13 @@
 import { z } from 'zod';
 
-import { MembershipStatus, PartnerKind, PartnerLevel, PartnerVerificationStatus, VerificationDecision } from '../../../common/enums/db.enums.js';
+import { DisputeOutcome, DisputeStatus, MembershipStatus, PartnerKind, PartnerLevel, PartnerVerificationStatus, VerificationDecision } from '../../../common/enums/db.enums.js';
 import { pageQuerySchema } from '../../../common/listing/cursor-page.js';
 import {
+  ATTRIBUTION_NOTE_MAX_LENGTH,
+  BANK_ACCOUNT_PATTERN,
   FIRM_NAME_MAX_LENGTH,
+  GSTIN_PATTERN,
+  IFSC_PATTERN,
   LANGUAGE_CODE_PATTERN,
   MAX_LANGUAGES,
   MAX_OPEN_LEADS_LIMIT,
@@ -84,3 +88,28 @@ export type PartnerLevelDto = z.output<typeof partnerLevelSchema>;
 
 export const partnerNoteSchema = z.object({ note: noteSchema }).strict();
 export type PartnerNoteDto = z.output<typeof partnerNoteSchema>;
+
+export const partnerKycSchema = z
+  .object({
+    membershipNumber: z.string().trim().regex(REGISTRATION_NUMBER_PATTERN).optional(),
+    firmRegistrationNumber: z.string().trim().regex(REGISTRATION_NUMBER_PATTERN).optional(),
+    pan: z.string().trim().toUpperCase().regex(/^[A-Z]{5}[0-9]{4}[A-Z]$/, 'must be a 10-character PAN').optional(),
+    gstin: z.string().trim().toUpperCase().regex(GSTIN_PATTERN, 'must be a 15-character GSTIN').optional(),
+    bankAccount: z
+      .object({
+        accountNumber: z.string().trim().regex(BANK_ACCOUNT_PATTERN, 'use 9-18 digits'),
+        ifsc: z.string().trim().toUpperCase().regex(IFSC_PATTERN, 'must be an 11-character IFSC'),
+        holderName: z.string().trim().min(2).max(FIRM_NAME_MAX_LENGTH),
+      })
+      .strict()
+      .optional(),
+  })
+  .strict()
+  .refine((input) => Object.keys(input).length > 0, 'send at least one field');
+export type PartnerKycDto = z.output<typeof partnerKycSchema>;
+
+export const listDisputesSchema = pageQuerySchema.extend({ status: z.enum(Object.values(DisputeStatus)).optional() });
+export type ListDisputesDto = z.output<typeof listDisputesSchema>;
+
+export const resolveDisputeSchema = z.object({ outcome: z.enum(Object.values(DisputeOutcome)), note: z.string().trim().min(3).max(ATTRIBUTION_NOTE_MAX_LENGTH), expectedVersion: z.number().int().positive().optional() }).strict();
+export type ResolveDisputeDto = z.output<typeof resolveDisputeSchema>;

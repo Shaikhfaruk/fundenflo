@@ -10,6 +10,7 @@ import { CONFIG_KEY_PATTERN } from '../../config-publishing/domain/config.consta
 import { AssignmentDeclineReason, AssignmentReturnReason, BULK_ROUTE_MAX, OTHER_REASON, PartnerInboxView } from '../domain/lead-routing.constants.js';
 import { LEAD_MERGE_MAX, LEAD_NOTE_MAX_LENGTH, LEAD_REPORT_DEFAULT_DAYS, LEAD_REPORT_MAX_DAYS, LEAD_SOURCE_KEY_PATTERN, LEAD_TEXT_MAX_LENGTH } from '../domain/lead.constants.js';
 import { FUNNEL_COLUMNS } from '../infrastructure/lead.repository.js';
+import { ATTRIBUTION_NOTE_MAX_LENGTH } from '../../partners/domain/partner.constants.js';
 
 const key = z.string().trim().regex(/^[a-z0-9][a-z0-9_-]{0,63}$/);
 const text = z.string().trim().min(1).max(LEAD_TEXT_MAX_LENGTH);
@@ -289,3 +290,6 @@ export const funnelReportSchema = z
   .transform(withRange)
   .refine(validRange, RANGE_ISSUE);
 export type FunnelReportDto = z.output<typeof funnelReportSchema>;
+
+export const attributionClaimSchema = z.object({ mobile: z.string().trim().min(6).max(20), countryCode: z.string().trim().regex(/^\+?\d{1,4}$/).optional(), note: z.string().trim().min(10).max(ATTRIBUTION_NOTE_MAX_LENGTH) }).strict();
+export type AttributionClaimDto = z.output<typeof attributionClaimSchema>;
