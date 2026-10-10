@@ -21,6 +21,7 @@
     { "request": "50 Ops - Party Facts/03 Record Facts.json" },
     { "request": "50 Ops - Party Facts/01 Current Facts.json" },
     { "request": "51 Ops - Party Answers/02 Submit Answers.json" },
-    { "request": "51 Ops - Party Answers/01 List Answers.json" }
+    { "request": "51 Ops - Party Answers/01 List Answers.json" },
+    { "request": "49 Admin - Consents/14 Retire Consent Template Version.json", "identity": "maker" }
   ]
 }

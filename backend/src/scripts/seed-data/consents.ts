@@ -58,3 +58,29 @@ export const JOURNEY_CONSENT_TEMPLATE: { key: string; name: string; notes: strin
     ],
   },
 };
+
+export const COMMUNICATIONS_CONSENT_TEMPLATE: { key: string; name: string; notes: string; content: ConsentTemplateContent } = {
+  key: 'communications',
+  name: 'Account Communication Choices',
+  notes: 'Opt-ins shown under Account › Consents',
+  content: {
+    items: [
+      {
+        purpose: ConsentPurposeKey.Whatsapp,
+        required: false,
+        title: { en: 'Message Me On WhatsApp' },
+        summary: { en: 'Optional · Status updates and reminders' },
+        details: { en: 'We send loan status updates, document reminders and replies from your advisor on WhatsApp. You can turn this off any time.' },
+      },
+      {
+        purpose: ConsentPurposeKey.Marketing,
+        required: false,
+        title: { en: 'Send Me Offers And Updates' },
+        summary: { en: 'Optional · New products and tips' },
+        details: { en: 'We tell you about new lender products and ways to improve your Financial Health Score. We never sell your details.' },
+      },
+    ],
+  },
+};
+
+export const CONSENT_TEMPLATE_SEEDS = [JOURNEY_CONSENT_TEMPLATE, COMMUNICATIONS_CONSENT_TEMPLATE];

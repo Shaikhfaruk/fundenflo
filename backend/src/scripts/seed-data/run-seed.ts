@@ -14,7 +14,7 @@ import { scoringModelContentSchema, toCompiledScoringModel } from '../../modules
 import { PROVENANCE_RANK } from '../../modules/attributes/domain/attribute.constants.js';
 import { IMPROVEMENT_RULE_SEEDS, SCORING_MODEL_SEEDS } from './assessments.js';
 import { ATTRIBUTE_SEEDS, SEED_ATTRIBUTE_PROVENANCE } from './attributes.js';
-import { CONSENT_PURPOSE_SEEDS, JOURNEY_CONSENT_TEMPLATE } from './consents.js';
+import { CONSENT_PURPOSE_SEEDS, CONSENT_TEMPLATE_SEEDS } from './consents.js';
 import { CATEGORY_SEEDS, categoryAmounts, SEGMENT_CATEGORY_ORDER, SEGMENT_SEEDS } from './catalog.js';
 import { CITY_ALIAS_SEEDS, CITY_SEEDS, STATE_SEEDS } from './geo.js';
 import { DOCUMENT_REQUIREMENT_SEEDS, DOCUMENT_TYPE_SEEDS } from './documents.js';
@@ -220,9 +220,10 @@ async function seedConsents(prisma: PrismaClient) {
   for (const seed of CONSENT_PURPOSE_SEEDS) {
     await prisma.consentPurpose.upsert({ where: { key: seed.key }, create: { ...seed, label: { en: seed.label } }, update: {} });
   }
-  const template = JOURNEY_CONSENT_TEMPLATE;
-  if (await configExists(prisma, ConfigResource.consent_template, template.key)) return;
-  await seedPublishedConfig(prisma, { resource: ConfigResource.consent_template, ...template, compiled: compileConsentTemplate(template.content) });
+  for (const template of CONSENT_TEMPLATE_SEEDS) {
+    if (await configExists(prisma, ConfigResource.consent_template, template.key)) continue;
+    await seedPublishedConfig(prisma, { resource: ConfigResource.consent_template, ...template, compiled: compileConsentTemplate(template.content) });
+  }
 }
 
 async function seedLeadSources(prisma: PrismaClient) {
@@ -282,7 +283,7 @@ export async function runSeed(prisma: PrismaClient, env: NodeJS.ProcessEnv): Pro
     questions: QUESTION_SEEDS.length,
     questionSets: QUESTION_SET_SEEDS.length,
     consentPurposes: CONSENT_PURPOSE_SEEDS.length,
-    consentTemplates: 1,
+    consentTemplates: CONSENT_TEMPLATE_SEEDS.length,
     leadSources: SYSTEM_LEAD_SOURCES.length,
     documentTypes: DOCUMENT_TYPE_SEEDS.length,
     documentRequirements: DOCUMENT_REQUIREMENT_SEEDS.length,

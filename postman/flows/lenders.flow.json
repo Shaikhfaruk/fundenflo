@@ -99,6 +99,13 @@
     },
     {
       "request": "58 Admin - Lenders/20 Retire Lender Product Version.json"
+    },
+    {
+      "request": "58 Admin - Lenders/20 Retire Lender Product Version.json",
+      "variables": {
+        "lenderProductNumber": "1"
+      },
+      "identity": "maker"
     }
   ]
 }

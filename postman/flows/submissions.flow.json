@@ -341,6 +341,27 @@
     {
       "request": "58 Admin - Lenders/20 Retire Lender Product Version.json",
       "identity": "maker"
+    },
+    {
+      "request": "58 Admin - Lenders/20 Retire Lender Product Version.json",
+      "variables": {
+        "lenderProductNumber": "1"
+      },
+      "identity": "maker"
+    },
+    {
+      "request": "59 Admin - Scoring & Improvement/10 Retire Scoring Model Version.json",
+      "variables": {
+        "scoringModelNumber": "1"
+      },
+      "identity": "maker"
+    },
+    {
+      "request": "63 Admin - Finance & Commissions/10 Retire Commission Scheme Version.json",
+      "variables": {
+        "commissionSchemeNumber": "1"
+      },
+      "identity": "maker"
     }
   ]
 }

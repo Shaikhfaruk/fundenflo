@@ -79,6 +79,13 @@
     },
     {
       "request": "56 Admin - Documents/14 Retire Document Requirement Version.json"
+    },
+    {
+      "request": "56 Admin - Documents/14 Retire Document Requirement Version.json",
+      "variables": {
+        "documentRequirementNumber": "1"
+      },
+      "identity": "maker"
     }
   ]
 }
