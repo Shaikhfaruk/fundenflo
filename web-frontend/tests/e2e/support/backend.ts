@@ -1,8 +1,9 @@
 import { execFileSync } from 'node:child_process';
-import { randomInt } from 'node:crypto';
+import { randomInt, randomUUID } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { parseEnv } from 'node:util';
+import { generateSync } from 'otplib';
 
 const BACKEND_DIR = resolve(import.meta.dirname, '../../../../backend');
 
@@ -30,3 +31,25 @@ const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXY';
 const letter = () => LETTERS[randomInt(0, LETTERS.length)];
 
 export const randomPan = (holder = 'P') => `${letter()}${letter()}${letter()}${holder}${letter()}${String(randomInt(0, 10_000)).padStart(4, '0')}${letter()}`;
+
+const API = `${process.env.E2E_API_ORIGIN ?? 'http://localhost:3000'}/v1`;
+
+const api = async <T>(method: string, path: string, body?: unknown, token?: string): Promise<T> => {
+  const response = await fetch(`${API}${path}`, { method, headers: { 'content-type': 'application/json', 'idempotency-key': randomUUID(), ...(token ? { authorization: `Bearer ${token}` } : {}) }, body: body === undefined ? undefined : JSON.stringify(body) });
+  const text = await response.text();
+  if (!response.ok) throw new Error(`${method} ${path} -> ${response.status} ${text}`);
+  return (text ? JSON.parse(text) : null) as T;
+};
+
+export async function inviteLender(email: string): Promise<string> {
+  const staffEmail = randomEmail('e2e.lender.setup');
+  const password = `Passw0rd-${randomUUID()}`;
+  await api('POST', '/auth/staff/invitations/accept', { token: inviteStaff(staffEmail, 'super_admin'), fullName: 'Lender Setup', password });
+  const login = await api<{ mfaToken: string; mfaSetup: { secret: string } }>('POST', '/auth/staff/login', { email: staffEmail, password });
+  const session = await api<{ accessToken: string }>('POST', '/auth/staff/mfa/verify', { mfaToken: login.mfaToken, code: generateSync({ secret: login.mfaSetup.secret }) });
+  const lenders = await api<{ items: Array<{ name: string; organizationId: string }> }>('GET', '/admin/lenders', undefined, session.accessToken);
+  const lender = lenders.items[0];
+  if (!lender) throw new Error('No lender organisation to invite into. Run pnpm db:seed in backend/.');
+  await api('POST', '/admin/invitations', { organizationId: lender.organizationId, role: 'lender_admin', email }, session.accessToken);
+  return lender.name;
+}

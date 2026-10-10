@@ -206,11 +206,9 @@
         },
         "lender": {
           "label": "Lender",
-          "hint": "Sign in with email and authenticator"
+          "hint": "Use the email or mobile your lender team was invited with"
         }
       },
-      "lenderNote": "Lender teams sign in with a work email, password and authenticator app.",
-      "lenderCta": "Continue To Lender Sign In",
       "mobile": "Mobile Number",
       "email": "Email Address",
       "useEmail": "Use Email Instead",
@@ -225,7 +223,7 @@
       "referralPlaceholder": "Enter Advisor / Enterprise Code",
       "referralHint": "If a partner gave you a code, enter it here.",
       "referralInvalid": "Use 4 to 24 letters or numbers.",
-      "teamLink": "Lender Or FundenFlo Team?",
+      "teamLink": "FundenFlo Team?",
       "teamCta": "Sign In Here",
       "terms": "By continuing you agree to the Terms and Privacy Policy.",
       "sent": "A new code is on its way."
@@ -243,8 +241,8 @@
     },
     "staff": {
       "title": "Team Sign In",
-      "headline": "Lenders And The FundenFlo Team",
-      "subline": "Review submissions, manage products and run operations securely.",
+      "headline": "The FundenFlo Team",
+      "subline": "Run operations, review cases and manage the platform securely.",
       "subtitle": "Use your work email. We will ask for your authenticator code next.",
       "email": "Work Email",
       "emailPlaceholder": "name@company.com",
@@ -253,7 +251,7 @@
       "hidePassword": "Hide Password",
       "submit": "Continue",
       "mfaNote": "Every team sign-in is protected by an authenticator app and recorded in the audit trail.",
-      "borrowerLink": "Borrower Or Partner?",
+      "borrowerLink": "Borrower, Partner Or Lender?",
       "borrowerCta": "Sign In With A Code",
       "mfaTitle": "Enter Authenticator Code",
       "mfaSubtitle": "Open your authenticator app and enter the 6-digit code for FundenFlo.",

@@ -2,7 +2,7 @@ import createMiddleware from 'next-intl/middleware';
 import { NextResponse, type NextRequest } from 'next/server';
 
 import { routing } from '@/i18n/routing';
-import { AppPath, NEXT_PARAM, ProtectedArea, STAFF_SIGN_IN_AREAS } from '@/lib/constants/routes.constants';
+import { AppPath, AREA_LOGIN_AS, LOGIN_AS_PARAM, NEXT_PARAM, ProtectedArea, STAFF_SIGN_IN_AREAS } from '@/lib/constants/routes.constants';
 import { SessionCookie } from '@/lib/constants/session.constants';
 
 const intl = createMiddleware(routing);
@@ -21,6 +21,8 @@ export function proxy(request: NextRequest) {
     const prefix = locale !== undefined && locale !== routing.defaultLocale ? `/${String(locale)}` : '';
     const target = new URL(`${prefix}${signIn}`, request.url);
     target.searchParams.set(NEXT_PARAM, `${bare}${search}`);
+    const loginAs = AREA_LOGIN_AS[area];
+    if (loginAs) target.searchParams.set(LOGIN_AS_PARAM, loginAs);
     return NextResponse.redirect(target);
   }
   return intl(request);

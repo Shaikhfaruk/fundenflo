@@ -48,6 +48,8 @@ test('a borrower signs in, starts an application and manages their account', asy
 test('protected pages send visitors to sign in', async ({ page }) => {
   await page.goto('/app');
   await expect(page).toHaveURL(/\/login\?next=%2Fapp/);
+  await page.goto('/lender');
+  await expect(page).toHaveURL(/\/login\?next=%2Flender&as=lender/);
   await page.goto('/ops/leads');
   await expect(page).toHaveURL(/\/staff\/login\?next=%2Fops%2Fleads/);
 });

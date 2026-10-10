@@ -1,4 +1,4 @@
-import { SessionContext } from './auth.constants';
+import { LoginAs, SessionContext } from './auth.constants';
 
 export const AppPath = {
   Landing: '/',
@@ -41,7 +41,11 @@ export const ProtectedArea = {
   Account: '/account',
 } as const;
 
-export const STAFF_SIGN_IN_AREAS: readonly string[] = [ProtectedArea.Lender, ProtectedArea.Ops, ProtectedArea.Admin, ProtectedArea.Finance];
+export const STAFF_SIGN_IN_AREAS: readonly string[] = [ProtectedArea.Ops, ProtectedArea.Admin, ProtectedArea.Finance];
+
+export const AREA_LOGIN_AS: Record<string, string> = { [ProtectedArea.Lender]: LoginAs.Lender };
+
+export const LOGIN_AS_PARAM = 'as';
 
 export const NEXT_PARAM = 'next';
 

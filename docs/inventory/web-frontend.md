@@ -9,8 +9,8 @@
 | Path | Screen | Who | Backend routes | Milestone | Status |
 |---|---|---|---|---|---|
 | `/` | Intro as in the native app: navy splash once per browser session, then three onboarding slides on the first visit; returning visitors go to sign-in, signed-in people to their home (W0.5 replaced the W0 landing page and `components/public/segment-list.tsx`) | everyone | — | W0.5 | `useful` |
-| `/login` | OTP sign-in in the native layout: navy hero, "Login As" picker (borrower, DSA, CA, lender → team sign-in), India mobile field or email, referral expander, 6-digit code step with shake and resend timer | borrower, partner | `POST /auth/otp/request` · `POST /auth/otp/verify` | W0 | `useful` |
-| `/staff/login` | Staff and lender sign-in (email + password) then authenticator code | staff, lender | `POST /auth/staff/login` · `POST /auth/staff/mfa/verify` | W0 | `useful` |
+| `/login` | OTP sign-in in the native layout: navy hero, "Login As" picker (borrower, DSA, CA, lender; lender defaults to email because lender users are invited by email and sign in with a code, fixed 2026-10-11), India mobile field or email, referral expander, 6-digit code step with shake and resend timer | borrower, partner, lender | `POST /auth/otp/request` · `POST /auth/otp/verify` | W0 | `useful` |
+| `/staff/login` | FundenFlo team sign-in (email + password) then authenticator code; lenders use `/login` | staff | `POST /auth/staff/login` · `POST /auth/staff/mfa/verify` | W0 | `useful` |
 | `/staff/invite/[token]` | Accept a staff or lender invitation: set password, enrol authenticator | staff, lender | `POST /auth/staff/invitations/accept` | W0 | `useful` |
 | `/c/[token]` | Consent link from SMS: read the purposes, confirm with OTP | lead (not signed in) | `GET /public/consent-requests/:token` · `POST /public/consent-requests/:token` · `GET /catalog/consent-templates` | W2 | `planned` |
 | `/offline` | Offline page served by the service worker | everyone | — | W0 | `useful` |
@@ -69,7 +69,7 @@
 
 | Path | Screen | Who | Backend routes | Milestone | Status |
 |---|---|---|---|---|---|
-| `/lender` | Submissions inbox with status tabs | lender | `GET /lender/submissions` | W0 | `useful` |
+| `/lender` | Submissions inbox with status tabs; signed-out visitors go to `/login?as=lender` | lender | `GET /lender/submissions` | W0 | `useful` |
 | `/lender/submissions/[id]` | Submission: borrower packet, documents, acknowledge, query, sanction, disburse, reject, ask for documents | lender | `GET /lender/submissions/:id` · `POST /lender/submissions/:id/events` · `POST /lender/submissions/:id/document-requests` · `GET /lender/submissions/:id/documents/:documentId/download-url` | W5 | `planned` |
 | `/lender/products` | Our products on FundenFlo and their live criteria | lender | `GET /lender/products` | W5 | `planned` |
 | `/lender/products/[id]` | Ask for a product change (goes to FundenFlo for approval) | lender | `POST /lender/products/:id/change-requests` | W5 | `planned` |
