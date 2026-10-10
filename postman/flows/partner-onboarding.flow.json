@@ -113,6 +113,18 @@
       "identity": "partner"
     },
     {
+      "request": "11 Partner Portal - Applications & Commissions/06 Get Commission Summary.json",
+      "identity": "partner"
+    },
+    {
+      "request": "11 Partner Portal - Applications & Commissions/07 List Commission Ledger.json",
+      "identity": "partner"
+    },
+    {
+      "request": "11 Partner Portal - Applications & Commissions/08 Get Commission Statement.json",
+      "identity": "partner"
+    },
+    {
       "request": "01 Auth/09 Request OTP With Referral Code.json",
       "identity": "referred",
       "variables": {

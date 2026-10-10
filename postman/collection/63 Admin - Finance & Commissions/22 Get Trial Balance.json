@@ -1,0 +1,64 @@
+{
+  "name": "Get Trial Balance",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/finance/ledger/trial-balance",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "finance",
+        "ledger",
+        "trial-balance"
+      ]
+    },
+    "description": "Debit, credit and balance of every ledger account (lender receivables, commission revenue, GST output, partner payables, commission expense, TDS payable, bank). The ledger is double-entry and append-only; journals that do not balance are refused by the database. Added for finance close. Staff context: finance acts; compliance reads. Money is in paise."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.test('debits equal credits', () => pm.expect(pm.response.json().totals.debitPaise).to.eql(pm.response.json().totals.creditPaise));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/finance/ledger/trial-balance",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "finance",
+            "ledger",
+            "trial-balance"
+          ]
+        },
+        "description": "Debit, credit and balance of every ledger account (lender receivables, commission revenue, GST output, partner payables, commission expense, TDS payable, bank). The ledger is double-entry and append-only; journals that do not balance are refused by the database. Added for finance close. Staff context: finance acts; compliance reads. Money is in paise."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"code\": \"bank\",\n      \"name\": \"Bank\",\n      \"type\": \"asset\",\n      \"organizationId\": null,\n      \"debitPaise\": 1180000,\n      \"creditPaise\": 475000,\n      \"balancePaise\": 705000\n    }\n  ],\n  \"totals\": {\n    \"debitPaise\": 3360000,\n    \"creditPaise\": 3360000\n  }\n}"
+    }
+  ]
+}

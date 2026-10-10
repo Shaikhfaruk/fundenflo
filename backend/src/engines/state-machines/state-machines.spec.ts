@@ -10,6 +10,7 @@ import { leadMachine } from './machines/lead.machine.js';
 import { agreementMachine, lenderMachine } from './machines/lender.machine.js';
 import { organizationMachine } from './machines/organization.machine.js';
 import { partnerVerificationMachine } from './machines/partner-verification.machine.js';
+import { payoutMachine, receivableMachine } from './machines/commission.machine.js';
 import { submissionMachine } from './machines/submission.machine.js';
 
 describe('defineMachine', () => {
@@ -174,5 +175,24 @@ describe('submission machine', () => {
     expect(submissionMachine.can('disbursed', 'withdraw')).toBe(false);
     expect(submissionMachine.can('pending_approval', 'reject')).toBe(false);
     expect(submissionMachine.next('query_raised', 'reject')).toBe('rejected');
+  });
+});
+
+describe('commission machines', () => {
+  it('collects or writes off a receivable and reconciles only collected ones', () => {
+    expect(receivableMachine.next('accrued', 'invoice')).toBe('invoiced');
+    expect(receivableMachine.next('invoiced', 'receive')).toBe('received');
+    expect(receivableMachine.next('accrued', 'receive')).toBe('received');
+    expect(receivableMachine.next('received', 'reconcile')).toBe('reconciled');
+    expect(receivableMachine.can('received', 'write_off')).toBe(false);
+    expect(receivableMachine.can('accrued', 'reconcile')).toBe(false);
+  });
+
+  it('pays a payout only after approval and reverses only unpaid ones', () => {
+    expect(payoutMachine.can('pending', 'pay')).toBe(false);
+    expect(payoutMachine.next('pending', 'approve')).toBe('approved');
+    expect(payoutMachine.next('approved', 'pay')).toBe('paid');
+    expect(payoutMachine.next('approved', 'reverse')).toBe('reversed');
+    expect(payoutMachine.can('paid', 'reverse')).toBe(false);
   });
 });

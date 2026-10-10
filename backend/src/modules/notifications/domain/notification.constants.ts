@@ -15,6 +15,7 @@ export const NotificationTemplateKey = {
   SubmissionReceived: 'submission.received',
   DocumentRequested: 'document.requested',
   SubmissionStatusChanged: 'submission.status_changed',
+  PayoutPaid: 'payout.paid',
 } as const;
 
 export type NotificationTemplateKey = (typeof NotificationTemplateKey)[keyof typeof NotificationTemplateKey];

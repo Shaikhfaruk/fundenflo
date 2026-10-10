@@ -46,6 +46,11 @@ export class PartnerKycService {
     return (await this.partners.findByOrganization(organizationId))?.kycStatus === PartnerKycStatus.verified;
   }
 
+  async panVerified(organizationId: string) {
+    const partner = await this.partners.findByOrganization(organizationId);
+    return partner ? ((await this.parties.identifier(partner.organization.partyId, IdentifierType.pan))?.verified ?? false) : false;
+  }
+
   async bankAccount(organizationId: string): Promise<BankAccountInput | null> {
     const partner = await this.partners.findByOrganization(organizationId);
     return partner?.bankAccountEnc ? this.cipher.decryptJson<BankAccountInput>(partner.bankAccountEnc, CipherPurpose.PartnerBankAccount) : null;

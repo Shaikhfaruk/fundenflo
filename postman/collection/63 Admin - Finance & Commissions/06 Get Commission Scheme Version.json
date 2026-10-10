@@ -1,0 +1,86 @@
+{
+  "name": "Get Commission Scheme Version",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/commission-schemes/:id/versions/:number",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "commission-schemes",
+        ":id",
+        "versions",
+        ":number"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{commissionSchemeId}}"
+        },
+        {
+          "key": "number",
+          "value": "{{commissionSchemeNumber}}"
+        }
+      ]
+    },
+    "description": "One version with content, compiled form and issues. Staff only: finance makes, another staff member approves in Change Requests, then it is published. `content`: `party` `lender` (FundenFlo's fee from the lender, based on each disbursal tranche, GST added) or `partner` (the firm's share, based on the `disbursal` or the `lender_fee`, TDS withheld: `tdsRateBps` with a verified PAN, else `tdsNoPanRateBps`), `basis` `percent` (`rateBps`), `flat` (`flatPaise`) or `slab` (`slabs[]` of `fromPaise` and `rateBps`; the highest slab reached applies to the whole amount), optional `minPaise` / `capPaise`, `scope` (`lenders`, `categories`, `partnerKinds`, `partnerLevels`; the most specific published scheme wins). A lender agreement's `commissionSchemeKey` picks the lender scheme directly. Rates are commercial decisions; nothing is seeded."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.collectionVariables.set('commissionSchemeVersionRow', String(pm.response.json().version));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/commission-schemes/:id/versions/:number",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "commission-schemes",
+            ":id",
+            "versions",
+            ":number"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{commissionSchemeId}}"
+            },
+            {
+              "key": "number",
+              "value": "{{commissionSchemeNumber}}"
+            }
+          ]
+        },
+        "description": "One version with content, compiled form and issues. Staff only: finance makes, another staff member approves in Change Requests, then it is published. `content`: `party` `lender` (FundenFlo's fee from the lender, based on each disbursal tranche, GST added) or `partner` (the firm's share, based on the `disbursal` or the `lender_fee`, TDS withheld: `tdsRateBps` with a verified PAN, else `tdsNoPanRateBps`), `basis` `percent` (`rateBps`), `flat` (`flatPaise`) or `slab` (`slabs[]` of `fromPaise` and `rateBps`; the highest slab reached applies to the whole amount), optional `minPaise` / `capPaise`, `scope` (`lenders`, `categories`, `partnerKinds`, `partnerLevels`; the most specific published scheme wins). A lender agreement's `commissionSchemeKey` picks the lender scheme directly. Rates are commercial decisions; nothing is seeded."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12500-1a2b-7c3d-8e4f-5061728394a5\",\n  \"documentId\": \"01a12500-1a2b-7c3d-8e4f-5061728394a5\",\n  \"documentKey\": \"lenderx.fee\",\n  \"number\": 1,\n  \"status\": \"draft\",\n  \"content\": {\n    \"party\": \"lender\",\n    \"scope\": {\n      \"lenders\": [\n        \"{{lenderKey}}\"\n      ]\n    },\n    \"basis\": \"percent\",\n    \"rateBps\": 100,\n    \"gstRateBps\": 1800\n  },\n  \"compiled\": null,\n  \"issues\": [],\n  \"notes\": null,\n  \"effectiveFrom\": null,\n  \"publishedAt\": null,\n  \"retiredAt\": null,\n  \"createdByUserId\": \"01a121c0-5e6f-7a71-9283-94a5b6c7d8e9\",\n  \"changeRequest\": null,\n  \"version\": 1,\n  \"createdAt\": \"2026-10-11T10:00:00.000Z\",\n  \"updatedAt\": \"2026-10-11T10:00:00.000Z\"\n}"
+    }
+  ]
+}

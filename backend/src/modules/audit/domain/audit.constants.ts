@@ -122,6 +122,13 @@ export const AuditAction = {
   ReferralAttributed: 'referral.attributed',
   AttributionDisputed: 'attribution.disputed',
   AttributionDisputeResolved: 'attribution.dispute_resolved',
+  CommissionUnscheduled: 'commission.unscheduled',
+  ReceivableAccrued: 'receivable.accrued',
+  ReceivableChanged: 'receivable.changed',
+  PayoutAccrued: 'payout.accrued',
+  PayoutChanged: 'payout.changed',
+  PayoutBankAccountViewed: 'payout.bank_account_viewed',
+  ReconciliationCompleted: 'reconciliation.completed',
 } as const;
 
 export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction];
@@ -175,6 +182,9 @@ export const AuditEntity = {
   ReferralCode: 'referral_code',
   LeadAttribution: 'lead_attribution',
   AttributionDispute: 'attribution_dispute',
+  Receivable: 'receivable',
+  PartnerPayout: 'partner_payout',
+  ReconciliationRun: 'reconciliation_run',
   LenderAgreement: 'lender_agreement',
   LenderContact: 'lender_contact',
 } as const;

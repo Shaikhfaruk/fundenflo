@@ -3,7 +3,7 @@ import type { AbilityBuilder } from '@casl/ability';
 import type { UserActor } from '../../../common/context/actor.js';
 import { OrganizationType, Role } from '../../../common/enums/db.enums.js';
 import { AppAction, type AppAbility, NonModelSubject } from './ability.types.js';
-import { COMPLIANCE_CONFIG_RESOURCES, CREDIT_CONFIG_RESOURCES, LENDER_CONFIG_RESOURCES, OPS_CONFIG_RESOURCES } from './access.constants.js';
+import { COMPLIANCE_CONFIG_RESOURCES, CREDIT_CONFIG_RESOURCES, FINANCE_CONFIG_RESOURCES, LENDER_CONFIG_RESOURCES, OPS_CONFIG_RESOURCES } from './access.constants.js';
 
 type Builder = AbilityBuilder<AppAbility>;
 
@@ -65,12 +65,18 @@ export const ROLE_GRANTS: Partial<Record<Role, Grant>> = {
     can([AppAction.Read, AppAction.Approve], 'ConfigDocument', { resource: { in: CREDIT_CONFIG_RESOURCES } });
     can(CONFIG_MAKER, 'ConfigDocument', { resource: { in: CREDIT_CONFIG_RESOURCES } });
   },
+  [Role.finance]: ({ can }) => {
+    can(AppAction.Manage, ['Receivable', 'PartnerPayout', 'ReconciliationRun']);
+    can(AppAction.Read, ['LedgerEntry', 'Lender', 'LenderAgreement', 'LenderSubmission', 'PartnerProfile', 'LoanApplication', 'Organization']);
+    can(AppAction.Read, 'ConfigDocument', { resource: { in: FINANCE_CONFIG_RESOURCES } });
+    can(CONFIG_MAKER, 'ConfigDocument', { resource: { in: FINANCE_CONFIG_RESOURCES } });
+  },
   [Role.compliance_officer]: ({ can }) => {
     can(AppAction.Read, ['User', 'Membership', 'Invitation', 'Organization', 'AuditEvent', 'AttributeDefinition', 'Party', 'Question', 'DocumentType', NonModelSubject.Catalog]);
     can(AppAction.Manage, 'ConsentPurpose');
     can(AppAction.Read, ['PartnerProfile', 'ApiClient', 'Lead', 'LeadAssignment', 'LeadSource', 'ImportBatch', 'Activity', 'FollowUp', 'OfflineConversion', 'BorrowerProfile', 'LoanApplication']);
     can([AppAction.Read, AppAction.Download], 'Document');
-    can(AppAction.Read, ['Lender', 'LenderAgreement', 'LenderContact', 'LenderSubmission', 'DocumentRequest', 'AttributionDispute']);
+    can(AppAction.Read, ['Lender', 'LenderAgreement', 'LenderContact', 'LenderSubmission', 'DocumentRequest', 'AttributionDispute', 'Receivable', 'PartnerPayout', 'ReconciliationRun', 'LedgerEntry']);
     can([AppAction.Read, AppAction.Approve], 'ConfigDocument');
     can(CONFIG_MAKER, 'ConfigDocument', { resource: { in: COMPLIANCE_CONFIG_RESOURCES } });
   },

@@ -42,6 +42,16 @@ export class LenderRepository {
     return rows.map((row) => row.id);
   }
 
+  async schemeKeyInForce(lenderId: string, now: Date) {
+    const today = startOfToday(now);
+    const agreement = await this.txHost.tx.lenderAgreement.findFirst({
+      where: { lenderId, status: LenderAgreementStatus.active, commissionSchemeKey: { not: null }, validFrom: { lte: today }, OR: [{ validTo: null }, { validTo: { gte: today } }] },
+      orderBy: { validFrom: 'desc' },
+      select: { commissionSchemeKey: true },
+    });
+    return agreement?.commissionSchemeKey ?? null;
+  }
+
   createAgreement(data: Prisma.LenderAgreementUncheckedCreateInput) {
     return this.txHost.tx.lenderAgreement.create({ data });
   }

@@ -1,0 +1,162 @@
+enum LedgerAccountType {
+  asset
+  liability
+  revenue
+  expense
+}
+
+enum JournalKind {
+  receivable_accrued
+  receivable_received
+  receivable_written_off
+  payout_accrued
+  payout_paid
+  payout_reversed
+}
+
+enum ReceivableStatus {
+  accrued
+  invoiced
+  received
+  reconciled
+  written_off
+}
+
+enum PayoutStatus {
+  pending
+  approved
+  paid
+  reversed
+}
+
+model LedgerAccount {
+  id             String            @id @default(uuid(7)) @db.Uuid
+  code           String            @unique
+  name           String
+  type           LedgerAccountType
+  organizationId String?           @map("organization_id") @db.Uuid
+  createdAt      DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  entries LedgerEntry[]
+
+  @@index([organizationId])
+  @@map("ledger_accounts")
+}
+
+model LedgerJournal {
+  id             String      @id @default(uuid(7)) @db.Uuid
+  kind           JournalKind
+  sourceType     String      @map("source_type")
+  sourceId       String      @map("source_id") @db.Uuid
+  memo           String?
+  postedByUserId String?     @map("posted_by_user_id") @db.Uuid
+  postedAt       DateTime    @default(now()) @map("posted_at") @db.Timestamptz(3)
+
+  entries LedgerEntry[]
+
+  @@index([sourceType, sourceId])
+  @@map("ledger_journals")
+}
+
+model LedgerEntry {
+  id          String   @id @default(uuid(7)) @db.Uuid
+  journalId   String   @map("journal_id") @db.Uuid
+  accountId   String   @map("account_id") @db.Uuid
+  debitPaise  BigInt   @default(0) @map("debit_paise")
+  creditPaise BigInt   @default(0) @map("credit_paise")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  journal LedgerJournal @relation(fields: [journalId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  account LedgerAccount @relation(fields: [accountId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([accountId, createdAt])
+  @@index([journalId])
+  @@map("ledger_entries")
+}
+
+model Receivable {
+  id                   String           @id @default(uuid(7)) @db.Uuid
+  ref                  String           @unique
+  sourceEventId        String           @unique @map("source_event_id") @db.Uuid
+  lenderId             String           @map("lender_id") @db.Uuid
+  lenderOrganizationId String           @map("lender_organization_id") @db.Uuid
+  submissionId         String           @map("submission_id") @db.Uuid
+  applicationId        String           @map("application_id") @db.Uuid
+  schemeDocumentId     String           @map("scheme_document_id") @db.Uuid
+  schemeVersionId      String           @map("scheme_version_id") @db.Uuid
+  basePaise            BigInt           @map("base_paise")
+  feePaise             BigInt           @map("fee_paise")
+  gstRateBps           Int              @map("gst_rate_bps")
+  gstPaise             BigInt           @map("gst_paise")
+  totalPaise           BigInt           @map("total_paise")
+  receivedPaise        BigInt           @default(0) @map("received_paise")
+  status               ReceivableStatus @default(accrued)
+  invoiceNumber        String?          @map("invoice_number")
+  invoicedAt           DateTime?        @map("invoiced_at") @db.Timestamptz(3)
+  receivedAt           DateTime?        @map("received_at") @db.Timestamptz(3)
+  utr                  String?
+  reconciledAt         DateTime?        @map("reconciled_at") @db.Timestamptz(3)
+  reconciliationRunId  String?          @map("reconciliation_run_id") @db.Uuid
+  writtenOffAt         DateTime?        @map("written_off_at") @db.Timestamptz(3)
+  writeOffReason       String?          @map("write_off_reason")
+  version              Int              @default(1)
+  createdAt            DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt            DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  payouts PartnerPayout[]
+
+  @@index([status, createdAt])
+  @@index([lenderOrganizationId, status])
+  @@index([submissionId])
+  @@map("receivables")
+}
+
+model PartnerPayout {
+  id                    String       @id @default(uuid(7)) @db.Uuid
+  ref                   String       @unique
+  receivableId          String       @unique @map("receivable_id") @db.Uuid
+  partnerOrganizationId String       @map("partner_organization_id") @db.Uuid
+  submissionId          String       @map("submission_id") @db.Uuid
+  applicationId         String       @map("application_id") @db.Uuid
+  attributionId         String?      @map("attribution_id") @db.Uuid
+  schemeDocumentId      String       @map("scheme_document_id") @db.Uuid
+  schemeVersionId       String       @map("scheme_version_id") @db.Uuid
+  basePaise             BigInt       @map("base_paise")
+  grossPaise            BigInt       @map("gross_paise")
+  tdsRateBps            Int          @map("tds_rate_bps")
+  tdsPaise              BigInt       @map("tds_paise")
+  netPaise              BigInt       @map("net_paise")
+  status                PayoutStatus @default(pending)
+  approvedByUserId      String?      @map("approved_by_user_id") @db.Uuid
+  approvedAt            DateTime?    @map("approved_at") @db.Timestamptz(3)
+  paidByUserId          String?      @map("paid_by_user_id") @db.Uuid
+  paidAt                DateTime?    @map("paid_at") @db.Timestamptz(3)
+  utr                   String?
+  reversedAt            DateTime?    @map("reversed_at") @db.Timestamptz(3)
+  reverseReason         String?      @map("reverse_reason")
+  version               Int          @default(1)
+  createdAt             DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt             DateTime     @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  receivable Receivable @relation(fields: [receivableId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([partnerOrganizationId, status])
+  @@index([status, createdAt])
+  @@map("partner_payouts")
+}
+
+model ReconciliationRun {
+  id                   String   @id @default(uuid(7)) @db.Uuid
+  lenderOrganizationId String?  @map("lender_organization_id") @db.Uuid
+  source               String
+  lineCount            Int      @map("line_count")
+  matchedCount         Int      @map("matched_count")
+  totalPaise           BigInt   @map("total_paise")
+  matchedPaise         BigInt   @map("matched_paise")
+  unmatched            Json
+  createdByUserId      String   @map("created_by_user_id") @db.Uuid
+  createdAt            DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  @@index([createdAt])
+  @@map("reconciliation_runs")
+}

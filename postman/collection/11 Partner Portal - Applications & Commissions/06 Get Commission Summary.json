@@ -1,0 +1,61 @@
+{
+  "name": "Get Commission Summary",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/partner/commissions/summary",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "partner",
+        "commissions",
+        "summary"
+      ]
+    },
+    "description": "What FundenFlo owes the firm now and payouts by status (count, gross, TDS, net). Partner context; only the signed-in firm's payouts."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/partner/commissions/summary",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "commissions",
+            "summary"
+          ]
+        },
+        "description": "What FundenFlo owes the firm now and payouts by status (count, gross, TDS, net). Partner context; only the signed-in firm's payouts."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"payablePaise\": 500000,\n  \"byStatus\": {\n    \"pending\": {\n      \"count\": 1,\n      \"grossPaise\": 500000,\n      \"tdsPaise\": 100000,\n      \"netPaise\": 400000\n    },\n    \"approved\": {\n      \"count\": 0,\n      \"grossPaise\": 0,\n      \"tdsPaise\": 0,\n      \"netPaise\": 0\n    },\n    \"paid\": {\n      \"count\": 0,\n      \"grossPaise\": 0,\n      \"tdsPaise\": 0,\n      \"netPaise\": 0\n    },\n    \"reversed\": {\n      \"count\": 0,\n      \"grossPaise\": 0,\n      \"tdsPaise\": 0,\n      \"netPaise\": 0\n    }\n  }\n}"
+    }
+  ]
+}

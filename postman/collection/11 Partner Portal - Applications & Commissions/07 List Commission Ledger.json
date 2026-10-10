@@ -1,0 +1,61 @@
+{
+  "name": "List Commission Ledger",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/partner/commissions/ledger",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "partner",
+        "commissions",
+        "ledger"
+      ]
+    },
+    "description": "The firm's payable account, newest first: accruals credit it, payments and reversals debit it. Partner context; only the signed-in firm's payouts."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/partner/commissions/ledger",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "commissions",
+            "ledger"
+          ]
+        },
+        "description": "The firm's payable account, newest first: accruals credit it, payments and reversals debit it. Partner context; only the signed-in firm's payouts."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a12500-1a2b-7c3d-8e4f-5061728394a5\",\n      \"kind\": \"payout_accrued\",\n      \"sourceType\": \"partner_payout\",\n      \"sourceId\": \"01a12500-3c4d-7e5f-8061-728394a5b6c7\",\n      \"memo\": \"PO-26-000004 for RC-26-000004\",\n      \"debitPaise\": 0,\n      \"creditPaise\": 500000,\n      \"postedAt\": \"2026-10-11T10:00:00.000Z\"\n    }\n  ],\n  \"nextCursor\": null\n}"
+    }
+  ]
+}

@@ -1,0 +1,154 @@
+{
+  "name": "Create Commission Scheme Version",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/commission-schemes/:id/versions",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "commission-schemes",
+        ":id",
+        "versions"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{commissionSchemeId}}"
+        }
+      ]
+    },
+    "description": "Opens the next draft. Staff only: finance makes, another staff member approves in Change Requests, then it is published. `content`: `party` `lender` (FundenFlo's fee from the lender, based on each disbursal tranche, GST added) or `partner` (the firm's share, based on the `disbursal` or the `lender_fee`, TDS withheld: `tdsRateBps` with a verified PAN, else `tdsNoPanRateBps`), `basis` `percent` (`rateBps`), `flat` (`flatPaise`) or `slab` (`slabs[]` of `fromPaise` and `rateBps`; the highest slab reached applies to the whole amount), optional `minPaise` / `capPaise`, `scope` (`lenders`, `categories`, `partnerKinds`, `partnerLevels`; the most specific published scheme wins). A lender agreement's `commissionSchemeKey` picks the lender scheme directly. Rates are commercial decisions; nothing is seeded.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"notes\": \"Revised rate\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "pm.collectionVariables.set('commissionSchemeNumber', String(pm.response.json().number));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/commission-schemes/:id/versions",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "commission-schemes",
+            ":id",
+            "versions"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{commissionSchemeId}}"
+            }
+          ]
+        },
+        "description": "Opens the next draft. Staff only: finance makes, another staff member approves in Change Requests, then it is published. `content`: `party` `lender` (FundenFlo's fee from the lender, based on each disbursal tranche, GST added) or `partner` (the firm's share, based on the `disbursal` or the `lender_fee`, TDS withheld: `tdsRateBps` with a verified PAN, else `tdsNoPanRateBps`), `basis` `percent` (`rateBps`), `flat` (`flatPaise`) or `slab` (`slabs[]` of `fromPaise` and `rateBps`; the highest slab reached applies to the whole amount), optional `minPaise` / `capPaise`, `scope` (`lenders`, `categories`, `partnerKinds`, `partnerLevels`; the most specific published scheme wins). A lender agreement's `commissionSchemeKey` picks the lender scheme directly. Rates are commercial decisions; nothing is seeded.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"notes\": \"Revised rate\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12500-1a2b-7c3d-8e4f-5061728394a5\",\n  \"documentId\": \"01a12500-1a2b-7c3d-8e4f-5061728394a5\",\n  \"documentKey\": \"lenderx.fee\",\n  \"number\": 2,\n  \"status\": \"draft\",\n  \"content\": {\n    \"party\": \"lender\",\n    \"scope\": {\n      \"lenders\": [\n        \"{{lenderKey}}\"\n      ]\n    },\n    \"basis\": \"percent\",\n    \"rateBps\": 100,\n    \"gstRateBps\": 1800\n  },\n  \"compiled\": null,\n  \"issues\": [],\n  \"notes\": null,\n  \"effectiveFrom\": null,\n  \"publishedAt\": null,\n  \"retiredAt\": null,\n  \"createdByUserId\": \"01a121c0-5e6f-7a71-9283-94a5b6c7d8e9\",\n  \"changeRequest\": null,\n  \"version\": 1,\n  \"createdAt\": \"2026-10-11T10:00:00.000Z\",\n  \"updatedAt\": \"2026-10-11T10:00:00.000Z\"\n}"
+    },
+    {
+      "name": "409 OPEN_VERSION_EXISTS",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/commission-schemes/:id/versions",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "commission-schemes",
+            ":id",
+            "versions"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{commissionSchemeId}}"
+            }
+          ]
+        },
+        "description": "Opens the next draft. Staff only: finance makes, another staff member approves in Change Requests, then it is published. `content`: `party` `lender` (FundenFlo's fee from the lender, based on each disbursal tranche, GST added) or `partner` (the firm's share, based on the `disbursal` or the `lender_fee`, TDS withheld: `tdsRateBps` with a verified PAN, else `tdsNoPanRateBps`), `basis` `percent` (`rateBps`), `flat` (`flatPaise`) or `slab` (`slabs[]` of `fromPaise` and `rateBps`; the highest slab reached applies to the whole amount), optional `minPaise` / `capPaise`, `scope` (`lenders`, `categories`, `partnerKinds`, `partnerLevels`; the most specific published scheme wins). A lender agreement's `commissionSchemeKey` picks the lender scheme directly. Rates are commercial decisions; nothing is seeded.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"notes\": \"Revised rate\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"OPEN_VERSION_EXISTS\",\n  \"message\": \"A version is already in progress. Publish or retire it first.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

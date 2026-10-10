@@ -105,6 +105,11 @@ export class PartnerService {
     });
   }
 
+  async summaryOf(organizationId: string) {
+    const partner = await this.partners.findByOrganization(organizationId);
+    return partner ? { organizationId, name: partner.organization.name, kind: partner.kind, level: partner.level } : null;
+  }
+
   async profile(actor: UserActor) {
     return toPartnerView(await this.requireByOrganization(this.organizationOf(actor)));
   }

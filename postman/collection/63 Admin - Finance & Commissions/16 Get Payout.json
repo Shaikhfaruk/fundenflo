@@ -1,0 +1,111 @@
+{
+  "name": "Get Payout",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/finance/payouts/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "finance",
+        "payouts",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{payoutId}}"
+        }
+      ]
+    },
+    "description": "One payout with the firm's bank account for paying it (decrypted; every view is audited). Staff context: finance acts; compliance reads. Money is in paise."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/finance/payouts/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "finance",
+            "payouts",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{payoutId}}"
+            }
+          ]
+        },
+        "description": "One payout with the firm's bank account for paying it (decrypted; every view is audited). Staff context: finance acts; compliance reads. Money is in paise."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12500-3c4d-7e5f-8061-728394a5b6c7\",\n  \"ref\": \"PO-26-000004\",\n  \"status\": \"approved\",\n  \"partnerOrganizationId\": \"01a12190-1a2b-7c3d-8e4f-5061728394a5\",\n  \"receivable\": {\n    \"id\": \"01a12500-2b3c-7d4e-9f50-61728394a5b6\",\n    \"ref\": \"RC-26-000004\",\n    \"status\": \"reconciled\"\n  },\n  \"submissionId\": \"01a12300-1a2b-7c3d-8e4f-5061728394a5\",\n  \"applicationId\": \"01a12260-2b3c-7d4e-9f50-61728394a5b6\",\n  \"scheme\": {\n    \"documentId\": \"01a12500-1a2b-7c3d-8e4f-5061728394a5\",\n    \"versionId\": \"01a12500-1a2b-7c3d-8e4f-5061728394a5\"\n  },\n  \"basePaise\": 1000000,\n  \"grossPaise\": 500000,\n  \"tdsRateBps\": 500,\n  \"tdsPaise\": 25000,\n  \"netPaise\": 475000,\n  \"approvedAt\": \"2026-10-11T10:00:00.000Z\",\n  \"paidAt\": null,\n  \"utr\": null,\n  \"reversedAt\": null,\n  \"reverseReason\": null,\n  \"attributionId\": null,\n  \"approvedByUserId\": \"01a121c0-5e6f-7a71-9283-94a5b6c7d8e9\",\n  \"paidByUserId\": null,\n  \"version\": 2,\n  \"createdAt\": \"2026-10-11T10:00:00.000Z\",\n  \"bankAccount\": {\n    \"accountNumber\": \"502000987654321\",\n    \"ifsc\": \"ICIC0004321\",\n    \"holderName\": \"Rao Tax Consultants\"\n  }\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/finance/payouts/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "finance",
+            "payouts",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{payoutId}}"
+            }
+          ]
+        },
+        "description": "One payout with the firm's bank account for paying it (decrypted; every view is audited). Staff context: finance acts; compliance reads. Money is in paise."
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

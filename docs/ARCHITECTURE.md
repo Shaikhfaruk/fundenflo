@@ -162,7 +162,7 @@ flowchart TB
   LeadsGroup --> Ports
   Platform --> Ports
   classDef built fill:#d8f3dc,stroke:#2d6a4f,color:#081c15
-  class auth,access,parties,catalog,attributes,questionnaires,consents,partners,leads,imports,activities,sla,realtime,sync,documents,borrowers,applications,submissions,compat,lenders,assessments,matching,notifications,audit,configPublishing,conditions,facts,questionnaire,partyMatching,stateMachines,consentFold,assignment,docChecklist,lendingEngine,scoring,improvement,matchingEngine,database,queue,storage,crypto,cache,avP,kycP built
+  class auth,access,parties,catalog,attributes,questionnaires,consents,partners,leads,imports,activities,sla,realtime,sync,documents,borrowers,applications,submissions,compat,commissions,lenders,assessments,matching,notifications,audit,configPublishing,conditions,facts,questionnaire,partyMatching,stateMachines,consentFold,assignment,docChecklist,lendingEngine,scoring,improvement,matchingEngine,commissionCalc,database,queue,storage,crypto,cache,avP,kycP built
 ```
 
 Green = built (M0 – M6a). Rules: engines import nothing from Nest, modules or infrastructure. Modules talk only through exported façade services or domain events. Integrations are reached only through ports.
@@ -509,6 +509,29 @@ stateDiagram-v2
   withdrawn --> [*]
 ```
 
+Commission (built in M7b as `receivableMachine` and `payoutMachine`; every money movement is a balanced double-entry journal; a payout can only be approved after its receivable is collected, with the firm's KYC verified and the attribution undisputed, and must be paid by someone other than the approver):
+
+```mermaid
+stateDiagram-v2
+  direction LR
+  state Receivable {
+    [*] --> accrued: submission.disbursed (receivable ← revenue + GST)
+    accrued --> invoiced: invoice
+    accrued --> received: receive in full (bank ← receivable)
+    invoiced --> received: receive in full
+    received --> reconciled: reconcile or statement run
+    accrued --> written_off: write off (reverses the payout)
+    invoiced --> written_off: write off
+  }
+  state Payout {
+    [*] --> pending: accrued with the receivable (expense ← payable)
+    pending --> approved: approve (lender paid, KYC, attribution)
+    approved --> paid: mark paid by a second person (payable ← bank + TDS)
+    pending --> reversed: reverse
+    approved --> reversed: reverse
+  }
+```
+
 ---
 
 ## 9. Events, queues, workers & real-time
@@ -544,14 +567,15 @@ flowchart LR
   Q -->|submission.approved| SUBQ[submissions.deliver: consent re-check, encrypted packet, document lock, send]
   Q -->|submission.status.changed, document.requested| SNOTIFY[submissions.notify: lender users, borrower and filing partner] --> NOTIF
   Q -->|document.scanned, application.status.changed| SSYNC[submissions.sync: fulfil document requests, answer query, withdraw on closed case]
-  Q --> COMQ[commissions.accrue]
+  Q -->|submission.disbursed| COMQ[commissions.accrue: receivable and partner payout, double-entry]
+  Q -->|payout.paid| CNOTIFY[commissions.notify] --> NOTIF
   RTP -->|redis emitter| GW[Socket.IO gateway on the API + Redis adapter]
   GW --> ROOMS((rooms: user / membership / org))
   IMPAPI[Admin import validate / commit / undo] -->|direct enqueue| IMPQ[imports.process]
   SCHED -->|15 min| REP[reports.refresh]
   API[API request: OTP, invitation, consent link] -->|direct enqueue| NOTIF
   classDef built fill:#d8f3dc,stroke:#2d6a4f,color:#081c15
-  class UC,OB,RELAY,SCHED,MAINT,Q,REVOKE,CSYNC,DROPQ,NOTIF,API,IMPAPI,IMPQ,ROUTEQ,OPSR,SLAQ,LNOTIFY,RTP,GW,ROOMS,SCANQ,APPREF,ANALYSE,SUBQ2,DOCQ,MQ2,SUBQ,SNOTIFY,SSYNC,REFQ built
+  class UC,OB,RELAY,SCHED,MAINT,Q,REVOKE,CSYNC,DROPQ,NOTIF,API,IMPAPI,IMPQ,ROUTEQ,OPSR,SLAQ,LNOTIFY,RTP,GW,ROOMS,SCANQ,APPREF,ANALYSE,SUBQ2,DOCQ,MQ2,SUBQ,SNOTIFY,SSYNC,REFQ,COMQ,CNOTIFY built
 ```
 
 Queue and job details (producers, consumers, triggers) are in [`inventory/worker-queues-jobs.md`](inventory/worker-queues-jobs.md).

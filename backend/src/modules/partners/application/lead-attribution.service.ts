@@ -22,6 +22,10 @@ export class LeadAttributionService {
     return new Date(now.getTime() + this.config.PARTNER_REFERRAL_PROTECTION_DAYS * DAY_MS);
   }
 
+  byId(id: string) {
+    return this.attributions.findById(id);
+  }
+
   forLeads(leadIds: string[]) {
     return leadIds.length === 0 ? Promise.resolve([]) : this.attributions.findByLeads(leadIds);
   }

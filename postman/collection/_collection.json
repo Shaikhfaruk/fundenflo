@@ -686,6 +686,34 @@
     {
       "key": "disputeId",
       "value": ""
+    },
+    {
+      "key": "commissionSchemeId",
+      "value": ""
+    },
+    {
+      "key": "commissionSchemeDocVersion",
+      "value": ""
+    },
+    {
+      "key": "commissionSchemeNumber",
+      "value": ""
+    },
+    {
+      "key": "commissionSchemeVersionRow",
+      "value": ""
+    },
+    {
+      "key": "receivableId",
+      "value": ""
+    },
+    {
+      "key": "payoutId",
+      "value": ""
+    },
+    {
+      "key": "statementMonth",
+      "value": ""
     }
   ]
 }

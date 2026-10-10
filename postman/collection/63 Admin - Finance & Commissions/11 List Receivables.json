@@ -1,0 +1,74 @@
+{
+  "name": "List Receivables",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/finance/receivables?submissionId={{submissionId}}",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "finance",
+        "receivables"
+      ],
+      "query": [
+        {
+          "key": "submissionId",
+          "value": "{{submissionId}}"
+        }
+      ]
+    },
+    "description": "Commission receivables from lenders, one per disbursal tranche (accrued by the `commissions.accrue` worker on `submission.disbursed` with the scheme version pinned), filterable by `status`, `lenderId`, `submissionId`. Staff context: finance acts; compliance reads. Money is in paise."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "const first = pm.response.json().items[0]; if (first) pm.collectionVariables.set('receivableId', first.id);"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/finance/receivables?submissionId={{submissionId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "finance",
+            "receivables"
+          ],
+          "query": [
+            {
+              "key": "submissionId",
+              "value": "{{submissionId}}"
+            }
+          ]
+        },
+        "description": "Commission receivables from lenders, one per disbursal tranche (accrued by the `commissions.accrue` worker on `submission.disbursed` with the scheme version pinned), filterable by `status`, `lenderId`, `submissionId`. Staff context: finance acts; compliance reads. Money is in paise."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a12500-2b3c-7d4e-9f50-61728394a5b6\",\n      \"ref\": \"RC-26-000004\",\n      \"status\": \"accrued\",\n      \"lenderId\": \"01a122a0-1a2b-7c3d-8e4f-5061728394a5\",\n      \"lenderOrganizationId\": \"01a122a0-2b3c-7d4e-9f50-61728394a5b6\",\n      \"submissionId\": \"01a12300-1a2b-7c3d-8e4f-5061728394a5\",\n      \"applicationId\": \"01a12260-2b3c-7d4e-9f50-61728394a5b6\",\n      \"scheme\": {\n        \"documentId\": \"01a12500-1a2b-7c3d-8e4f-5061728394a5\",\n        \"versionId\": \"01a12500-1a2b-7c3d-8e4f-5061728394a5\"\n      },\n      \"basePaise\": 100000000,\n      \"feePaise\": 1000000,\n      \"gstRateBps\": 1800,\n      \"gstPaise\": 180000,\n      \"totalPaise\": 1180000,\n      \"receivedPaise\": 0,\n      \"outstandingPaise\": 1180000,\n      \"invoiceNumber\": null,\n      \"invoicedAt\": null,\n      \"receivedAt\": null,\n      \"utr\": null,\n      \"reconciledAt\": null,\n      \"reconciliationRunId\": null,\n      \"writtenOffAt\": null,\n      \"writeOffReason\": null,\n      \"payout\": {\n        \"id\": \"01a12500-3c4d-7e5f-8061-728394a5b6c7\",\n        \"ref\": \"PO-26-000004\",\n        \"status\": \"pending\",\n        \"partnerOrganizationId\": \"01a12190-1a2b-7c3d-8e4f-5061728394a5\",\n        \"grossPaise\": 500000,\n        \"netPaise\": 400000\n      },\n      \"version\": 1,\n      \"createdAt\": \"2026-10-11T10:00:00.000Z\"\n    }\n  ],\n  \"nextCursor\": null\n}"
+    }
+  ]
+}

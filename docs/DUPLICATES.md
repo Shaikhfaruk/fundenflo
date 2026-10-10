@@ -27,6 +27,7 @@ These are the places where a second copy is most tempting. Use the one listed.
 | Lender decisions (acknowledge, query, sanction, disbursal, rejection) | `SubmissionService.act` through `submissionMachine` (lender portal and ops share it) | Status writes on `lender_submissions` from other modules |
 | Anything the current app needs under `/v0` | `compat` mapping onto the v1 façades (`ApplicationService`, `AnalysisService`, `MatchingService`, `SubmissionService`, …) | Journey, consent or scoring rules inside `compat`, or a v1 service changed to fit a v0 shape |
 | Which firm a borrower belongs to | `lead_attributions` through `LeadAttributionService` (referral, referral code, transfers by `AttributionDisputeService`) | Partner columns on leads, users or applications for commission decisions |
+| Money owed or paid (lender fees, partner commissions, TDS, GST) | `LedgerService.post` balanced journals from `commissions`, amounts from `engines/commissions` | Balances stored as columns, or commission maths outside the engine |
 | Status after a lead converts | Derived from application events | A second status that is edited by hand |
 | Draft → review → publish for any config | `config-publishing` + `createVersionedConfigController` | Per-resource version tables or approval flows |
 | Eligibility, visibility, routing and trigger conditions | `engines/conditions` | Inline `if` trees or a second rule format |

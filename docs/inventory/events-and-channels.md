@@ -51,12 +51,14 @@
 | `match.completed` | matching (`MatchingService.persist`) | none yet (submissions use the latest run) | — | M6 | `useful` | spec `matching` |
 | `submission.requested` · `submission.approved` | submissions (`SubmissionService.request` / `approve`) | `submissions.deliver` (approved); `realtime.publish` (`submission.changed`) | staff room, requester's user room, filing partner org room | M6 | `useful` | spec `submissions`; flow `submissions` |
 | `submission.status.changed` | submissions (`SubmissionService.move`; payload from, to, lender organization, `lenderVisible` once sent) | `submissions.notify` (lender users on `sent_to_lender`); `notifications.subscriptions`; `realtime.publish` | staff, requester, partner org and, once sent, lender org rooms | M6 | `useful` | spec `submissions`; flow `submissions` (lender SMS sent) |
-| `submission.disbursed` | submissions (every disbursal tranche; amount, total, sanction, lead, partner org) | `realtime.publish`; M7 `commissions.accrue` | same as above | M6 | `useful` | spec `submissions` |
+| `submission.disbursed` | submissions (every disbursal tranche; amount, total, sanction, lead, partner org) | `realtime.publish`; `commissions.accrue`; `notifications.subscriptions` | same as above | M6 | `useful` | spec `submissions` |
 | `document.requested` · `document.request_fulfilled` | submissions (`DocumentRequestService.create` / fulfilment) | `submissions.notify` (borrower and filing partner, push with SMS fallback) | — | M6 | `useful` | spec `submissions`; flow `submissions` |
 | `case.assigned` | applications (`ApplicationService.assign`) | none yet (ops console reads the case) | — | M6 | `useful` | spec `submissions` |
 | `partner.kyc_updated` · `referral_code.issued` | partners (`PartnerKycService.update`, `ReferralCodeService`) | none yet (M7b payouts read the KYC status) | — | M7 | `useful` | spec `partner-referrals-kyc` |
 | `attribution.disputed` · `attribution.dispute_resolved` | partners (`AttributionDisputeService`) | none yet (ops console reads the queue; M7b holds accrual for disputed attributions) | — | M7 | `useful` | spec `partner-referrals-kyc` |
-| `receivable.received` · `payout.paid` · `payout.reversed` | commissions | notifications, reports | partner org room | M7 | `planned` | §8.5 |
+| `receivable.accrued` · `receivable.received` · `receivable.written_off` | commissions (`CommissionService`, `ReceivableService`) | none yet (reports) | — | M7 | `useful` | spec `commissions` |
+| `payout.accrued` · `payout.approved` · `payout.paid` · `payout.reversed` | commissions (`CommissionService`, `PayoutService`) | `commissions.notify` (paid) | — | M7 | `useful` | spec `commissions` |
+| `reconciliation.completed` | commissions (`ReconciliationService.run`) | none yet | — | M7 | `useful` | spec `commissions` |
 | `risk.signal.raised` | risk, documents | ops queue (assignment) | ops room | M8 | `planned` | §13 |
 
 ## Real-time channels (WebSocket namespace `/v1/realtime`)
@@ -97,4 +99,4 @@ Room joins are authorised on connect, using the same CASL abilities as HTTP.
 | `submission.received` | email, push, SMS (`SMS_DLT_TEMPLATE_SUBMISSION_RECEIVED`) | lender admins and credit officers of the lender organization | M6 | `useful` |
 | `document.requested` | push with SMS fallback (`SMS_DLT_TEMPLATE_DOCUMENT_REQUESTED`) | applicant and the partner user who filed the case | M6 | `useful` |
 | WhatsApp for `application.status_changed` · `document.requested` | WhatsApp (opt-in) | borrower, partner | M6 | `planned` (needs a provider) |
-| `payout.paid` | email, SMS | partner owner | M7 | `planned` |
+| `payout.paid` | email, SMS (`SMS_DLT_TEMPLATE_PAYOUT_PAID`) | partner owners of the firm | M7 | `useful` |

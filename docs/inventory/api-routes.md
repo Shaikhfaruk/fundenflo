@@ -29,7 +29,7 @@ Approval and rejection are not per resource: they go through the shared checker 
 | `lender-products` (plus `/versions/:number/simulate`) | lenders | M4 | `useful` |
 | `scoring-models` | assessments | M5 | `useful` |
 | `improvement-rules` | assessments | M5 | `useful` |
-| `commission-schemes` | commissions | M7 | `planned` |
+| `commission-schemes` | commissions | M7 | `useful` |
 
 ## 00 Health
 
@@ -290,9 +290,9 @@ Planned:
 | `POST` | `/partner/applications/:id/borrower-consent/send` | applications (`ApplicationPartyService.sendBorrowerConsent` → `ConsentOtpService`) | partner | M3 | `useful` |
 | `POST` | `/partner/applications/:id/borrower-consent/verify` | applications (`ApplicationPartyService.confirmBorrowerConsent`) | partner | M3 | `useful` |
 | `GET` | `/partner/referral-codes` | partners (`ReferralCodeService.forActor`: firm code and the member's code, issued on first request, verified active firms only) | partner | M7 | `useful` |
-| `GET` | `/partner/commissions/summary` | commissions | partner | M7 | `planned` |
-| `GET` | `/partner/commissions/ledger` | commissions | partner | M7 | `planned` |
-| `GET` | `/partner/commissions/statement` | commissions | partner_owner | M7 | `planned` |
+| `GET` | `/partner/commissions/summary` | commissions (`partner-commissions.controller.ts` → `PartnerCommissionService.summary`) | partner | M7 | `useful` |
+| `GET` | `/partner/commissions/ledger` | commissions (`PartnerCommissionService.ledgerEntries`: the firm payable account) | partner | M7 | `useful` |
+| `GET` | `/partner/commissions/statement` | commissions (`PartnerCommissionService.statement`: month in India time, opening and closing payable, payouts paid) | partner_owner | M7 | `useful` |
 
 ## 20 Lender Portal
 
@@ -429,6 +429,18 @@ Built in M1.4 (Postman `49 Admin - Consents/`). Controllers: `backend/src/module
 | `POST` | `/admin/consent-templates/:id/versions/:number/publish` | consents | staff | M1 | `useful` |
 | `POST` | `/admin/consent-templates/:id/versions/:number/retire` | consents | staff | M1 | `useful` |
 
+Built in M7b (Postman `63 Admin - Finance & Commissions/`). Versioned config controller for `commission-schemes` (CASL `ConfigDocument` with `resource: commission_scheme`; finance makes, another staff member approves).
+
+| Method | Path | Module | Context | Milestone | Status |
+|---|---|---|---|---|---|
+| `GET` `POST` | `/admin/commission-schemes` | commissions | staff | M7 | `useful` |
+| `GET` `PATCH` | `/admin/commission-schemes/:id` | commissions | staff | M7 | `useful` |
+| `POST` | `/admin/commission-schemes/:id/versions` | commissions | staff | M7 | `useful` |
+| `GET` `PATCH` | `/admin/commission-schemes/:id/versions/:number` | commissions | staff | M7 | `useful` |
+| `POST` | `/admin/commission-schemes/:id/versions/:number/submit` | commissions | staff | M7 | `useful` |
+| `POST` | `/admin/commission-schemes/:id/versions/:number/publish` | commissions | staff | M7 | `useful` |
+| `POST` | `/admin/commission-schemes/:id/versions/:number/retire` | commissions | staff | M7 | `useful` |
+
 Built in M5 (Postman `59 Admin - Scoring & Improvement/`). Versioned config controllers for `scoring-models` and `improvement-rules` (CASL `ConfigDocument`; credit analysts make).
 
 | Method | Path | Module | Context | Milestone | Status |
@@ -520,12 +532,15 @@ Planned:
 |---|---|---|---|---|---|
 | `GET` `POST` | `/admin/notification-templates` | notifications | staff | M1 | `planned` |
 | `PATCH` | `/admin/notification-templates/:id` | notifications | staff | M1 | `planned` |
-| `GET` | `/admin/finance/receivables` | commissions | staff | M7 | `planned` |
-| `PATCH` | `/admin/finance/receivables/:id` | commissions | staff | M7 | `planned` |
-| `GET` | `/admin/finance/payouts` | commissions | staff | M7 | `planned` |
-| `POST` | `/admin/finance/payouts/:id/approve` | commissions | staff | M7 | `planned` |
-| `POST` | `/admin/finance/payouts/:id/mark-paid` | commissions | staff | M7 | `planned` |
-| `GET` `POST` | `/admin/finance/reconciliation` | commissions | staff | M7 | `planned` |
+| `GET` | `/admin/finance/receivables` | commissions (`admin-finance.controller.ts` → `ReceivableService.list`) | staff | M7 | `useful` |
+| `GET` `PATCH` | `/admin/finance/receivables/:id` | commissions (`ReceivableService.get` / `act`: invoice, receive (partial allowed), reconcile, write off with payout reversal; GET added for the finance view) | staff | M7 | `useful` |
+| `GET` | `/admin/finance/payouts` | commissions (`PayoutService.list`) | staff | M7 | `useful` |
+| `GET` | `/admin/finance/payouts/:id` | commissions (`PayoutService.detail` with the decrypted bank account, audited; added so finance can pay) | staff | M7 | `useful` |
+| `POST` | `/admin/finance/payouts/:id/approve` | commissions (`PayoutService.approve`: lender paid, firm KYC verified, attribution not disputed, TDS recomputed) | staff | M7 | `useful` |
+| `POST` | `/admin/finance/payouts/:id/mark-paid` | commissions (`PayoutService.markPaid`: UTR, a second person, ledger payable → bank and TDS) | staff | M7 | `useful` |
+| `POST` | `/admin/finance/payouts/:id/reverse` | commissions (`PayoutService.reverse` for unpaid payouts; added for clawbacks) | staff | M7 | `useful` |
+| `GET` `POST` | `/admin/finance/reconciliation` | commissions (`ReconciliationService.list` / `run`: statement lines matched by receivable ref or invoice number) | staff | M7 | `useful` |
+| `GET` | `/admin/finance/ledger/trial-balance` | commissions (`LedgerService.trialBalance`; added for finance close) | staff | M7 | `useful` |
 
 ## 90 Webhooks
 

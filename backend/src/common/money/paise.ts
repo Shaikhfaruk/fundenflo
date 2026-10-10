@@ -13,3 +13,7 @@ export function paiseFromNumber(value: number): bigint {
 }
 
 export const rupeesToPaise = (rupees: number | bigint): bigint => BigInt(rupees) * PAISE_PER_RUPEE;
+
+const RUPEES = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' });
+
+export const formatRupees = (paise: bigint): string => RUPEES.format(Number(paise) / Number(PAISE_PER_RUPEE));

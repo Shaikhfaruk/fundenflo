@@ -20,6 +20,8 @@ export const QueueName = {
   SubmissionsSync: 'submissions.sync',
   SubmissionsNotify: 'submissions.notify',
   LeadsReferrals: 'leads.referrals',
+  CommissionsAccrue: 'commissions.accrue',
+  CommissionsNotify: 'commissions.notify',
 } as const;
 
 export type QueueName = (typeof QueueName)[keyof typeof QueueName];

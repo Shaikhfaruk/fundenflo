@@ -86,6 +86,14 @@ export class LenderService {
     return new Map((await this.lenders.list({ id: { in: ids } }, ids.length)).map((lender) => [lender.id, { id: lender.id, key: lender.key, name: lender.organization.name, organizationId: lender.organizationId, kind: lender.kind }]));
   }
 
+  commissionSchemeKey(lenderId: string, now = new Date()) {
+    return this.lenders.schemeKeyInForce(lenderId, now);
+  }
+
+  async knownKeys(keys: string[]) {
+    return new Set((await this.lenders.list({ key: { in: keys } }, keys.length)).map((lender) => lender.key));
+  }
+
   async forOrganization(organizationId: string) {
     const lender = await this.lenders.findOne({ organizationId });
     if (!lender) throw new AppError(ErrorCode.NOT_FOUND);

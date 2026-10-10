@@ -1,0 +1,73 @@
+{
+  "name": "List Payouts",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/finance/payouts?status=pending",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "finance",
+        "payouts"
+      ],
+      "query": [
+        {
+          "key": "status",
+          "value": "pending"
+        }
+      ]
+    },
+    "description": "Partner payouts (one per receivable when the case belongs to a firm: partner-filed or an unended attribution), filterable by `status` and `partnerOrganizationId`. Staff context: finance acts; compliance reads. Money is in paise."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/finance/payouts?status=pending",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "finance",
+            "payouts"
+          ],
+          "query": [
+            {
+              "key": "status",
+              "value": "pending"
+            }
+          ]
+        },
+        "description": "Partner payouts (one per receivable when the case belongs to a firm: partner-filed or an unended attribution), filterable by `status` and `partnerOrganizationId`. Staff context: finance acts; compliance reads. Money is in paise."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a12500-3c4d-7e5f-8061-728394a5b6c7\",\n      \"ref\": \"PO-26-000004\",\n      \"status\": \"pending\",\n      \"partnerOrganizationId\": \"01a12190-1a2b-7c3d-8e4f-5061728394a5\",\n      \"receivable\": {\n        \"id\": \"01a12500-2b3c-7d4e-9f50-61728394a5b6\",\n        \"ref\": \"RC-26-000004\",\n        \"status\": \"reconciled\"\n      },\n      \"submissionId\": \"01a12300-1a2b-7c3d-8e4f-5061728394a5\",\n      \"applicationId\": \"01a12260-2b3c-7d4e-9f50-61728394a5b6\",\n      \"scheme\": {\n        \"documentId\": \"01a12500-1a2b-7c3d-8e4f-5061728394a5\",\n        \"versionId\": \"01a12500-1a2b-7c3d-8e4f-5061728394a5\"\n      },\n      \"basePaise\": 1000000,\n      \"grossPaise\": 500000,\n      \"tdsRateBps\": 500,\n      \"tdsPaise\": 25000,\n      \"netPaise\": 475000,\n      \"approvedAt\": null,\n      \"paidAt\": null,\n      \"utr\": null,\n      \"reversedAt\": null,\n      \"reverseReason\": null,\n      \"attributionId\": null,\n      \"approvedByUserId\": null,\n      \"paidByUserId\": null,\n      \"version\": 1,\n      \"createdAt\": \"2026-10-11T10:00:00.000Z\"\n    }\n  ],\n  \"nextCursor\": null\n}"
+    }
+  ]
+}

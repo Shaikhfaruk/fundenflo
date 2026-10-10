@@ -1,0 +1,82 @@
+{
+  "name": "Get Commission Statement",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/partner/commissions/statement?month={{statementMonth}}",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "partner",
+        "commissions",
+        "statement"
+      ],
+      "query": [
+        {
+          "key": "month",
+          "value": "{{statementMonth}}"
+        }
+      ]
+    },
+    "description": "A month's statement (`month=YYYY-MM`, India time): opening and closing payable, payouts paid in the month with gross, TDS and net. Firm owner only. Partner context; only the signed-in firm's payouts."
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.collectionVariables.set('statementMonth', new Date(Date.now() + 330 * 60000).toISOString().slice(0, 7));"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/partner/commissions/statement?month={{statementMonth}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "commissions",
+            "statement"
+          ],
+          "query": [
+            {
+              "key": "month",
+              "value": "{{statementMonth}}"
+            }
+          ]
+        },
+        "description": "A month's statement (`month=YYYY-MM`, India time): opening and closing payable, payouts paid in the month with gross, TDS and net. Firm owner only. Partner context; only the signed-in firm's payouts."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"month\": \"2026-10\",\n  \"period\": {\n    \"from\": \"2026-09-30T18:30:00.000Z\",\n    \"to\": \"2026-10-31T18:30:00.000Z\"\n  },\n  \"openingPayablePaise\": 0,\n  \"closingPayablePaise\": 0,\n  \"paid\": {\n    \"count\": 1,\n    \"grossPaise\": 500000,\n    \"tdsPaise\": 25000,\n    \"netPaise\": 475000\n  },\n  \"items\": []\n}"
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 {
-  "name": "Submissions: publish a lender product and a scoring model, score and match a case, request, withdraw and approve a submission, deliver it to an invited lender, answer a document request, sanction and disburse",
+  "name": "Submissions: publish a lender product and a scoring model, score and match a case, request, withdraw and approve a submission, deliver it to an invited lender, answer a document request, sanction and disburse, accrue the lender commission and receive it",
   "requires": [
     "staffInvitation",
     "checkerInvitation"
@@ -217,12 +217,89 @@
       "identity": "lender"
     },
     {
+      "request": "63 Admin - Finance & Commissions/02 Create Commission Scheme.json",
+      "identity": "maker"
+    },
+    {
+      "request": "63 Admin - Finance & Commissions/08 Submit Commission Scheme Version.json",
+      "identity": "maker"
+    },
+    {
+      "request": "48 Admin - Change Requests/03 Approve Change Request.json",
+      "identity": "checker"
+    },
+    {
+      "request": "63 Admin - Finance & Commissions/09 Publish Commission Scheme Version.json",
+      "identity": "maker"
+    },
+    {
       "request": "20 Lender Portal/08 Sanction Submission.json",
       "identity": "lender"
     },
     {
       "request": "20 Lender Portal/09 Record Disbursal.json",
       "identity": "lender"
+    },
+    {
+      "request": "63 Admin - Finance & Commissions/11 List Receivables.json",
+      "identity": "maker",
+      "waitSeconds": 3
+    },
+    {
+      "request": "63 Admin - Finance & Commissions/12 Get Receivable.json",
+      "identity": "maker"
+    },
+    {
+      "request": "63 Admin - Finance & Commissions/13 Invoice Receivable.json",
+      "identity": "maker"
+    },
+    {
+      "request": "63 Admin - Finance & Commissions/14 Record Receivable Receipt.json",
+      "identity": "maker"
+    },
+    {
+      "request": "63 Admin - Finance & Commissions/15 List Payouts.json",
+      "identity": "maker"
+    },
+    {
+      "request": "63 Admin - Finance & Commissions/21 Run Reconciliation.json",
+      "identity": "maker"
+    },
+    {
+      "request": "63 Admin - Finance & Commissions/20 List Reconciliation Runs.json",
+      "identity": "maker"
+    },
+    {
+      "request": "63 Admin - Finance & Commissions/22 Get Trial Balance.json",
+      "identity": "maker"
+    },
+    {
+      "request": "63 Admin - Finance & Commissions/01 List Commission Schemes.json",
+      "identity": "maker"
+    },
+    {
+      "request": "63 Admin - Finance & Commissions/03 Get Commission Scheme.json",
+      "identity": "maker"
+    },
+    {
+      "request": "63 Admin - Finance & Commissions/04 Update Commission Scheme.json",
+      "identity": "maker"
+    },
+    {
+      "request": "63 Admin - Finance & Commissions/05 Create Commission Scheme Version.json",
+      "identity": "maker"
+    },
+    {
+      "request": "63 Admin - Finance & Commissions/06 Get Commission Scheme Version.json",
+      "identity": "maker"
+    },
+    {
+      "request": "63 Admin - Finance & Commissions/07 Update Commission Scheme Draft.json",
+      "identity": "maker"
+    },
+    {
+      "request": "63 Admin - Finance & Commissions/10 Retire Commission Scheme Version.json",
+      "identity": "maker"
     },
     {
       "request": "07 Applications & Submissions/04 Get Submission.json",

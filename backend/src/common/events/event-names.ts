@@ -101,6 +101,14 @@ export const EventName = {
   ReferralCodeIssued: 'referral_code.issued',
   AttributionDisputed: 'attribution.disputed',
   AttributionDisputeResolved: 'attribution.dispute_resolved',
+  ReceivableAccrued: 'receivable.accrued',
+  ReceivableReceived: 'receivable.received',
+  ReceivableWrittenOff: 'receivable.written_off',
+  PayoutAccrued: 'payout.accrued',
+  PayoutApproved: 'payout.approved',
+  PayoutPaid: 'payout.paid',
+  PayoutReversed: 'payout.reversed',
+  ReconciliationCompleted: 'reconciliation.completed',
 } as const;
 
 export type EventName = (typeof EventName)[keyof typeof EventName];

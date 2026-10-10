@@ -1,0 +1,153 @@
+{
+  "name": "Record Receivable Receipt",
+  "request": {
+    "method": "PATCH",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/finance/receivables/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "finance",
+        "receivables",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{receivableId}}"
+        }
+      ]
+    },
+    "description": "Records money received from the lender against the receivable. Staff context: finance acts; compliance reads. Money is in paise.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"action\": \"receive\",\n  \"amountPaise\": 1180000,\n  \"utr\": \"NEFT{{$timestamp}}\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/finance/receivables/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "finance",
+            "receivables",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{receivableId}}"
+            }
+          ]
+        },
+        "description": "Records money received from the lender against the receivable. Staff context: finance acts; compliance reads. Money is in paise.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"action\": \"receive\",\n  \"amountPaise\": 1180000,\n  \"utr\": \"NEFT{{$timestamp}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12500-2b3c-7d4e-9f50-61728394a5b6\",\n  \"ref\": \"RC-26-000004\",\n  \"status\": \"received\",\n  \"lenderId\": \"01a122a0-1a2b-7c3d-8e4f-5061728394a5\",\n  \"lenderOrganizationId\": \"01a122a0-2b3c-7d4e-9f50-61728394a5b6\",\n  \"submissionId\": \"01a12300-1a2b-7c3d-8e4f-5061728394a5\",\n  \"applicationId\": \"01a12260-2b3c-7d4e-9f50-61728394a5b6\",\n  \"scheme\": {\n    \"documentId\": \"01a12500-1a2b-7c3d-8e4f-5061728394a5\",\n    \"versionId\": \"01a12500-1a2b-7c3d-8e4f-5061728394a5\"\n  },\n  \"basePaise\": 100000000,\n  \"feePaise\": 1000000,\n  \"gstRateBps\": 1800,\n  \"gstPaise\": 180000,\n  \"totalPaise\": 1180000,\n  \"receivedPaise\": 1180000,\n  \"outstandingPaise\": 0,\n  \"invoiceNumber\": null,\n  \"invoicedAt\": null,\n  \"receivedAt\": \"2026-10-11T10:00:00.000Z\",\n  \"utr\": \"NEFT00012345\",\n  \"reconciledAt\": null,\n  \"reconciliationRunId\": null,\n  \"writtenOffAt\": null,\n  \"writeOffReason\": null,\n  \"payout\": {\n    \"id\": \"01a12500-3c4d-7e5f-8061-728394a5b6c7\",\n    \"ref\": \"PO-26-000004\",\n    \"status\": \"pending\",\n    \"partnerOrganizationId\": \"01a12190-1a2b-7c3d-8e4f-5061728394a5\",\n    \"grossPaise\": 500000,\n    \"netPaise\": 400000\n  },\n  \"version\": 3,\n  \"createdAt\": \"2026-10-11T10:00:00.000Z\"\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/finance/receivables/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "finance",
+            "receivables",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{receivableId}}"
+            }
+          ]
+        },
+        "description": "Records money received from the lender against the receivable. Staff context: finance acts; compliance reads. Money is in paise.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"action\": \"receive\",\n  \"amountPaise\": 1180000,\n  \"utr\": \"NEFT{{$timestamp}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"amountPaise\",\n      \"code\": \"over_payment\",\n      \"message\": \"at most 680000 paise is outstanding\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "name": "Run Reconciliation",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/finance/reconciliation",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "finance",
+        "reconciliation"
+      ]
+    },
+    "description": "Applies a lender or bank statement: each line (`reference` = receivable ref or invoice number, `amountPaise`, optional `utr`, `paidOn`) is received against its open receivable; fully paid ones are reconciled. Lines that do not match, are closed or overpay are listed as unmatched. Optional `lenderId` limits matching. Staff context: finance acts; compliance reads. Money is in paise.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"source\": \"lender_statement\",\n  \"lines\": [\n    {\n      \"reference\": \"RC-99-{{$timestamp}}\",\n      \"amountPaise\": 1000,\n      \"utr\": \"NEFT{{$timestamp}}\"\n    }\n  ]\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/finance/reconciliation",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "finance",
+            "reconciliation"
+          ]
+        },
+        "description": "Applies a lender or bank statement: each line (`reference` = receivable ref or invoice number, `amountPaise`, optional `utr`, `paidOn`) is received against its open receivable; fully paid ones are reconciled. Lines that do not match, are closed or overpay are listed as unmatched. Optional `lenderId` limits matching. Staff context: finance acts; compliance reads. Money is in paise.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"source\": \"lender_statement\",\n  \"lines\": [\n    {\n      \"reference\": \"RC-99-{{$timestamp}}\",\n      \"amountPaise\": 1000,\n      \"utr\": \"NEFT{{$timestamp}}\"\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12500-4d5e-7f60-8172-8394a5b6c7d8\",\n  \"lenderOrganizationId\": \"01a122a0-2b3c-7d4e-9f50-61728394a5b6\",\n  \"source\": \"lender_statement\",\n  \"lineCount\": 2,\n  \"matchedCount\": 1,\n  \"totalPaise\": 1181000,\n  \"matchedPaise\": 1180000,\n  \"unmatched\": [\n    {\n      \"reference\": \"RC-99-999999\",\n      \"amountPaise\": 1000,\n      \"reason\": \"not_found\"\n    }\n  ],\n  \"createdByUserId\": \"01a121c0-5e6f-7a71-9283-94a5b6c7d8e9\",\n  \"createdAt\": \"2026-10-11T10:00:00.000Z\",\n  \"reconciledReceivableIds\": [\n    \"01a12500-2b3c-7d4e-9f50-61728394a5b6\"\n  ]\n}"
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+{
+  "name": "Get Commission Scheme",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/commission-schemes/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "commission-schemes",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{commissionSchemeId}}"
+        }
+      ]
+    },
+    "description": "One scheme with its version summaries. Staff only: finance makes, another staff member approves in Change Requests, then it is published. `content`: `party` `lender` (FundenFlo's fee from the lender, based on each disbursal tranche, GST added) or `partner` (the firm's share, based on the `disbursal` or the `lender_fee`, TDS withheld: `tdsRateBps` with a verified PAN, else `tdsNoPanRateBps`), `basis` `percent` (`rateBps`), `flat` (`flatPaise`) or `slab` (`slabs[]` of `fromPaise` and `rateBps`; the highest slab reached applies to the whole amount), optional `minPaise` / `capPaise`, `scope` (`lenders`, `categories`, `partnerKinds`, `partnerLevels`; the most specific published scheme wins). A lender agreement's `commissionSchemeKey` picks the lender scheme directly. Rates are commercial decisions; nothing is seeded."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.collectionVariables.set('commissionSchemeDocVersion', String(pm.response.json().version));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/commission-schemes/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "commission-schemes",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{commissionSchemeId}}"
+            }
+          ]
+        },
+        "description": "One scheme with its version summaries. Staff only: finance makes, another staff member approves in Change Requests, then it is published. `content`: `party` `lender` (FundenFlo's fee from the lender, based on each disbursal tranche, GST added) or `partner` (the firm's share, based on the `disbursal` or the `lender_fee`, TDS withheld: `tdsRateBps` with a verified PAN, else `tdsNoPanRateBps`), `basis` `percent` (`rateBps`), `flat` (`flatPaise`) or `slab` (`slabs[]` of `fromPaise` and `rateBps`; the highest slab reached applies to the whole amount), optional `minPaise` / `capPaise`, `scope` (`lenders`, `categories`, `partnerKinds`, `partnerLevels`; the most specific published scheme wins). A lender agreement's `commissionSchemeKey` picks the lender scheme directly. Rates are commercial decisions; nothing is seeded."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12500-1a2b-7c3d-8e4f-5061728394a5\",\n  \"resource\": \"commission_scheme\",\n  \"key\": \"lenderx.fee\",\n  \"name\": {\n    \"en\": \"Lender X fee\"\n  },\n  \"description\": null,\n  \"status\": \"active\",\n  \"activeVersion\": null,\n  \"openVersion\": {\n    \"id\": \"01a12500-1a2b-7c3d-8e4f-5061728394a5\",\n    \"number\": 1,\n    \"status\": \"draft\"\n  },\n  \"versions\": [],\n  \"version\": 1,\n  \"createdAt\": \"2026-10-11T10:00:00.000Z\",\n  \"updatedAt\": \"2026-10-11T10:00:00.000Z\"\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/commission-schemes/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "commission-schemes",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{commissionSchemeId}}"
+            }
+          ]
+        },
+        "description": "One scheme with its version summaries. Staff only: finance makes, another staff member approves in Change Requests, then it is published. `content`: `party` `lender` (FundenFlo's fee from the lender, based on each disbursal tranche, GST added) or `partner` (the firm's share, based on the `disbursal` or the `lender_fee`, TDS withheld: `tdsRateBps` with a verified PAN, else `tdsNoPanRateBps`), `basis` `percent` (`rateBps`), `flat` (`flatPaise`) or `slab` (`slabs[]` of `fromPaise` and `rateBps`; the highest slab reached applies to the whole amount), optional `minPaise` / `capPaise`, `scope` (`lenders`, `categories`, `partnerKinds`, `partnerLevels`; the most specific published scheme wins). A lender agreement's `commissionSchemeKey` picks the lender scheme directly. Rates are commercial decisions; nothing is seeded."
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

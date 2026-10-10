@@ -1,0 +1,109 @@
+{
+  "name": "Update Commission Scheme",
+  "request": {
+    "method": "PATCH",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "If-Match",
+        "value": "\"{{commissionSchemeDocVersion}}\""
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/commission-schemes/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "commission-schemes",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{commissionSchemeId}}"
+        }
+      ]
+    },
+    "description": "Changes the name, description or status. Staff only: finance makes, another staff member approves in Change Requests, then it is published. `content`: `party` `lender` (FundenFlo's fee from the lender, based on each disbursal tranche, GST added) or `partner` (the firm's share, based on the `disbursal` or the `lender_fee`, TDS withheld: `tdsRateBps` with a verified PAN, else `tdsNoPanRateBps`), `basis` `percent` (`rateBps`), `flat` (`flatPaise`) or `slab` (`slabs[]` of `fromPaise` and `rateBps`; the highest slab reached applies to the whole amount), optional `minPaise` / `capPaise`, `scope` (`lenders`, `categories`, `partnerKinds`, `partnerLevels`; the most specific published scheme wins). A lender agreement's `commissionSchemeKey` picks the lender scheme directly. Rates are commercial decisions; nothing is seeded.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"description\": {\n    \"en\": \"As per the signed agreement\"\n  }\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{commissionSchemeDocVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/commission-schemes/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "commission-schemes",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{commissionSchemeId}}"
+            }
+          ]
+        },
+        "description": "Changes the name, description or status. Staff only: finance makes, another staff member approves in Change Requests, then it is published. `content`: `party` `lender` (FundenFlo's fee from the lender, based on each disbursal tranche, GST added) or `partner` (the firm's share, based on the `disbursal` or the `lender_fee`, TDS withheld: `tdsRateBps` with a verified PAN, else `tdsNoPanRateBps`), `basis` `percent` (`rateBps`), `flat` (`flatPaise`) or `slab` (`slabs[]` of `fromPaise` and `rateBps`; the highest slab reached applies to the whole amount), optional `minPaise` / `capPaise`, `scope` (`lenders`, `categories`, `partnerKinds`, `partnerLevels`; the most specific published scheme wins). A lender agreement's `commissionSchemeKey` picks the lender scheme directly. Rates are commercial decisions; nothing is seeded.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"description\": {\n    \"en\": \"As per the signed agreement\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12500-1a2b-7c3d-8e4f-5061728394a5\",\n  \"resource\": \"commission_scheme\",\n  \"key\": \"lenderx.fee\",\n  \"name\": {\n    \"en\": \"Lender X fee\"\n  },\n  \"description\": null,\n  \"status\": \"active\",\n  \"activeVersion\": null,\n  \"openVersion\": {\n    \"id\": \"01a12500-1a2b-7c3d-8e4f-5061728394a5\",\n    \"number\": 1,\n    \"status\": \"draft\"\n  },\n  \"versions\": [],\n  \"version\": 2,\n  \"createdAt\": \"2026-10-11T10:00:00.000Z\",\n  \"updatedAt\": \"2026-10-11T10:00:00.000Z\"\n}"
+    }
+  ]
+}

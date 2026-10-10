@@ -23,6 +23,10 @@ import type {
   LenderSubmission,
   DocumentRequest,
   AttributionDispute,
+  Receivable,
+  PartnerPayout,
+  ReconciliationRun,
+  LedgerEntry,
   LoanApplication,
   Membership,
   OfflineConversion,
@@ -87,6 +91,10 @@ export type AppSubjects =
       LenderSubmission: LenderSubmission;
       DocumentRequest: DocumentRequest;
       AttributionDispute: AttributionDispute;
+      Receivable: Receivable;
+      PartnerPayout: PartnerPayout;
+      ReconciliationRun: ReconciliationRun;
+      LedgerEntry: LedgerEntry;
     }>;
 
 export type AppAbility = Ability<[AppAction, AppSubjects], PrismaQueryOf<Prisma.TypeMap>>;

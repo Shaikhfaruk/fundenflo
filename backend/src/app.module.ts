@@ -21,6 +21,7 @@ import { AssessmentsModule } from './modules/assessments/assessments.module.js';
 import { MatchingModule } from './modules/matching/matching.module.js';
 import { SubmissionsModule } from './modules/submissions/submissions.module.js';
 import { CompatModule } from './modules/compat/compat.module.js';
+import { CommissionsModule } from './modules/commissions/commissions.module.js';
 import { SubscriptionsModule } from './modules/subscriptions/subscriptions.module.js';
 import { LendersModule } from './modules/lenders/lenders.module.js';
 import { BorrowersModule } from './modules/borrowers/borrowers.module.js';
@@ -57,6 +58,7 @@ import { QuestionnairesModule } from './modules/questionnaires/questionnaires.mo
     MatchingModule,
     SubmissionsModule,
     CompatModule,
+    CommissionsModule,
     ActivitiesModule,
     SlaModule,
     RealtimeModule.forRoot({ worker: false }),

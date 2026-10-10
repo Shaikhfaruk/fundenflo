@@ -1,0 +1,156 @@
+{
+  "name": "Mark Payout Paid",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/finance/payouts/:id/mark-paid",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "finance",
+        "payouts",
+        ":id",
+        "mark-paid"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{payoutId}}"
+        }
+      ]
+    },
+    "description": "Records the bank transfer (`utr`, optional `paidOn`). Must be a different person from the approver. Posts payable → bank (net) and TDS payable, and messages the firm owner. Staff context: finance acts; compliance reads. Money is in paise.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"utr\": \"NEFT00098765\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/finance/payouts/:id/mark-paid",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "finance",
+            "payouts",
+            ":id",
+            "mark-paid"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{payoutId}}"
+            }
+          ]
+        },
+        "description": "Records the bank transfer (`utr`, optional `paidOn`). Must be a different person from the approver. Posts payable → bank (net) and TDS payable, and messages the firm owner. Staff context: finance acts; compliance reads. Money is in paise.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"utr\": \"NEFT00098765\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12500-3c4d-7e5f-8061-728394a5b6c7\",\n  \"ref\": \"PO-26-000004\",\n  \"status\": \"paid\",\n  \"partnerOrganizationId\": \"01a12190-1a2b-7c3d-8e4f-5061728394a5\",\n  \"receivable\": {\n    \"id\": \"01a12500-2b3c-7d4e-9f50-61728394a5b6\",\n    \"ref\": \"RC-26-000004\",\n    \"status\": \"reconciled\"\n  },\n  \"submissionId\": \"01a12300-1a2b-7c3d-8e4f-5061728394a5\",\n  \"applicationId\": \"01a12260-2b3c-7d4e-9f50-61728394a5b6\",\n  \"scheme\": {\n    \"documentId\": \"01a12500-1a2b-7c3d-8e4f-5061728394a5\",\n    \"versionId\": \"01a12500-1a2b-7c3d-8e4f-5061728394a5\"\n  },\n  \"basePaise\": 1000000,\n  \"grossPaise\": 500000,\n  \"tdsRateBps\": 500,\n  \"tdsPaise\": 25000,\n  \"netPaise\": 475000,\n  \"approvedAt\": \"2026-10-11T10:00:00.000Z\",\n  \"paidAt\": \"2026-10-11T10:00:00.000Z\",\n  \"utr\": \"NEFT00098765\",\n  \"reversedAt\": null,\n  \"reverseReason\": null,\n  \"attributionId\": null,\n  \"approvedByUserId\": \"01a121c0-5e6f-7a71-9283-94a5b6c7d8e9\",\n  \"paidByUserId\": \"01a121c0-6f70-7b82-a394-a5b6c7d8e9fa\",\n  \"version\": 3,\n  \"createdAt\": \"2026-10-11T10:00:00.000Z\"\n}"
+    },
+    {
+      "name": "403 FORBIDDEN",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/finance/payouts/:id/mark-paid",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "finance",
+            "payouts",
+            ":id",
+            "mark-paid"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{payoutId}}"
+            }
+          ]
+        },
+        "description": "Records the bank transfer (`utr`, optional `paidOn`). Must be a different person from the approver. Posts payable → bank (net) and TDS payable, and messages the firm owner. Staff context: finance acts; compliance reads. Money is in paise.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"utr\": \"NEFT00098765\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Forbidden",
+      "code": 403,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"FORBIDDEN\",\n  \"message\": \"You do not have permission to do this.\",\n  \"details\": {\n    \"reason\": \"second_person_required\"\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}
