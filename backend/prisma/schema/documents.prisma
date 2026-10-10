@@ -97,6 +97,7 @@ model Document {
 
   @@index([partyId, status])
   @@index([partyId, sha256])
+  @@index([sha256])
   @@index([applicationId, status])
   @@index([borrowerProfileId, createdAt])
   @@index([status, updatedAt])

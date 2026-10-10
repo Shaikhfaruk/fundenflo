@@ -43,6 +43,7 @@ export const BlindIndexDomain = {
   Udyam: 'udyam',
   Din: 'din',
   PushToken: 'push_token',
+  BankAccount: 'bank_account',
 } as const;
 
 export type BlindIndexDomain = (typeof BlindIndexDomain)[keyof typeof BlindIndexDomain];

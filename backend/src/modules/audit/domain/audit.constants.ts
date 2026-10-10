@@ -129,6 +129,8 @@ export const AuditAction = {
   PayoutChanged: 'payout.changed',
   PayoutBankAccountViewed: 'payout.bank_account_viewed',
   ReconciliationCompleted: 'reconciliation.completed',
+  RiskSignalRaised: 'risk.signal_raised',
+  FraudReviewDecided: 'fraud_review.decided',
 } as const;
 
 export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction];
@@ -185,6 +187,8 @@ export const AuditEntity = {
   Receivable: 'receivable',
   PartnerPayout: 'partner_payout',
   ReconciliationRun: 'reconciliation_run',
+  RiskSignal: 'risk_signal',
+  FraudReview: 'fraud_review',
   LenderAgreement: 'lender_agreement',
   LenderContact: 'lender_contact',
 } as const;

@@ -63,7 +63,7 @@ export class BorrowerKycService {
       entityId: borrowerProfileId,
       event: EventName.BorrowerProfileChanged,
       metadata: { partyId, pan: identifier.masked, provider: result.provider, reference: result.reference, nameMatch },
-      payload: { borrowerProfileId, partyId, kyc: IdentifierType.pan },
+      payload: { borrowerProfileId, partyId, kyc: IdentifierType.pan, nameMatch },
     });
     return { pan: identifier.masked, verified: identifier.verified, nameMatch, nameOnRecord: result.nameOnRecord, partyId, provider: result.provider };
   }

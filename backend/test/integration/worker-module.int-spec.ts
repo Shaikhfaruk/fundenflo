@@ -7,6 +7,7 @@ import { ApplicationRefreshProcessor } from '../../src/modules/applications/infr
 import { AnalysisRunProcessor } from '../../src/modules/assessments/infrastructure/analysis-run.processor.js';
 import { CommissionAccrueProcessor } from '../../src/modules/commissions/infrastructure/commission-accrue.processor.js';
 import { CommissionNotifyProcessor } from '../../src/modules/commissions/infrastructure/commission-notify.processor.js';
+import { RiskDetectProcessor } from '../../src/modules/risk/infrastructure/risk-detect.processor.js';
 import { DocumentExtractProcessor } from '../../src/modules/documents/infrastructure/document-extract.processor.js';
 import { DocumentScanProcessor } from '../../src/modules/documents/infrastructure/document-scan.processor.js';
 import { LeadReferralProcessor } from '../../src/modules/leads/infrastructure/lead-referral.processor.js';
@@ -34,6 +35,7 @@ describe('worker process', () => {
     expect(moduleRef.get(SubmissionSyncProcessor)).toBeInstanceOf(SubmissionSyncProcessor);
     expect(moduleRef.get(CommissionAccrueProcessor)).toBeInstanceOf(CommissionAccrueProcessor);
     expect(moduleRef.get(CommissionNotifyProcessor)).toBeInstanceOf(CommissionNotifyProcessor);
+    expect(moduleRef.get(RiskDetectProcessor)).toBeInstanceOf(RiskDetectProcessor);
     await moduleRef.close();
   });
 });

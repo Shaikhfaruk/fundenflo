@@ -162,7 +162,7 @@ flowchart TB
   LeadsGroup --> Ports
   Platform --> Ports
   classDef built fill:#d8f3dc,stroke:#2d6a4f,color:#081c15
-  class auth,access,parties,catalog,attributes,questionnaires,consents,partners,leads,imports,activities,sla,realtime,sync,documents,borrowers,applications,submissions,compat,commissions,lenders,assessments,matching,notifications,audit,configPublishing,conditions,facts,questionnaire,partyMatching,stateMachines,consentFold,assignment,docChecklist,lendingEngine,scoring,improvement,matchingEngine,commissionCalc,database,queue,storage,crypto,cache,avP,kycP built
+  class auth,access,parties,catalog,attributes,questionnaires,consents,partners,leads,imports,activities,sla,realtime,sync,documents,borrowers,applications,submissions,compat,commissions,risk,lenders,assessments,matching,notifications,audit,configPublishing,conditions,facts,questionnaire,partyMatching,stateMachines,consentFold,assignment,docChecklist,lendingEngine,scoring,improvement,matchingEngine,commissionCalc,database,queue,storage,crypto,cache,avP,kycP built
 ```
 
 Green = built (M0 – M6a). Rules: engines import nothing from Nest, modules or infrastructure. Modules talk only through exported façade services or domain events. Integrations are reached only through ports.
@@ -569,13 +569,14 @@ flowchart LR
   Q -->|document.scanned, application.status.changed| SSYNC[submissions.sync: fulfil document requests, answer query, withdraw on closed case]
   Q -->|submission.disbursed| COMQ[commissions.accrue: receivable and partner payout, double-entry]
   Q -->|payout.paid| CNOTIFY[commissions.notify] --> NOTIF
+  Q -->|document.scanned, consistency, PAN, partner KYC, referrals| RISKQ[risk.detect: signals into fraud reviews; holds approvals and payouts]
   RTP -->|redis emitter| GW[Socket.IO gateway on the API + Redis adapter]
   GW --> ROOMS((rooms: user / membership / org))
   IMPAPI[Admin import validate / commit / undo] -->|direct enqueue| IMPQ[imports.process]
   SCHED -->|15 min| REP[reports.refresh]
   API[API request: OTP, invitation, consent link] -->|direct enqueue| NOTIF
   classDef built fill:#d8f3dc,stroke:#2d6a4f,color:#081c15
-  class UC,OB,RELAY,SCHED,MAINT,Q,REVOKE,CSYNC,DROPQ,NOTIF,API,IMPAPI,IMPQ,ROUTEQ,OPSR,SLAQ,LNOTIFY,RTP,GW,ROOMS,SCANQ,APPREF,ANALYSE,SUBQ2,DOCQ,MQ2,SUBQ,SNOTIFY,SSYNC,REFQ,COMQ,CNOTIFY built
+  class UC,OB,RELAY,SCHED,MAINT,Q,REVOKE,CSYNC,DROPQ,NOTIF,API,IMPAPI,IMPQ,ROUTEQ,OPSR,SLAQ,LNOTIFY,RTP,GW,ROOMS,SCANQ,APPREF,ANALYSE,SUBQ2,DOCQ,MQ2,SUBQ,SNOTIFY,SSYNC,REFQ,COMQ,CNOTIFY,RISKQ built
 ```
 
 Queue and job details (producers, consumers, triggers) are in [`inventory/worker-queues-jobs.md`](inventory/worker-queues-jobs.md).

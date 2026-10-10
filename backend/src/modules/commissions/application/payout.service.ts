@@ -21,6 +21,7 @@ import { AuditAction, AuditEntity } from '../../audit/domain/audit.constants.js'
 import { ConfigPublishingService } from '../../config-publishing/application/config-publishing.service.js';
 import { LeadAttributionService } from '../../partners/application/lead-attribution.service.js';
 import { PartnerKycService } from '../../partners/application/partner-kyc.service.js';
+import { RiskService } from '../../risk/application/risk.service.js';
 import { LedgerAccounts, LedgerSource } from '../domain/commission.constants.js';
 import { CommissionRepository } from '../infrastructure/commission.repository.js';
 import { toPayoutView } from './commission.views.js';
@@ -42,6 +43,7 @@ export class PayoutService {
     private readonly config: ConfigPublishingService,
     private readonly audit: AuditService,
     private readonly changes: ChangeRecorder,
+    private readonly risk: RiskService,
   ) {}
 
   async list(ability: AppAbility, query: PageQuery & PayoutFilters) {
@@ -65,6 +67,7 @@ export class PayoutService {
     transitionOrThrow(payoutMachine, payout.status, PayoutEvent.Approve);
     if (!COLLECTED_RECEIVABLE_STATES.includes(payout.receivable.status)) throw refuse('awaiting_lender_payment', 'the lender has not paid this commission yet');
     if (!(await this.kyc.payoutReady(payout.partnerOrganizationId))) throw refuse('kyc_incomplete', 'the firm needs a verified PAN and a bank account first');
+    await this.risk.assertClear({ organizationIds: [payout.partnerOrganizationId], applicationId: payout.applicationId });
     const attribution = payout.attributionId ? await this.attributions.byId(payout.attributionId) : null;
     if (attribution && (attribution.disputedAt || attribution.endedAt)) throw refuse('attribution_disputed', 'the attribution of this borrower is disputed or ended');
     const scheme = await this.config.pinnedVersion<CompiledCommissionScheme>(ConfigResource.commission_scheme, payout.schemeVersionId);

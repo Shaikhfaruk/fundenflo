@@ -74,6 +74,10 @@ export class DocumentRepository {
     return (await this.txHost.tx.document.findMany({ where: { borrowerProfileId: { in: borrowerProfileIds }, status: DocumentStatus.scanned }, select: { id: true }, orderBy: { id: 'asc' }, take })).map((row) => row.id);
   }
 
+  async partiesWithSha(sha256: string, excludePartyId: string, take: number) {
+    return [...new Set((await this.txHost.tx.document.findMany({ where: { sha256, partyId: { not: excludePartyId }, status: { notIn: [DocumentStatus.deleted, DocumentStatus.purged] } }, select: { partyId: true }, take })).map((row) => row.partyId))];
+  }
+
   async idsOfParty(partyId: string) {
     return (await this.txHost.tx.document.findMany({ where: { partyId }, select: { id: true } })).map((row) => row.id);
   }

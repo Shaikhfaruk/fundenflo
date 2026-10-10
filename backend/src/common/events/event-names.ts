@@ -109,6 +109,8 @@ export const EventName = {
   PayoutPaid: 'payout.paid',
   PayoutReversed: 'payout.reversed',
   ReconciliationCompleted: 'reconciliation.completed',
+  RiskSignalRaised: 'risk.signal.raised',
+  FraudReviewDecided: 'fraud_review.decided',
 } as const;
 
 export type EventName = (typeof EventName)[keyof typeof EventName];

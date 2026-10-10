@@ -32,6 +32,7 @@ import { LenderCatalogService } from '../../lenders/application/lender-catalog.s
 import { LenderService } from '../../lenders/application/lender.service.js';
 import { MatchingService } from '../../matching/application/matching.service.js';
 import { MATCH_DOCUMENT_STAGES } from '../../matching/domain/matching.constants.js';
+import { RiskService } from '../../risk/application/risk.service.js';
 import {
   EVIDENCE_REQUIRED_EVENTS,
   type RejectionReason,
@@ -104,6 +105,7 @@ export class SubmissionService {
     private readonly context: RequestContext,
     private readonly audit: AuditService,
     private readonly changes: ChangeRecorder,
+    private readonly risk: RiskService,
   ) {}
 
   @Transactional()
@@ -211,6 +213,7 @@ export class SubmissionService {
     const submission = await this.visible(id, ability, AppAction.Update);
     assertVersion(expectedVersion, submission.version);
     const application = await this.applications.subject(submission.applicationId);
+    await this.risk.assertClear({ applicationId: application.id, partyIds: [application.partyId, application.actingPartyId] });
     await this.consents.assertConsent(application.actingPartyId, ConsentPurposeKey.LenderSharing, { organizationId: submission.lenderOrganizationId, explicitOnly: true });
     const product = await this.liveProduct(submission.productDocumentId);
     const missing = documentsNeeded(product.compiled.documents, MATCH_DOCUMENT_STAGES, await this.documents.heldTypes(application.partyId, application.id));

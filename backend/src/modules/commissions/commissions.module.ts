@@ -9,6 +9,7 @@ import { ConfigPublishingModule } from '../config-publishing/config-publishing.m
 import { createVersionedConfigController } from '../config-publishing/http/versioned-config.controller.js';
 import { LendersModule } from '../lenders/lenders.module.js';
 import { PartnersModule } from '../partners/partners.module.js';
+import { RiskModule } from '../risk/risk.module.js';
 import { CommissionNotificationService } from './application/commission-notification.service.js';
 import { CommissionSchemeHandler } from './application/commission-scheme.handler.js';
 import { CommissionService } from './application/commission.service.js';
@@ -29,7 +30,7 @@ const AdminCommissionSchemesController = createVersionedConfigController({ resou
 export const COMMISSION_PROCESSORS = [CommissionAccrueProcessor, CommissionNotifyProcessor];
 
 @Module({
-  imports: [AccessModule, ApplicationsModule, AuthModule, CatalogModule, ConfigPublishingModule, LendersModule, PartnersModule],
+  imports: [AccessModule, ApplicationsModule, AuthModule, CatalogModule, ConfigPublishingModule, LendersModule, PartnersModule, RiskModule],
   controllers: [AdminCommissionSchemesController, AdminFinanceController, PartnerCommissionsController],
   providers: [CommissionRepository, LedgerRepository, LedgerService, CommissionSchemeHandler, CommissionService, PayoutService, ReceivableService, ReconciliationService, PartnerCommissionService, CommissionNotificationService],
   exports: [CommissionService, CommissionNotificationService, LedgerService],

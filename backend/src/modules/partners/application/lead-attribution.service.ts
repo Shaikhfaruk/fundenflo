@@ -34,6 +34,10 @@ export class LeadAttributionService {
     return leadIds.length === 0 ? Promise.resolve([]) : this.attributions.findActive(leadIds, now);
   }
 
+  countSince(organizationId: string, kind: AttributionKind, since: Date) {
+    return this.attributions.countSince(organizationId, kind, since);
+  }
+
   countActive(organizationId: string, now = new Date()) {
     return this.attributions.countActive(organizationId, now);
   }

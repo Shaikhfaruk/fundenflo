@@ -1,0 +1,117 @@
+{
+  "name": "Get Fraud Review",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/ops/fraud-reviews/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "fraud-reviews",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{fraudReviewId}}"
+        }
+      ]
+    },
+    "description": "One review with its signals and evidence. Rules raise signals only; a person decides. Rules: the same file uploaded by another party (`document_reuse`, high), high or medium fact contradictions (`inflow_mismatch` / `gst_itr_mismatch`), a PAN whose name does not match (`identity_mismatch`, medium), a bank account shared by partner firms (`duplicate_identity`, high), a burst of sign-ups on one referral code (`referral_pattern`, medium). Signals of one subject (application, party or partner firm) gather in one open fraud review. An open review with a high or critical signal, or a confirmed one, holds lender submission approval and partner payouts. Staff context (ops leads and reviewers decide; compliance, credit and support read)."
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "if (!pm.collectionVariables.get('fraudReviewId')) pm.execution.skipRequest();"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/ops/fraud-reviews/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "fraud-reviews",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{fraudReviewId}}"
+            }
+          ]
+        },
+        "description": "One review with its signals and evidence. Rules raise signals only; a person decides. Rules: the same file uploaded by another party (`document_reuse`, high), high or medium fact contradictions (`inflow_mismatch` / `gst_itr_mismatch`), a PAN whose name does not match (`identity_mismatch`, medium), a bank account shared by partner firms (`duplicate_identity`, high), a burst of sign-ups on one referral code (`referral_pattern`, medium). Signals of one subject (application, party or partner firm) gather in one open fraud review. An open review with a high or critical signal, or a confirmed one, holds lender submission approval and partner payouts. Staff context (ops leads and reviewers decide; compliance, credit and support read)."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12600-1a2b-7c3d-8e4f-5061728394a5\",\n  \"subject\": {\n    \"type\": \"application\",\n    \"id\": \"01a12260-2b3c-7d4e-9f50-61728394a5b6\"\n  },\n  \"partyId\": \"01a12260-3c4d-7e5f-8061-728394a5b6c7\",\n  \"applicationId\": \"01a12260-2b3c-7d4e-9f50-61728394a5b6\",\n  \"organizationId\": null,\n  \"status\": \"open\",\n  \"highestSeverity\": \"high\",\n  \"decision\": null,\n  \"note\": null,\n  \"decidedByUserId\": null,\n  \"decidedAt\": null,\n  \"version\": 1,\n  \"createdAt\": \"2026-10-11T11:00:00.000Z\",\n  \"updatedAt\": \"2026-10-11T11:00:00.000Z\",\n  \"signals\": [\n    {\n      \"id\": \"01a12600-2b3c-7d4e-9f50-61728394a5b6\",\n      \"reviewId\": \"01a12600-1a2b-7c3d-8e4f-5061728394a5\",\n      \"kind\": \"document_reuse\",\n      \"severity\": \"high\",\n      \"source\": \"rule\",\n      \"ruleKey\": \"document.same_file_other_party\",\n      \"subject\": {\n        \"type\": \"application\",\n        \"id\": \"01a12260-2b3c-7d4e-9f50-61728394a5b6\"\n      },\n      \"partyId\": \"01a12260-3c4d-7e5f-8061-728394a5b6c7\",\n      \"applicationId\": \"01a12260-2b3c-7d4e-9f50-61728394a5b6\",\n      \"organizationId\": null,\n      \"evidence\": {\n        \"documentId\": \"01a12210-3c4d-7e5f-8061-728394a5b6c7\",\n        \"documentType\": \"bank_statement\",\n        \"otherParties\": 1\n      },\n      \"status\": \"open\",\n      \"createdAt\": \"2026-10-11T11:00:00.000Z\"\n    }\n  ]\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/ops/fraud-reviews/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "fraud-reviews",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{fraudReviewId}}"
+            }
+          ]
+        },
+        "description": "One review with its signals and evidence. Rules raise signals only; a person decides. Rules: the same file uploaded by another party (`document_reuse`, high), high or medium fact contradictions (`inflow_mismatch` / `gst_itr_mismatch`), a PAN whose name does not match (`identity_mismatch`, medium), a bank account shared by partner firms (`duplicate_identity`, high), a burst of sign-ups on one referral code (`referral_pattern`, medium). Signals of one subject (application, party or partner firm) gather in one open fraud review. An open review with a high or critical signal, or a confirmed one, holds lender submission approval and partner payouts. Staff context (ops leads and reviewers decide; compliance, credit and support read)."
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

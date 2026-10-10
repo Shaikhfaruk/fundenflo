@@ -44,7 +44,7 @@
 | `lender.changed` | lenders (`LenderService`: lender, agreement and contact changes, via `ChangeRecorder`) | none yet (the lender cache is cleared after commit) | — | M4 | `useful` | spec `lenders` |
 | `lender_product.proposed` | lenders (`LenderPortalService.propose`) | none yet (M7 notifies the lender manager) | — | M4 | `useful` | spec `lenders` |
 | `document.verified` · `document.needs_review` | documents (`ExtractionService`: extraction result or ops review) | `realtime.publish` (`document.changed`) | uploader's user room + partner org room | M5 | `useful` | spec `extraction` |
-| `consistency.signal_raised` · `consistency.signal_resolved` | attributes (`ConsistencyService`, after any non-declared fact write) | none yet (M8 risk queue) | — | M5 | `useful` | spec `extraction` |
+| `consistency.signal_raised` · `consistency.signal_resolved` | attributes (`ConsistencyService`, after any non-declared fact write) | `risk.detect` (raised) | — | M5 | `useful` | spec `extraction` |
 | `analysis.requested` | assessments (`AnalysisService.request`) | `analysis.run` | — | M5 | `useful` | spec `assessments` |
 | `analysis.completed` | assessments (`AnalysisService.finish` / `fail`; payload status, requester, score result) | `notifications.subscriptions`; `realtime.publish` (`analysis.changed`); M6 matching | requester's user room | M5 | `useful` | spec `assessments`; flow `assessments` |
 | `score.computed` | assessments (`ScoringService.score`) | `matching.run` | — | M5 | `useful` | spec `assessments` |
@@ -59,7 +59,7 @@
 | `receivable.accrued` · `receivable.received` · `receivable.written_off` | commissions (`CommissionService`, `ReceivableService`) | none yet (reports) | — | M7 | `useful` | spec `commissions` |
 | `payout.accrued` · `payout.approved` · `payout.paid` · `payout.reversed` | commissions (`CommissionService`, `PayoutService`) | `commissions.notify` (paid) | — | M7 | `useful` | spec `commissions` |
 | `reconciliation.completed` | commissions (`ReconciliationService.run`) | none yet | — | M7 | `useful` | spec `commissions` |
-| `risk.signal.raised` | risk, documents | ops queue (assignment) | ops room | M8 | `planned` | §13 |
+| `risk.signal.raised` · `fraud_review.decided` | risk (`RiskService.raise` / `decide`) | none yet (the ops queue reads the tables) | — | M8 | `useful` | spec `risk` |
 
 ## Real-time channels (WebSocket namespace `/v1/realtime`)
 

@@ -57,6 +57,7 @@ model PartnerProfile {
   bankAccountEnc         String?                   @map("bank_account_enc")
   bankAccountLast4       String?                   @map("bank_account_last4")
   bankIfsc               String?                   @map("bank_ifsc")
+  bankAccountHash        String?                   @map("bank_account_hash")
   bankUpdatedAt          DateTime?                 @map("bank_updated_at") @db.Timestamptz(3)
   version                Int                       @default(1)
   createdAt              DateTime                  @default(now()) @map("created_at") @db.Timestamptz(3)

@@ -172,6 +172,23 @@
       "identity": "maker"
     },
     {
+      "request": "64 Ops - Risk & Fraud Reviews/01 List Risk Signals.json",
+      "identity": "maker",
+      "waitSeconds": 2
+    },
+    {
+      "request": "64 Ops - Risk & Fraud Reviews/02 List Fraud Reviews.json",
+      "identity": "maker"
+    },
+    {
+      "request": "64 Ops - Risk & Fraud Reviews/03 Get Fraud Review.json",
+      "identity": "maker"
+    },
+    {
+      "request": "64 Ops - Risk & Fraud Reviews/04 Decide Fraud Review.json",
+      "identity": "maker"
+    },
+    {
       "request": "61 Ops - Submissions/03 Approve Submission.json",
       "identity": "maker"
     },

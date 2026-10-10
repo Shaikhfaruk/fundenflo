@@ -1,0 +1,97 @@
+enum RiskSignalKind {
+  duplicate_identity
+  identity_mismatch
+  inflow_mismatch
+  gst_itr_mismatch
+  doc_tamper
+  document_reuse
+  referral_pattern
+}
+
+enum RiskSeverity {
+  low
+  medium
+  high
+  critical
+}
+
+enum RiskSignalStatus {
+  open
+  confirmed
+  dismissed
+}
+
+enum RiskSource {
+  rule
+  ai
+  ops
+}
+
+enum RiskSubjectType {
+  party
+  application
+  partner_organization
+}
+
+enum FraudReviewStatus {
+  open
+  decided
+}
+
+enum FraudDecision {
+  confirmed
+  cleared
+}
+
+model FraudReview {
+  id              String            @id @default(uuid(7)) @db.Uuid
+  subjectType     RiskSubjectType   @map("subject_type")
+  subjectId       String            @map("subject_id") @db.Uuid
+  partyId         String?           @map("party_id") @db.Uuid
+  applicationId   String?           @map("application_id") @db.Uuid
+  organizationId  String?           @map("organization_id") @db.Uuid
+  status          FraudReviewStatus @default(open)
+  highestSeverity RiskSeverity      @map("highest_severity")
+  decision        FraudDecision?
+  note            String?
+  decidedByUserId String?           @map("decided_by_user_id") @db.Uuid
+  decidedAt       DateTime?         @map("decided_at") @db.Timestamptz(3)
+  version         Int               @default(1)
+  createdAt       DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime          @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  signals RiskSignal[]
+
+  @@index([status, highestSeverity, createdAt])
+  @@index([applicationId])
+  @@index([partyId])
+  @@index([organizationId])
+  @@map("fraud_reviews")
+}
+
+model RiskSignal {
+  id             String           @id @default(uuid(7)) @db.Uuid
+  reviewId       String           @map("review_id") @db.Uuid
+  kind           RiskSignalKind
+  severity       RiskSeverity
+  source         RiskSource
+  ruleKey        String           @map("rule_key")
+  subjectType    RiskSubjectType  @map("subject_type")
+  subjectId      String           @map("subject_id") @db.Uuid
+  partyId        String?          @map("party_id") @db.Uuid
+  applicationId  String?          @map("application_id") @db.Uuid
+  organizationId String?          @map("organization_id") @db.Uuid
+  evidence       Json
+  fingerprint    String
+  status         RiskSignalStatus @default(open)
+  createdAt      DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  review FraudReview @relation(fields: [reviewId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([status, severity, createdAt])
+  @@index([kind, status])
+  @@index([applicationId])
+  @@index([partyId])
+  @@map("risk_signals")
+}

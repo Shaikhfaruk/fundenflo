@@ -22,6 +22,7 @@ export const QueueName = {
   LeadsReferrals: 'leads.referrals',
   CommissionsAccrue: 'commissions.accrue',
   CommissionsNotify: 'commissions.notify',
+  RiskDetect: 'risk.detect',
 } as const;
 
 export type QueueName = (typeof QueueName)[keyof typeof QueueName];

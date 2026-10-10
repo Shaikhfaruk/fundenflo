@@ -8,13 +8,14 @@ import { ErrorCode } from '../../../common/errors/error-codes.js';
 import { EventName } from '../../../common/events/event-names.js';
 import { assertVersion } from '../../../common/http/versioning.js';
 import { namesCompatible } from '../../../engines/party-matching/lead-match.js';
-import { CipherPurpose } from '../../../infrastructure/crypto/crypto.constants.js';
+import { BlindIndexDomain, CipherPurpose } from '../../../infrastructure/crypto/crypto.constants.js';
+import { BlindIndex } from '../../../infrastructure/crypto/blind-index.service.js';
 import { FieldCipher } from '../../../infrastructure/crypto/field-cipher.service.js';
 import { InjectPanVerifier, PAN_STATUS_MESSAGES, PAN_UNVERIFIED_MESSAGE, PanStatus, type PanVerifier } from '../../../integrations/kyc/pan-verifier.port.js';
 import { ChangeRecorder } from '../../audit/application/change-recorder.service.js';
 import { AuditAction, AuditEntity } from '../../audit/domain/audit.constants.js';
 import { PartyService } from '../../parties/application/party.service.js';
-import { BANK_ACCOUNT_VISIBLE_DIGITS, DECLARED_SOURCE, GSTIN_PAN_SLICE, PARTNER_KYC_SOURCE } from '../domain/partner.constants.js';
+import { BANK_ACCOUNT_VISIBLE_DIGITS, BANK_SHARE_SCAN_LIMIT, DECLARED_SOURCE, GSTIN_PAN_SLICE, PARTNER_KYC_SOURCE } from '../domain/partner.constants.js';
 import { type PartnerWithDetails, PartnerRepository } from '../infrastructure/partner.repository.js';
 import { toPartnerView } from './partner.views.js';
 
@@ -28,6 +29,7 @@ export class PartnerKycService {
     private readonly partners: PartnerRepository,
     private readonly parties: PartyService,
     private readonly cipher: FieldCipher,
+    private readonly blindIndex: BlindIndex,
     private readonly changes: ChangeRecorder,
     @InjectPanVerifier() private readonly verifier: PanVerifier,
   ) {}
@@ -51,6 +53,12 @@ export class PartnerKycService {
     return partner ? ((await this.parties.identifier(partner.organization.partyId, IdentifierType.pan))?.verified ?? false) : false;
   }
 
+  async sharingBankAccount(organizationId: string) {
+    const partner = await this.partners.findByOrganization(organizationId);
+    if (!partner?.bankAccountHash) return [];
+    return (await this.partners.list({ bankAccountHash: partner.bankAccountHash, organizationId: { not: organizationId } }, BANK_SHARE_SCAN_LIMIT)).map((row) => row.organizationId);
+  }
+
   async bankAccount(organizationId: string): Promise<BankAccountInput | null> {
     const partner = await this.partners.findByOrganization(organizationId);
     return partner?.bankAccountEnc ? this.cipher.decryptJson<BankAccountInput>(partner.bankAccountEnc, CipherPurpose.PartnerBankAccount) : null;
@@ -69,7 +77,7 @@ export class PartnerKycService {
     }
     if (input.gstin) await this.parties.setIdentifier(partyId, { type: IdentifierType.gstin, value: input.gstin, verified: false, source: `${PARTNER_KYC_SOURCE}:${DECLARED_SOURCE}` });
     const bank = input.bankAccount
-      ? { bankAccountEnc: this.cipher.encryptJson(input.bankAccount, CipherPurpose.PartnerBankAccount), bankAccountLast4: input.bankAccount.accountNumber.slice(-BANK_ACCOUNT_VISIBLE_DIGITS), bankIfsc: input.bankAccount.ifsc, bankUpdatedAt: new Date() }
+      ? { bankAccountEnc: this.cipher.encryptJson(input.bankAccount, CipherPurpose.PartnerBankAccount), bankAccountLast4: input.bankAccount.accountNumber.slice(-BANK_ACCOUNT_VISIBLE_DIGITS), bankIfsc: input.bankAccount.ifsc, bankAccountHash: this.blindIndex.hash(BlindIndexDomain.BankAccount, `${input.bankAccount.ifsc}:${input.bankAccount.accountNumber}`), bankUpdatedAt: new Date() }
       : {};
     const panVerified = (await this.parties.identifier(partyId, IdentifierType.pan))?.verified ?? false;
     const hasBank = Boolean(input.bankAccount ?? partner.bankAccountEnc);

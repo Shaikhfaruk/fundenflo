@@ -349,8 +349,10 @@ Planned:
 | `POST` | `/ops/submissions/:id/events` | submissions (`SubmissionService.act` for offline lenders: decisions need a note, sanction and disbursal need an evidence document) | staff | M6 | `useful` |
 | `GET` | `/ops/attribution-disputes` | partners (`ops-attribution-disputes.controller.ts` → `AttributionDisputeService.list`) | staff | M7 | `useful` |
 | `POST` | `/ops/attribution-disputes/:id/resolve` | partners (`AttributionDisputeService.resolve`: keep the holder, transfer with a fresh protection window, or void the protection) | staff | M7 | `useful` |
-| `GET` | `/ops/risk-signals` | risk | staff | M8 | `planned` |
-| `POST` | `/ops/fraud-reviews/:id/decision` | risk | staff | M8 | `planned` |
+| `GET` | `/ops/risk-signals` | risk (`ops-risk.controller.ts` → `RiskService.signals` with kind, severity, status, application and party filters) | staff | M8 | `useful` |
+| `GET` | `/ops/fraud-reviews` | risk (`RiskService.reviews`; added: the review queue) | staff | M8 | `useful` |
+| `GET` | `/ops/fraud-reviews/:id` | risk (`RiskService.review` with its signals; added) | staff | M8 | `useful` |
+| `POST` | `/ops/fraud-reviews/:id/decision` | risk (`RiskService.decide`: cleared dismisses the signals, confirmed keeps the hold) | staff | M8 | `useful` |
 
 ## 40–44 Admin (non-versioned resources)
 

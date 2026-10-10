@@ -14,6 +14,7 @@ import { LendersModule } from './modules/lenders/lenders.module.js';
 import { MATCHING_PROCESSORS, MatchingModule } from './modules/matching/matching.module.js';
 import { SUBMISSION_PROCESSORS, SubmissionsModule } from './modules/submissions/submissions.module.js';
 import { COMMISSION_PROCESSORS, CommissionsModule } from './modules/commissions/commissions.module.js';
+import { RISK_PROCESSORS, RiskModule } from './modules/risk/risk.module.js';
 import { SUBSCRIPTION_PROCESSORS, SubscriptionsModule } from './modules/subscriptions/subscriptions.module.js';
 import { LEAD_PROCESSORS, LeadsModule } from './modules/leads/leads.module.js';
 import { RealtimeModule } from './modules/realtime/realtime.module.js';
@@ -43,7 +44,8 @@ import { WorkerScheduler } from './worker-scheduler.service.js';
     MatchingModule,
     SubmissionsModule,
     CommissionsModule,
+    RiskModule,
   ],
-  providers: [OutboxRelayProcessor, SessionRevocationProcessor, MaintenanceProcessor, WorkerScheduler, ...LEAD_PROCESSORS, ...IMPORT_PROCESSORS, ...SLA_PROCESSORS, ...DOCUMENT_PROCESSORS, ...APPLICATION_PROCESSORS, ...ASSESSMENT_PROCESSORS, ...SUBSCRIPTION_PROCESSORS, ...MATCHING_PROCESSORS, ...SUBMISSION_PROCESSORS, ...COMMISSION_PROCESSORS],
+  providers: [OutboxRelayProcessor, SessionRevocationProcessor, MaintenanceProcessor, WorkerScheduler, ...LEAD_PROCESSORS, ...IMPORT_PROCESSORS, ...SLA_PROCESSORS, ...DOCUMENT_PROCESSORS, ...APPLICATION_PROCESSORS, ...ASSESSMENT_PROCESSORS, ...SUBSCRIPTION_PROCESSORS, ...MATCHING_PROCESSORS, ...SUBMISSION_PROCESSORS, ...COMMISSION_PROCESSORS, ...RISK_PROCESSORS],
 })
 export class WorkerModule {}

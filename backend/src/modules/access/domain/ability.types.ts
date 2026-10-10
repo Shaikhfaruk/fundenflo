@@ -27,6 +27,8 @@ import type {
   PartnerPayout,
   ReconciliationRun,
   LedgerEntry,
+  RiskSignal,
+  FraudReview,
   LoanApplication,
   Membership,
   OfflineConversion,
@@ -95,6 +97,8 @@ export type AppSubjects =
       PartnerPayout: PartnerPayout;
       ReconciliationRun: ReconciliationRun;
       LedgerEntry: LedgerEntry;
+      RiskSignal: RiskSignal;
+      FraudReview: FraudReview;
     }>;
 
 export type AppAbility = Ability<[AppAction, AppSubjects], PrismaQueryOf<Prisma.TypeMap>>;

@@ -55,3 +55,5 @@ export const BANK_ACCOUNT_VISIBLE_DIGITS = 4;
 export const PARTNER_KYC_SOURCE = 'partner_kyc';
 
 export const DECLARED_SOURCE = 'declared';
+
+export const BANK_SHARE_SCAN_LIMIT = 20;

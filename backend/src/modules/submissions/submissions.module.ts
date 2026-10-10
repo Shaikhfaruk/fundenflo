@@ -10,6 +10,7 @@ import { ConsentsModule } from '../consents/consents.module.js';
 import { DocumentsModule } from '../documents/documents.module.js';
 import { LendersModule } from '../lenders/lenders.module.js';
 import { MatchingModule } from '../matching/matching.module.js';
+import { RiskModule } from '../risk/risk.module.js';
 import { DocumentRequestService } from './application/document-request.service.js';
 import { SubmissionDocumentOwner } from './application/submission-document.owner.js';
 import { SubmissionNotificationService } from './application/submission-notification.service.js';
@@ -27,7 +28,7 @@ import { SubmissionRepository } from './infrastructure/submission.repository.js'
 export const SUBMISSION_PROCESSORS = [SubmissionDeliverProcessor, SubmissionNotifyProcessor, SubmissionSyncProcessor];
 
 @Module({
-  imports: [AccessModule, ApplicationsModule, AssessmentsModule, AttributesModule, AuthModule, ConfigPublishingModule, ConsentsModule, DocumentsModule, LendersModule, MatchingModule],
+  imports: [AccessModule, ApplicationsModule, AssessmentsModule, AttributesModule, AuthModule, ConfigPublishingModule, ConsentsModule, DocumentsModule, LendersModule, MatchingModule, RiskModule],
   controllers: [ApplicationSubmissionsController, LenderSubmissionsController, OpsSubmissionsController],
   providers: [SubmissionRepository, SubmissionPacketBuilder, DocumentRequestService, SubmissionService, SubmissionNotificationService, SubmissionDocumentOwner, SubmissionStatusSubscriptionTarget],
   exports: [SubmissionService, DocumentRequestService, SubmissionNotificationService],

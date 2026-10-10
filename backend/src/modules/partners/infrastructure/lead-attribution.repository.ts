@@ -1,7 +1,7 @@
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
 
-import { DisputeStatus, ReferralCodeStatus } from '../../../common/enums/db.enums.js';
+import { type AttributionKind, DisputeStatus, ReferralCodeStatus } from '../../../common/enums/db.enums.js';
 import type { Prisma } from '../../../generated/prisma/client.js';
 import type { PrismaTx } from '../../../infrastructure/database/database.types.js';
 
@@ -75,6 +75,10 @@ export class LeadAttributionRepository {
 
   listForOrganization(organizationId: string, idFilter: Prisma.UuidFilter | undefined, take: number) {
     return this.txHost.tx.leadAttribution.findMany({ where: { organizationId, id: idFilter }, orderBy: { id: 'desc' }, take });
+  }
+
+  countSince(organizationId: string, kind: AttributionKind, since: Date) {
+    return this.txHost.tx.leadAttribution.count({ where: { organizationId, kind, createdAt: { gte: since } } });
   }
 
   countActive(organizationId: string, now: Date) {

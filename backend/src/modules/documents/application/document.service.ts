@@ -30,6 +30,7 @@ import {
   DOCUMENT_SCAN_SLA_KIND,
   DOCUMENT_SCAN_SLA_MINUTES,
   DOCUMENT_UPLOAD_RATE_LIMIT,
+  DOCUMENT_REUSE_SCAN_LIMIT,
   DocumentOwnerKind,
 } from '../domain/document.constants.js';
 import { type UploadFields, uploadFieldsSchema } from '../domain/document-upload.schema.js';
@@ -140,6 +141,12 @@ export class DocumentService {
     const document = await this.documents.findOne({ id, applicationId, status: { in: [...ACTIVE_DOCUMENT_STATES] } });
     if (!document) throw new AppError(ErrorCode.VALIDATION_FAILED, { details: [{ path: 'evidenceDocumentId', code: 'unknown_document', message: 'upload the evidence for this submission first' }] });
     return document.id;
+  }
+
+  async reuseOf(id: string) {
+    const document = await this.documents.findOne({ id });
+    if (!document) return null;
+    return { documentId: id, documentType: document.documentType.key, partyId: document.partyId, applicationId: document.applicationId, otherPartyIds: await this.documents.partiesWithSha(document.sha256, document.partyId, DOCUMENT_REUSE_SCAN_LIMIT) };
   }
 
   async lockShared(ids: string[]) {

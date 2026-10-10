@@ -70,3 +70,5 @@ export const DocumentOwnerKind = {
 export type DocumentOwnerKind = (typeof DocumentOwnerKind)[keyof typeof DocumentOwnerKind];
 
 export const DOCUMENT_OWNER_METADATA = 'documents:owner';
+
+export const DOCUMENT_REUSE_SCAN_LIMIT = 20;
