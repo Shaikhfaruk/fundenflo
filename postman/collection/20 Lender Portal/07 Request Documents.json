@@ -1,0 +1,154 @@
+{
+  "name": "Request Documents From Borrower",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/lender/submissions/:id/document-requests",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "lender",
+        "submissions",
+        ":id",
+        "document-requests"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{submissionId}}"
+        }
+      ]
+    },
+    "description": "Asks the borrower for more documents (active document type keys, up to 10, optional due date up to 30 days). A file under review moves to `query_raised`; the borrower is notified by push or SMS. Lender context: admins and credit officers act, viewers read. Only files already sent to the signed-in lender's organization are visible.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"documentTypes\": [\n    \"itr\"\n  ],\n  \"note\": \"Latest ITR with computation please\",\n  \"dueInDays\": 7\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "pm.collectionVariables.set('documentRequestId', String(pm.response.json().id));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/lender/submissions/:id/document-requests",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "lender",
+            "submissions",
+            ":id",
+            "document-requests"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{submissionId}}"
+            }
+          ]
+        },
+        "description": "Asks the borrower for more documents (active document type keys, up to 10, optional due date up to 30 days). A file under review moves to `query_raised`; the borrower is notified by push or SMS. Lender context: admins and credit officers act, viewers read. Only files already sent to the signed-in lender's organization are visible.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"documentTypes\": [\n    \"itr\"\n  ],\n  \"note\": \"Latest ITR with computation please\",\n  \"dueInDays\": 7\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12300-2b3c-7d4e-9f50-61728394a5b6\",\n  \"applicationId\": \"01a12260-2b3c-7d4e-9f50-61728394a5b6\",\n  \"submissionId\": \"01a12300-1a2b-7c3d-8e4f-5061728394a5\",\n  \"status\": \"open\",\n  \"documentTypes\": [\n    {\n      \"key\": \"itr\",\n      \"label\": \"Income Tax Return\"\n    }\n  ],\n  \"note\": \"Latest ITR with computation please\",\n  \"requestedContext\": \"lender\",\n  \"dueAt\": \"2026-10-17T22:00:00.000Z\",\n  \"fulfilledDocumentIds\": [],\n  \"fulfilledAt\": null,\n  \"cancelledAt\": null,\n  \"createdAt\": \"2026-10-10T22:00:00.000Z\"\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/lender/submissions/:id/document-requests",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "lender",
+            "submissions",
+            ":id",
+            "document-requests"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{submissionId}}"
+            }
+          ]
+        },
+        "description": "Asks the borrower for more documents (active document type keys, up to 10, optional due date up to 30 days). A file under review moves to `query_raised`; the borrower is notified by push or SMS. Lender context: admins and credit officers act, viewers read. Only files already sent to the signed-in lender's organization are visible.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"documentTypes\": [\n    \"itr\"\n  ],\n  \"note\": \"Latest ITR with computation please\",\n  \"dueInDays\": 7\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"documentTypes\",\n      \"code\": \"unknown_key\",\n      \"message\": \"unknown or inactive document type payslip\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

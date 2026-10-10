@@ -1,0 +1,252 @@
+{
+  "name": "Submissions: publish a lender product and a scoring model, score and match a case, request, withdraw and approve a submission, deliver it to an invited lender, answer a document request, sanction and disburse",
+  "requires": [
+    "staffInvitation",
+    "checkerInvitation"
+  ],
+  "steps": [
+    {
+      "request": "01 Auth/06 Accept Staff Invitation.json",
+      "identity": "maker"
+    },
+    {
+      "request": "01 Auth/07 Staff Login.json",
+      "identity": "maker"
+    },
+    {
+      "request": "01 Auth/08 Verify Staff MFA.json",
+      "identity": "maker"
+    },
+    {
+      "request": "58 Admin - Lenders/02 Create Lender.json"
+    },
+    {
+      "request": "58 Admin - Lenders/04 Update Lender.json"
+    },
+    {
+      "request": "58 Admin - Lenders/06 Create Lender Agreement.json"
+    },
+    {
+      "request": "58 Admin - Lenders/07 Update Lender Agreement.json"
+    },
+    {
+      "request": "58 Admin - Lenders/12 Create Lender Product.json"
+    },
+    {
+      "request": "58 Admin - Lenders/18 Submit Lender Product Version.json"
+    },
+    {
+      "request": "01 Auth/01 Request OTP.json",
+      "identity": "borrower",
+      "variables": {
+        "loginAs": "borrower"
+      }
+    },
+    {
+      "request": "01 Auth/02 Verify OTP.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "04 Borrower Journey/05 Create Application.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "04 Borrower Journey/08 Update Requirement.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "04 Borrower Journey/11 Submit Application Answers.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "03 Catalog/07 Get Consent Template.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "04 Borrower Journey/16 Give Application Consents.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "01 Auth/06 Accept Staff Invitation.json",
+      "identity": "checker"
+    },
+    {
+      "request": "01 Auth/07 Staff Login.json",
+      "identity": "checker"
+    },
+    {
+      "request": "01 Auth/08 Verify Staff MFA.json",
+      "identity": "checker"
+    },
+    {
+      "request": "48 Admin - Change Requests/03 Approve Change Request.json",
+      "identity": "checker"
+    },
+    {
+      "request": "57 Ops - Cases/05 Assign Case.json",
+      "identity": "checker"
+    },
+    {
+      "request": "58 Admin - Lenders/19 Publish Lender Product Version.json",
+      "identity": "maker"
+    },
+    {
+      "request": "59 Admin - Scoring & Improvement/02 Create Scoring Model.json",
+      "identity": "maker"
+    },
+    {
+      "request": "59 Admin - Scoring & Improvement/08 Submit Scoring Model Version.json",
+      "identity": "maker"
+    },
+    {
+      "request": "48 Admin - Change Requests/03 Approve Change Request.json",
+      "identity": "checker"
+    },
+    {
+      "request": "59 Admin - Scoring & Improvement/09 Publish Scoring Model Version.json",
+      "identity": "maker"
+    },
+    {
+      "request": "06 Assessment & Matching/01 Start Analysis.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "06 Assessment & Matching/02 Get Analysis.json",
+      "identity": "borrower",
+      "waitSeconds": 3
+    },
+    {
+      "request": "06 Assessment & Matching/04 Match Lenders.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "07 Applications & Submissions/02 Request Submission.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "07 Applications & Submissions/05 Withdraw Submission.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "07 Applications & Submissions/02 Request Submission.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "07 Applications & Submissions/03 List Submissions.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "04 Borrower Journey/22 Share File With Lender.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "05 Documents/01 Upload Document.json",
+      "identity": "borrower",
+      "variables": {
+        "documentType": "udyam_certificate"
+      }
+    },
+    {
+      "request": "44 Admin - Users, Access & Audit/11 Invite Lender User.json",
+      "identity": "maker"
+    },
+    {
+      "request": "01 Auth/01 Request OTP.json",
+      "identity": "lender",
+      "variables": {
+        "mobile": "{{lenderMobile}}",
+        "loginAs": "lender"
+      }
+    },
+    {
+      "request": "01 Auth/02 Verify OTP.json",
+      "identity": "lender"
+    },
+    {
+      "request": "61 Ops - Submissions/01 List Submissions.json",
+      "identity": "maker",
+      "waitSeconds": 3
+    },
+    {
+      "request": "61 Ops - Submissions/02 Get Submission.json",
+      "identity": "maker"
+    },
+    {
+      "request": "61 Ops - Submissions/03 Approve Submission.json",
+      "identity": "maker"
+    },
+    {
+      "request": "57 Ops - Cases/06 Request Case Documents.json",
+      "identity": "maker"
+    },
+    {
+      "request": "20 Lender Portal/03 List Submissions.json",
+      "identity": "lender",
+      "waitSeconds": 3
+    },
+    {
+      "request": "20 Lender Portal/04 Get Submission.json",
+      "identity": "lender"
+    },
+    {
+      "request": "20 Lender Portal/05 Get Shared Document URL.json",
+      "identity": "lender"
+    },
+    {
+      "request": "20 Lender Portal/06 Acknowledge Submission.json",
+      "identity": "lender"
+    },
+    {
+      "request": "20 Lender Portal/07 Request Documents.json",
+      "identity": "lender"
+    },
+    {
+      "request": "07 Applications & Submissions/06 List Document Requests.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "07 Applications & Submissions/04 Get Submission.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "61 Ops - Submissions/04 Record Lender Update.json",
+      "identity": "maker"
+    },
+    {
+      "request": "05 Documents/06 Upload Submission Evidence.json",
+      "identity": "lender"
+    },
+    {
+      "request": "20 Lender Portal/08 Sanction Submission.json",
+      "identity": "lender"
+    },
+    {
+      "request": "20 Lender Portal/09 Record Disbursal.json",
+      "identity": "lender"
+    },
+    {
+      "request": "07 Applications & Submissions/04 Get Submission.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "04 Borrower Journey/07 Get Application.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "59 Admin - Scoring & Improvement/05 Create Scoring Model Version.json",
+      "identity": "maker"
+    },
+    {
+      "request": "59 Admin - Scoring & Improvement/10 Retire Scoring Model Version.json",
+      "identity": "maker"
+    },
+    {
+      "request": "58 Admin - Lenders/15 Create Lender Product Version.json",
+      "identity": "maker"
+    },
+    {
+      "request": "58 Admin - Lenders/20 Retire Lender Product Version.json",
+      "identity": "maker"
+    }
+  ]
+}

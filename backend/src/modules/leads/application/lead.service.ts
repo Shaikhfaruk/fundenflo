@@ -1,7 +1,7 @@
 import { Transactional } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
 
-import { AssignmentStatus, ContactType, LeadEventType, type LeadConsentStatus, type LeadFlag, type LeadLostReason, LeadStatus, LeadUnqualifiedReason, type LeadUrgency } from '../../../common/enums/db.enums.js';
+import { type ApplicationStatus, AssignmentStatus, ContactType, LeadEventType, type LeadConsentStatus, type LeadFlag, type LeadLostReason, LeadStatus, LeadUnqualifiedReason, type LeadUrgency } from '../../../common/enums/db.enums.js';
 import { EventName } from '../../../common/events/event-names.js';
 import { AppError } from '../../../common/errors/app-error.js';
 import { ErrorCode } from '../../../common/errors/error-codes.js';
@@ -19,7 +19,7 @@ import { PlaceLocator } from '../../catalog/application/place-locator.service.js
 import { ConsentRequestService } from '../../consents/application/consent-request.service.js';
 import { LeadAttributionService } from '../../partners/application/lead-attribution.service.js';
 import { PartyService } from '../../parties/application/party.service.js';
-import { DEFAULT_LEAD_CONSENT_CONTEXT } from '../domain/lead.constants.js';
+import { DEFAULT_LEAD_CONSENT_CONTEXT, LEAD_CLOSE_FOR_APPLICATION } from '../domain/lead.constants.js';
 import { AssignmentCloseReason } from '../domain/lead-routing.constants.js';
 import { LeadRepository } from '../infrastructure/lead.repository.js';
 import { LeadAssignmentService } from './lead-assignment.service.js';
@@ -186,6 +186,15 @@ export class LeadService {
     await this.act(lead.id, { event: LeadEvent.Convert, note: 'Application started' });
     await this.changes.record({ action: AuditAction.LeadConverted, entityType: AuditEntity.Lead, entityId: lead.id, event: EventName.LeadConverted, metadata: { ref: lead.ref, applicationId }, payload: { leadId: lead.id, applicationId } });
     return lead.id;
+  }
+
+  async closeFromApplication(leadId: string, status: ApplicationStatus) {
+    const reason = LEAD_CLOSE_FOR_APPLICATION[status];
+    if (reason === undefined) return;
+    await this.leads.lockLead(leadId);
+    if ((await this.require(leadId)).status !== LeadStatus.converted) return;
+    const note = `Application ${status}`;
+    await this.act(leadId, reason === null ? { event: LeadEvent.Win, note } : { event: LeadEvent.Lose, reason, note });
   }
 
   async protectingOrganizations(partyIds: string[]) {

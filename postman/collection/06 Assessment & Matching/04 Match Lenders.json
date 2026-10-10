@@ -29,7 +29,9 @@
         "type": "text/javascript",
         "exec": [
           "pm.test('responds 201', () => pm.response.to.have.status(201));",
-          "const first = pm.response.json().items[0]; if (first) pm.collectionVariables.set('matchResultId', first.id);"
+          "const items = pm.response.json().items;",
+          "const chosen = items.find((item) => item.lender.id === pm.collectionVariables.get('lenderId') && item.outcome === 'eligible') || items[0];",
+          "if (chosen) pm.collectionVariables.set('matchResultId', chosen.id);"
         ]
       }
     }

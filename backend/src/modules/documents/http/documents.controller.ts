@@ -23,6 +23,7 @@ export class DocumentsController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @AllowContexts(SessionContext.borrower, SessionContext.partner, SessionContext.lender, SessionContext.staff)
   @RateLimitByIp(DOCUMENT_UPLOAD_IP_RATE_LIMIT)
   @CheckPolicies((ability) => ability.can(AppAction.Create, 'Document'))
   @UseInterceptors(FileInterceptor(DOCUMENT_UPLOAD_FIELD))

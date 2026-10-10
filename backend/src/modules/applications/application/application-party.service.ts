@@ -48,6 +48,11 @@ export class ApplicationPartyService {
     return { coApplicants: rows.filter((row) => row.role === ApplicationPartyRole.co_applicant).map((row) => row.partyId), directors: rows.filter((row) => row.role === ApplicationPartyRole.director).map((row) => row.partyId) };
   }
 
+  async coParties(applicationId: string) {
+    const rows = await this.repository.parties(applicationId, ApplicationPartyStatus.active);
+    return rows.filter((row) => (CO_PARTY_ROLES as readonly string[]).includes(row.role)).map((row) => ({ partyId: row.partyId, role: row.role, name: row.party.displayName }));
+  }
+
   async list(applicationId: string, ability: AppAbility) {
     await this.applications.get(applicationId, ability);
     const rows = await this.repository.parties(applicationId);

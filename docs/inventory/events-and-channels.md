@@ -49,7 +49,11 @@
 | `analysis.completed` | assessments (`AnalysisService.finish` / `fail`; payload status, requester, score result) | `notifications.subscriptions`; `realtime.publish` (`analysis.changed`); M6 matching | requester's user room | M5 | `useful` | spec `assessments`; flow `assessments` |
 | `score.computed` | assessments (`ScoringService.score`) | `matching.run` | — | M5 | `useful` | spec `assessments` |
 | `match.completed` | matching (`MatchingService.persist`) | none yet (submissions use the latest run) | — | M6 | `useful` | spec `matching` |
-| `submission.status.changed` · `submission.disbursed` | applications | commissions, leads, notifications | user, partner org, lender org rooms | M6 | `planned` | §8.2 |
+| `submission.requested` · `submission.approved` | submissions (`SubmissionService.request` / `approve`) | `submissions.deliver` (approved); `realtime.publish` (`submission.changed`) | staff room, requester's user room, filing partner org room | M6 | `useful` | spec `submissions`; flow `submissions` |
+| `submission.status.changed` | submissions (`SubmissionService.move`; payload from, to, lender organization, `lenderVisible` once sent) | `submissions.notify` (lender users on `sent_to_lender`); `realtime.publish` | staff, requester, partner org and, once sent, lender org rooms | M6 | `useful` | spec `submissions`; flow `submissions` (lender SMS sent) |
+| `submission.disbursed` | submissions (every disbursal tranche; amount, total, sanction, lead, partner org) | `realtime.publish`; M7 `commissions.accrue` | same as above | M6 | `useful` | spec `submissions` |
+| `document.requested` · `document.request_fulfilled` | submissions (`DocumentRequestService.create` / fulfilment) | `submissions.notify` (borrower and filing partner, push with SMS fallback) | — | M6 | `useful` | spec `submissions`; flow `submissions` |
+| `case.assigned` | applications (`ApplicationService.assign`) | none yet (ops console reads the case) | — | M6 | `useful` | spec `submissions` |
 | `receivable.received` · `payout.paid` · `payout.reversed` | commissions | notifications, reports | partner org room | M7 | `planned` | §8.5 |
 | `risk.signal.raised` | risk, documents | ops queue (assignment) | ops room | M8 | `planned` | §13 |
 
@@ -59,11 +63,11 @@ Built in M1.9a. Gateway: `backend/src/modules/realtime/http/realtime.gateway.ts`
 
 | Room | Who joins | Server → client events | Milestone | Status |
 |---|---|---|---|---|
-| `user:{userId}` | every session of the user | `follow_up.due`, `document.changed` (`{ documentId, applicationId, status }` for documents the user uploaded), `analysis.changed` (`{ analysisId, applicationId, status }` for analyses the user started); disconnected when the user is suspended | M1, M3 | `useful` |
+| `user:{userId}` | every session of the user | `follow_up.due`, `document.changed` (`{ documentId, applicationId, status }` for documents the user uploaded), `analysis.changed` (`{ analysisId, applicationId, status }` for analyses the user started), `submission.changed` (`{ submissionId, applicationId, status }` for submissions the user requested); disconnected when the user is suspended | M1, M3, M6 | `useful` |
 | `session:{sessionId}` | that session | (reserved for session-level pushes) | M1 | `useful` |
 | `membership:{membershipId}` | sessions acting as that membership | `lead.assignment.changed`, `lead.sla` for leads handed to the member; disconnected when the membership stops being active | M1 | `useful` |
-| `org:{organizationId}` | partner and lender sessions of that organization | `lead.assignment.changed`, `lead.sla`, `lead.conversion.changed`, `document.changed` (documents of the firm's clients); later `submission.updated`, `payout.updated` | M1, M3 | `useful` |
-| `staff` | staff sessions | `lead.changed`, `lead.assignment.changed`, `lead.sla`, `lead.conversion.changed`, `import.changed` | M1 | `useful` |
+| `org:{organizationId}` | partner and lender sessions of that organization | `lead.assignment.changed`, `lead.sla`, `lead.conversion.changed`, `document.changed` (documents of the firm's clients), `submission.changed` (the firm's filed cases; lender organizations only after the file is sent); later `payout.updated` | M1, M3, M6 | `useful` |
+| `staff` | staff sessions | `lead.changed`, `lead.assignment.changed`, `lead.sla`, `lead.conversion.changed`, `import.changed`, `submission.changed` | M1, M6 | `useful` |
 
 
 Room joins are authorised on connect, using the same CASL abilities as HTTP.
@@ -87,5 +91,7 @@ Room joins are authorised on connect, using the same CASL abilities as HTTP.
 | `import.completed` | email | uploader | M1 | `planned` |
 | `analysis.completed` | push, SMS (`SMS_DLT_TEMPLATE_ANALYSIS_COMPLETED`) by subscription; WhatsApp needs a provider | subscriber | M5 | `useful` |
 | `application.status_changed` | push, SMS (`SMS_DLT_TEMPLATE_APPLICATION_STATUS`) by subscription | subscriber | M5 | `useful` |
-| `application.status_changed` · `document.requested` | push, SMS, WhatsApp (opt-in) | borrower, partner | M6 | `planned` |
+| `submission.received` | email, push, SMS (`SMS_DLT_TEMPLATE_SUBMISSION_RECEIVED`) | lender admins and credit officers of the lender organization | M6 | `useful` |
+| `document.requested` | push with SMS fallback (`SMS_DLT_TEMPLATE_DOCUMENT_REQUESTED`) | applicant and the partner user who filed the case | M6 | `useful` |
+| WhatsApp for `application.status_changed` · `document.requested` | WhatsApp (opt-in) | borrower, partner | M6 | `planned` (needs a provider) |
 | `payout.paid` | email, SMS | partner owner | M7 | `planned` |

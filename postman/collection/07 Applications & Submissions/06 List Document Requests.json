@@ -1,0 +1,73 @@
+{
+  "name": "List Document Requests",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/applications/:id/document-requests",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "applications",
+        ":id",
+        "document-requests"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{applicationId}}"
+        }
+      ]
+    },
+    "description": "Documents a lender or the ops team asked for. A request is fulfilled automatically once every asked type has a new clean upload, and the lender query is answered when its last request is fulfilled. Borrower, partner and staff contexts."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/applications/:id/document-requests",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "applications",
+            ":id",
+            "document-requests"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            }
+          ]
+        },
+        "description": "Documents a lender or the ops team asked for. A request is fulfilled automatically once every asked type has a new clean upload, and the lender query is answered when its last request is fulfilled. Borrower, partner and staff contexts."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a12300-2b3c-7d4e-9f50-61728394a5b6\",\n      \"applicationId\": \"01a12260-2b3c-7d4e-9f50-61728394a5b6\",\n      \"submissionId\": \"01a12300-1a2b-7c3d-8e4f-5061728394a5\",\n      \"status\": \"open\",\n      \"documentTypes\": [\n        {\n          \"key\": \"itr\",\n          \"label\": \"Income Tax Return\"\n        }\n      ],\n      \"note\": \"Latest ITR with computation please\",\n      \"requestedContext\": \"lender\",\n      \"dueAt\": \"2026-10-17T22:00:00.000Z\",\n      \"fulfilledDocumentIds\": [],\n      \"fulfilledAt\": null,\n      \"cancelledAt\": null,\n      \"createdAt\": \"2026-10-10T22:00:00.000Z\"\n    }\n  ]\n}"
+    }
+  ]
+}

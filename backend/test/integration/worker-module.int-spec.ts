@@ -9,6 +9,9 @@ import { DocumentExtractProcessor } from '../../src/modules/documents/infrastruc
 import { DocumentScanProcessor } from '../../src/modules/documents/infrastructure/document-scan.processor.js';
 import { LeadRoutingProcessor } from '../../src/modules/leads/infrastructure/lead-routing.processor.js';
 import { MatchingRunProcessor } from '../../src/modules/matching/infrastructure/matching-run.processor.js';
+import { SubmissionDeliverProcessor } from '../../src/modules/submissions/infrastructure/submission-deliver.processor.js';
+import { SubmissionNotifyProcessor } from '../../src/modules/submissions/infrastructure/submission-notify.processor.js';
+import { SubmissionSyncProcessor } from '../../src/modules/submissions/infrastructure/submission-sync.processor.js';
 import { SubscriptionDeliveryProcessor } from '../../src/modules/subscriptions/infrastructure/subscription-delivery.processor.js';
 import { WorkerModule } from '../../src/worker.module.js';
 
@@ -22,6 +25,9 @@ describe('worker process', () => {
     expect(moduleRef.get(AnalysisRunProcessor)).toBeInstanceOf(AnalysisRunProcessor);
     expect(moduleRef.get(SubscriptionDeliveryProcessor)).toBeInstanceOf(SubscriptionDeliveryProcessor);
     expect(moduleRef.get(MatchingRunProcessor)).toBeInstanceOf(MatchingRunProcessor);
+    expect(moduleRef.get(SubmissionDeliverProcessor)).toBeInstanceOf(SubmissionDeliverProcessor);
+    expect(moduleRef.get(SubmissionNotifyProcessor)).toBeInstanceOf(SubmissionNotifyProcessor);
+    expect(moduleRef.get(SubmissionSyncProcessor)).toBeInstanceOf(SubmissionSyncProcessor);
     await moduleRef.close();
   });
 });

@@ -55,4 +55,8 @@ export const PRE_SUBMISSION_APPLICATION_STATES: readonly ApplicationState[] = OP
 
 export const OPEN_APPLICATION_STATES: readonly ApplicationState[] = [...OPEN, Submitted];
 
+export const APPLIED_APPLICATION_STATES: readonly ApplicationState[] = [Submitted, ClosedWon, ClosedLost];
+
+export const SUBMITTABLE_APPLICATION_STATES: readonly ApplicationState[] = [Assessed, ReadyForSubmission, Submitted];
+
 export const CLOSED_APPLICATION_STATES: readonly ApplicationState[] = [ClosedWon, ClosedLost, Withdrawn, Expired];

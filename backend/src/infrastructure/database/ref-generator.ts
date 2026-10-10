@@ -6,6 +6,7 @@ import type { PrismaTx } from './database.types.js';
 export const RefKind = {
   Lead: { prefix: 'LD', sequence: 'lead_ref_seq' },
   Application: { prefix: 'AP', sequence: 'application_ref_seq' },
+  Submission: { prefix: 'SB', sequence: 'submission_ref_seq' },
 } as const;
 
 export type RefKind = (typeof RefKind)[keyof typeof RefKind];

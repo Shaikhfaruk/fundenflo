@@ -1,0 +1,124 @@
+{
+  "name": "Get Submission",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/applications/:id/submissions/:submissionId",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "applications",
+        ":id",
+        "submissions",
+        ":submissionId"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{applicationId}}"
+        },
+        {
+          "key": "submissionId",
+          "value": "{{submissionId}}"
+        }
+      ]
+    },
+    "description": "One submission with its event history (lender notes hidden from borrowers) and its document requests. Borrower, partner and staff contexts."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.collectionVariables.set('submissionVersion', String(pm.response.json().version));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/applications/:id/submissions/:submissionId",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "applications",
+            ":id",
+            "submissions",
+            ":submissionId"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            },
+            {
+              "key": "submissionId",
+              "value": "{{submissionId}}"
+            }
+          ]
+        },
+        "description": "One submission with its event history (lender notes hidden from borrowers) and its document requests. Borrower, partner and staff contexts."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12300-1a2b-7c3d-8e4f-5061728394a5\",\n  \"ref\": \"SB-26-000041\",\n  \"applicationId\": \"01a12260-2b3c-7d4e-9f50-61728394a5b6\",\n  \"status\": \"query_raised\",\n  \"lender\": {\n    \"id\": \"01a122a0-1a2b-7c3d-8e4f-5061728394a5\",\n    \"key\": \"lenderx\",\n    \"name\": \"Lender X Finance Ltd\"\n  },\n  \"product\": {\n    \"id\": \"01a122a0-5e6f-7a71-9283-94a5b6c7d8e9\",\n    \"key\": \"lenderx.working_capital\",\n    \"versionId\": \"01a122a0-6f70-7b82-a394-a5b6c7d8e9fa\",\n    \"name\": \"Lender X Working Capital\"\n  },\n  \"matchResultId\": \"01a122d0-2b3c-7d4e-9f50-61728394a5b6\",\n  \"approvedAt\": \"2026-10-10T22:00:00.000Z\",\n  \"sentAt\": \"2026-10-10T22:00:00.000Z\",\n  \"lenderReference\": null,\n  \"sanction\": null,\n  \"disbursal\": {\n    \"amountPaise\": 0,\n    \"disbursedAt\": null\n  },\n  \"rejection\": null,\n  \"withdrawnReason\": null,\n  \"closedAt\": null,\n  \"version\": 3,\n  \"createdAt\": \"2026-10-10T22:00:00.000Z\",\n  \"updatedAt\": \"2026-10-10T22:00:00.000Z\",\n  \"events\": [\n    {\n      \"id\": \"01a12300-4d5e-7f60-8172-8394a5b6c7d8\",\n      \"type\": \"requested\",\n      \"fromStatus\": null,\n      \"toStatus\": \"pending_approval\",\n      \"actorType\": \"user\",\n      \"actorContext\": \"borrower\",\n      \"note\": null,\n      \"data\": {\n        \"matchResultId\": \"01a122d0-2b3c-7d4e-9f50-61728394a5b6\"\n      },\n      \"evidenceDocumentId\": null,\n      \"createdAt\": \"2026-10-10T22:00:00.000Z\"\n    }\n  ],\n  \"documentRequests\": [\n    {\n      \"id\": \"01a12300-2b3c-7d4e-9f50-61728394a5b6\",\n      \"applicationId\": \"01a12260-2b3c-7d4e-9f50-61728394a5b6\",\n      \"submissionId\": \"01a12300-1a2b-7c3d-8e4f-5061728394a5\",\n      \"status\": \"open\",\n      \"documentTypes\": [\n        {\n          \"key\": \"itr\",\n          \"label\": \"Income Tax Return\"\n        }\n      ],\n      \"note\": \"Latest ITR with computation please\",\n      \"requestedContext\": \"lender\",\n      \"dueAt\": \"2026-10-17T22:00:00.000Z\",\n      \"fulfilledDocumentIds\": [],\n      \"fulfilledAt\": null,\n      \"cancelledAt\": null,\n      \"createdAt\": \"2026-10-10T22:00:00.000Z\"\n    }\n  ]\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/applications/:id/submissions/:submissionId",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "applications",
+            ":id",
+            "submissions",
+            ":submissionId"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            },
+            {
+              "key": "submissionId",
+              "value": "{{submissionId}}"
+            }
+          ]
+        },
+        "description": "One submission with its event history (lender notes hidden from borrowers) and its document requests. Borrower, partner and staff contexts."
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

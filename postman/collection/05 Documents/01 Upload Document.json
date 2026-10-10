@@ -12,13 +12,13 @@
         "documents"
       ]
     },
-    "description": "Multipart upload (`file`, `documentType`, and either `applicationId` or `borrowerProfileId`; optional `password` for a protected PDF, stored encrypted for extraction). The file streams straight to private storage; its type is read from the content (a renamed file is refused with 415), checked against the document type's accepted types and size limit (413), and hashed. The same file uploaded again for the same slot returns the existing document. New documents start as `uploaded` and are scanned for malware in the background (`scanned` or `rejected` with `rejectReason: infected`). Profile-level documents (no application) count for every application of that profile. Borrowers see the documents of their own borrower profiles and applications; staff see them by role (ops and compliance can also download; support sees metadata only). Others get 404.",
+    "description": "Multipart upload (`file`, `documentType` (the collection variable defaults to `bank_statement`), and one of `applicationId`, `borrowerProfileId`, `lenderId` (staff, agreements) or `submissionId` (lender users and staff: sanction letters and disbursal advice for that file); optional `password` for a protected PDF, stored encrypted for extraction). The file streams straight to private storage; its type is read from the content (a renamed file is refused with 415), checked against the document type's accepted types and size limit (413), and hashed. The same file uploaded again for the same slot returns the existing document. New documents start as `uploaded` and are scanned for malware in the background (`scanned` or `rejected` with `rejectReason: infected`). Profile-level documents (no application) count for every application of that profile. Borrowers see the documents of their own borrower profiles and applications; staff see them by role (ops and compliance can also download; support sees metadata only). Others get 404.",
     "body": {
       "mode": "formdata",
       "formdata": [
         {
           "key": "documentType",
-          "value": "bank_statement",
+          "value": "{{documentType}}",
           "type": "text"
         },
         {
@@ -61,13 +61,13 @@
             "documents"
           ]
         },
-        "description": "Multipart upload (`file`, `documentType`, and either `applicationId` or `borrowerProfileId`; optional `password` for a protected PDF, stored encrypted for extraction). The file streams straight to private storage; its type is read from the content (a renamed file is refused with 415), checked against the document type's accepted types and size limit (413), and hashed. The same file uploaded again for the same slot returns the existing document. New documents start as `uploaded` and are scanned for malware in the background (`scanned` or `rejected` with `rejectReason: infected`). Profile-level documents (no application) count for every application of that profile. Borrowers see the documents of their own borrower profiles and applications; staff see them by role (ops and compliance can also download; support sees metadata only). Others get 404.",
+        "description": "Multipart upload (`file`, `documentType` (the collection variable defaults to `bank_statement`), and one of `applicationId`, `borrowerProfileId`, `lenderId` (staff, agreements) or `submissionId` (lender users and staff: sanction letters and disbursal advice for that file); optional `password` for a protected PDF, stored encrypted for extraction). The file streams straight to private storage; its type is read from the content (a renamed file is refused with 415), checked against the document type's accepted types and size limit (413), and hashed. The same file uploaded again for the same slot returns the existing document. New documents start as `uploaded` and are scanned for malware in the background (`scanned` or `rejected` with `rejectReason: infected`). Profile-level documents (no application) count for every application of that profile. Borrowers see the documents of their own borrower profiles and applications; staff see them by role (ops and compliance can also download; support sees metadata only). Others get 404.",
         "body": {
           "mode": "formdata",
           "formdata": [
             {
               "key": "documentType",
-              "value": "bank_statement",
+              "value": "{{documentType}}",
               "type": "text"
             },
             {
@@ -108,13 +108,13 @@
             "documents"
           ]
         },
-        "description": "Multipart upload (`file`, `documentType`, and either `applicationId` or `borrowerProfileId`; optional `password` for a protected PDF, stored encrypted for extraction). The file streams straight to private storage; its type is read from the content (a renamed file is refused with 415), checked against the document type's accepted types and size limit (413), and hashed. The same file uploaded again for the same slot returns the existing document. New documents start as `uploaded` and are scanned for malware in the background (`scanned` or `rejected` with `rejectReason: infected`). Profile-level documents (no application) count for every application of that profile. Borrowers see the documents of their own borrower profiles and applications; staff see them by role (ops and compliance can also download; support sees metadata only). Others get 404.",
+        "description": "Multipart upload (`file`, `documentType` (the collection variable defaults to `bank_statement`), and one of `applicationId`, `borrowerProfileId`, `lenderId` (staff, agreements) or `submissionId` (lender users and staff: sanction letters and disbursal advice for that file); optional `password` for a protected PDF, stored encrypted for extraction). The file streams straight to private storage; its type is read from the content (a renamed file is refused with 415), checked against the document type's accepted types and size limit (413), and hashed. The same file uploaded again for the same slot returns the existing document. New documents start as `uploaded` and are scanned for malware in the background (`scanned` or `rejected` with `rejectReason: infected`). Profile-level documents (no application) count for every application of that profile. Borrowers see the documents of their own borrower profiles and applications; staff see them by role (ops and compliance can also download; support sees metadata only). Others get 404.",
         "body": {
           "mode": "formdata",
           "formdata": [
             {
               "key": "documentType",
-              "value": "bank_statement",
+              "value": "{{documentType}}",
               "type": "text"
             },
             {
@@ -155,13 +155,13 @@
             "documents"
           ]
         },
-        "description": "Multipart upload (`file`, `documentType`, and either `applicationId` or `borrowerProfileId`; optional `password` for a protected PDF, stored encrypted for extraction). The file streams straight to private storage; its type is read from the content (a renamed file is refused with 415), checked against the document type's accepted types and size limit (413), and hashed. The same file uploaded again for the same slot returns the existing document. New documents start as `uploaded` and are scanned for malware in the background (`scanned` or `rejected` with `rejectReason: infected`). Profile-level documents (no application) count for every application of that profile. Borrowers see the documents of their own borrower profiles and applications; staff see them by role (ops and compliance can also download; support sees metadata only). Others get 404.",
+        "description": "Multipart upload (`file`, `documentType` (the collection variable defaults to `bank_statement`), and one of `applicationId`, `borrowerProfileId`, `lenderId` (staff, agreements) or `submissionId` (lender users and staff: sanction letters and disbursal advice for that file); optional `password` for a protected PDF, stored encrypted for extraction). The file streams straight to private storage; its type is read from the content (a renamed file is refused with 415), checked against the document type's accepted types and size limit (413), and hashed. The same file uploaded again for the same slot returns the existing document. New documents start as `uploaded` and are scanned for malware in the background (`scanned` or `rejected` with `rejectReason: infected`). Profile-level documents (no application) count for every application of that profile. Borrowers see the documents of their own borrower profiles and applications; staff see them by role (ops and compliance can also download; support sees metadata only). Others get 404.",
         "body": {
           "mode": "formdata",
           "formdata": [
             {
               "key": "documentType",
-              "value": "bank_statement",
+              "value": "{{documentType}}",
               "type": "text"
             },
             {
@@ -202,13 +202,13 @@
             "documents"
           ]
         },
-        "description": "Multipart upload (`file`, `documentType`, and either `applicationId` or `borrowerProfileId`; optional `password` for a protected PDF, stored encrypted for extraction). The file streams straight to private storage; its type is read from the content (a renamed file is refused with 415), checked against the document type's accepted types and size limit (413), and hashed. The same file uploaded again for the same slot returns the existing document. New documents start as `uploaded` and are scanned for malware in the background (`scanned` or `rejected` with `rejectReason: infected`). Profile-level documents (no application) count for every application of that profile. Borrowers see the documents of their own borrower profiles and applications; staff see them by role (ops and compliance can also download; support sees metadata only). Others get 404.",
+        "description": "Multipart upload (`file`, `documentType` (the collection variable defaults to `bank_statement`), and one of `applicationId`, `borrowerProfileId`, `lenderId` (staff, agreements) or `submissionId` (lender users and staff: sanction letters and disbursal advice for that file); optional `password` for a protected PDF, stored encrypted for extraction). The file streams straight to private storage; its type is read from the content (a renamed file is refused with 415), checked against the document type's accepted types and size limit (413), and hashed. The same file uploaded again for the same slot returns the existing document. New documents start as `uploaded` and are scanned for malware in the background (`scanned` or `rejected` with `rejectReason: infected`). Profile-level documents (no application) count for every application of that profile. Borrowers see the documents of their own borrower profiles and applications; staff see them by role (ops and compliance can also download; support sees metadata only). Others get 404.",
         "body": {
           "mode": "formdata",
           "formdata": [
             {
               "key": "documentType",
-              "value": "bank_statement",
+              "value": "{{documentType}}",
               "type": "text"
             },
             {

@@ -1,0 +1,168 @@
+{
+  "name": "Withdraw Submission",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/applications/:id/submissions/:submissionId/withdraw",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "applications",
+        ":id",
+        "submissions",
+        ":submissionId",
+        "withdraw"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{applicationId}}"
+        },
+        {
+          "key": "submissionId",
+          "value": "{{submissionId}}"
+        }
+      ]
+    },
+    "description": "Takes the file back from one lender before it is disbursed; open document requests of that submission are cancelled. When every submission of a submitted application is closed the application closes as lost. Borrower and partner contexts.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"reason\": \"Chose another lender\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/applications/:id/submissions/:submissionId/withdraw",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "applications",
+            ":id",
+            "submissions",
+            ":submissionId",
+            "withdraw"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            },
+            {
+              "key": "submissionId",
+              "value": "{{submissionId}}"
+            }
+          ]
+        },
+        "description": "Takes the file back from one lender before it is disbursed; open document requests of that submission are cancelled. When every submission of a submitted application is closed the application closes as lost. Borrower and partner contexts.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reason\": \"Chose another lender\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12300-1a2b-7c3d-8e4f-5061728394a5\",\n  \"ref\": \"SB-26-000041\",\n  \"applicationId\": \"01a12260-2b3c-7d4e-9f50-61728394a5b6\",\n  \"status\": \"withdrawn\",\n  \"lender\": {\n    \"id\": \"01a122a0-1a2b-7c3d-8e4f-5061728394a5\",\n    \"key\": \"lenderx\",\n    \"name\": \"Lender X Finance Ltd\"\n  },\n  \"product\": {\n    \"id\": \"01a122a0-5e6f-7a71-9283-94a5b6c7d8e9\",\n    \"key\": \"lenderx.working_capital\",\n    \"versionId\": \"01a122a0-6f70-7b82-a394-a5b6c7d8e9fa\",\n    \"name\": \"Lender X Working Capital\"\n  },\n  \"matchResultId\": \"01a122d0-2b3c-7d4e-9f50-61728394a5b6\",\n  \"approvedAt\": null,\n  \"sentAt\": null,\n  \"lenderReference\": null,\n  \"sanction\": null,\n  \"disbursal\": {\n    \"amountPaise\": 0,\n    \"disbursedAt\": null\n  },\n  \"rejection\": null,\n  \"withdrawnReason\": \"Chose another lender\",\n  \"closedAt\": \"2026-10-10T22:00:00.000Z\",\n  \"version\": 2,\n  \"createdAt\": \"2026-10-10T22:00:00.000Z\",\n  \"updatedAt\": \"2026-10-10T22:00:00.000Z\"\n}"
+    },
+    {
+      "name": "409 INVALID_TRANSITION",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/applications/:id/submissions/:submissionId/withdraw",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "applications",
+            ":id",
+            "submissions",
+            ":submissionId",
+            "withdraw"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            },
+            {
+              "key": "submissionId",
+              "value": "{{submissionId}}"
+            }
+          ]
+        },
+        "description": "Takes the file back from one lender before it is disbursed; open document requests of that submission are cancelled. When every submission of a submitted application is closed the application closes as lost. Borrower and partner contexts.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reason\": \"Chose another lender\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"INVALID_TRANSITION\",\n  \"message\": \"This action is not allowed in the current state.\",\n  \"details\": {\n    \"from\": \"disbursed\",\n    \"event\": \"withdraw\",\n    \"allowed\": [\n      \"disburse\"\n    ]\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

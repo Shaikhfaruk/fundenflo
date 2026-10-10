@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 
+import { AccessModule } from '../access/access.module.js';
 import { AttributesModule } from '../attributes/attributes.module.js';
 import { AuthModule } from '../auth/auth.module.js';
 import { BorrowersModule } from '../borrowers/borrowers.module.js';
@@ -25,7 +26,7 @@ import { ApplicationRepository } from './infrastructure/application.repository.j
 export const APPLICATION_PROCESSORS = [ApplicationRefreshProcessor];
 
 @Module({
-  imports: [AttributesModule, AuthModule, BorrowersModule, CatalogModule, ConsentsModule, DocumentsModule, LeadsModule, PartiesModule, QuestionnairesModule],
+  imports: [AccessModule, AttributesModule, AuthModule, BorrowersModule, CatalogModule, ConsentsModule, DocumentsModule, LeadsModule, PartiesModule, QuestionnairesModule],
   controllers: [ApplicationsController, PartnerApplicationsController, OpsCasesController],
   providers: [ApplicationRepository, ApplicationTimeline, ApplicationService, ApplicationPartyService, OpsCaseService, ApplicationStatusSubscriptionTarget, ApplicationDocumentOwner, ApplicationMergeParticipant],
   exports: [ApplicationService, ApplicationPartyService],

@@ -24,6 +24,7 @@ export const toApplicationView = (application: ApplicationRow) => ({
   pinnedVersions: application.pinnedVersions,
   assessment: { scoreResultId: application.latestScoreResultId, scoredAt: application.scoredAt?.toISOString() ?? null },
   match: { matchRunId: application.latestMatchRunId, matchedAt: application.matchedAt?.toISOString() ?? null },
+  assigneeUserId: application.assigneeUserId,
   closedAt: application.closedAt?.toISOString() ?? null,
   closeReason: application.closeReason,
   version: application.version,

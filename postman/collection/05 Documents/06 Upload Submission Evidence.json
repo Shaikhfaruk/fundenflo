@@ -1,0 +1,145 @@
+{
+  "name": "Upload Submission Evidence",
+  "request": {
+    "method": "POST",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/documents",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "documents"
+      ]
+    },
+    "description": "A lender user (or staff for an offline lender) uploads a sanction letter or disbursal advice for a file they hold. The document belongs to the borrower's application, so the borrower can read it, and it can be cited as `evidenceDocumentId` on a lender decision. Lender and staff contexts.",
+    "body": {
+      "mode": "formdata",
+      "formdata": [
+        {
+          "key": "documentType",
+          "value": "sanction_letter",
+          "type": "text"
+        },
+        {
+          "key": "submissionId",
+          "value": "{{submissionId}}",
+          "type": "text"
+        },
+        {
+          "key": "file",
+          "type": "file",
+          "src": "fixtures/sample-bank-statement.pdf"
+        }
+      ]
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "pm.collectionVariables.set('evidenceDocumentId', String(pm.response.json().id));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/documents",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "documents"
+          ]
+        },
+        "description": "A lender user (or staff for an offline lender) uploads a sanction letter or disbursal advice for a file they hold. The document belongs to the borrower's application, so the borrower can read it, and it can be cited as `evidenceDocumentId` on a lender decision. Lender and staff contexts.",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "documentType",
+              "value": "sanction_letter",
+              "type": "text"
+            },
+            {
+              "key": "submissionId",
+              "value": "{{submissionId}}",
+              "type": "text"
+            },
+            {
+              "key": "file",
+              "type": "file",
+              "src": "fixtures/sample-bank-statement.pdf"
+            }
+          ]
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12300-5e6f-7a71-9283-94a5b6c7d8e9\",\n  \"documentType\": {\n    \"key\": \"sanction_letter\",\n    \"label\": {\n      \"en\": \"Sanction Letter\"\n    }\n  },\n  \"status\": \"uploaded\",\n  \"fileName\": \"udyam.pdf\",\n  \"mimeType\": \"application/pdf\",\n  \"sizeBytes\": 182044,\n  \"applicationId\": \"01a12260-2b3c-7d4e-9f50-61728394a5b6\"\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/documents",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "documents"
+          ]
+        },
+        "description": "A lender user (or staff for an offline lender) uploads a sanction letter or disbursal advice for a file they hold. The document belongs to the borrower's application, so the borrower can read it, and it can be cited as `evidenceDocumentId` on a lender decision. Lender and staff contexts.",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "documentType",
+              "value": "sanction_letter",
+              "type": "text"
+            },
+            {
+              "key": "submissionId",
+              "value": "{{submissionId}}",
+              "type": "text"
+            },
+            {
+              "key": "file",
+              "type": "file",
+              "src": "fixtures/sample-bank-statement.pdf"
+            }
+          ]
+        }
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

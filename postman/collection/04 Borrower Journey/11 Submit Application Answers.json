@@ -28,7 +28,7 @@
     "description": "Records answers for the application's borrower party; each answer also writes a declared fact. When every required pre-check question is answered, a draft becomes `pre_screened`. Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records.",
     "body": {
       "mode": "raw",
-      "raw": "{\n  \"stage\": \"pre_check\",\n  \"answers\": [\n    {\n      \"questionKey\": \"business_age\",\n      \"value\": \"1-3\"\n    },\n    {\n      \"questionKey\": \"monthly_turnover\",\n      \"value\": \"5-25L\"\n    },\n    {\n      \"questionKey\": \"existing_emis\",\n      \"value\": \"no\"\n    },\n    {\n      \"questionKey\": \"gst_registered\",\n      \"value\": \"yes\"\n    }\n  ]\n}",
+      "raw": "{\n  \"stage\": \"pre_check\",\n  \"answers\": [\n    {\n      \"questionKey\": \"business_age\",\n      \"value\": \"3-5\"\n    },\n    {\n      \"questionKey\": \"monthly_turnover\",\n      \"value\": \"5-25L\"\n    },\n    {\n      \"questionKey\": \"existing_emis\",\n      \"value\": \"no\"\n    },\n    {\n      \"questionKey\": \"gst_registered\",\n      \"value\": \"yes\"\n    }\n  ]\n}",
       "options": {
         "raw": {
           "language": "json"
@@ -78,7 +78,7 @@
         "description": "Records answers for the application's borrower party; each answer also writes a declared fact. When every required pre-check question is answered, a draft becomes `pre_screened`. Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records.",
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"stage\": \"pre_check\",\n  \"answers\": [\n    {\n      \"questionKey\": \"business_age\",\n      \"value\": \"1-3\"\n    },\n    {\n      \"questionKey\": \"monthly_turnover\",\n      \"value\": \"5-25L\"\n    },\n    {\n      \"questionKey\": \"existing_emis\",\n      \"value\": \"no\"\n    },\n    {\n      \"questionKey\": \"gst_registered\",\n      \"value\": \"yes\"\n    }\n  ]\n}",
+          "raw": "{\n  \"stage\": \"pre_check\",\n  \"answers\": [\n    {\n      \"questionKey\": \"business_age\",\n      \"value\": \"3-5\"\n    },\n    {\n      \"questionKey\": \"monthly_turnover\",\n      \"value\": \"5-25L\"\n    },\n    {\n      \"questionKey\": \"existing_emis\",\n      \"value\": \"no\"\n    },\n    {\n      \"questionKey\": \"gst_registered\",\n      \"value\": \"yes\"\n    }\n  ]\n}",
           "options": {
             "raw": {
               "language": "json"

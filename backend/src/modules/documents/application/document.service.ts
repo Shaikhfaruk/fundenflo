@@ -13,7 +13,7 @@ import { type PageQuery, pageWindow, toPage } from '../../../common/listing/curs
 import { displayFileName, safeFileName } from '../../../common/utils/file-name.js';
 import { parseOrThrow } from '../../../common/validation/zod-validation.pipe.js';
 import { sniffMimeType } from '../../../engines/documents/file-signature.js';
-import { CLEAN_DOCUMENT_STATES, DocumentEvent, documentMachine, REMOVED_DOCUMENT_STATES } from '../../../engines/state-machines/machines/document.machine.js';
+import { ACTIVE_DOCUMENT_STATES, CLEAN_DOCUMENT_STATES, DocumentEvent, documentMachine, REMOVED_DOCUMENT_STATES } from '../../../engines/state-machines/machines/document.machine.js';
 import { RateLimiter } from '../../../infrastructure/rate-limit/rate-limiter.service.js';
 import { CipherPurpose } from '../../../infrastructure/crypto/crypto.constants.js';
 import { FieldCipher } from '../../../infrastructure/crypto/field-cipher.service.js';
@@ -42,6 +42,13 @@ import { DocumentTypeService } from './document-type.service.js';
 export type DocumentListQuery = PageQuery & { applicationId?: string; borrowerProfileId?: string; status?: DocumentStatus; documentType?: string };
 
 const later = (from: Date, milliseconds: number) => new Date(from.getTime() + milliseconds);
+
+const ownerOf = (fields: UploadFields): [DocumentOwnerKind, string] => {
+  if (fields.applicationId) return [DocumentOwnerKind.Application, fields.applicationId];
+  if (fields.lenderId) return [DocumentOwnerKind.Lender, fields.lenderId];
+  if (fields.submissionId) return [DocumentOwnerKind.Submission, fields.submissionId];
+  return [DocumentOwnerKind.BorrowerProfile, fields.borrowerProfileId as string];
+};
 
 export const documentEventPayload = (document: DocumentRow) => ({
   documentId: document.id,
@@ -115,11 +122,28 @@ export class DocumentService {
   }
 
   async downloadUrl(id: string, ability: AppAbility) {
-    const document = await this.visible(id, ability, AppAction.Download);
-    if (!CLEAN_DOCUMENT_STATES.includes(document.status)) throw new AppError(ErrorCode.DOCUMENT_NOT_READY, { details: { status: document.status } });
-    const url = await this.storage.createReadUrl(document.storageKey, { ttlSeconds: DOCUMENT_READ_URL_TTL_SECONDS, downloadName: safeFileName(document.fileName), contentType: document.mimeType });
-    await this.audit.record({ action: AuditAction.DocumentDownloadUrlIssued, entityType: AuditEntity.Document, entityId: document.id, metadata: { documentType: document.documentType.key, ttlSeconds: DOCUMENT_READ_URL_TTL_SECONDS } });
-    return { url, expiresAt: later(new Date(), DOCUMENT_READ_URL_TTL_SECONDS * 1000).toISOString() };
+    return this.readUrlOf(await this.visible(id, ability, AppAction.Download), {});
+  }
+
+  async sharedReadUrl(id: string, metadata: Record<string, unknown>) {
+    const document = await this.documents.findOne({ id, status: { notIn: [...REMOVED_DOCUMENT_STATES] } });
+    if (!document) throw new AppError(ErrorCode.NOT_FOUND);
+    return this.readUrlOf(document, metadata);
+  }
+
+  async summaries(ids: string[]) {
+    if (ids.length === 0) return [];
+    return (await this.documents.list({ id: { in: ids }, status: { notIn: [...REMOVED_DOCUMENT_STATES] } }, ids.length)).map(toDocumentView);
+  }
+
+  async evidence(id: string, applicationId: string) {
+    const document = await this.documents.findOne({ id, applicationId, status: { in: [...ACTIVE_DOCUMENT_STATES] } });
+    if (!document) throw new AppError(ErrorCode.VALIDATION_FAILED, { details: [{ path: 'evidenceDocumentId', code: 'unknown_document', message: 'upload the evidence for this submission first' }] });
+    return document.id;
+  }
+
+  async lockShared(ids: string[]) {
+    if (ids.length > 0) await this.documents.updateMany({ id: { in: ids }, lockedAt: null }, { lockedAt: new Date() });
   }
 
   async remove(id: string, actor: UserActor, ability: AppAbility) {
@@ -140,7 +164,7 @@ export class DocumentService {
   private async register(file: StagedUpload, fields: UploadFields, actor: UserActor, ability: AppAbility) {
     const limit = await this.limiter.consume(`document-upload:user:${actor.userId}`, DOCUMENT_UPLOAD_RATE_LIMIT.limit, DOCUMENT_UPLOAD_RATE_LIMIT.windowSeconds);
     if (!limit.allowed) throw new AppError(ErrorCode.RATE_LIMITED, { retryAfterSeconds: limit.retryAfterSeconds });
-    const [kind, ownerId] = fields.applicationId ? [DocumentOwnerKind.Application, fields.applicationId] : fields.lenderId ? [DocumentOwnerKind.Lender, fields.lenderId] : [DocumentOwnerKind.BorrowerProfile, fields.borrowerProfileId as string];
+    const [kind, ownerId] = ownerOf(fields);
     const scope = await this.owners.get(kind).scopeForUpload(ownerId, ability);
     const type = (await this.types.activeByKeys([fields.documentType])).get(fields.documentType);
     if (!type) throw new AppError(ErrorCode.VALIDATION_FAILED, { details: [{ path: 'documentType', code: 'unknown_key', message: `unknown or inactive document type ${fields.documentType}` }] });
@@ -200,6 +224,13 @@ export class DocumentService {
       payload: { ...documentEventPayload(document), status: next },
     });
     return document;
+  }
+
+  private async readUrlOf(document: DocumentRow, metadata: Record<string, unknown>) {
+    if (!CLEAN_DOCUMENT_STATES.includes(document.status)) throw new AppError(ErrorCode.DOCUMENT_NOT_READY, { details: { status: document.status } });
+    const url = await this.storage.createReadUrl(document.storageKey, { ttlSeconds: DOCUMENT_READ_URL_TTL_SECONDS, downloadName: safeFileName(document.fileName), contentType: document.mimeType });
+    await this.audit.record({ action: AuditAction.DocumentDownloadUrlIssued, entityType: AuditEntity.Document, entityId: document.id, metadata: { documentType: document.documentType.key, ttlSeconds: DOCUMENT_READ_URL_TTL_SECONDS, ...metadata } });
+    return { url, expiresAt: later(new Date(), DOCUMENT_READ_URL_TTL_SECONDS * 1000).toISOString() };
   }
 
   private async visible(id: string, ability: AppAbility, action: AppAction) {

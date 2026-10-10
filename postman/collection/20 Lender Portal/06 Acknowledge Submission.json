@@ -1,0 +1,204 @@
+{
+  "name": "Acknowledge Submission",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/lender/submissions/:id/events",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "lender",
+        "submissions",
+        ":id",
+        "events"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{submissionId}}"
+        }
+      ]
+    },
+    "description": "Records a lender action. `action` is `acknowledge` (optional `lenderReference`), `raise_query` (`note`), `sanction` (`amountPaise`, optional `evidenceDocumentId`, `lenderReference`), `disburse` (`amountPaise` added to earlier tranches, never above the sanction), `reject` (`reason`: policy_mismatch, insufficient_income, high_obligations, credit_history, incomplete_documents, kyc_issue, fraud_suspected, borrower_unresponsive, other; optional `note`) or `note`. Sanction, disbursal and rejection always come from a person, never from automation. The first disbursal closes the application as won. Optional `expectedVersion` guards against two people acting at once. Lender context: admins and credit officers act, viewers read. Only files already sent to the signed-in lender's organization are visible.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"action\": \"acknowledge\",\n  \"lenderReference\": \"LX/2026/0091\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.collectionVariables.set('submissionVersion', String(pm.response.json().version));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/lender/submissions/:id/events",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "lender",
+            "submissions",
+            ":id",
+            "events"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{submissionId}}"
+            }
+          ]
+        },
+        "description": "Records a lender action. `action` is `acknowledge` (optional `lenderReference`), `raise_query` (`note`), `sanction` (`amountPaise`, optional `evidenceDocumentId`, `lenderReference`), `disburse` (`amountPaise` added to earlier tranches, never above the sanction), `reject` (`reason`: policy_mismatch, insufficient_income, high_obligations, credit_history, incomplete_documents, kyc_issue, fraud_suspected, borrower_unresponsive, other; optional `note`) or `note`. Sanction, disbursal and rejection always come from a person, never from automation. The first disbursal closes the application as won. Optional `expectedVersion` guards against two people acting at once. Lender context: admins and credit officers act, viewers read. Only files already sent to the signed-in lender's organization are visible.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"action\": \"acknowledge\",\n  \"lenderReference\": \"LX/2026/0091\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12300-1a2b-7c3d-8e4f-5061728394a5\",\n  \"ref\": \"SB-26-000041\",\n  \"applicationId\": \"01a12260-2b3c-7d4e-9f50-61728394a5b6\",\n  \"status\": \"under_review\",\n  \"lender\": {\n    \"id\": \"01a122a0-1a2b-7c3d-8e4f-5061728394a5\",\n    \"key\": \"lenderx\",\n    \"name\": \"Lender X Finance Ltd\"\n  },\n  \"product\": {\n    \"id\": \"01a122a0-5e6f-7a71-9283-94a5b6c7d8e9\",\n    \"key\": \"lenderx.working_capital\",\n    \"versionId\": \"01a122a0-6f70-7b82-a394-a5b6c7d8e9fa\",\n    \"name\": \"Lender X Working Capital\"\n  },\n  \"matchResultId\": \"01a122d0-2b3c-7d4e-9f50-61728394a5b6\",\n  \"approvedAt\": \"2026-10-10T22:00:00.000Z\",\n  \"sentAt\": \"2026-10-10T22:00:00.000Z\",\n  \"lenderReference\": \"LX/2026/0091\",\n  \"sanction\": null,\n  \"disbursal\": {\n    \"amountPaise\": 0,\n    \"disbursedAt\": null\n  },\n  \"rejection\": null,\n  \"withdrawnReason\": null,\n  \"closedAt\": null,\n  \"version\": 3,\n  \"createdAt\": \"2026-10-10T22:00:00.000Z\",\n  \"updatedAt\": \"2026-10-10T22:00:00.000Z\"\n}"
+    },
+    {
+      "name": "409 INVALID_TRANSITION",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/lender/submissions/:id/events",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "lender",
+            "submissions",
+            ":id",
+            "events"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{submissionId}}"
+            }
+          ]
+        },
+        "description": "Records a lender action. `action` is `acknowledge` (optional `lenderReference`), `raise_query` (`note`), `sanction` (`amountPaise`, optional `evidenceDocumentId`, `lenderReference`), `disburse` (`amountPaise` added to earlier tranches, never above the sanction), `reject` (`reason`: policy_mismatch, insufficient_income, high_obligations, credit_history, incomplete_documents, kyc_issue, fraud_suspected, borrower_unresponsive, other; optional `note`) or `note`. Sanction, disbursal and rejection always come from a person, never from automation. The first disbursal closes the application as won. Optional `expectedVersion` guards against two people acting at once. Lender context: admins and credit officers act, viewers read. Only files already sent to the signed-in lender's organization are visible.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"action\": \"acknowledge\",\n  \"lenderReference\": \"LX/2026/0091\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"INVALID_TRANSITION\",\n  \"message\": \"This action is not allowed in the current state.\",\n  \"details\": {\n    \"from\": \"pending_approval\",\n    \"event\": \"acknowledge\",\n    \"allowed\": [\n      \"approve\",\n      \"withdraw\"\n    ]\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "403 FORBIDDEN",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/lender/submissions/:id/events",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "lender",
+            "submissions",
+            ":id",
+            "events"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{submissionId}}"
+            }
+          ]
+        },
+        "description": "Records a lender action. `action` is `acknowledge` (optional `lenderReference`), `raise_query` (`note`), `sanction` (`amountPaise`, optional `evidenceDocumentId`, `lenderReference`), `disburse` (`amountPaise` added to earlier tranches, never above the sanction), `reject` (`reason`: policy_mismatch, insufficient_income, high_obligations, credit_history, incomplete_documents, kyc_issue, fraud_suspected, borrower_unresponsive, other; optional `note`) or `note`. Sanction, disbursal and rejection always come from a person, never from automation. The first disbursal closes the application as won. Optional `expectedVersion` guards against two people acting at once. Lender context: admins and credit officers act, viewers read. Only files already sent to the signed-in lender's organization are visible.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"action\": \"acknowledge\",\n  \"lenderReference\": \"LX/2026/0091\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Forbidden",
+      "code": 403,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"FORBIDDEN\",\n  \"message\": \"You do not have permission to do this.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

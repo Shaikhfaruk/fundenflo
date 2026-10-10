@@ -16,6 +16,9 @@ export const QueueName = {
   NotificationsSubscriptions: 'notifications.subscriptions',
   DocumentsExtract: 'documents.extract',
   MatchingRun: 'matching.run',
+  SubmissionsDeliver: 'submissions.deliver',
+  SubmissionsSync: 'submissions.sync',
+  SubmissionsNotify: 'submissions.notify',
 } as const;
 
 export type QueueName = (typeof QueueName)[keyof typeof QueueName];

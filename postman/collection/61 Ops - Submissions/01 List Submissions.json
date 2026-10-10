@@ -1,0 +1,71 @@
+{
+  "name": "List Ops Submissions",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/ops/submissions?status=pending_approval",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "submissions"
+      ],
+      "query": [
+        {
+          "key": "status",
+          "value": "pending_approval"
+        }
+      ]
+    },
+    "description": "The submission queue with `status`, `lenderId` and `applicationId` filters; `pending_approval` is the approval queue. Staff context (ops leads and reviewers act; compliance, support and credit read)."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/ops/submissions?status=pending_approval",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "submissions"
+          ],
+          "query": [
+            {
+              "key": "status",
+              "value": "pending_approval"
+            }
+          ]
+        },
+        "description": "The submission queue with `status`, `lenderId` and `applicationId` filters; `pending_approval` is the approval queue. Staff context (ops leads and reviewers act; compliance, support and credit read)."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a12300-1a2b-7c3d-8e4f-5061728394a5\",\n      \"ref\": \"SB-26-000041\",\n      \"applicationId\": \"01a12260-2b3c-7d4e-9f50-61728394a5b6\",\n      \"status\": \"pending_approval\",\n      \"lender\": {\n        \"id\": \"01a122a0-1a2b-7c3d-8e4f-5061728394a5\",\n        \"key\": \"lenderx\",\n        \"name\": \"Lender X Finance Ltd\"\n      },\n      \"product\": {\n        \"id\": \"01a122a0-5e6f-7a71-9283-94a5b6c7d8e9\",\n        \"key\": \"lenderx.working_capital\",\n        \"versionId\": \"01a122a0-6f70-7b82-a394-a5b6c7d8e9fa\",\n        \"name\": \"Lender X Working Capital\"\n      },\n      \"matchResultId\": \"01a122d0-2b3c-7d4e-9f50-61728394a5b6\",\n      \"approvedAt\": null,\n      \"sentAt\": null,\n      \"lenderReference\": null,\n      \"sanction\": null,\n      \"disbursal\": {\n        \"amountPaise\": 0,\n        \"disbursedAt\": null\n      },\n      \"rejection\": null,\n      \"withdrawnReason\": null,\n      \"closedAt\": null,\n      \"version\": 1,\n      \"createdAt\": \"2026-10-10T22:00:00.000Z\",\n      \"updatedAt\": \"2026-10-10T22:00:00.000Z\"\n    }\n  ],\n  \"nextCursor\": null\n}"
+    }
+  ]
+}

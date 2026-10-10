@@ -19,6 +19,7 @@ export const RealtimeEvent = {
   ImportChanged: 'import.changed',
   DocumentChanged: 'document.changed',
   AnalysisChanged: 'analysis.changed',
+  SubmissionChanged: 'submission.changed',
 } as const;
 
 export type RealtimeEvent = (typeof RealtimeEvent)[keyof typeof RealtimeEvent];

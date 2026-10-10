@@ -24,6 +24,15 @@ export class UserNotifier {
     private readonly sessions: SessionRepository,
   ) {}
 
+  async notifyParties(partyIds: Iterable<string>, templateKey: NotificationTemplateKey, params: (locale: string | null) => TemplateParams, channels: readonly UserChannel[]): Promise<number> {
+    const userIds: string[] = [];
+    for (const partyId of new Set(partyIds)) {
+      const user = await this.identity.findUserByParty(partyId);
+      if (user) userIds.push(user.id);
+    }
+    return this.notify(userIds, templateKey, params, channels);
+  }
+
   async notify(userIds: Iterable<string>, templateKey: NotificationTemplateKey, params: (locale: string | null) => TemplateParams, channels: readonly UserChannel[]): Promise<number> {
     let sent = 0;
     for (const userId of new Set(userIds)) {

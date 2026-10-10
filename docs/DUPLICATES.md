@@ -2,7 +2,7 @@
 
 > Register of anything implemented twice. Never add code to the copy marked for removal, and never recreate a deleted duplicate.
 > Deleting a listed copy needs the owner's review first, plus a fresh grep, knip and vulture run at deletion time.
-> Last updated: 2026-10-09
+> Last updated: 2026-10-10
 
 ## Register
 
@@ -23,6 +23,8 @@ These are the places where a second copy is most tempting. Use the one listed.
 | Calls, notes, follow-ups, case notes | `ActivityService` (`activities` module), called by the owning module after its own access checks (`LeadActivityService` for leads) | `lead_notes`, `case_comments` or similar per-module tables |
 | SLA deadlines and breach handling | `SlaService.start/satisfy/cancel` + a `@SlaHandlerFor(kind)` provider in the owning module | Per-module timers, delayed queue jobs per deadline, or cron checks |
 | Bulk uploads (leads, coverage, geography, partners) | `imports` with one handler per type | A separate CSV parser per feature |
+| Showing borrower documents to a lender | `SubmissionService.documentUrl` → `DocumentService.sharedReadUrl` (only packet, evidence and fulfilled request files of a sent submission) | Lender CASL grants on `Document` or a second signed-URL helper |
+| Lender decisions (acknowledge, query, sanction, disbursal, rejection) | `SubmissionService.act` through `submissionMachine` (lender portal and ops share it) | Status writes on `lender_submissions` from other modules |
 | Status after a lead converts | Derived from application events | A second status that is edited by hand |
 | Draft → review → publish for any config | `config-publishing` + `createVersionedConfigController` | Per-resource version tables or approval flows |
 | Eligibility, visibility, routing and trigger conditions | `engines/conditions` | Inline `if` trees or a second rule format |

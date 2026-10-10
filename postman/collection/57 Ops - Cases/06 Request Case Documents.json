@@ -1,0 +1,153 @@
+{
+  "name": "Request Case Documents",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/ops/cases/:id/document-requests",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "cases",
+        ":id",
+        "document-requests"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{applicationId}}"
+        }
+      ]
+    },
+    "description": "Asks the borrower for documents on an open case (no submission attached); cancelled automatically when the case closes. Staff context (ops leads and reviewers act; compliance, support and credit read).",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"documentTypes\": [\n    \"gstr_3b\"\n  ],\n  \"note\": \"GST returns for the last 12 months\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/cases/:id/document-requests",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "cases",
+            ":id",
+            "document-requests"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            }
+          ]
+        },
+        "description": "Asks the borrower for documents on an open case (no submission attached); cancelled automatically when the case closes. Staff context (ops leads and reviewers act; compliance, support and credit read).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"documentTypes\": [\n    \"gstr_3b\"\n  ],\n  \"note\": \"GST returns for the last 12 months\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12300-2b3c-7d4e-9f50-61728394a5b6\",\n  \"applicationId\": \"01a12260-2b3c-7d4e-9f50-61728394a5b6\",\n  \"submissionId\": null,\n  \"status\": \"open\",\n  \"documentTypes\": [\n    {\n      \"key\": \"gstr_3b\",\n      \"label\": \"GST Returns\"\n    }\n  ],\n  \"note\": \"GST returns for the last 12 months\",\n  \"requestedContext\": \"staff\",\n  \"dueAt\": null,\n  \"fulfilledDocumentIds\": [],\n  \"fulfilledAt\": null,\n  \"cancelledAt\": null,\n  \"createdAt\": \"2026-10-10T22:00:00.000Z\"\n}"
+    },
+    {
+      "name": "409 INVALID_TRANSITION",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/cases/:id/document-requests",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "cases",
+            ":id",
+            "document-requests"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            }
+          ]
+        },
+        "description": "Asks the borrower for documents on an open case (no submission attached); cancelled automatically when the case closes. Staff context (ops leads and reviewers act; compliance, support and credit read).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"documentTypes\": [\n    \"gstr_3b\"\n  ],\n  \"note\": \"GST returns for the last 12 months\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"INVALID_TRANSITION\",\n  \"message\": \"This action is not allowed in the current state.\",\n  \"details\": {\n    \"from\": \"withdrawn\",\n    \"event\": \"request_documents\",\n    \"allowed\": []\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

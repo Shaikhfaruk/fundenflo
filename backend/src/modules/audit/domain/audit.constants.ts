@@ -110,6 +110,13 @@ export const AuditAction = {
   DocumentExtracted: 'document.extracted',
   DocumentReviewed: 'document.reviewed',
   MatchCompleted: 'match.completed',
+  SubmissionRequested: 'submission.requested',
+  SubmissionApproved: 'submission.approved',
+  SubmissionStatusChanged: 'submission.status_changed',
+  SubmissionPacketBuilt: 'submission.packet_built',
+  DocumentRequested: 'document.requested',
+  DocumentRequestFulfilled: 'document.request_fulfilled',
+  CaseAssigned: 'case.assigned',
 } as const;
 
 export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction];
@@ -158,6 +165,8 @@ export const AuditEntity = {
   ConsistencySignal: 'consistency_signal',
   DocumentExtraction: 'document_extraction',
   MatchRun: 'match_run',
+  LenderSubmission: 'lender_submission',
+  DocumentRequest: 'document_request',
   LenderAgreement: 'lender_agreement',
   LenderContact: 'lender_contact',
 } as const;

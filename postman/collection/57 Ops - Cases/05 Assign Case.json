@@ -1,0 +1,153 @@
+{
+  "name": "Assign Case",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/ops/cases/:id/assign",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "cases",
+        ":id",
+        "assign"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{applicationId}}"
+        }
+      ]
+    },
+    "description": "Assigns the case to an active ops lead, ops reviewer or credit analyst, or unassigns it with `null`. Recorded on the case timeline. Staff context (ops leads and reviewers act; compliance, support and credit read).",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"assigneeUserId\": \"{{userId}}\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/cases/:id/assign",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "cases",
+            ":id",
+            "assign"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            }
+          ]
+        },
+        "description": "Assigns the case to an active ops lead, ops reviewer or credit analyst, or unassigns it with `null`. Recorded on the case timeline. Staff context (ops leads and reviewers act; compliance, support and credit read).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"assigneeUserId\": \"{{userId}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12260-2b3c-7d4e-9f50-61728394a5b6\",\n  \"ref\": \"AP-26-000310\",\n  \"status\": \"submitted\",\n  \"assigneeUserId\": \"01a1215a-4ce1-7c0e-8a37-1b2f8e0d9a11\",\n  \"version\": 9\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/cases/:id/assign",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "cases",
+            ":id",
+            "assign"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            }
+          ]
+        },
+        "description": "Assigns the case to an active ops lead, ops reviewer or credit analyst, or unassigns it with `null`. Recorded on the case timeline. Staff context (ops leads and reviewers act; compliance, support and credit read).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"assigneeUserId\": \"{{userId}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"assigneeUserId\",\n      \"code\": \"not_an_assignee\",\n      \"message\": \"assign the case to an active ops or credit team member\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

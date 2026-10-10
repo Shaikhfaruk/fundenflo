@@ -1,0 +1,87 @@
+{
+  "name": "Invite Lender User",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/invitations",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "invitations"
+      ]
+    },
+    "description": "Invites a lender user by mobile to the lender's organization (`lender_admin`, `lender_credit_officer` or `lender_viewer`). The person signs in with an OTP and `loginAs: lender`; the invitation is matched on that sign-in. Staff context.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"organizationId\": \"{{lenderOrganizationId}}\",\n  \"role\": \"lender_admin\",\n  \"mobile\": \"{{lenderMobile}}\",\n  \"countryCode\": \"+91\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/invitations",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "invitations"
+          ]
+        },
+        "description": "Invites a lender user by mobile to the lender's organization (`lender_admin`, `lender_credit_officer` or `lender_viewer`). The person signs in with an OTP and `loginAs: lender`; the invitation is matched on that sign-in. Staff context.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"organizationId\": \"{{lenderOrganizationId}}\",\n  \"role\": \"lender_admin\",\n  \"mobile\": \"{{lenderMobile}}\",\n  \"countryCode\": \"+91\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a1215c-01e0-754e-93eb-c1a788370afa\",\n  \"organization\": {\n    \"id\": \"01a122a0-2b3c-7d4e-9f50-61728394a5b6\",\n    \"name\": \"Lender X Finance Ltd\",\n    \"type\": \"lender\",\n    \"status\": \"active\"\n  },\n  \"context\": \"lender\",\n  \"role\": \"lender_admin\",\n  \"channel\": \"mobile\",\n  \"recipient\": \"96•••••210\",\n  \"status\": \"pending\",\n  \"expiresAt\": \"2026-10-17T22:00:00.000Z\",\n  \"acceptedAt\": null,\n  \"createdAt\": \"2026-10-10T22:00:00.000Z\"\n}"
+    }
+  ]
+}

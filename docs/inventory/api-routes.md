@@ -114,15 +114,15 @@ Controller: `backend/src/modules/catalog/http/catalog.controller.ts` · Postman:
 | `GET` | `/applications/:id/document-checklist` | applications (`applications.controller.ts` → `DocumentChecklistService`) | borrower, partner | M3 | `useful` |
 | `GET` | `/applications/:id/timeline` | applications (`applications.controller.ts` → `ApplicationTimeline`) | borrower, partner | M3 | `useful` |
 | `POST` | `/applications/:id/withdraw` | applications (`applications.controller.ts` → `ApplicationService.withdraw`) | borrower, partner | M3 | `useful` |
-| `GET` | `/applications/:id/document-requests` | applications | borrower, partner | M6 | `planned` |
+| `GET` | `/applications/:id/document-requests` | submissions (`application-submissions.controller.ts` → `DocumentRequestService.list`; lender and ops requests for this case, fulfilled automatically when the asked types are scanned) | borrower, partner, staff | M6 | `useful` |
 
 ## 05 Documents
 
 | Method | Path | Module | Context | Milestone | Status |
 |---|---|---|---|---|---|
-| `POST` `GET` | `/documents` | documents (`documents.controller.ts` → `DocumentService`; multipart via `DocumentUploadEngine`, owner resolved by `DocumentOwnerRegistry`; list added for clients that show a profile's or application's files) | borrower, partner, staff | M3 | `useful` |
+| `POST` `GET` | `/documents` | documents (`documents.controller.ts` → `DocumentService`; multipart via `DocumentUploadEngine`, owner resolved by `DocumentOwnerRegistry`; list added for clients that show a profile's or application's files; M6: lender users upload sanction letters and disbursal advice with `submissionId` through `SubmissionDocumentOwner`) | borrower, partner, lender (upload), staff | M3 | `useful` |
 | `GET` | `/documents/:id` | documents (`documents.controller.ts`) | borrower, partner, staff | M3 | `useful` |
-| `GET` | `/documents/:id/download-url` | documents (`documents.controller.ts` → `DocumentService.downloadUrl`; borrower added: the data principal may read their own clean files; lender grants arrive with submissions in M6) | borrower, partner, lender, staff | M3 | `useful` |
+| `GET` | `/documents/:id/download-url` | documents (`documents.controller.ts` → `DocumentService.downloadUrl`; borrower added: the data principal may read their own clean files; lenders read shared files through `/lender/submissions/:id/documents/:documentId/download-url` instead, because sharing is per packet) | borrower, partner, staff | M3 | `useful` |
 | `DELETE` | `/documents/:id` | documents (`documents.controller.ts` → `DocumentService.remove`) | borrower, partner | M3 | `useful` |
 | `POST` | `/documents/upload-url` | documents | borrower, partner | v1.1 | `planned` |
 | `POST` | `/documents/:id/complete` | documents | borrower, partner | v1.1 | `planned` |
@@ -141,8 +141,9 @@ Controller: `backend/src/modules/catalog/http/catalog.controller.ts` · Postman:
 
 | Method | Path | Module | Context | Milestone | Status |
 |---|---|---|---|---|---|
-| `POST` | `/applications/:id/submissions` | applications | borrower, partner | M6 | `planned` |
-| `GET` | `/applications/:id/submissions/:sid` | applications | borrower, partner | M6 | `planned` |
+| `POST` `GET` | `/applications/:id/submissions` | submissions (`application-submissions.controller.ts` → `SubmissionService.request` from an eligible result of the latest match run, `assessed` → `ready_for_submission`, one open submission per product, at most 5 open; list for borrower, partner and staff) | borrower, partner (create), staff (read) | M6 | `useful` |
+| `GET` | `/applications/:id/submissions/:submissionId` | submissions (`SubmissionService.get` with the event history and document requests; internal notes and rejection notes hidden from borrowers) | borrower, partner, staff | M6 | `useful` |
+| `POST` | `/applications/:id/submissions/:submissionId/withdraw` | submissions (`SubmissionService.withdraw`; added so a borrower can take a file back from one lender) | borrower, partner | M6 | `useful` |
 | `POST` | `/notifications/subscriptions` | subscriptions (`notification-subscriptions.controller.ts` → `SubscriptionService`; own module because delivery needs `UserNotifier` from auth) | borrower, partner | M5 | `useful` |
 
 ## 08 Leads & Imports
@@ -298,10 +299,11 @@ Planned:
 |---|---|---|---|---|---|
 | `GET` | `/lender/products` | lenders (`lender-products.controller.ts` → `LenderPortalService.products`) | lender | M4 | `useful` |
 | `POST` | `/lender/products/:id/change-requests` | lenders (`LenderPortalService.propose`: new version submitted with the lender user as maker) | lender | M4 | `useful` |
-| `GET` | `/lender/submissions` | applications | lender | M6 | `planned` |
-| `GET` | `/lender/submissions/:id` | applications | lender | M6 | `planned` |
-| `POST` | `/lender/submissions/:id/events` | applications | lender | M6 | `planned` |
-| `POST` | `/lender/submissions/:id/document-requests` | applications | lender | M6 | `planned` |
+| `GET` | `/lender/submissions` | submissions (`lender-submissions.controller.ts` → `SubmissionService.browse`; only files already sent to the lender's organization) | lender | M6 | `useful` |
+| `GET` | `/lender/submissions/:id` | submissions (`SubmissionService.detail`: decrypted packet, shared documents, document requests, events) | lender | M6 | `useful` |
+| `POST` | `/lender/submissions/:id/events` | submissions (`SubmissionService.act`: acknowledge, raise_query, sanction, disburse (tranches up to the sanction), reject with a reason, note; viewers read only) | lender | M6 | `useful` |
+| `POST` | `/lender/submissions/:id/document-requests` | submissions (`SubmissionService.requestDocuments` → `DocumentRequestService.create`; raises a query when the file is under review) | lender | M6 | `useful` |
+| `GET` | `/lender/submissions/:id/documents/:documentId/download-url` | submissions (`SubmissionService.documentUrl` → `DocumentService.sharedReadUrl`; only packet files, evidence and fulfilled request files; added because lenders have no general document grant) | lender | M6 | `useful` |
 
 ## 30 Ops Console
 
@@ -338,10 +340,12 @@ Planned:
 | `POST` | `/ops/documents/:id/review` | documents (`ExtractionService.review`: verify with `ops_verified` facts or reject with a reason) | staff | M5 | `useful` |
 | `GET` | `/ops/consistency-signals` | attributes (`ops-consistency-signals.controller.ts` → `ConsistencyService.list`) | staff | M5 | `useful` |
 | `POST` | `/ops/consistency-signals/:id/resolve` | attributes (`ConsistencyService.resolve`) | staff | M5 | `useful` |
-| `POST` | `/ops/cases/:id/assign` | applications | staff | M6 | `planned` |
-| `POST` | `/ops/cases/:id/document-requests` | applications | staff | M6 | `planned` |
-| `POST` | `/ops/cases/:id/approve-submission` | applications | staff | M6 | `planned` |
-| `POST` | `/ops/submissions/:id/events` | applications | staff | M6 | `planned` |
+| `POST` | `/ops/cases/:id/assign` | applications (`ops-cases.controller.ts` → `OpsCaseService.assign`: active ops lead, reviewer or credit analyst, or `null` to unassign) | staff | M6 | `useful` |
+| `POST` | `/ops/cases/:id/document-requests` | submissions (`ops-submissions.controller.ts` → `DocumentRequestService.forApplication`; open cases only) | staff | M6 | `useful` |
+| `GET` | `/ops/submissions` | submissions (`OpsSubmissionsController.list` → `SubmissionService.browse` with status, lender and application filters; added as the approval queue) | staff | M6 | `useful` |
+| `GET` | `/ops/submissions/:id` | submissions (`SubmissionService.detail` as staff) | staff | M6 | `useful` |
+| `POST` | `/ops/submissions/:id/approve` | submissions (`SubmissionService.approve`: lender-scoped `lender_sharing` consent and the product's assessment and submission documents; replaces the planned `/ops/cases/:id/approve-submission` because the submission id names the file) | staff | M6 | `useful` |
+| `POST` | `/ops/submissions/:id/events` | submissions (`SubmissionService.act` for offline lenders: decisions need a note, sanction and disbursal need an evidence document) | staff | M6 | `useful` |
 | `GET` | `/ops/attribution-disputes` | partners | staff | M7 | `planned` |
 | `POST` | `/ops/attribution-disputes/:id/resolve` | partners | staff | M7 | `planned` |
 | `GET` | `/ops/risk-signals` | risk | staff | M8 | `planned` |

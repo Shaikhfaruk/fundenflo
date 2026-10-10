@@ -95,6 +95,7 @@ flowchart TB
     assessments
     matching
     applications
+    submissions
   end
   subgraph Network
     lenders
@@ -159,7 +160,7 @@ flowchart TB
   LeadsGroup --> Ports
   Platform --> Ports
   classDef built fill:#d8f3dc,stroke:#2d6a4f,color:#081c15
-  class auth,access,parties,catalog,attributes,questionnaires,consents,partners,leads,imports,activities,sla,realtime,sync,documents,borrowers,applications,lenders,assessments,matching,notifications,audit,configPublishing,conditions,facts,questionnaire,partyMatching,stateMachines,consentFold,assignment,docChecklist,lendingEngine,scoring,improvement,matchingEngine,database,queue,storage,crypto,cache,avP,kycP built
+  class auth,access,parties,catalog,attributes,questionnaires,consents,partners,leads,imports,activities,sla,realtime,sync,documents,borrowers,applications,submissions,lenders,assessments,matching,notifications,audit,configPublishing,conditions,facts,questionnaire,partyMatching,stateMachines,consentFold,assignment,docChecklist,lendingEngine,scoring,improvement,matchingEngine,database,queue,storage,crypto,cache,avP,kycP built
 ```
 
 Green = built (M0 – M6a). Rules: engines import nothing from Nest, modules or infrastructure. Modules talk only through exported façade services or domain events. Integrations are reached only through ports.
@@ -477,21 +478,30 @@ stateDiagram-v2
   purged --> [*]
 ```
 
-Submission (planned for M6):
+Submission (built in M6b as `submissionMachine`; every move goes through `SubmissionService.move`, which writes the append-only `submission_events` row, an application timeline entry and the outbox event; sanction, disbursal and rejection refuse any actor that is not a person; ops approval needs the applicant's consent naming the lender and the product's documents scanned; `submissions.deliver` builds the encrypted packet before `send`; the first disbursal closes the application as won and every submission closed closes it as lost):
 
 ```mermaid
 stateDiagram-v2
   direction LR
-  [*] --> sent_to_lender
-  sent_to_lender --> under_review
-  under_review --> query_raised
-  query_raised --> under_review
-  under_review --> sanctioned
-  under_review --> rejected
-  sanctioned --> disbursed
-  sent_to_lender --> withdrawn
-  under_review --> withdrawn
-  sanctioned --> withdrawn
+  [*] --> pending_approval: request (eligible match)
+  pending_approval --> approved: approve (ops)
+  approved --> sent_to_lender: send (worker, packet)
+  sent_to_lender --> under_review: acknowledge
+  sent_to_lender --> query_raised: raise_query / document request
+  under_review --> query_raised: raise_query / document request
+  query_raised --> under_review: answer_query (requests fulfilled or ops)
+  under_review --> sanctioned: sanction (person, amount)
+  sanctioned --> disbursed: disburse (tranche)
+  disbursed --> disbursed: disburse (next tranche, within sanction)
+  sent_to_lender --> rejected: reject (reason)
+  under_review --> rejected: reject (reason)
+  query_raised --> rejected: reject (reason)
+  pending_approval --> withdrawn: withdraw
+  approved --> withdrawn: withdraw (or consent gone at delivery)
+  sent_to_lender --> withdrawn: withdraw
+  under_review --> withdrawn: withdraw
+  query_raised --> withdrawn: withdraw
+  sanctioned --> withdrawn: withdraw
   disbursed --> [*]
   rejected --> [*]
   withdrawn --> [*]
@@ -528,7 +538,9 @@ flowchart LR
   Q -->|document uploaded / rejected / deleted, consent granted / withdrawn| APPREF[applications.refresh: journey stage, request_documents]
   DOCQ --> ANQ[analysis.run]
   ANQ -->|score.computed| MQ2[matching.run]
-  Q --> SUBQ[submissions.deliver]
+  Q -->|submission.approved| SUBQ[submissions.deliver: consent re-check, encrypted packet, document lock, send]
+  Q -->|submission.status.changed, document.requested| SNOTIFY[submissions.notify: lender users, borrower and filing partner] --> NOTIF
+  Q -->|document.scanned, application.status.changed| SSYNC[submissions.sync: fulfil document requests, answer query, withdraw on closed case]
   Q --> COMQ[commissions.accrue]
   RTP -->|redis emitter| GW[Socket.IO gateway on the API + Redis adapter]
   GW --> ROOMS((rooms: user / membership / org))
@@ -536,7 +548,7 @@ flowchart LR
   SCHED -->|15 min| REP[reports.refresh]
   API[API request: OTP, invitation, consent link] -->|direct enqueue| NOTIF
   classDef built fill:#d8f3dc,stroke:#2d6a4f,color:#081c15
-  class UC,OB,RELAY,SCHED,MAINT,Q,REVOKE,CSYNC,DROPQ,NOTIF,API,IMPAPI,IMPQ,ROUTEQ,OPSR,SLAQ,LNOTIFY,RTP,GW,ROOMS,SCANQ,APPREF,ANALYSE,SUBQ2,DOCQ,MQ2 built
+  class UC,OB,RELAY,SCHED,MAINT,Q,REVOKE,CSYNC,DROPQ,NOTIF,API,IMPAPI,IMPQ,ROUTEQ,OPSR,SLAQ,LNOTIFY,RTP,GW,ROOMS,SCANQ,APPREF,ANALYSE,SUBQ2,DOCQ,MQ2,SUBQ,SNOTIFY,SSYNC built
 ```
 
 Queue and job details (producers, consumers, triggers) are in [`inventory/worker-queues-jobs.md`](inventory/worker-queues-jobs.md).

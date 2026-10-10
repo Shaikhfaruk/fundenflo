@@ -1,10 +1,13 @@
 import { Injectable } from '@nestjs/common';
 
+import { AppError } from '../../../common/errors/app-error.js';
+import { ErrorCode } from '../../../common/errors/error-codes.js';
 import type { Locale } from '../../../common/i18n/locale.js';
+import { MembershipService } from '../../access/application/membership.service.js';
 import type { AppAbility } from '../../access/domain/ability.types.js';
 import { ConsentService } from '../../consents/application/consent.service.js';
 import { DocumentService } from '../../documents/application/document.service.js';
-import { OPS_CASE_DOCUMENTS_LIMIT } from '../domain/application.constants.js';
+import { CASE_ASSIGNEE_ROLES, OPS_CASE_DOCUMENTS_LIMIT } from '../domain/application.constants.js';
 import { ApplicationPartyService } from './application-party.service.js';
 import { ApplicationService } from './application.service.js';
 
@@ -15,7 +18,15 @@ export class OpsCaseService {
     private readonly parties: ApplicationPartyService,
     private readonly documents: DocumentService,
     private readonly consents: ConsentService,
+    private readonly memberships: MembershipService,
   ) {}
+
+  async assign(id: string, assigneeUserId: string | null, ability: AppAbility) {
+    if (assigneeUserId && !(await this.memberships.activeStaffUserIds(CASE_ASSIGNEE_ROLES)).includes(assigneeUserId)) {
+      throw new AppError(ErrorCode.VALIDATION_FAILED, { details: [{ path: 'assigneeUserId', code: 'not_an_assignee', message: 'assign the case to an active ops or credit team member' }] });
+    }
+    return this.applications.assign(id, assigneeUserId, ability);
+  }
 
   async detail(id: string, ability: AppAbility, locale: Locale) {
     const application = await this.applications.get(id, ability);

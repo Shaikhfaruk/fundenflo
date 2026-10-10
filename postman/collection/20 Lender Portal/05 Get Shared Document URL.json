@@ -1,0 +1,171 @@
+{
+  "name": "Get Shared Document URL",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/lender/submissions/:id/documents/:documentId/download-url",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "lender",
+        "submissions",
+        ":id",
+        "documents",
+        ":documentId",
+        "download-url"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{submissionId}}"
+        },
+        {
+          "key": "documentId",
+          "value": "{{sharedDocumentId}}"
+        }
+      ]
+    },
+    "description": "A short-lived read link for one document shared with this submission; every link issued is audited. Lender context: admins and credit officers act, viewers read. Only files already sent to the signed-in lender's organization are visible."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/lender/submissions/:id/documents/:documentId/download-url",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "lender",
+            "submissions",
+            ":id",
+            "documents",
+            ":documentId",
+            "download-url"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{submissionId}}"
+            },
+            {
+              "key": "documentId",
+              "value": "{{sharedDocumentId}}"
+            }
+          ]
+        },
+        "description": "A short-lived read link for one document shared with this submission; every link issued is audited. Lender context: admins and credit officers act, viewers read. Only files already sent to the signed-in lender's organization are visible."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"url\": \"https://storage.example/documents/01a12210?sig=redacted\",\n  \"expiresAt\": \"2026-10-10T22:05:00.000Z\"\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/lender/submissions/:id/documents/:documentId/download-url",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "lender",
+            "submissions",
+            ":id",
+            "documents",
+            ":documentId",
+            "download-url"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{submissionId}}"
+            },
+            {
+              "key": "documentId",
+              "value": "{{sharedDocumentId}}"
+            }
+          ]
+        },
+        "description": "A short-lived read link for one document shared with this submission; every link issued is audited. Lender context: admins and credit officers act, viewers read. Only files already sent to the signed-in lender's organization are visible."
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "409 DOCUMENT_NOT_READY",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/lender/submissions/:id/documents/:documentId/download-url",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "lender",
+            "submissions",
+            ":id",
+            "documents",
+            ":documentId",
+            "download-url"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{submissionId}}"
+            },
+            {
+              "key": "documentId",
+              "value": "{{sharedDocumentId}}"
+            }
+          ]
+        },
+        "description": "A short-lived read link for one document shared with this submission; every link issued is audited. Lender context: admins and credit officers act, viewers read. Only files already sent to the signed-in lender's organization are visible."
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"DOCUMENT_NOT_READY\",\n  \"message\": \"This document is still being checked. Try again shortly.\",\n  \"details\": {\n    \"status\": \"scanning\"\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

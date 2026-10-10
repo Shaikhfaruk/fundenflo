@@ -21,6 +21,8 @@ export const DLT_TEMPLATE_ENV: Partial<Record<NotificationTemplateKey, string>> 
   [NotificationTemplateKey.FollowUpDue]: 'SMS_DLT_TEMPLATE_FOLLOW_UP_DUE',
   [NotificationTemplateKey.AnalysisCompleted]: 'SMS_DLT_TEMPLATE_ANALYSIS_COMPLETED',
   [NotificationTemplateKey.ApplicationStatusChanged]: 'SMS_DLT_TEMPLATE_APPLICATION_STATUS',
+  [NotificationTemplateKey.DocumentRequested]: 'SMS_DLT_TEMPLATE_DOCUMENT_REQUESTED',
+  [NotificationTemplateKey.SubmissionReceived]: 'SMS_DLT_TEMPLATE_SUBMISSION_RECEIVED',
 };
 
 export const NOTIFICATION_TEMPLATE_SEEDS: TemplateSeed[] = [
@@ -138,4 +140,9 @@ export const NOTIFICATION_TEMPLATE_SEEDS: TemplateSeed[] = [
   { key: NotificationTemplateKey.AnalysisCompleted, channel: NotificationChannel.sms, locale: 'en', subject: null, body: 'FundenFlo: your financial health assessment for {{ref}} is ready. Open the app to see your score.' },
   { key: NotificationTemplateKey.ApplicationStatusChanged, channel: NotificationChannel.push, locale: 'en', subject: 'Update on {{ref}}', body: 'Your application is now {{status}}.' },
   { key: NotificationTemplateKey.ApplicationStatusChanged, channel: NotificationChannel.sms, locale: 'en', subject: null, body: 'FundenFlo: your loan application {{ref}} is now {{status}}.' },
+  { key: NotificationTemplateKey.SubmissionReceived, channel: NotificationChannel.email, locale: 'en', subject: 'New application {{ref}} on FundenFlo', body: 'A new application ({{ref}}) for {{product}} is waiting for you on the FundenFlo lender portal.' },
+  { key: NotificationTemplateKey.SubmissionReceived, channel: NotificationChannel.push, locale: 'en', subject: 'New application {{ref}}', body: '{{product}}: open the lender portal to review it.' },
+  { key: NotificationTemplateKey.SubmissionReceived, channel: NotificationChannel.sms, locale: 'en', subject: null, body: 'FundenFlo: new application {{ref}} for {{product}} is waiting on your lender portal.' },
+  { key: NotificationTemplateKey.DocumentRequested, channel: NotificationChannel.push, locale: 'en', subject: 'Documents needed for {{ref}}', body: 'Upload {{documents}} to keep your application moving.' },
+  { key: NotificationTemplateKey.DocumentRequested, channel: NotificationChannel.sms, locale: 'en', subject: null, body: 'FundenFlo: please upload {{documents}} for application {{ref}} in the app.' },
 ];

@@ -44,6 +44,7 @@ export const DOCUMENT_TYPE_SEEDS: DocumentTypeSeed[] = [
   type('machinery_quotation', 'Machinery Quotation', 'Quotation From The Supplier', 'quote', { sensitivity: DataSensitivity.public }),
   type('udyam_certificate', 'Udyam Registration', 'Udyam Registration Certificate', 'badge', { sensitivity: DataSensitivity.public }),
   type('sanction_letter', 'Sanction Letter', 'Sanction Letter From The Lender', 'receipt'),
+  type('disbursement_advice', 'Disbursement Advice', 'Disbursal Confirmation From The Lender', 'receipt'),
 ];
 
 const slot = (key: string, documentTypes: string[], extra: Record<string, unknown> = {}) => ({ key, documentTypes, required: true, minCount: 1, ...extra });

@@ -18,6 +18,7 @@ import { ImportsModule } from './modules/imports/imports.module.js';
 import { ApplicationsModule } from './modules/applications/applications.module.js';
 import { AssessmentsModule } from './modules/assessments/assessments.module.js';
 import { MatchingModule } from './modules/matching/matching.module.js';
+import { SubmissionsModule } from './modules/submissions/submissions.module.js';
 import { SubscriptionsModule } from './modules/subscriptions/subscriptions.module.js';
 import { LendersModule } from './modules/lenders/lenders.module.js';
 import { BorrowersModule } from './modules/borrowers/borrowers.module.js';
@@ -52,6 +53,7 @@ import { QuestionnairesModule } from './modules/questionnaires/questionnaires.mo
     AssessmentsModule,
     SubscriptionsModule,
     MatchingModule,
+    SubmissionsModule,
     ActivitiesModule,
     SlaModule,
     RealtimeModule.forRoot({ worker: false }),

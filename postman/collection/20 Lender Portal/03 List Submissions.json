@@ -1,0 +1,71 @@
+{
+  "name": "List Lender Submissions",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/lender/submissions?status=sent_to_lender",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "lender",
+        "submissions"
+      ],
+      "query": [
+        {
+          "key": "status",
+          "value": "sent_to_lender"
+        }
+      ]
+    },
+    "description": "Files sent to the lender, newest first, filterable by `status`. Lender context: admins and credit officers act, viewers read. Only files already sent to the signed-in lender's organization are visible."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/lender/submissions?status=sent_to_lender",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "lender",
+            "submissions"
+          ],
+          "query": [
+            {
+              "key": "status",
+              "value": "sent_to_lender"
+            }
+          ]
+        },
+        "description": "Files sent to the lender, newest first, filterable by `status`. Lender context: admins and credit officers act, viewers read. Only files already sent to the signed-in lender's organization are visible."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a12300-1a2b-7c3d-8e4f-5061728394a5\",\n      \"ref\": \"SB-26-000041\",\n      \"applicationId\": \"01a12260-2b3c-7d4e-9f50-61728394a5b6\",\n      \"status\": \"sent_to_lender\",\n      \"lender\": {\n        \"id\": \"01a122a0-1a2b-7c3d-8e4f-5061728394a5\",\n        \"key\": \"lenderx\",\n        \"name\": \"Lender X Finance Ltd\"\n      },\n      \"product\": {\n        \"id\": \"01a122a0-5e6f-7a71-9283-94a5b6c7d8e9\",\n        \"key\": \"lenderx.working_capital\",\n        \"versionId\": \"01a122a0-6f70-7b82-a394-a5b6c7d8e9fa\",\n        \"name\": \"Lender X Working Capital\"\n      },\n      \"matchResultId\": \"01a122d0-2b3c-7d4e-9f50-61728394a5b6\",\n      \"approvedAt\": \"2026-10-10T22:00:00.000Z\",\n      \"sentAt\": \"2026-10-10T22:00:00.000Z\",\n      \"lenderReference\": null,\n      \"sanction\": null,\n      \"disbursal\": {\n        \"amountPaise\": 0,\n        \"disbursedAt\": null\n      },\n      \"rejection\": null,\n      \"withdrawnReason\": null,\n      \"closedAt\": null,\n      \"version\": 3,\n      \"createdAt\": \"2026-10-10T22:00:00.000Z\",\n      \"updatedAt\": \"2026-10-10T22:00:00.000Z\"\n    }\n  ],\n  \"nextCursor\": null\n}"
+    }
+  ]
+}

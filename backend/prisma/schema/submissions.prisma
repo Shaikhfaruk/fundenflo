@@ -1,0 +1,130 @@
+enum SubmissionStatus {
+  pending_approval
+  approved
+  sent_to_lender
+  under_review
+  query_raised
+  sanctioned
+  disbursed
+  rejected
+  withdrawn
+}
+
+enum SubmissionEventType {
+  requested
+  approved
+  sent
+  acknowledged
+  query_raised
+  query_answered
+  sanctioned
+  disbursed
+  rejected
+  withdrawn
+  document_requested
+  note
+}
+
+enum DocumentRequestStatus {
+  open
+  fulfilled
+  cancelled
+}
+
+model LenderSubmission {
+  id                       String           @id @default(uuid(7)) @db.Uuid
+  ref                      String           @unique
+  applicationId            String           @map("application_id") @db.Uuid
+  lenderId                 String           @map("lender_id") @db.Uuid
+  lenderOrganizationId     String           @map("lender_organization_id") @db.Uuid
+  productDocumentId        String           @map("product_document_id") @db.Uuid
+  productVersionId         String           @map("product_version_id") @db.Uuid
+  productKey               String           @map("product_key")
+  matchResultId            String           @map("match_result_id") @db.Uuid
+  status                   SubmissionStatus @default(pending_approval)
+  requestedByUserId        String           @map("requested_by_user_id") @db.Uuid
+  approvedByUserId         String?          @map("approved_by_user_id") @db.Uuid
+  approvedAt               DateTime?        @map("approved_at") @db.Timestamptz(3)
+  sentAt                   DateTime?        @map("sent_at") @db.Timestamptz(3)
+  lenderReference          String?          @map("lender_reference")
+  sanctionedAmountPaise    BigInt?          @map("sanctioned_amount_paise")
+  sanctionedAt             DateTime?        @map("sanctioned_at") @db.Timestamptz(3)
+  sanctionLetterDocumentId String?          @map("sanction_letter_document_id") @db.Uuid
+  disbursedAmountPaise     BigInt           @default(0) @map("disbursed_amount_paise")
+  disbursedAt              DateTime?        @map("disbursed_at") @db.Timestamptz(3)
+  rejectionReason          String?          @map("rejection_reason")
+  rejectionNote            String?          @map("rejection_note")
+  withdrawnReason          String?          @map("withdrawn_reason")
+  closedAt                 DateTime?        @map("closed_at") @db.Timestamptz(3)
+  version                  Int              @default(1)
+  createdAt                DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt                DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  application LoanApplication    @relation(fields: [applicationId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  events      SubmissionEvent[]
+  packets     SubmissionPacket[]
+  requests    DocumentRequest[]
+
+  @@index([applicationId, status])
+  @@index([lenderOrganizationId, status])
+  @@map("lender_submissions")
+}
+
+model SubmissionEvent {
+  id                 String              @id @default(uuid(7)) @db.Uuid
+  submissionId       String              @map("submission_id") @db.Uuid
+  type               SubmissionEventType
+  fromStatus         SubmissionStatus?   @map("from_status")
+  toStatus           SubmissionStatus?   @map("to_status")
+  actorType          ActorType           @map("actor_type")
+  actorUserId        String?             @map("actor_user_id") @db.Uuid
+  actorContext       SessionContext?     @map("actor_context")
+  note               String?
+  data               Json?
+  evidenceDocumentId String?             @map("evidence_document_id") @db.Uuid
+  createdAt          DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  submission LenderSubmission @relation(fields: [submissionId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([submissionId, createdAt])
+  @@map("submission_events")
+}
+
+model SubmissionPacket {
+  id           String   @id @default(uuid(7)) @db.Uuid
+  submissionId String   @map("submission_id") @db.Uuid
+  snapshot     Json
+  documentIds  String[] @map("document_ids") @db.Uuid
+  hash         String
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  submission LenderSubmission @relation(fields: [submissionId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([submissionId, createdAt])
+  @@map("submission_packets")
+}
+
+model DocumentRequest {
+  id                   String                @id @default(uuid(7)) @db.Uuid
+  applicationId        String                @map("application_id") @db.Uuid
+  submissionId         String?               @map("submission_id") @db.Uuid
+  requestedByUserId    String                @map("requested_by_user_id") @db.Uuid
+  requestedContext     SessionContext        @map("requested_context")
+  documentTypes        String[]              @map("document_types")
+  note                 String?
+  status               DocumentRequestStatus @default(open)
+  dueAt                DateTime?             @map("due_at") @db.Timestamptz(3)
+  fulfilledDocumentIds String[]              @map("fulfilled_document_ids") @db.Uuid
+  fulfilledAt          DateTime?             @map("fulfilled_at") @db.Timestamptz(3)
+  cancelledAt          DateTime?             @map("cancelled_at") @db.Timestamptz(3)
+  version              Int                   @default(1)
+  createdAt            DateTime              @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt            DateTime              @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  application LoanApplication   @relation(fields: [applicationId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  submission  LenderSubmission? @relation(fields: [submissionId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([applicationId, status])
+  @@index([submissionId, status])
+  @@map("document_requests")
+}

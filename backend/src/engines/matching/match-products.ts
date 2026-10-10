@@ -1,6 +1,6 @@
 import { Outcome } from '../conditions/condition.types.js';
 import { evaluateProduct } from '../lending/evaluate-product.js';
-import { Eligibility } from '../lending/lending.types.js';
+import { Eligibility, type ProductDocument } from '../lending/lending.types.js';
 import { screenProduct } from '../lending/screen-product.js';
 import type { MatchCandidate, MatchInput, ProductMatch } from './matching.types.js';
 
@@ -16,6 +16,10 @@ function outcomeOf(screen: ProductMatch['screen'], eligibility: ProductMatch['el
   return 'eligible';
 }
 
+export function documentsNeeded(documents: readonly ProductDocument[], stages: readonly string[], held: ReadonlySet<string>): string[] {
+  return documents.filter((slot) => slot.required && stages.includes(slot.stage) && !slot.documentTypes.some((type) => held.has(type))).map((slot) => slot.key);
+}
+
 export function matchProducts(candidates: readonly MatchCandidate[], input: MatchInput): ProductMatch[] {
   const evaluated = candidates.map((candidate) => {
     const screen = screenProduct(candidate.product, input.request);
@@ -25,11 +29,9 @@ export function matchProducts(candidates: readonly MatchCandidate[], input: Matc
       ...(screen.outcome === Outcome.Pass ? [COVERAGE_REASON] : []),
       ...[...eligibility.hard, ...eligibility.soft].filter((rule) => rule.outcome === Outcome.Pass && rule.message).map((rule) => rule.message as NonNullable<typeof rule.message>),
     ];
-    const documentsNeeded = candidate.product.documents
-      .filter((slot) => slot.required && input.documentStages.includes(slot.stage) && !slot.documentTypes.some((type) => input.heldDocumentTypes.has(type)))
-      .map((slot) => slot.key);
+    const needed = documentsNeeded(candidate.product.documents, input.documentStages, input.heldDocumentTypes);
     const fit = eligibility.softMax > 0 ? Math.round((eligibility.softScore / eligibility.softMax) * PERCENT) : PERCENT;
-    return { productDocumentId: candidate.productDocumentId, productKey: candidate.productKey, productVersionId: candidate.productVersionId, lenderId: candidate.product.lenderId, outcome, screen, eligibility, fit, reasons, documentsNeeded, rank: 0 };
+    return { productDocumentId: candidate.productDocumentId, productKey: candidate.productKey, productVersionId: candidate.productVersionId, lenderId: candidate.product.lenderId, outcome, screen, eligibility, fit, reasons, documentsNeeded: needed, rank: 0 };
   });
   return evaluated
     .toSorted((left, right) => ORDER[left.outcome] - ORDER[right.outcome] || right.fit - left.fit || left.documentsNeeded.length - right.documentsNeeded.length || left.productKey.localeCompare(right.productKey))

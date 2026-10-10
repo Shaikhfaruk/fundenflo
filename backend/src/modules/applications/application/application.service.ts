@@ -14,7 +14,7 @@ import { paiseFromNumber, paiseToNumber } from '../../../common/money/paise.js';
 import { RefGenerator, RefKind } from '../../../infrastructure/database/ref-generator.js';
 import { remainingRequired } from '../../../engines/questionnaire/resolve.js';
 import type { QuestionnaireContext } from '../../../engines/questionnaire/questionnaire.types.js';
-import { ApplicationEvent, applicationMachine, CLOSED_APPLICATION_STATES, PRE_SUBMISSION_APPLICATION_STATES } from '../../../engines/state-machines/machines/application.machine.js';
+import { APPLIED_APPLICATION_STATES, ApplicationEvent, applicationMachine, CLOSED_APPLICATION_STATES, PRE_SUBMISSION_APPLICATION_STATES, SUBMITTABLE_APPLICATION_STATES } from '../../../engines/state-machines/machines/application.machine.js';
 import type { Prisma } from '../../../generated/prisma/client.js';
 import { AppAction, type AppAbility } from '../../access/domain/ability.types.js';
 import { ChangeRecorder } from '../../audit/application/change-recorder.service.js';
@@ -38,7 +38,7 @@ import { QuestionnaireStage } from '../../questionnaires/domain/questionnaire.co
 import { APPLICATION_REFRESH_BATCH, APPLICATION_TIMELINE_LIMIT, CO_PARTY_ROLES } from '../domain/application.constants.js';
 import { computeJourney, type JourneyFacts, JourneyStage } from '../domain/journey.js';
 import { type ApplicationRow, ApplicationRepository } from '../infrastructure/application.repository.js';
-import { ApplicationTimeline } from './application-timeline.service.js';
+import { type ApplicationEventDetails, ApplicationTimeline } from './application-timeline.service.js';
 import { toApplicationEventView, toApplicationView } from './application.views.js';
 
 export type CreateApplicationInput = { segment: string; subSegment?: string; businessName?: string; category?: string };
@@ -271,8 +271,48 @@ export class ApplicationService {
   }
 
   async subject(id: string) {
+    return this.subjectOf(await this.require(id));
+  }
+
+  @Transactional()
+  async prepareSubmission(id: string, ability: AppAbility) {
+    await this.applications.lock(id);
+    const application = await this.visible(id, ability, AppAction.Update);
+    if (!SUBMITTABLE_APPLICATION_STATES.includes(application.status)) throw new AppError(ErrorCode.INVALID_TRANSITION, { details: { from: application.status, event: ApplicationEvent.MarkReady, allowed: applicationMachine.events(application.status) } });
+    if (application.status === ApplicationStatus.assessed) await this.transition(application, ApplicationEvent.MarkReady);
+    return this.subjectOf(await this.require(id));
+  }
+
+  @Transactional()
+  async markSubmitted(id: string) {
+    await this.applications.lock(id);
     const application = await this.require(id);
-    return { id: application.id, ref: application.ref, partyId: application.partyId, actingPartyId: application.actingPartyId, segmentKey: application.segmentKey, subSegmentKey: application.subSegmentKey };
+    if (application.status !== ApplicationStatus.ready_for_submission) return;
+    await this.transition(application, ApplicationEvent.Submit);
+    await this.refreshStage(id);
+  }
+
+  @Transactional()
+  async closeFromSubmissions(id: string, won: boolean, reason: string) {
+    await this.applications.lock(id);
+    const application = await this.require(id);
+    if (application.status !== ApplicationStatus.submitted) return;
+    await this.transition(application, won ? ApplicationEvent.Win : ApplicationEvent.Lose, reason);
+    await this.refreshStage(id);
+  }
+
+  @Transactional()
+  async assign(id: string, assigneeUserId: string | null, ability: AppAbility) {
+    await this.applications.lock(id);
+    const application = await this.visible(id, ability, AppAction.Update);
+    await this.applications.update(id, { assigneeUserId });
+    await this.timeline.record(id, ApplicationEventType.assigned, { data: { from: application.assigneeUserId, to: assigneeUserId } });
+    await this.changes.record({ action: AuditAction.CaseAssigned, entityType: AuditEntity.LoanApplication, entityId: id, event: EventName.CaseAssigned, metadata: { ref: application.ref, from: application.assigneeUserId, to: assigneeUserId }, payload: { applicationId: id, assigneeUserId, previousAssigneeUserId: application.assigneeUserId } });
+    return toApplicationView(await this.require(id));
+  }
+
+  recordEvent(id: string, type: ApplicationEventType, details: ApplicationEventDetails) {
+    return this.timeline.record(id, type, details);
   }
 
   async openForChange(id: string, ability: AppAbility) {
@@ -319,6 +359,7 @@ export class ApplicationService {
     const closing = CLOSED_APPLICATION_STATES.includes(next);
     const moved = await this.applications.updateFromStatus(application.id, application.status, { status: next, ...(closing ? { closedAt: new Date(), closeReason: reason } : {}) });
     if (moved.count === 0) throw new AppError(ErrorCode.VERSION_CONFLICT);
+    if (closing && application.leadId) await this.leads.closeFromApplication(application.leadId, next);
     await this.timeline.record(application.id, ApplicationEventType.status_changed, { fromStatus: application.status, toStatus: next, reason });
     await this.changes.record({
       action: AuditAction.ApplicationStatusChanged,
@@ -383,7 +424,34 @@ export class ApplicationService {
       detailsVerified,
       scored: application.scoredAt !== null,
       matched: application.matchedAt !== null,
-      applied: false,
+      applied: APPLIED_APPLICATION_STATES.includes(application.status),
+    };
+  }
+
+  private subjectOf(application: ApplicationRow) {
+    return {
+      id: application.id,
+      ref: application.ref,
+      status: application.status,
+      channel: application.channel,
+      partyId: application.partyId,
+      actingPartyId: application.actingPartyId,
+      borrowerProfileId: application.borrowerProfileId,
+      partnerOrganizationId: application.partnerOrganizationId,
+      leadId: application.leadId,
+      createdByUserId: application.createdByUserId,
+      businessName: application.party.displayName,
+      applicantName: application.actingParty.displayName,
+      segmentKey: application.segmentKey,
+      subSegmentKey: application.subSegmentKey,
+      categoryKey: application.categoryKey,
+      purposeKey: application.purposeKey,
+      purposeNote: application.purposeNote,
+      amountPaise: application.amountPaise === null ? null : paiseToNumber(application.amountPaise),
+      tenureMonths: application.tenureMonths,
+      location: { stateId: application.stateId, cityId: application.cityId, pincode: application.pincode },
+      latestScoreResultId: application.latestScoreResultId,
+      latestMatchRunId: application.latestMatchRunId,
     };
   }
 
@@ -413,3 +481,5 @@ export class ApplicationService {
     return application;
   }
 }
+
+export type ApplicationSubject = Awaited<ReturnType<ApplicationService['subject']>>;

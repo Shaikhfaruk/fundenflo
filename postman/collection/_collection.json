@@ -25,6 +25,7 @@
           "const digits = () => String(Math.floor(Math.random() * 100000000)).padStart(8, '0');",
           "if (!pm.collectionVariables.get('mobile')) pm.collectionVariables.set('mobile', '98' + digits());",
           "if (!pm.collectionVariables.get('newMobile')) pm.collectionVariables.set('newMobile', '97' + digits());",
+          "if (!pm.collectionVariables.get('lenderMobile')) pm.collectionVariables.set('lenderMobile', '96' + digits());",
           "if (!pm.collectionVariables.get('linkEmail')) pm.collectionVariables.set('linkEmail', 'borrower.' + Date.now() + '@sustaininsight.com');"
         ]
       }
@@ -613,6 +614,38 @@
     },
     {
       "key": "matchResultId",
+      "value": ""
+    },
+    {
+      "key": "documentType",
+      "value": "bank_statement"
+    },
+    {
+      "key": "lenderMobile",
+      "value": ""
+    },
+    {
+      "key": "lenderOrganizationId",
+      "value": ""
+    },
+    {
+      "key": "submissionId",
+      "value": ""
+    },
+    {
+      "key": "submissionVersion",
+      "value": ""
+    },
+    {
+      "key": "documentRequestId",
+      "value": ""
+    },
+    {
+      "key": "sharedDocumentId",
+      "value": ""
+    },
+    {
+      "key": "evidenceDocumentId",
       "value": ""
     }
   ]

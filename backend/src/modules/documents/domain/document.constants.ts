@@ -64,6 +64,7 @@ export const DocumentOwnerKind = {
   Application: 'application',
   BorrowerProfile: 'borrower_profile',
   Lender: 'lender',
+  Submission: 'submission',
 } as const;
 
 export type DocumentOwnerKind = (typeof DocumentOwnerKind)[keyof typeof DocumentOwnerKind];

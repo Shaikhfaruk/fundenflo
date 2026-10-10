@@ -30,6 +30,9 @@ enum ApplicationEventType {
   consent_recorded
   assessment_recorded
   match_recorded
+  assigned
+  submission_recorded
+  document_requested
 }
 
 enum ApplicationPartyRole {
@@ -86,15 +89,17 @@ model LoanApplication {
   createdAt             DateTime           @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt             DateTime           @updatedAt @map("updated_at") @db.Timestamptz(3)
 
-  borrowerProfile BorrowerProfile    @relation(fields: [borrowerProfileId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  party           Party              @relation("application_party", fields: [partyId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  actingParty     Party              @relation("application_acting_party", fields: [actingPartyId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  events          ApplicationEvent[]
-  documents       Document[]
-  parties         ApplicationParty[]
-  analyses        Analysis[]
-  scoreResults    ScoreResult[]
-  matchRuns       MatchRun[]
+  borrowerProfile  BorrowerProfile    @relation(fields: [borrowerProfileId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  party            Party              @relation("application_party", fields: [partyId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  actingParty      Party              @relation("application_acting_party", fields: [actingPartyId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  events           ApplicationEvent[]
+  documents        Document[]
+  parties          ApplicationParty[]
+  analyses         Analysis[]
+  scoreResults     ScoreResult[]
+  matchRuns        MatchRun[]
+  submissions      LenderSubmission[]
+  documentRequests DocumentRequest[]
 
   @@index([actingPartyId, status])
   @@index([partyId])

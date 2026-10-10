@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import { ApplicationChannel, ApplicationStatus } from '../../../common/enums/db.enums.js';
 import { pageQuerySchema } from '../../../common/listing/cursor-page.js';
+import { uuidSchema } from '../../../common/validation/common.schemas.js';
 import { consentItemsSchema } from '../../consents/http/consents.dto.js';
 import { DocumentStage } from '../../documents/domain/document.constants.js';
 import { QuestionnaireStage } from '../../questionnaires/domain/questionnaire.constants.js';
@@ -75,5 +76,8 @@ export type OpsCasesDto = z.output<typeof opsCasesSchema>;
 
 export const verifyFactSchema = z.object({ value: z.unknown(), reason: z.string().trim().min(3).max(500) }).strict();
 export type VerifyFactDto = z.output<typeof verifyFactSchema>;
+
+export const assignCaseSchema = z.object({ assigneeUserId: uuidSchema.nullable() }).strict();
+export type AssignCaseDto = z.output<typeof assignCaseSchema>;
 
 export const attributeParamSchema = z.string().regex(/^[a-z][a-z0-9_]*(\.[a-z0-9_]+)+$/);

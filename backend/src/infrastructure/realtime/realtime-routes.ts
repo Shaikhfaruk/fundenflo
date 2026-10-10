@@ -53,6 +53,20 @@ const document = (payload: Payload): RealtimeTarget[] => {
   return targets.length > 0 ? [{ kind: 'emit', rooms: targets, event: RealtimeEvent.DocumentChanged, data: { documentId: text(payload, 'documentId'), applicationId: text(payload, 'applicationId'), status: text(payload, 'status') } }] : [];
 };
 
+const submission = (payload: Payload): RealtimeTarget[] => {
+  const userId = text(payload, 'requestedByUserId');
+  const partnerOrganizationId = text(payload, 'partnerOrganizationId');
+  const lenderOrganizationId = payload.lenderVisible === true ? text(payload, 'lenderOrganizationId') : null;
+  return [
+    {
+      kind: 'emit',
+      rooms: rooms(RealtimeRoom.staff, userId && RealtimeRoom.user(userId), partnerOrganizationId && RealtimeRoom.organization(partnerOrganizationId), lenderOrganizationId && RealtimeRoom.organization(lenderOrganizationId)),
+      event: RealtimeEvent.SubmissionChanged,
+      data: { submissionId: text(payload, 'submissionId'), applicationId: text(payload, 'applicationId'), status: text(payload, 'to') },
+    },
+  ];
+};
+
 const ROUTES: Partial<Record<EventName, (payload: Payload) => RealtimeTarget[]>> = {
   [EventName.LeadCaptured]: lead,
   [EventName.LeadUpdated]: lead,
@@ -82,6 +96,10 @@ const ROUTES: Partial<Record<EventName, (payload: Payload) => RealtimeTarget[]>>
     const userId = text(payload, 'requestedByUserId');
     return userId ? [{ kind: 'emit', rooms: [RealtimeRoom.user(userId)], event: RealtimeEvent.AnalysisChanged, data: { analysisId: text(payload, 'analysisId'), applicationId: text(payload, 'applicationId'), status: text(payload, 'status') } }] : [];
   },
+  [EventName.SubmissionRequested]: submission,
+  [EventName.SubmissionApproved]: submission,
+  [EventName.SubmissionStatusChanged]: submission,
+  [EventName.SubmissionDisbursed]: submission,
   [EventName.DocumentScanned]: document,
   [EventName.DocumentVerified]: document,
   [EventName.DocumentNeedsReview]: document,

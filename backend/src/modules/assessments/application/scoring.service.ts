@@ -90,6 +90,12 @@ export class ScoringService {
     return result;
   }
 
+  async summary(scoreResultId: string | null) {
+    const result = scoreResultId ? await this.repository.findScoreResult(scoreResultId) : null;
+    if (!result) return null;
+    return { id: result.id, status: result.status, value: result.value, band: result.band, model: { key: result.modelKey, number: result.modelNumber }, computedAt: result.createdAt.toISOString() };
+  }
+
   reproduce(model: CompiledScoringModel, inputs: Record<string, { value: unknown; rank: number } | null>, consents: Record<string, boolean>): ScoreOutcome {
     const lookup: RankedLookup = (attr) => (inputs[attr] ? (inputs[attr] as ReturnType<RankedLookup>) : undefined);
     return computeScore(model, lookup, (purpose) => consents[purpose] === true);

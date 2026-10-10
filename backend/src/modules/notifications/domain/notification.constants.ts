@@ -12,6 +12,8 @@ export const NotificationTemplateKey = {
   FollowUpDue: 'follow_up.due',
   AnalysisCompleted: 'analysis.completed',
   ApplicationStatusChanged: 'application.status_changed',
+  SubmissionReceived: 'submission.received',
+  DocumentRequested: 'document.requested',
 } as const;
 
 export type NotificationTemplateKey = (typeof NotificationTemplateKey)[keyof typeof NotificationTemplateKey];

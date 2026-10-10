@@ -90,6 +90,13 @@ export const EventName = {
   DocumentVerified: 'document.verified',
   DocumentNeedsReview: 'document.needs_review',
   MatchCompleted: 'match.completed',
+  SubmissionRequested: 'submission.requested',
+  SubmissionApproved: 'submission.approved',
+  SubmissionStatusChanged: 'submission.status.changed',
+  SubmissionDisbursed: 'submission.disbursed',
+  DocumentRequested: 'document.requested',
+  DocumentRequestFulfilled: 'document.request_fulfilled',
+  CaseAssigned: 'case.assigned',
 } as const;
 
 export type EventName = (typeof EventName)[keyof typeof EventName];

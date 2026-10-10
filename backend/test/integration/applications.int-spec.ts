@@ -109,5 +109,7 @@ describe('borrower profiles and applications', () => {
     expect(converted.body.assignments[0]).toMatchObject({ status: 'completed', reason: 'converted_to_application' });
     const second = await as(person).post('/applications', { segment: 'individual', category: 'personal' }).expect(201);
     expect(second.body.leadId).toBeNull();
+    await as(person).post(`/applications/${application.body.id}/withdraw`, { reason: 'Not needed any more' }).expect(200);
+    expect((await as(ops).get(`/ops/leads/${lead.body.id}`).expect(200)).body).toMatchObject({ status: 'lost', lostReason: 'not_interested' });
   });
 });

@@ -54,6 +54,12 @@ export class MatchingService {
     return toMatchRunView(run, lenders, locale, includeIneligible);
   }
 
+  async result(id: string) {
+    const result = await this.repository.findResult(id);
+    if (!result) throw new AppError(ErrorCode.VALIDATION_FAILED, { details: [{ path: 'matchResultId', code: 'unknown_match', message: 'choose a lender from your latest matches' }] });
+    return result;
+  }
+
   async run(applicationId: string, triggeredByUserId: string | null) {
     const subject = await this.applications.matchSubject(applicationId);
     const products = (await this.catalog.liveProducts()).filter((product) => subject.categoryKey === null || product.compiled.category === subject.categoryKey);

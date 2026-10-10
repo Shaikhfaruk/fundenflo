@@ -1,0 +1,101 @@
+{
+  "name": "Share File With Lender",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/applications/:id/consents",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "applications",
+        ":id",
+        "consents"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{applicationId}}"
+        }
+      ]
+    },
+    "description": "Records the applicant's consent to share the loan file with one chosen lender (`organizationIds` holds lender organization ids). A file is sent only to lenders named here; a general `lender_sharing` grant from the journey screen is not enough. Withdrawing it before the file goes out withdraws that submission. Borrower context.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"templateVersionId\": \"{{consentTemplateVersionId}}\",\n  \"items\": [\n    {\n      \"purpose\": \"lender_sharing\",\n      \"granted\": true,\n      \"organizationIds\": [\n        \"{{lenderOrganizationId}}\"\n      ]\n    }\n  ]\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/applications/:id/consents",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "applications",
+            ":id",
+            "consents"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            }
+          ]
+        },
+        "description": "Records the applicant's consent to share the loan file with one chosen lender (`organizationIds` holds lender organization ids). A file is sent only to lenders named here; a general `lender_sharing` grant from the journey screen is not enough. Withdrawing it before the file goes out withdraws that submission. Borrower context.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"templateVersionId\": \"{{consentTemplateVersionId}}\",\n  \"items\": [\n    {\n      \"purpose\": \"lender_sharing\",\n      \"granted\": true,\n      \"organizationIds\": [\n        \"{{lenderOrganizationId}}\"\n      ]\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"consents\": [],\n  \"missingRequired\": [],\n  \"application\": {\n    \"id\": \"01a12260-2b3c-7d4e-9f50-61728394a5b6\",\n    \"ref\": \"AP-26-000310\",\n    \"status\": \"ready_for_submission\",\n    \"journeyStage\": \"apply\",\n    \"version\": 8\n  }\n}"
+    }
+  ]
+}

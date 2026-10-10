@@ -20,6 +20,8 @@ import type {
   Lender,
   LenderAgreement,
   LenderContact,
+  LenderSubmission,
+  DocumentRequest,
   LoanApplication,
   Membership,
   OfflineConversion,
@@ -81,6 +83,8 @@ export type AppSubjects =
       Lender: Lender;
       LenderAgreement: LenderAgreement;
       LenderContact: LenderContact;
+      LenderSubmission: LenderSubmission;
+      DocumentRequest: DocumentRequest;
     }>;
 
 export type AppAbility = Ability<[AppAction, AppSubjects], PrismaQueryOf<Prisma.TypeMap>>;

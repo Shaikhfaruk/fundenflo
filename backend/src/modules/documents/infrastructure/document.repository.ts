@@ -54,6 +54,10 @@ export class DocumentRepository {
     return this.txHost.tx.document.updateMany({ where: { id, status }, data: { ...data, version: { increment: 1 } } });
   }
 
+  updateMany(where: Prisma.DocumentWhereInput, data: Prisma.DocumentUncheckedUpdateManyInput) {
+    return this.txHost.tx.document.updateMany({ where, data: { ...data, version: { increment: 1 } } });
+  }
+
   update(id: string, data: Prisma.DocumentUncheckedUpdateManyInput) {
     return this.txHost.tx.document.updateMany({ where: { id }, data: { ...data, version: { increment: 1 } } });
   }

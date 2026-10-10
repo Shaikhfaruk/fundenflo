@@ -10,7 +10,7 @@ import { AppAction, type AppAbility } from '../../access/domain/ability.types.js
 import { CheckPolicies, CurrentAbility } from '../../access/http/policies.guard.js';
 import { ApplicationService } from '../application/application.service.js';
 import { OpsCaseService } from '../application/ops-case.service.js';
-import { attributeParamSchema, type OpsCasesDto, opsCasesSchema, type VerifyFactDto, verifyFactSchema } from './applications.dto.js';
+import { type AssignCaseDto, assignCaseSchema, attributeParamSchema, type OpsCasesDto, opsCasesSchema, type VerifyFactDto, verifyFactSchema } from './applications.dto.js';
 
 const canRead = CheckPolicies((ability) => ability.can(AppAction.Read, 'LoanApplication'));
 
@@ -32,6 +32,13 @@ export class OpsCasesController {
   @canRead
   detail(@ValidParam('id', uuidSchema) id: string, @CurrentAbility() ability: AppAbility, @RequestLocale() locale: Locale) {
     return this.cases.detail(id, ability, locale);
+  }
+
+  @Post(':id/assign')
+  @HttpCode(HttpStatus.OK)
+  @CheckPolicies((ability) => ability.can(AppAction.Update, 'LoanApplication'))
+  assign(@ValidParam('id', uuidSchema) id: string, @ValidBody(assignCaseSchema) body: AssignCaseDto, @CurrentAbility() ability: AppAbility) {
+    return this.cases.assign(id, body.assigneeUserId, ability);
   }
 
   @Post(':id/facts/:attribute/verify')

@@ -10,6 +10,7 @@ import { leadMachine } from './machines/lead.machine.js';
 import { agreementMachine, lenderMachine } from './machines/lender.machine.js';
 import { organizationMachine } from './machines/organization.machine.js';
 import { partnerVerificationMachine } from './machines/partner-verification.machine.js';
+import { submissionMachine } from './machines/submission.machine.js';
 
 describe('defineMachine', () => {
   const door = defineMachine<'open' | 'closed' | 'locked', 'close' | 'open' | 'lock'>({
@@ -154,5 +155,24 @@ describe('lender and agreement machines', () => {
     expect(agreementMachine.next('active', 'terminate')).toBe('terminated');
     expect(agreementMachine.can('expired', 'activate')).toBe(false);
     expect(agreementMachine.can('terminated', 'terminate')).toBe(false);
+  });
+});
+
+describe('submission machine', () => {
+  it('needs ops approval before the lender sees it and loops on queries', () => {
+    expect(submissionMachine.can('pending_approval', 'send')).toBe(false);
+    expect(submissionMachine.next('pending_approval', 'approve')).toBe('approved');
+    expect(submissionMachine.next('approved', 'send')).toBe('sent_to_lender');
+    expect(submissionMachine.next('under_review', 'raise_query')).toBe('query_raised');
+    expect(submissionMachine.next('query_raised', 'answer_query')).toBe('under_review');
+  });
+
+  it('disburses in tranches after a sanction and ends with rejection or withdrawal', () => {
+    expect(submissionMachine.next('under_review', 'sanction')).toBe('sanctioned');
+    expect(submissionMachine.next('sanctioned', 'disburse')).toBe('disbursed');
+    expect(submissionMachine.next('disbursed', 'disburse')).toBe('disbursed');
+    expect(submissionMachine.can('disbursed', 'withdraw')).toBe(false);
+    expect(submissionMachine.can('pending_approval', 'reject')).toBe(false);
+    expect(submissionMachine.next('query_raised', 'reject')).toBe('rejected');
   });
 });

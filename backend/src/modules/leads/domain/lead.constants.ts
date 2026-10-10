@@ -1,4 +1,4 @@
-import { LeadSourceKind } from '../../../common/enums/db.enums.js';
+import { ApplicationStatus, LeadLostReason, LeadSourceKind } from '../../../common/enums/db.enums.js';
 
 export const LEAD_QUALITY_WEIGHTS = {
   mobile: 25,
@@ -76,3 +76,10 @@ export const LEAD_IMPORT_FIELDS = [
 ] as const;
 
 export const TRUTHY_CELL = /^(y|yes|true|1|agreed|consented)$/i;
+
+export const LEAD_CLOSE_FOR_APPLICATION: Partial<Record<ApplicationStatus, LeadLostReason | null>> = {
+  [ApplicationStatus.closed_won]: null,
+  [ApplicationStatus.closed_lost]: LeadLostReason.not_eligible,
+  [ApplicationStatus.withdrawn]: LeadLostReason.not_interested,
+  [ApplicationStatus.expired]: LeadLostReason.other,
+};

@@ -1,0 +1,153 @@
+{
+  "name": "Record Lender Update",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/ops/submissions/:id/events",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "submissions",
+        ":id",
+        "events"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{submissionId}}"
+        }
+      ]
+    },
+    "description": "Records an update for a lender that works offline: every action of the lender portal plus `answer_query` and `withdraw`. Sanction, disbursal and rejection need a `note` saying how the lender shared the decision, and sanction and disbursal need an `evidenceDocumentId`. Optional `expectedVersion` guards against two people acting at once. Staff context (ops leads and reviewers act; compliance, support and credit read).",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"action\": \"answer_query\",\n  \"note\": \"Borrower shared the ITR by email; uploaded to the case\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/submissions/:id/events",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "submissions",
+            ":id",
+            "events"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{submissionId}}"
+            }
+          ]
+        },
+        "description": "Records an update for a lender that works offline: every action of the lender portal plus `answer_query` and `withdraw`. Sanction, disbursal and rejection need a `note` saying how the lender shared the decision, and sanction and disbursal need an `evidenceDocumentId`. Optional `expectedVersion` guards against two people acting at once. Staff context (ops leads and reviewers act; compliance, support and credit read).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"action\": \"answer_query\",\n  \"note\": \"Borrower shared the ITR by email; uploaded to the case\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12300-1a2b-7c3d-8e4f-5061728394a5\",\n  \"ref\": \"SB-26-000041\",\n  \"applicationId\": \"01a12260-2b3c-7d4e-9f50-61728394a5b6\",\n  \"status\": \"under_review\",\n  \"lender\": {\n    \"id\": \"01a122a0-1a2b-7c3d-8e4f-5061728394a5\",\n    \"key\": \"lenderx\",\n    \"name\": \"Lender X Finance Ltd\"\n  },\n  \"product\": {\n    \"id\": \"01a122a0-5e6f-7a71-9283-94a5b6c7d8e9\",\n    \"key\": \"lenderx.working_capital\",\n    \"versionId\": \"01a122a0-6f70-7b82-a394-a5b6c7d8e9fa\",\n    \"name\": \"Lender X Working Capital\"\n  },\n  \"matchResultId\": \"01a122d0-2b3c-7d4e-9f50-61728394a5b6\",\n  \"approvedAt\": \"2026-10-10T22:00:00.000Z\",\n  \"sentAt\": \"2026-10-10T22:00:00.000Z\",\n  \"lenderReference\": null,\n  \"sanction\": null,\n  \"disbursal\": {\n    \"amountPaise\": 0,\n    \"disbursedAt\": null\n  },\n  \"rejection\": null,\n  \"withdrawnReason\": null,\n  \"closedAt\": null,\n  \"version\": 3,\n  \"createdAt\": \"2026-10-10T22:00:00.000Z\",\n  \"updatedAt\": \"2026-10-10T22:00:00.000Z\"\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/submissions/:id/events",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "submissions",
+            ":id",
+            "events"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{submissionId}}"
+            }
+          ]
+        },
+        "description": "Records an update for a lender that works offline: every action of the lender portal plus `answer_query` and `withdraw`. Sanction, disbursal and rejection need a `note` saying how the lender shared the decision, and sanction and disbursal need an `evidenceDocumentId`. Optional `expectedVersion` guards against two people acting at once. Staff context (ops leads and reviewers act; compliance, support and credit read).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"action\": \"answer_query\",\n  \"note\": \"Borrower shared the ITR by email; uploaded to the case\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"evidenceDocumentId\",\n      \"code\": \"required\",\n      \"message\": \"attach the lender letter or advice\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}
