@@ -80,6 +80,8 @@ export const EventName = {
   DocumentRejected: 'document.rejected',
   DocumentScanOverdue: 'document.scan_overdue',
   DocumentDeleted: 'document.deleted',
+  DocumentExpired: 'document.expired',
+  DocumentPurged: 'document.purged',
   LenderChanged: 'lender.changed',
   LenderProductProposed: 'lender_product.proposed',
   AnalysisRequested: 'analysis.requested',

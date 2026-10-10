@@ -27,6 +27,7 @@ const ROUTES: Partial<Record<EventName, QueueName[]>> = {
   [EventName.DocumentScanOverdue]: [QueueName.DocumentsScan],
   [EventName.DocumentRejected]: [QueueName.ApplicationsRefresh],
   [EventName.DocumentDeleted]: [QueueName.ApplicationsRefresh],
+  [EventName.DocumentExpired]: [QueueName.ApplicationsRefresh],
   [EventName.BorrowerProfileChanged]: [QueueName.ApplicationsRefresh, QueueName.RiskDetect],
   [EventName.AnalysisRequested]: [QueueName.AnalysisRun],
   [EventName.DocumentScanned]: [QueueName.DocumentsExtract, QueueName.SubmissionsSync, QueueName.RiskDetect],

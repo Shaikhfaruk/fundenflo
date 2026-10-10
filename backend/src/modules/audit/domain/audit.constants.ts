@@ -136,6 +136,8 @@ export const AuditAction = {
   DataRequestRejected: 'data_request.rejected',
   DataExportDownloaded: 'data_request.export_downloaded',
   PersonalDataErased: 'privacy.personal_data_erased',
+  DocumentExpired: 'document.expired',
+  DocumentPurged: 'document.purged',
 } as const;
 
 export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction];

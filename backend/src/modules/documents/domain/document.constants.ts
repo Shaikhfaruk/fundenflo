@@ -72,3 +72,9 @@ export type DocumentOwnerKind = (typeof DocumentOwnerKind)[keyof typeof Document
 export const DOCUMENT_OWNER_METADATA = 'documents:owner';
 
 export const DOCUMENT_REUSE_SCAN_LIMIT = 20;
+
+export const DOCUMENT_RETENTION_BATCH = 200;
+
+export const DocumentPurgeReason = {
+  Retention: 'retention',
+} as const;

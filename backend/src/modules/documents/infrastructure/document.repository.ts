@@ -82,6 +82,18 @@ export class DocumentRepository {
     return this.txHost.tx.document.findMany({ where: { partyId: { in: partyIds }, status: { notIn: [DocumentStatus.deleted, DocumentStatus.purged] } }, include: documentInclude, orderBy: { createdAt: 'asc' } });
   }
 
+  pastRetention(now: Date, take: number) {
+    return this.txHost.tx.document.findMany({ where: { retentionUntil: { lt: now }, lockedAt: null, status: { notIn: [DocumentStatus.purged] } }, include: documentInclude, orderBy: { retentionUntil: 'asc' }, take });
+  }
+
+  pastFreshness(now: Date, states: readonly DocumentStatus[], take: number) {
+    return this.txHost.tx.document.findMany({ where: { freshUntil: { lt: now }, status: { in: [...states] } }, include: documentInclude, orderBy: { freshUntil: 'asc' }, take });
+  }
+
+  orphanFiles(states: readonly DocumentStatus[], take: number) {
+    return this.txHost.tx.document.findMany({ where: { status: { in: [...states] }, storageDeletedAt: null }, select: { id: true, storageKey: true }, orderBy: { updatedAt: 'asc' }, take });
+  }
+
   async idsOfParty(partyId: string) {
     return (await this.txHost.tx.document.findMany({ where: { partyId }, select: { id: true } })).map((row) => row.id);
   }

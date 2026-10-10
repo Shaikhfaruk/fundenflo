@@ -456,7 +456,7 @@ stateDiagram-v2
   expired --> [*]
 ```
 
-Document (built in M3b as `documentMachine`; the scan runs in the worker, `classifying` and `extracting` run in `documents.extract` (M5b), ops review moves `needs_review` to `verified` or `rejected`, `deleted` erases the file at once and `purged` is the retention or erasure end state):
+Document (built in M3b as `documentMachine`; the scan runs in the worker, `classifying` and `extracting` run in `documents.extract` (M5b), ops review moves `needs_review` to `verified` or `rejected`, `deleted` erases the file at once and `purged` is the retention or erasure end state; M8c: the hourly `documents.freshness-expiry` task expires scanned, verified or needs-review documents past `freshUntil`, `documents.retention-purge` purges any unlocked document past `retentionUntil`, and `documents.orphan-files` retries file erasure):
 
 ```mermaid
 stateDiagram-v2
@@ -473,6 +473,8 @@ stateDiagram-v2
   needs_review --> verified: verify
   verified --> rejected: reject
   verified --> expired: expire
+  scanned --> expired: expire (M8c)
+  needs_review --> expired: expire (M8c)
   rejected --> deleted: delete
   verified --> deleted: delete
   scanned --> deleted: delete
@@ -542,7 +544,8 @@ flowchart LR
   UC[Use case in one DB transaction] -->|state change + event row| OB[(outbox_events)]
   OB --> RELAY[outbox.relay]
   SCHED[worker-scheduler: job schedulers] -->|every 1 s| RELAY
-  SCHED -->|hourly| MAINT[maintenance.cleanup: @MaintenanceTask methods]
+  SCHED -->|hourly| MAINT[maintenance.cleanup: @MaintenanceTask methods: OTP, sessions, tokens, idempotency, exports, document freshness, retention purge, orphan files]
+  MAINT -->|document.expired| APPREF
   RELAY --> Q[[BullMQ queues]]
   Q --> REVOKE[auth.session-revocations]
   Q -->|consent.granted / withdrawn| CSYNC[leads.consent-sync]
