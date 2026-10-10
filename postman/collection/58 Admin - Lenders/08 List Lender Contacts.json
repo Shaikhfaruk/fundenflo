@@ -1,0 +1,75 @@
+{
+  "name": "List Lender Contacts",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/lenders/:id/contacts",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "lenders",
+        ":id",
+        "contacts"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{lenderId}}"
+        }
+      ]
+    },
+    "description": "Contacts by escalation level, with masked email and mobile. Staff only: ops leads and lender managers make changes; compliance and support read."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/lenders/:id/contacts",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "lenders",
+            ":id",
+            "contacts"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{lenderId}}"
+            }
+          ]
+        },
+        "description": "Contacts by escalation level, with masked email and mobile. Staff only: ops leads and lender managers make changes; compliance and support read."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a122a0-4d5e-7f60-8172-8394a5b6c7d8\",\n      \"name\": \"Rahul Bhatia\",\n      \"designation\": \"Regional Credit Head\",\n      \"role\": \"escalation\",\n      \"email\": \"ra•••@lenderx.example\",\n      \"mobile\": null,\n      \"escalationLevel\": 2,\n      \"active\": true,\n      \"version\": 1,\n      \"createdAt\": \"2026-10-10T18:00:00.000Z\"\n    }\n  ]\n}"
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+{
+  "name": "Update Lender Product",
+  "request": {
+    "method": "PATCH",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "If-Match",
+        "value": "\"{{lenderProductDocVersion}}\""
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/lender-products/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "lender-products",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{lenderProductId}}"
+        }
+      ]
+    },
+    "description": "Changes the name, description or `status` (inactive pauses the product without a new version). Staff only. Lender products are versioned config (an ops lead or lender manager makes, a different staff member approves in Change Requests, then it is published). The key is `<lenderKey>.<productKey>`; the lender comes from the key. `content`: `category`, `segments`, `subSegments` (empty = all), `amountPaise` and `tenureMonths` ranges, `coverage` (`nationwide`, `states` as GST codes, `cityIds`, `includePincodes`, `excludePincodes`), `eligibility.hard[]` / `soft[]` rules (`id`, `when` condition, optional `minProvenance`, `party`: primary / any_co_applicant / all_directors, `pass` / `fail` texts; soft rules carry a `weight`), `documents[]` slots with a `stage`, optional `questionSet` and `pricingDisclosure`. Only products of active lenders with an agreement in force count for category availability, lender questions and matching.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"description\": {\n    \"en\": \"Unsecured working capital for NCR businesses\"\n  }\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{lenderProductDocVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/lender-products/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "lender-products",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{lenderProductId}}"
+            }
+          ]
+        },
+        "description": "Changes the name, description or `status` (inactive pauses the product without a new version). Staff only. Lender products are versioned config (an ops lead or lender manager makes, a different staff member approves in Change Requests, then it is published). The key is `<lenderKey>.<productKey>`; the lender comes from the key. `content`: `category`, `segments`, `subSegments` (empty = all), `amountPaise` and `tenureMonths` ranges, `coverage` (`nationwide`, `states` as GST codes, `cityIds`, `includePincodes`, `excludePincodes`), `eligibility.hard[]` / `soft[]` rules (`id`, `when` condition, optional `minProvenance`, `party`: primary / any_co_applicant / all_directors, `pass` / `fail` texts; soft rules carry a `weight`), `documents[]` slots with a `stage`, optional `questionSet` and `pricingDisclosure`. Only products of active lenders with an agreement in force count for category availability, lender questions and matching.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"description\": {\n    \"en\": \"Unsecured working capital for NCR businesses\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a122a0-5e6f-7a71-9283-94a5b6c7d8e9\",\n  \"resource\": \"lender_product\",\n  \"key\": \"lenderx.working_capital\",\n  \"name\": {\n    \"en\": \"Lender X Working Capital\"\n  },\n  \"description\": null,\n  \"status\": \"active\",\n  \"activeVersion\": null,\n  \"openVersion\": {\n    \"id\": \"01a122a0-6f70-7b82-a394-a5b6c7d8e9fa\",\n    \"number\": 1,\n    \"status\": \"draft\"\n  },\n  \"versions\": [\n    {\n      \"id\": \"01a122a0-6f70-7b82-a394-a5b6c7d8e9fa\",\n      \"number\": 1,\n      \"status\": \"draft\",\n      \"effectiveFrom\": null,\n      \"publishedAt\": null,\n      \"retiredAt\": null,\n      \"updatedAt\": \"2026-10-10T18:00:00.000Z\"\n    }\n  ],\n  \"version\": 2,\n  \"createdAt\": \"2026-10-10T18:00:00.000Z\",\n  \"updatedAt\": \"2026-10-10T18:00:00.000Z\"\n}"
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "name": "List Lender Agreements",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/lenders/:id/agreements",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "lenders",
+        ":id",
+        "agreements"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{lenderId}}"
+        }
+      ]
+    },
+    "description": "Agreements, latest start first, with `inForce` for today. Staff only: ops leads and lender managers make changes; compliance and support read."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/lenders/:id/agreements",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "lenders",
+            ":id",
+            "agreements"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{lenderId}}"
+            }
+          ]
+        },
+        "description": "Agreements, latest start first, with `inForce` for today. Staff only: ops leads and lender managers make changes; compliance and support read."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a122a0-3c4d-7e5f-8061-728394a5b6c7\",\n      \"reference\": \"LX-2026-01\",\n      \"status\": \"draft\",\n      \"validFrom\": \"2026-10-10\",\n      \"validTo\": null,\n      \"inForce\": false,\n      \"commissionNote\": \"50 bps of the disbursed amount, paid after the lender pays\",\n      \"commissionSchemeKey\": null,\n      \"documentId\": null,\n      \"activatedAt\": null,\n      \"terminatedAt\": null,\n      \"terminationReason\": null,\n      \"version\": 1,\n      \"createdAt\": \"2026-10-10T18:00:00.000Z\"\n    }\n  ]\n}"
+    }
+  ]
+}

@@ -80,6 +80,8 @@ export const EventName = {
   DocumentRejected: 'document.rejected',
   DocumentScanOverdue: 'document.scan_overdue',
   DocumentDeleted: 'document.deleted',
+  LenderChanged: 'lender.changed',
+  LenderProductProposed: 'lender_product.proposed',
 } as const;
 
 export type EventName = (typeof EventName)[keyof typeof EventName];

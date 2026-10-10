@@ -8,8 +8,9 @@ export const uploadFieldsSchema = z
     documentType: z.string().regex(DOCUMENT_KEY_PATTERN),
     applicationId: uuidSchema.optional(),
     borrowerProfileId: uuidSchema.optional(),
+    lenderId: uuidSchema.optional(),
     password: z.string().min(1).max(DOCUMENT_PASSWORD_MAX_LENGTH).optional(),
   })
-  .refine((fields) => (fields.applicationId === undefined) !== (fields.borrowerProfileId === undefined), { path: ['applicationId'], message: 'give either applicationId or borrowerProfileId' });
+  .refine((fields) => [fields.applicationId, fields.borrowerProfileId, fields.lenderId].filter((value) => value !== undefined).length === 1, { path: ['applicationId'], message: 'give exactly one of applicationId, borrowerProfileId or lenderId' });
 
 export type UploadFields = z.output<typeof uploadFieldsSchema>;

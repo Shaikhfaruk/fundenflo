@@ -97,3 +97,9 @@ These are the places where a second copy is most tempting. Use the one listed.
 | Registering a borrower on behalf of a partner firm | `PartnerBorrowerService.register()` | Creating parties or borrower profiles in partner code |
 | Adding or removing co-applicants, guarantors and directors | `ApplicationPartyService` | Writing `application_parties` from other services |
 | Ops view of an application | `OpsCaseService.detail()` | Assembling case data in ops controllers |
+| Storing lender product definitions and their versions | Config resource `lender_product` (`LenderProductHandler`) | `lender_products` / `lender_product_versions` tables (planned in §9, replaced by the config store) |
+| Which lender products are live right now | `LenderCatalogService.liveProducts()` | Filtering `config.active(lender_product)` or lender status in other modules |
+| Whether a category has a lender route | `@CategoryRouteSourceFor` providers via `CategoryRouteRegistry` | Availability checks in catalog controllers or lenders code |
+| Screening a case against a product and evaluating its rules | `screenProduct` / `evaluateProduct` in `engines/lending` | Rule loops in services (matching must use these) |
+| Facts with their trust level for rules | `FactService.rankedLookup()` | Reading `borrower_facts` provenance in other modules |
+| Creating an organization without an owner (lenders) | `OrganizationService.registerActive()` | Writing `organizations` from lenders or ops code |

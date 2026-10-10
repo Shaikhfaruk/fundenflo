@@ -1,0 +1,171 @@
+{
+  "name": "Simulate Lender Product Version",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/lender-products/:id/versions/:number/simulate",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "lender-products",
+        ":id",
+        "versions",
+        ":number",
+        "simulate"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{lenderProductId}}"
+        },
+        {
+          "key": "number",
+          "value": "{{lenderProductNumber}}"
+        }
+      ]
+    },
+    "description": "Runs this version (draft or later) against test profiles: screening (category, segment, sub-segment, amount, tenure, coverage) and three-valued eligibility per rule, next to the published version, with `changed` when the outcome differs. A profile may name a `partyId` to start from that party's stored facts; `facts` override them; `directors` and `coApplicants` feed party-scoped rules. Staff only. Lender products are versioned config (an ops lead or lender manager makes, a different staff member approves in Change Requests, then it is published). The key is `<lenderKey>.<productKey>`; the lender comes from the key. `content`: `category`, `segments`, `subSegments` (empty = all), `amountPaise` and `tenureMonths` ranges, `coverage` (`nationwide`, `states` as GST codes, `cityIds`, `includePincodes`, `excludePincodes`), `eligibility.hard[]` / `soft[]` rules (`id`, `when` condition, optional `minProvenance`, `party`: primary / any_co_applicant / all_directors, `pass` / `fail` texts; soft rules carry a `weight`), `documents[]` slots with a `stage`, optional `questionSet` and `pricingDisclosure`. Only products of active lenders with an agreement in force count for category availability, lender questions and matching.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"profiles\": [\n    {\n      \"label\": \"Two-year proprietorship in Gurugram\",\n      \"request\": {\n        \"segment\": \"msme\",\n        \"subSegment\": \"proprietorship\",\n        \"category\": \"business\",\n        \"amountPaise\": 200000000,\n        \"tenureMonths\": 24,\n        \"pincode\": \"122001\"\n      },\n      \"facts\": [\n        {\n          \"attribute\": \"business.vintage_months\",\n          \"value\": 30\n        },\n        {\n          \"attribute\": \"business.gst_registered\",\n          \"value\": true\n        },\n        {\n          \"attribute\": \"business.monthly_turnover_paise\",\n          \"value\": 80000000,\n          \"provenance\": \"extracted\"\n        }\n      ]\n    }\n  ]\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/lender-products/:id/versions/:number/simulate",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "lender-products",
+            ":id",
+            "versions",
+            ":number",
+            "simulate"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{lenderProductId}}"
+            },
+            {
+              "key": "number",
+              "value": "{{lenderProductNumber}}"
+            }
+          ]
+        },
+        "description": "Runs this version (draft or later) against test profiles: screening (category, segment, sub-segment, amount, tenure, coverage) and three-valued eligibility per rule, next to the published version, with `changed` when the outcome differs. A profile may name a `partyId` to start from that party's stored facts; `facts` override them; `directors` and `coApplicants` feed party-scoped rules. Staff only. Lender products are versioned config (an ops lead or lender manager makes, a different staff member approves in Change Requests, then it is published). The key is `<lenderKey>.<productKey>`; the lender comes from the key. `content`: `category`, `segments`, `subSegments` (empty = all), `amountPaise` and `tenureMonths` ranges, `coverage` (`nationwide`, `states` as GST codes, `cityIds`, `includePincodes`, `excludePincodes`), `eligibility.hard[]` / `soft[]` rules (`id`, `when` condition, optional `minProvenance`, `party`: primary / any_co_applicant / all_directors, `pass` / `fail` texts; soft rules carry a `weight`), `documents[]` slots with a `stage`, optional `questionSet` and `pricingDisclosure`. Only products of active lenders with an agreement in force count for category availability, lender questions and matching.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"profiles\": [\n    {\n      \"label\": \"Two-year proprietorship in Gurugram\",\n      \"request\": {\n        \"segment\": \"msme\",\n        \"subSegment\": \"proprietorship\",\n        \"category\": \"business\",\n        \"amountPaise\": 200000000,\n        \"tenureMonths\": 24,\n        \"pincode\": \"122001\"\n      },\n      \"facts\": [\n        {\n          \"attribute\": \"business.vintage_months\",\n          \"value\": 30\n        },\n        {\n          \"attribute\": \"business.gst_registered\",\n          \"value\": true\n        },\n        {\n          \"attribute\": \"business.monthly_turnover_paise\",\n          \"value\": 80000000,\n          \"provenance\": \"extracted\"\n        }\n      ]\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"documentId\": \"01a122a0-5e6f-7a71-9283-94a5b6c7d8e9\",\n  \"number\": 2,\n  \"publishedNumber\": 1,\n  \"results\": [\n    {\n      \"label\": \"Two-year proprietorship in Gurugram\",\n      \"version\": {\n        \"number\": 2,\n        \"screen\": {\n          \"outcome\": \"pass\",\n          \"reasons\": []\n        },\n        \"eligibility\": {\n          \"eligibility\": \"ineligible\",\n          \"hard\": [],\n          \"soft\": [],\n          \"softScore\": 3,\n          \"softMax\": 3,\n          \"missingAttributes\": []\n        }\n      },\n      \"published\": {\n        \"number\": 1,\n        \"screen\": {\n          \"outcome\": \"pass\",\n          \"reasons\": []\n        },\n        \"eligibility\": {\n          \"eligibility\": \"eligible\",\n          \"hard\": [],\n          \"soft\": [],\n          \"softScore\": 3,\n          \"softMax\": 3,\n          \"missingAttributes\": []\n        }\n      },\n      \"changed\": true\n    }\n  ]\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/lender-products/:id/versions/:number/simulate",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "lender-products",
+            ":id",
+            "versions",
+            ":number",
+            "simulate"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{lenderProductId}}"
+            },
+            {
+              "key": "number",
+              "value": "{{lenderProductNumber}}"
+            }
+          ]
+        },
+        "description": "Runs this version (draft or later) against test profiles: screening (category, segment, sub-segment, amount, tenure, coverage) and three-valued eligibility per rule, next to the published version, with `changed` when the outcome differs. A profile may name a `partyId` to start from that party's stored facts; `facts` override them; `directors` and `coApplicants` feed party-scoped rules. Staff only. Lender products are versioned config (an ops lead or lender manager makes, a different staff member approves in Change Requests, then it is published). The key is `<lenderKey>.<productKey>`; the lender comes from the key. `content`: `category`, `segments`, `subSegments` (empty = all), `amountPaise` and `tenureMonths` ranges, `coverage` (`nationwide`, `states` as GST codes, `cityIds`, `includePincodes`, `excludePincodes`), `eligibility.hard[]` / `soft[]` rules (`id`, `when` condition, optional `minProvenance`, `party`: primary / any_co_applicant / all_directors, `pass` / `fail` texts; soft rules carry a `weight`), `documents[]` slots with a `stage`, optional `questionSet` and `pricingDisclosure`. Only products of active lenders with an agreement in force count for category availability, lender questions and matching.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"profiles\": [\n    {\n      \"label\": \"Two-year proprietorship in Gurugram\",\n      \"request\": {\n        \"segment\": \"msme\",\n        \"subSegment\": \"proprietorship\",\n        \"category\": \"business\",\n        \"amountPaise\": 200000000,\n        \"tenureMonths\": 24,\n        \"pincode\": \"122001\"\n      },\n      \"facts\": [\n        {\n          \"attribute\": \"business.vintage_months\",\n          \"value\": 30\n        },\n        {\n          \"attribute\": \"business.gst_registered\",\n          \"value\": true\n        },\n        {\n          \"attribute\": \"business.monthly_turnover_paise\",\n          \"value\": 80000000,\n          \"provenance\": \"extracted\"\n        }\n      ]\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"profiles.0.facts.0.value\",\n      \"code\": \"invalid_value\",\n      \"message\": \"must be a number or a { min, max } range\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

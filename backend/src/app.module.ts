@@ -16,6 +16,7 @@ import { ConsentsModule } from './modules/consents/consents.module.js';
 import { HealthModule } from './modules/health/health.module.js';
 import { ImportsModule } from './modules/imports/imports.module.js';
 import { ApplicationsModule } from './modules/applications/applications.module.js';
+import { LendersModule } from './modules/lenders/lenders.module.js';
 import { BorrowersModule } from './modules/borrowers/borrowers.module.js';
 import { DocumentsModule } from './modules/documents/documents.module.js';
 import { LeadsModule } from './modules/leads/leads.module.js';
@@ -44,6 +45,7 @@ import { QuestionnairesModule } from './modules/questionnaires/questionnaires.mo
     DocumentsModule,
     BorrowersModule,
     ApplicationsModule,
+    LendersModule,
     ActivitiesModule,
     SlaModule,
     RealtimeModule.forRoot({ worker: false }),

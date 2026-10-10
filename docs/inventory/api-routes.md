@@ -26,7 +26,7 @@ Approval and rejection are not per resource: they go through the shared checker 
 | `question-sets` (plus `/versions/:number/preview`) | questionnaires | M1 | `useful` |
 | `consent-templates` | consents | M1 | `useful` |
 | `document-requirements` | documents | M2 | `useful` |
-| `lender-products` | lenders | M4 | `planned` |
+| `lender-products` (plus `/versions/:number/simulate`) | lenders | M4 | `useful` |
 | `scoring-models` | assessments | M5 | `planned` |
 | `improvement-rules` | assessments | M5 | `planned` |
 | `commission-schemes` | commissions | M7 | `planned` |
@@ -296,8 +296,8 @@ Planned:
 
 | Method | Path | Module | Context | Milestone | Status |
 |---|---|---|---|---|---|
-| `GET` | `/lender/products` | lenders | lender | M4 | `planned` |
-| `POST` | `/lender/products/:id/change-requests` | lenders | lender | M4 | `planned` |
+| `GET` | `/lender/products` | lenders (`lender-products.controller.ts` → `LenderPortalService.products`) | lender | M4 | `useful` |
+| `POST` | `/lender/products/:id/change-requests` | lenders (`LenderPortalService.propose`: new version submitted with the lender user as maker) | lender | M4 | `useful` |
 | `GET` | `/lender/submissions` | applications | lender | M6 | `planned` |
 | `GET` | `/lender/submissions/:id` | applications | lender | M6 | `planned` |
 | `POST` | `/lender/submissions/:id/events` | applications | lender | M6 | `planned` |
@@ -420,6 +420,25 @@ Built in M1.4 (Postman `49 Admin - Consents/`). Controllers: `backend/src/module
 | `POST` | `/admin/consent-templates/:id/versions/:number/publish` | consents | staff | M1 | `useful` |
 | `POST` | `/admin/consent-templates/:id/versions/:number/retire` | consents | staff | M1 | `useful` |
 
+Built in M4 (Postman `58 Admin - Lenders/`). Controllers: `backend/src/modules/lenders/http/admin-lenders.controller.ts` (CASL `Lender`), the versioned config controller for `lender-products` and `admin-lender-product-simulate.controller.ts` (CASL `ConfigDocument` with `resource: lender_product`).
+
+| Method | Path | Module | Context | Milestone | Status |
+|---|---|---|---|---|---|
+| `GET` `POST` | `/admin/lenders` | lenders | staff | M4 | `useful` |
+| `GET` `PATCH` | `/admin/lenders/:id` | lenders | staff | M4 | `useful` |
+| `GET` `POST` | `/admin/lenders/:id/agreements` | lenders | staff | M4 | `useful` |
+| `PATCH` | `/admin/lenders/:id/agreements/:aid` | lenders (added: activate, expire or terminate an agreement, link the signed document) | staff | M4 | `useful` |
+| `GET` `POST` | `/admin/lenders/:id/contacts` | lenders | staff | M4 | `useful` |
+| `PATCH` | `/admin/lenders/:id/contacts/:cid` | lenders (added: change or deactivate a contact) | staff | M4 | `useful` |
+| `GET` `POST` | `/admin/lender-products` | lenders | staff | M4 | `useful` |
+| `GET` `PATCH` | `/admin/lender-products/:id` | lenders | staff | M4 | `useful` |
+| `POST` | `/admin/lender-products/:id/versions` | lenders | staff | M4 | `useful` |
+| `GET` `PATCH` | `/admin/lender-products/:id/versions/:number` | lenders | staff | M4 | `useful` |
+| `POST` | `/admin/lender-products/:id/versions/:number/submit` | lenders | staff | M4 | `useful` |
+| `POST` | `/admin/lender-products/:id/versions/:number/publish` | lenders | staff | M4 | `useful` |
+| `POST` | `/admin/lender-products/:id/versions/:number/retire` | lenders | staff | M4 | `useful` |
+| `POST` | `/admin/lender-products/:id/versions/:number/simulate` | lenders (`LenderSimulationService`) | staff | M4 | `useful` |
+
 Built in M2 (Postman `56 Admin - Documents/`). Controllers: `backend/src/modules/documents/http/admin-document-types.controller.ts` (CASL `DocumentType`), document requirements from `createVersionedConfigController` in `documents.module.ts` (handler `document-requirement.handler.ts`).
 
 | Method | Path | Module | Context | Milestone | Status |
@@ -473,10 +492,6 @@ Planned:
 |---|---|---|---|---|---|
 | `GET` `POST` | `/admin/notification-templates` | notifications | staff | M1 | `planned` |
 | `PATCH` | `/admin/notification-templates/:id` | notifications | staff | M1 | `planned` |
-| `GET` `POST` | `/admin/lenders` | lenders | staff | M4 | `planned` |
-| `GET` `PATCH` | `/admin/lenders/:id` | lenders | staff | M4 | `planned` |
-| `GET` `POST` | `/admin/lenders/:id/agreements` | lenders | staff | M4 | `planned` |
-| `GET` `POST` | `/admin/lenders/:id/contacts` | lenders | staff | M4 | `planned` |
 | `GET` | `/admin/finance/receivables` | commissions | staff | M7 | `planned` |
 | `PATCH` | `/admin/finance/receivables/:id` | commissions | staff | M7 | `planned` |
 | `GET` | `/admin/finance/payouts` | commissions | staff | M7 | `planned` |

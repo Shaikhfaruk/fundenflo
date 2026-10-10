@@ -72,7 +72,7 @@ export class ConfigPublishingService {
         description: input.description ?? Prisma.DbNull,
         createdByUserId: actor.userId,
       });
-      const draft = await this.openDraft(document.id, handler, content, input.notes, actor);
+      const draft = await this.openDraft(document, handler, content, input.notes, actor);
       await this.changes.record({
         action: AuditAction.ConfigCreated,
         entityType: AuditEntity.ConfigDocument,
@@ -112,7 +112,7 @@ export class ConfigPublishingService {
     return this.txHost.withTransaction(async () => {
       const document = await this.requireDocument(resource, id);
       const content = given ?? (await this.sourceContent(document.id, input.fromNumber));
-      const draft = await this.openDraft(document.id, handler, content, input.notes, actor);
+      const draft = await this.openDraft(document, handler, content, input.notes, actor);
       await this.changes.record({
         action: AuditAction.ConfigVersionCreated,
         entityType: AuditEntity.ConfigVersion,
@@ -137,7 +137,7 @@ export class ConfigPublishingService {
       this.transition(version.status, ConfigVersionEvent.Edit);
       assertVersion(expectedVersion, version.version);
       const content = given ?? version.content;
-      const { issues } = await handler.compile(content);
+      const { issues } = await handler.compile(content, { documentKey: version.document.key });
       const result = await this.repo.updateVersionGuarded(
         version.id,
         { status: ConfigVersionStatus.draft, version: version.version },
@@ -162,7 +162,7 @@ export class ConfigPublishingService {
       const version = await this.requireVersion(resource, id, number);
       const next = this.transition(version.status, ConfigVersionEvent.Submit);
       assertVersion(expectedVersion, version.version);
-      const { compiled, issues } = await handler.compile(version.content);
+      const { compiled, issues } = await handler.compile(version.content, { documentKey: version.document.key });
       if (issues.length > 0 || compiled === null) throw this.invalid(issues);
       const previous = await this.repo.latestVersionWith(version.documentId, [ConfigVersionStatus.published]);
       const diff = diffJson(previous?.compiled ?? null, compiled);
@@ -323,12 +323,12 @@ export class ConfigPublishingService {
     });
   }
 
-  private async openDraft(documentId: string, handler: ConfigResourceHandler, content: unknown, notes: string | undefined, actor: UserActor) {
+  private async openDraft(document: { id: string; key: string }, handler: ConfigResourceHandler, content: unknown, notes: string | undefined, actor: UserActor) {
     const id = uuidv7();
-    const number = await this.repo.claimOpenVersion(documentId, id);
+    const number = await this.repo.claimOpenVersion(document.id, id);
     if (number === null) throw new AppError(ErrorCode.OPEN_VERSION_EXISTS);
-    const { issues } = await handler.compile(content);
-    return this.repo.createVersion({ id, documentId, number, content: json(content), issues: json(issues), notes: notes ?? null, createdByUserId: actor.userId });
+    const { issues } = await handler.compile(content, { documentKey: document.key });
+    return this.repo.createVersion({ id, documentId: document.id, number, content: json(content), issues: json(issues), notes: notes ?? null, createdByUserId: actor.userId });
   }
 
   private async sourceContent(documentId: string, fromNumber: number | undefined): Promise<unknown> {

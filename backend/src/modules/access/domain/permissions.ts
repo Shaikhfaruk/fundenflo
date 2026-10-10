@@ -3,7 +3,7 @@ import type { AbilityBuilder } from '@casl/ability';
 import type { UserActor } from '../../../common/context/actor.js';
 import { OrganizationType, Role } from '../../../common/enums/db.enums.js';
 import { AppAction, type AppAbility, NonModelSubject } from './ability.types.js';
-import { COMPLIANCE_CONFIG_RESOURCES, OPS_CONFIG_RESOURCES } from './access.constants.js';
+import { COMPLIANCE_CONFIG_RESOURCES, LENDER_CONFIG_RESOURCES, OPS_CONFIG_RESOURCES } from './access.constants.js';
 
 type Builder = AbilityBuilder<AppAbility>;
 
@@ -42,7 +42,7 @@ export const ROLE_GRANTS: Partial<Record<Role, Grant>> = {
     can([AppAction.Read, AppAction.Update], 'PartnerProfile');
     can([AppAction.Read, AppAction.Approve], 'ConfigDocument');
     can(CONFIG_MAKER, 'ConfigDocument', { resource: { in: OPS_CONFIG_RESOURCES } });
-    can(AppAction.Manage, ['ApiClient', 'Lead', 'LeadAssignment', 'LeadSource', 'ImportBatch', 'Activity', 'FollowUp', 'OfflineConversion', 'BorrowerProfile', 'LoanApplication', 'Document']);
+    can(AppAction.Manage, ['ApiClient', 'Lead', 'LeadAssignment', 'LeadSource', 'ImportBatch', 'Activity', 'FollowUp', 'OfflineConversion', 'BorrowerProfile', 'LoanApplication', 'Document', 'Lender', 'LenderAgreement', 'LenderContact']);
   },
   [Role.ops_reviewer]: ({ can }) => {
     can([AppAction.Read, AppAction.Update], ['Lead', 'Party']);
@@ -52,18 +52,19 @@ export const ROLE_GRANTS: Partial<Record<Role, Grant>> = {
     can(AppAction.Read, 'OfflineConversion');
     can([AppAction.Read, AppAction.Update], ['BorrowerProfile', 'LoanApplication']);
     can([AppAction.Read, AppAction.Update, AppAction.Download], 'Document');
-    can(AppAction.Read, ['LeadSource', 'AttributeDefinition', 'Question', 'ConsentPurpose', 'PartnerProfile', 'DocumentType', NonModelSubject.Catalog]);
+    can(AppAction.Read, ['LeadSource', 'AttributeDefinition', 'Question', 'ConsentPurpose', 'PartnerProfile', 'DocumentType', 'Lender', NonModelSubject.Catalog]);
   },
   [Role.compliance_officer]: ({ can }) => {
     can(AppAction.Read, ['User', 'Membership', 'Invitation', 'Organization', 'AuditEvent', 'AttributeDefinition', 'Party', 'Question', 'DocumentType', NonModelSubject.Catalog]);
     can(AppAction.Manage, 'ConsentPurpose');
     can(AppAction.Read, ['PartnerProfile', 'ApiClient', 'Lead', 'LeadAssignment', 'LeadSource', 'ImportBatch', 'Activity', 'FollowUp', 'OfflineConversion', 'BorrowerProfile', 'LoanApplication']);
     can([AppAction.Read, AppAction.Download], 'Document');
+    can(AppAction.Read, ['Lender', 'LenderAgreement', 'LenderContact']);
     can([AppAction.Read, AppAction.Approve], 'ConfigDocument');
     can(CONFIG_MAKER, 'ConfigDocument', { resource: { in: COMPLIANCE_CONFIG_RESOURCES } });
   },
   [Role.support]: ({ can }) => {
-    can(AppAction.Read, ['User', 'Membership', 'AttributeDefinition', 'Party', 'Question', 'ConfigDocument', 'ConsentPurpose', 'PartnerProfile', 'Lead', 'LeadAssignment', 'LeadSource', 'Activity', 'FollowUp', 'OfflineConversion', 'DocumentType', 'BorrowerProfile', 'LoanApplication', 'Document', NonModelSubject.Catalog]);
+    can(AppAction.Read, ['User', 'Membership', 'AttributeDefinition', 'Party', 'Question', 'ConfigDocument', 'ConsentPurpose', 'PartnerProfile', 'Lead', 'LeadAssignment', 'LeadSource', 'Activity', 'FollowUp', 'OfflineConversion', 'DocumentType', 'BorrowerProfile', 'LoanApplication', 'Document', 'Lender', NonModelSubject.Catalog]);
   },
   [Role.partner_manager]: (builder, actor) => {
     manageOrganizationMembers(OrganizationType.partner)(builder, actor);
@@ -92,7 +93,24 @@ export const ROLE_GRANTS: Partial<Record<Role, Grant>> = {
     can([AppAction.Create, AppAction.Read, AppAction.Delete, AppAction.Download], 'Document', { partnerOrganizationId: organizationId, borrowerProfile: { is: { createdByUserId: userId } } });
     can([AppAction.Create, AppAction.Read, AppAction.Delete, AppAction.Download], 'Document', { partnerOrganizationId: organizationId, application: { is: { createdByUserId: userId } } });
   },
-  [Role.lender_manager]: manageOrganizationMembers(OrganizationType.lender),
+  [Role.lender_manager]: (builder, actor) => {
+    manageOrganizationMembers(OrganizationType.lender)(builder, actor);
+    builder.can(AppAction.Manage, ['Lender', 'LenderAgreement', 'LenderContact']);
+    builder.can(AppAction.Read, ['AttributeDefinition', 'Question', 'DocumentType', NonModelSubject.Catalog]);
+    builder.can([AppAction.Read, AppAction.Approve], 'ConfigDocument', { resource: { in: LENDER_CONFIG_RESOURCES } });
+    builder.can(CONFIG_MAKER, 'ConfigDocument', { resource: { in: LENDER_CONFIG_RESOURCES } });
+    builder.can([AppAction.Create, AppAction.Read, AppAction.Download], 'Document', { borrowerProfileId: null, applicationId: null });
+  },
+  [Role.lender_admin]: ({ can }, { organizationId }) => {
+    if (!organizationId) return;
+    can([AppAction.Read, AppAction.Update], 'Lender', { organizationId });
+  },
+  [Role.lender_credit_officer]: ({ can }, { organizationId }) => {
+    if (organizationId) can(AppAction.Read, 'Lender', { organizationId });
+  },
+  [Role.lender_viewer]: ({ can }, { organizationId }) => {
+    if (organizationId) can(AppAction.Read, 'Lender', { organizationId });
+  },
   [Role.borrower]: ownBorrowing,
   [Role.business_owner]: ownBorrowing,
   [Role.authorised_signatory]: ownBorrowing,

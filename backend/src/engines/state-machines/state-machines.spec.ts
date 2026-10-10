@@ -7,6 +7,7 @@ import { configVersionMachine } from './machines/config-version.machine.js';
 import { documentMachine } from './machines/document.machine.js';
 import { importBatchMachine } from './machines/import-batch.machine.js';
 import { leadMachine } from './machines/lead.machine.js';
+import { agreementMachine, lenderMachine } from './machines/lender.machine.js';
 import { organizationMachine } from './machines/organization.machine.js';
 import { partnerVerificationMachine } from './machines/partner-verification.machine.js';
 
@@ -137,5 +138,21 @@ describe('document machine', () => {
     expect(documentMachine.can('deleted', 'delete')).toBe(false);
     expect(documentMachine.next('deleted', 'purge')).toBe('purged');
     expect(documentMachine.can('purged', 'purge')).toBe(false);
+  });
+});
+
+describe('lender and agreement machines', () => {
+  it('activates, pauses and offboards lenders, and offboarding is final', () => {
+    expect(lenderMachine.next('onboarding', 'activate')).toBe('active');
+    expect(lenderMachine.next('active', 'pause')).toBe('paused');
+    expect(lenderMachine.next('paused', 'activate')).toBe('active');
+    expect(lenderMachine.can('offboarded', 'activate')).toBe(false);
+  });
+
+  it('activates a draft agreement once and ends it by expiry or termination', () => {
+    expect(agreementMachine.next('draft', 'activate')).toBe('active');
+    expect(agreementMachine.next('active', 'terminate')).toBe('terminated');
+    expect(agreementMachine.can('expired', 'activate')).toBe(false);
+    expect(agreementMachine.can('terminated', 'terminate')).toBe(false);
   });
 });

@@ -1,0 +1,121 @@
+{
+  "name": "Update Lender Contact",
+  "request": {
+    "method": "PATCH",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "If-Match",
+        "value": "\"{{lenderContactVersion}}\""
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/lenders/:id/contacts/:cid",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "lenders",
+        ":id",
+        "contacts",
+        ":cid"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{lenderId}}"
+        },
+        {
+          "key": "cid",
+          "value": "{{lenderContactId}}"
+        }
+      ]
+    },
+    "description": "Changes the designation, role, escalation level or deactivates a contact. Staff only: ops leads and lender managers make changes; compliance and support read.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"escalationLevel\": 3\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{lenderContactVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/lenders/:id/contacts/:cid",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "lenders",
+            ":id",
+            "contacts",
+            ":cid"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{lenderId}}"
+            },
+            {
+              "key": "cid",
+              "value": "{{lenderContactId}}"
+            }
+          ]
+        },
+        "description": "Changes the designation, role, escalation level or deactivates a contact. Staff only: ops leads and lender managers make changes; compliance and support read.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"escalationLevel\": 3\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a122a0-4d5e-7f60-8172-8394a5b6c7d8\",\n  \"name\": \"Rahul Bhatia\",\n  \"designation\": \"Regional Credit Head\",\n  \"role\": \"escalation\",\n  \"email\": \"ra•••@lenderx.example\",\n  \"mobile\": null,\n  \"escalationLevel\": 3,\n  \"active\": true,\n  \"version\": 2,\n  \"createdAt\": \"2026-10-10T18:00:00.000Z\"\n}"
+    }
+  ]
+}

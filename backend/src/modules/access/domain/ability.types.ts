@@ -17,6 +17,9 @@ import type {
   Lead,
   LeadAssignment,
   LeadSource,
+  Lender,
+  LenderAgreement,
+  LenderContact,
   LoanApplication,
   Membership,
   OfflineConversion,
@@ -75,6 +78,9 @@ export type AppSubjects =
       BorrowerProfile: BorrowerProfile;
       LoanApplication: LoanApplication;
       Document: Document;
+      Lender: Lender;
+      LenderAgreement: LenderAgreement;
+      LenderContact: LenderContact;
     }>;
 
 export type AppAbility = Ability<[AppAction, AppSubjects], PrismaQueryOf<Prisma.TypeMap>>;

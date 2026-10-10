@@ -61,6 +61,7 @@ model Organization {
   memberships  Membership[]
   invitations  Invitation[]
   partner      PartnerProfile?
+  lender       Lender?
   assignments  LeadAssignment[]
   activities   Activity[]
   followUps    FollowUp[]

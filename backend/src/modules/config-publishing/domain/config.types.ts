@@ -15,9 +15,11 @@ export type PublishedConfig<TCompiled> = {
   compiled: TCompiled;
 };
 
+export type CompileContext = { documentKey: string };
+
 export interface ConfigResourceHandler<TContent = unknown, TCompiled = unknown> {
   readonly resource: ConfigResource;
   readonly contentSchema: z.ZodType<TContent>;
-  compile(content: TContent): Promise<CompileResult<TCompiled>>;
+  compile(content: TContent, context: CompileContext): Promise<CompileResult<TCompiled>>;
   onPublished?(config: PublishedConfig<TCompiled>): Promise<void>;
 }

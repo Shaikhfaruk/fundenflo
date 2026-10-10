@@ -1,0 +1,104 @@
+{
+  "name": "Lenders: onboard a lender, agreement and contact, publish a product through maker-checker, availability and simulation",
+  "requires": [
+    "staffInvitation",
+    "checkerInvitation"
+  ],
+  "steps": [
+    {
+      "request": "01 Auth/06 Accept Staff Invitation.json",
+      "identity": "maker"
+    },
+    {
+      "request": "01 Auth/07 Staff Login.json",
+      "identity": "maker"
+    },
+    {
+      "request": "01 Auth/08 Verify Staff MFA.json",
+      "identity": "maker"
+    },
+    {
+      "request": "58 Admin - Lenders/02 Create Lender.json"
+    },
+    {
+      "request": "58 Admin - Lenders/01 List Lenders.json"
+    },
+    {
+      "request": "58 Admin - Lenders/04 Update Lender.json"
+    },
+    {
+      "request": "58 Admin - Lenders/03 Get Lender.json"
+    },
+    {
+      "request": "58 Admin - Lenders/06 Create Lender Agreement.json"
+    },
+    {
+      "request": "58 Admin - Lenders/07 Update Lender Agreement.json"
+    },
+    {
+      "request": "58 Admin - Lenders/05 List Lender Agreements.json"
+    },
+    {
+      "request": "58 Admin - Lenders/09 Create Lender Contact.json"
+    },
+    {
+      "request": "58 Admin - Lenders/10 Update Lender Contact.json"
+    },
+    {
+      "request": "58 Admin - Lenders/08 List Lender Contacts.json"
+    },
+    {
+      "request": "58 Admin - Lenders/12 Create Lender Product.json"
+    },
+    {
+      "request": "58 Admin - Lenders/13 Get Lender Product.json"
+    },
+    {
+      "request": "58 Admin - Lenders/14 Update Lender Product.json"
+    },
+    {
+      "request": "58 Admin - Lenders/16 Get Lender Product Version.json"
+    },
+    {
+      "request": "58 Admin - Lenders/17 Update Lender Product Draft.json"
+    },
+    {
+      "request": "58 Admin - Lenders/18 Submit Lender Product Version.json"
+    },
+    {
+      "request": "01 Auth/06 Accept Staff Invitation.json",
+      "identity": "checker"
+    },
+    {
+      "request": "01 Auth/07 Staff Login.json",
+      "identity": "checker"
+    },
+    {
+      "request": "01 Auth/08 Verify Staff MFA.json",
+      "identity": "checker"
+    },
+    {
+      "request": "48 Admin - Change Requests/03 Approve Change Request.json",
+      "identity": "checker"
+    },
+    {
+      "request": "58 Admin - Lenders/19 Publish Lender Product Version.json",
+      "identity": "maker"
+    },
+    {
+      "request": "03 Catalog/02 List Loan Categories.json"
+    },
+    {
+      "request": "58 Admin - Lenders/11 List Lender Products.json"
+    },
+    {
+      "request": "58 Admin - Lenders/15 Create Lender Product Version.json"
+    },
+    {
+      "request": "58 Admin - Lenders/21 Simulate Lender Product Version.json"
+    },
+    {
+      "request": "58 Admin - Lenders/20 Retire Lender Product Version.json"
+    }
+  ]
+}

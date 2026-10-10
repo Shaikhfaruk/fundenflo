@@ -1,0 +1,98 @@
+{
+  "name": "Create Lender Product",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "Idempotency-Key",
+        "value": "{{$guid}}"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/lender-products",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "lender-products"
+      ]
+    },
+    "description": "Creates a product and its first draft. Staff only. Lender products are versioned config (an ops lead or lender manager makes, a different staff member approves in Change Requests, then it is published). The key is `<lenderKey>.<productKey>`; the lender comes from the key. `content`: `category`, `segments`, `subSegments` (empty = all), `amountPaise` and `tenureMonths` ranges, `coverage` (`nationwide`, `states` as GST codes, `cityIds`, `includePincodes`, `excludePincodes`), `eligibility.hard[]` / `soft[]` rules (`id`, `when` condition, optional `minProvenance`, `party`: primary / any_co_applicant / all_directors, `pass` / `fail` texts; soft rules carry a `weight`), `documents[]` slots with a `stage`, optional `questionSet` and `pricingDisclosure`. Only products of active lenders with an agreement in force count for category availability, lender questions and matching.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"key\": \"{{lenderKey}}.working_capital\",\n  \"name\": {\n    \"en\": \"Lender X Working Capital\"\n  },\n  \"content\": {\n    \"category\": \"business\",\n    \"segments\": [\n      \"msme\"\n    ],\n    \"subSegments\": [\n      \"proprietorship\",\n      \"partnership\"\n    ],\n    \"amountPaise\": {\n      \"min\": 50000000,\n      \"max\": 500000000\n    },\n    \"tenureMonths\": {\n      \"min\": 12,\n      \"max\": 36\n    },\n    \"coverage\": {\n      \"states\": [\n        \"06\"\n      ]\n    },\n    \"eligibility\": {\n      \"hard\": [\n        {\n          \"id\": \"vintage\",\n          \"when\": {\n            \"attr\": \"business.vintage_months\",\n            \"op\": \"gte\",\n            \"value\": 24\n          },\n          \"pass\": {\n            \"en\": \"Business vintage fits their policy\"\n          },\n          \"fail\": {\n            \"en\": \"They need 2 years of business history\"\n          }\n        },\n        {\n          \"id\": \"gst\",\n          \"when\": {\n            \"attr\": \"business.gst_registered\",\n            \"op\": \"eq\",\n            \"value\": true\n          },\n          \"fail\": {\n            \"en\": \"They lend only to GST-registered businesses\"\n          }\n        }\n      ],\n      \"soft\": [\n        {\n          \"id\": \"turnover\",\n          \"weight\": 3,\n          \"minProvenance\": \"extracted\",\n          \"when\": {\n            \"attr\": \"business.monthly_turnover_paise\",\n            \"op\": \"gte\",\n            \"value\": 50000000\n          }\n        }\n      ]\n    },\n    \"documents\": [\n      {\n        \"key\": \"udyam\",\n        \"documentTypes\": [\n          \"udyam_certificate\"\n        ],\n        \"stage\": \"submission\"\n      }\n    ],\n    \"pricingDisclosure\": {\n      \"en\": \"As per lender policy\"\n    }\n  }\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "pm.collectionVariables.set('lenderProductId', String(pm.response.json().id));",
+          "pm.collectionVariables.set('lenderProductDocVersion', String(pm.response.json().version));",
+          "pm.collectionVariables.set('lenderProductNumber', String(pm.response.json().openVersion.number));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "{{$guid}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/lender-products",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "lender-products"
+          ]
+        },
+        "description": "Creates a product and its first draft. Staff only. Lender products are versioned config (an ops lead or lender manager makes, a different staff member approves in Change Requests, then it is published). The key is `<lenderKey>.<productKey>`; the lender comes from the key. `content`: `category`, `segments`, `subSegments` (empty = all), `amountPaise` and `tenureMonths` ranges, `coverage` (`nationwide`, `states` as GST codes, `cityIds`, `includePincodes`, `excludePincodes`), `eligibility.hard[]` / `soft[]` rules (`id`, `when` condition, optional `minProvenance`, `party`: primary / any_co_applicant / all_directors, `pass` / `fail` texts; soft rules carry a `weight`), `documents[]` slots with a `stage`, optional `questionSet` and `pricingDisclosure`. Only products of active lenders with an agreement in force count for category availability, lender questions and matching.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"key\": \"{{lenderKey}}.working_capital\",\n  \"name\": {\n    \"en\": \"Lender X Working Capital\"\n  },\n  \"content\": {\n    \"category\": \"business\",\n    \"segments\": [\n      \"msme\"\n    ],\n    \"subSegments\": [\n      \"proprietorship\",\n      \"partnership\"\n    ],\n    \"amountPaise\": {\n      \"min\": 50000000,\n      \"max\": 500000000\n    },\n    \"tenureMonths\": {\n      \"min\": 12,\n      \"max\": 36\n    },\n    \"coverage\": {\n      \"states\": [\n        \"06\"\n      ]\n    },\n    \"eligibility\": {\n      \"hard\": [\n        {\n          \"id\": \"vintage\",\n          \"when\": {\n            \"attr\": \"business.vintage_months\",\n            \"op\": \"gte\",\n            \"value\": 24\n          },\n          \"pass\": {\n            \"en\": \"Business vintage fits their policy\"\n          },\n          \"fail\": {\n            \"en\": \"They need 2 years of business history\"\n          }\n        },\n        {\n          \"id\": \"gst\",\n          \"when\": {\n            \"attr\": \"business.gst_registered\",\n            \"op\": \"eq\",\n            \"value\": true\n          },\n          \"fail\": {\n            \"en\": \"They lend only to GST-registered businesses\"\n          }\n        }\n      ],\n      \"soft\": [\n        {\n          \"id\": \"turnover\",\n          \"weight\": 3,\n          \"minProvenance\": \"extracted\",\n          \"when\": {\n            \"attr\": \"business.monthly_turnover_paise\",\n            \"op\": \"gte\",\n            \"value\": 50000000\n          }\n        }\n      ]\n    },\n    \"documents\": [\n      {\n        \"key\": \"udyam\",\n        \"documentTypes\": [\n          \"udyam_certificate\"\n        ],\n        \"stage\": \"submission\"\n      }\n    ],\n    \"pricingDisclosure\": {\n      \"en\": \"As per lender policy\"\n    }\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a122a0-5e6f-7a71-9283-94a5b6c7d8e9\",\n  \"resource\": \"lender_product\",\n  \"key\": \"lenderx.working_capital\",\n  \"name\": {\n    \"en\": \"Lender X Working Capital\"\n  },\n  \"description\": null,\n  \"status\": \"active\",\n  \"activeVersion\": null,\n  \"openVersion\": {\n    \"id\": \"01a122a0-6f70-7b82-a394-a5b6c7d8e9fa\",\n    \"number\": 1,\n    \"status\": \"draft\"\n  },\n  \"versions\": [\n    {\n      \"id\": \"01a122a0-6f70-7b82-a394-a5b6c7d8e9fa\",\n      \"number\": 1,\n      \"status\": \"draft\",\n      \"effectiveFrom\": null,\n      \"publishedAt\": null,\n      \"retiredAt\": null,\n      \"updatedAt\": \"2026-10-10T18:00:00.000Z\"\n    }\n  ],\n  \"version\": 1,\n  \"createdAt\": \"2026-10-10T18:00:00.000Z\",\n  \"updatedAt\": \"2026-10-10T18:00:00.000Z\"\n}"
+    }
+  ]
+}

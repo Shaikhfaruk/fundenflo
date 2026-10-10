@@ -88,10 +88,11 @@ model Document {
   createdAt             DateTime              @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt             DateTime              @updatedAt @map("updated_at") @db.Timestamptz(3)
 
-  documentType    DocumentType     @relation(fields: [documentTypeId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  party           Party            @relation("document_party", fields: [partyId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  borrowerProfile BorrowerProfile? @relation(fields: [borrowerProfileId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  application     LoanApplication? @relation(fields: [applicationId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  documentType    DocumentType      @relation(fields: [documentTypeId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  party           Party             @relation("document_party", fields: [partyId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  borrowerProfile BorrowerProfile?  @relation(fields: [borrowerProfileId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  application     LoanApplication?  @relation(fields: [applicationId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  agreements      LenderAgreement[]
 
   @@index([partyId, status])
   @@index([partyId, sha256])

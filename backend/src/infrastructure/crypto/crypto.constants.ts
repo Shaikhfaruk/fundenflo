@@ -26,6 +26,7 @@ export const CipherPurpose = {
   ImportRow: 'import_rows.raw',
   ImportSample: 'import_batches.sample_rows',
   DocumentPassword: 'documents.password',
+  LenderContact: 'lender_contacts.value',
 } as const;
 
 export type CipherPurpose = (typeof CipherPurpose)[keyof typeof CipherPurpose];

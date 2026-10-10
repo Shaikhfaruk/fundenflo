@@ -1,0 +1,155 @@
+{
+  "name": "Create Lender Contact",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/lenders/:id/contacts",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "lenders",
+        ":id",
+        "contacts"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{lenderId}}"
+        }
+      ]
+    },
+    "description": "Adds a relationship, credit, operations or escalation contact (email or mobile required; stored encrypted, shown masked). At most 50 per lender. Staff only: ops leads and lender managers make changes; compliance and support read.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"name\": \"Rahul Bhatia\",\n  \"designation\": \"Regional Credit Head\",\n  \"role\": \"escalation\",\n  \"email\": \"rahul.bhatia@sustaininsight.com\",\n  \"escalationLevel\": 2\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "pm.collectionVariables.set('lenderContactId', String(pm.response.json().id));",
+          "pm.collectionVariables.set('lenderContactVersion', String(pm.response.json().version));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/lenders/:id/contacts",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "lenders",
+            ":id",
+            "contacts"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{lenderId}}"
+            }
+          ]
+        },
+        "description": "Adds a relationship, credit, operations or escalation contact (email or mobile required; stored encrypted, shown masked). At most 50 per lender. Staff only: ops leads and lender managers make changes; compliance and support read.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Rahul Bhatia\",\n  \"designation\": \"Regional Credit Head\",\n  \"role\": \"escalation\",\n  \"email\": \"rahul.bhatia@sustaininsight.com\",\n  \"escalationLevel\": 2\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a122a0-4d5e-7f60-8172-8394a5b6c7d8\",\n  \"name\": \"Rahul Bhatia\",\n  \"designation\": \"Regional Credit Head\",\n  \"role\": \"escalation\",\n  \"email\": \"ra•••@lenderx.example\",\n  \"mobile\": null,\n  \"escalationLevel\": 2,\n  \"active\": true,\n  \"version\": 1,\n  \"createdAt\": \"2026-10-10T18:00:00.000Z\"\n}"
+    },
+    {
+      "name": "400 EMAIL_INVALID",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/lenders/:id/contacts",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "lenders",
+            ":id",
+            "contacts"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{lenderId}}"
+            }
+          ]
+        },
+        "description": "Adds a relationship, credit, operations or escalation contact (email or mobile required; stored encrypted, shown masked). At most 50 per lender. Staff only: ops leads and lender managers make changes; compliance and support read.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Rahul Bhatia\",\n  \"designation\": \"Regional Credit Head\",\n  \"role\": \"escalation\",\n  \"email\": \"rahul.bhatia@sustaininsight.com\",\n  \"escalationLevel\": 2\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"EMAIL_INVALID\",\n  \"message\": \"Enter a valid email address.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

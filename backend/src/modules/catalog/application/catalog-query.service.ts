@@ -7,7 +7,8 @@ import { CATALOG_CACHE_TTL_SECONDS, CatalogCacheTag } from '../domain/catalog.co
 import { normaliseLookupText } from '../domain/alias.js';
 import { CatalogRepository } from '../infrastructure/catalog.repository.js';
 import { GeoRepository } from '../infrastructure/geo.repository.js';
-import { type AvailabilityContext, CategoryAvailabilityService } from './category-availability.service.js';
+import type { AvailabilityContext } from '../domain/category-route.types.js';
+import { CategoryAvailabilityService } from './category-availability.service.js';
 import { type CategoryConfigView, type CategoryView, type SegmentView, toCategoryConfigView, toSegmentView } from './catalog.views.js';
 
 @Injectable()

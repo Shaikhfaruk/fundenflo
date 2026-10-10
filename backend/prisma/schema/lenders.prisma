@@ -1,0 +1,100 @@
+enum LenderKind {
+  bank
+  nbfc
+  hfc
+  small_finance_bank
+  cooperative_bank
+  fintech
+}
+
+enum LenderStatus {
+  onboarding
+  active
+  paused
+  offboarded
+}
+
+enum LenderAgreementStatus {
+  draft
+  active
+  expired
+  terminated
+}
+
+enum LenderContactRole {
+  relationship
+  credit
+  operations
+  escalation
+}
+
+model Lender {
+  id                String       @id @default(uuid(7)) @db.Uuid
+  organizationId    String       @unique @map("organization_id") @db.Uuid
+  key               String       @unique
+  kind              LenderKind
+  rbiRegistrationNo String?      @map("rbi_registration_no")
+  status            LenderStatus @default(onboarding)
+  website           String?
+  responseSlaHours  Int?         @map("response_sla_hours")
+  notes             String?
+  createdByUserId   String       @map("created_by_user_id") @db.Uuid
+  version           Int          @default(1)
+  createdAt         DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt         DateTime     @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  organization Organization      @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  agreements   LenderAgreement[]
+  contacts     LenderContact[]
+
+  @@index([status])
+  @@map("lenders")
+}
+
+model LenderAgreement {
+  id                  String                @id @default(uuid(7)) @db.Uuid
+  lenderId            String                @map("lender_id") @db.Uuid
+  reference           String
+  status              LenderAgreementStatus @default(draft)
+  validFrom           DateTime              @map("valid_from") @db.Date
+  validTo             DateTime?             @map("valid_to") @db.Date
+  commissionNote      String?               @map("commission_note")
+  commissionSchemeKey String?               @map("commission_scheme_key")
+  documentId          String?               @map("document_id") @db.Uuid
+  activatedAt         DateTime?             @map("activated_at") @db.Timestamptz(3)
+  terminatedAt        DateTime?             @map("terminated_at") @db.Timestamptz(3)
+  terminationReason   String?               @map("termination_reason")
+  createdByUserId     String                @map("created_by_user_id") @db.Uuid
+  version             Int                   @default(1)
+  createdAt           DateTime              @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt           DateTime              @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  lender   Lender    @relation(fields: [lenderId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  document Document? @relation(fields: [documentId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@unique([lenderId, reference])
+  @@index([lenderId, status])
+  @@map("lender_agreements")
+}
+
+model LenderContact {
+  id              String            @id @default(uuid(7)) @db.Uuid
+  lenderId        String            @map("lender_id") @db.Uuid
+  name            String
+  designation     String?
+  role            LenderContactRole
+  emailEnc        String?           @map("email_enc")
+  emailMasked     String?           @map("email_masked")
+  mobileEnc       String?           @map("mobile_enc")
+  mobileMasked    String?           @map("mobile_masked")
+  escalationLevel Int               @default(1) @map("escalation_level")
+  active          Boolean           @default(true)
+  version         Int               @default(1)
+  createdAt       DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime          @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  lender Lender @relation(fields: [lenderId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([lenderId, active])
+  @@map("lender_contacts")
+}

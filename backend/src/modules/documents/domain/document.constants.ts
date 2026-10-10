@@ -55,6 +55,7 @@ export const DOCUMENT_SCAN_CONCURRENCY = 4;
 export const DocumentOwnerKind = {
   Application: 'application',
   BorrowerProfile: 'borrower_profile',
+  Lender: 'lender',
 } as const;
 
 export type DocumentOwnerKind = (typeof DocumentOwnerKind)[keyof typeof DocumentOwnerKind];

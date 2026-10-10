@@ -1,0 +1,79 @@
+{
+  "name": "List Lenders",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/lenders?status=active&limit=25",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "lenders"
+      ],
+      "query": [
+        {
+          "key": "status",
+          "value": "active"
+        },
+        {
+          "key": "limit",
+          "value": "25"
+        }
+      ]
+    },
+    "description": "Lenders, newest first; filter by `status`. Staff only: ops leads and lender managers make changes; compliance and support read."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/lenders?status=active&limit=25",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "lenders"
+          ],
+          "query": [
+            {
+              "key": "status",
+              "value": "active"
+            },
+            {
+              "key": "limit",
+              "value": "25"
+            }
+          ]
+        },
+        "description": "Lenders, newest first; filter by `status`. Staff only: ops leads and lender managers make changes; compliance and support read."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a122a0-1a2b-7c3d-8e4f-5061728394a5\",\n      \"key\": \"lenderx\",\n      \"name\": \"Lender X Finance Ltd\",\n      \"organizationId\": \"01a122a0-2b3c-7d4e-9f50-61728394a5b6\",\n      \"kind\": \"nbfc\",\n      \"rbiRegistrationNo\": \"N-14.03268\",\n      \"status\": \"onboarding\",\n      \"website\": null,\n      \"responseSlaHours\": 48,\n      \"notes\": null,\n      \"version\": 1,\n      \"createdAt\": \"2026-10-10T18:00:00.000Z\",\n      \"updatedAt\": \"2026-10-10T18:00:00.000Z\"\n    }\n  ],\n  \"nextCursor\": null\n}"
+    }
+  ]
+}

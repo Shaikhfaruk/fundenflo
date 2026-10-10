@@ -62,6 +62,20 @@ export class OrganizationService {
     return { organization, membership };
   }
 
+  @Transactional()
+  async registerActive(input: { type: OrganizationType; name: string; createdByUserId: string }) {
+    const party = await this.parties.createBusiness({ displayName: input.name });
+    const organization = await this.repository.createOrganization({ partyId: party.id, type: input.type, name: input.name, status: OrganizationStatus.active });
+    await this.outbox.publish({
+      name: EventName.OrganizationCreated,
+      aggregateType: AuditEntity.Organization,
+      aggregateId: organization.id,
+      payload: { organizationId: organization.id, type: organization.type, status: organization.status, createdByUserId: input.createdByUserId },
+    });
+    await this.audit.record({ action: AuditAction.OrganizationCreated, entityType: AuditEntity.Organization, entityId: organization.id, metadata: { type: organization.type, createdByUserId: input.createdByUserId } });
+    return organization;
+  }
+
   ownedBy(userId: string, role: Role) {
     return this.repository.findOrganizationMemberships(userId, role);
   }

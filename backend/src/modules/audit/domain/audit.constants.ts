@@ -93,6 +93,13 @@ export const AuditAction = {
   DocumentScanOverdue: 'document.scan_overdue',
   DocumentDownloadUrlIssued: 'document.download_url_issued',
   DocumentDeleted: 'document.deleted',
+  LenderCreated: 'lender.created',
+  LenderChanged: 'lender.changed',
+  LenderAgreementCreated: 'lender.agreement_created',
+  LenderAgreementChanged: 'lender.agreement_changed',
+  LenderContactCreated: 'lender.contact_created',
+  LenderContactChanged: 'lender.contact_changed',
+  LenderProductProposed: 'lender_product.proposed',
 } as const;
 
 export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction];
@@ -135,6 +142,9 @@ export const AuditEntity = {
   BorrowerProfile: 'borrower_profile',
   LoanApplication: 'loan_application',
   Document: 'document',
+  Lender: 'lender',
+  LenderAgreement: 'lender_agreement',
+  LenderContact: 'lender_contact',
 } as const;
 
 export type AuditEntity = (typeof AuditEntity)[keyof typeof AuditEntity];

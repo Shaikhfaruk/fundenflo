@@ -41,6 +41,8 @@
 | `document.uploaded` | documents (`DocumentService.upload`, via `ChangeRecorder`; payload ids, type, party, application, uploader) | `documents.scan`, `applications.refresh` | — | M3 | `useful` | spec `documents-upload`; flow `documents` |
 | `document.scanned` · `document.rejected` · `document.deleted` | documents (`DocumentScanService`, `DocumentService.remove`) | `applications.refresh` (rejected, deleted); `realtime.publish` (`document.changed`); M5 `documents.extract` on scanned | uploader's user room + partner org room | M3 | `useful` | spec `documents-upload` |
 | `document.scan_overdue` | documents (`DocumentScanSlaHandler`, 15 min after upload or the last re-queue) | `documents.scan` | — | M3 | `useful` | spec `documents-upload` |
+| `lender.changed` | lenders (`LenderService`: lender, agreement and contact changes, via `ChangeRecorder`) | none yet (the lender cache is cleared after commit) | — | M4 | `useful` | spec `lenders` |
+| `lender_product.proposed` | lenders (`LenderPortalService.propose`) | none yet (M7 notifies the lender manager) | — | M4 | `useful` | spec `lenders` |
 | `document.verified` | documents (M5 extraction / ops review) | applications, notifications | user room | M5 | `planned` | §8.3 |
 | `analysis.completed` · `score.computed` | assessments | matching, notifications | user room | M5 | `planned` | §8.4 |
 | `submission.status.changed` · `submission.disbursed` | applications | commissions, leads, notifications | user, partner org, lender org rooms | M6 | `planned` | §8.2 |

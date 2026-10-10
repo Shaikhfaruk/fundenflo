@@ -8,7 +8,7 @@ import { DOCUMENT_KEY_PATTERN, DOCUMENT_SLOTS_MAX, DOCUMENT_TYPES_PER_SLOT_MAX, 
 const key = z.string().regex(DOCUMENT_KEY_PATTERN);
 const scopeKeys = z.array(z.string().regex(/^[a-z0-9][a-z0-9_-]{0,63}$/)).min(1).max(50);
 
-const slotSchema = z
+export const documentSlotSchema = z
   .object({
     key,
     documentTypes: z.array(key).min(1).max(DOCUMENT_TYPES_PER_SLOT_MAX),
@@ -24,7 +24,7 @@ export const documentRequirementContentSchema = z
   .object({
     stage: z.enum(Object.values(DocumentStage)),
     scope: z.object({ segments: scopeKeys.optional(), subSegments: scopeKeys.optional(), categories: scopeKeys.optional() }).strict().default({}),
-    items: z.array(slotSchema).min(1).max(DOCUMENT_SLOTS_MAX),
+    items: z.array(documentSlotSchema).min(1).max(DOCUMENT_SLOTS_MAX),
   })
   .strict()
   .refine((content) => new Set(content.items.map((item) => item.key)).size === content.items.length, { path: ['items'], message: 'slot keys must be unique' });

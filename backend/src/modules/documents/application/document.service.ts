@@ -132,9 +132,8 @@ export class DocumentService {
   private async register(file: StagedUpload, fields: UploadFields, actor: UserActor, ability: AppAbility) {
     const limit = await this.limiter.consume(`document-upload:user:${actor.userId}`, DOCUMENT_UPLOAD_RATE_LIMIT.limit, DOCUMENT_UPLOAD_RATE_LIMIT.windowSeconds);
     if (!limit.allowed) throw new AppError(ErrorCode.RATE_LIMITED, { retryAfterSeconds: limit.retryAfterSeconds });
-    const scope = fields.applicationId
-      ? await this.owners.get(DocumentOwnerKind.Application).scopeForUpload(fields.applicationId, ability)
-      : await this.owners.get(DocumentOwnerKind.BorrowerProfile).scopeForUpload(fields.borrowerProfileId as string, ability);
+    const [kind, ownerId] = fields.applicationId ? [DocumentOwnerKind.Application, fields.applicationId] : fields.lenderId ? [DocumentOwnerKind.Lender, fields.lenderId] : [DocumentOwnerKind.BorrowerProfile, fields.borrowerProfileId as string];
+    const scope = await this.owners.get(kind).scopeForUpload(ownerId, ability);
     const type = (await this.types.activeByKeys([fields.documentType])).get(fields.documentType);
     if (!type) throw new AppError(ErrorCode.VALIDATION_FAILED, { details: [{ path: 'documentType', code: 'unknown_key', message: `unknown or inactive document type ${fields.documentType}` }] });
     if (file.sizeBytes === 0) throw new AppError(ErrorCode.VALIDATION_FAILED, { details: [{ path: 'file', code: 'empty', message: 'the file is empty' }] });

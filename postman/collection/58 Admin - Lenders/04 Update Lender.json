@@ -1,0 +1,163 @@
+{
+  "name": "Update Lender",
+  "request": {
+    "method": "PATCH",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "If-Match",
+        "value": "\"{{lenderVersion}}\""
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/lenders/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "lenders",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{lenderId}}"
+        }
+      ]
+    },
+    "description": "Changes registration, website, response SLA, notes or `status` (onboarding → active ⇄ paused; offboarded is final). Paused or offboarded lenders drop out of availability and matching at once. Staff only: ops leads and lender managers make changes; compliance and support read.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"status\": \"active\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.collectionVariables.set('lenderVersion', String(pm.response.json().version));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{lenderVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/lenders/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "lenders",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{lenderId}}"
+            }
+          ]
+        },
+        "description": "Changes registration, website, response SLA, notes or `status` (onboarding → active ⇄ paused; offboarded is final). Paused or offboarded lenders drop out of availability and matching at once. Staff only: ops leads and lender managers make changes; compliance and support read.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"active\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a122a0-1a2b-7c3d-8e4f-5061728394a5\",\n  \"key\": \"lenderx\",\n  \"name\": \"Lender X Finance Ltd\",\n  \"organizationId\": \"01a122a0-2b3c-7d4e-9f50-61728394a5b6\",\n  \"kind\": \"nbfc\",\n  \"rbiRegistrationNo\": \"N-14.03268\",\n  \"status\": \"active\",\n  \"website\": null,\n  \"responseSlaHours\": 48,\n  \"notes\": null,\n  \"version\": 2,\n  \"createdAt\": \"2026-10-10T18:00:00.000Z\",\n  \"updatedAt\": \"2026-10-10T18:00:00.000Z\"\n}"
+    },
+    {
+      "name": "409 INVALID_TRANSITION",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{lenderVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/lenders/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "lenders",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{lenderId}}"
+            }
+          ]
+        },
+        "description": "Changes registration, website, response SLA, notes or `status` (onboarding → active ⇄ paused; offboarded is final). Paused or offboarded lenders drop out of availability and matching at once. Staff only: ops leads and lender managers make changes; compliance and support read.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"active\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"INVALID_TRANSITION\",\n  \"message\": \"This action is not allowed in the current state.\",\n  \"details\": {\n    \"from\": \"offboarded\",\n    \"to\": \"active\",\n    \"allowed\": []\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

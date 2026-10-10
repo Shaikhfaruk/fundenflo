@@ -6,7 +6,7 @@ import { AppError } from '../../../common/errors/app-error.js';
 import { ErrorCode } from '../../../common/errors/error-codes.js';
 import { type PageQuery, pageWindow, toPage } from '../../../common/listing/cursor-page.js';
 import type { FactLookup, FactValue } from '../../../engines/conditions/condition.types.js';
-import { isStale, resolveFact } from '../../../engines/facts/resolve-fact.js';
+import { isStale, type RankedLookup, resolveFact } from '../../../engines/facts/resolve-fact.js';
 import type { BorrowerFact, Prisma } from '../../../generated/prisma/client.js';
 import { CipherPurpose } from '../../../infrastructure/crypto/crypto.constants.js';
 import { FieldCipher } from '../../../infrastructure/crypto/field-cipher.service.js';
@@ -136,6 +136,18 @@ export class FactService {
       if (overlay[attr] !== undefined) return overlay[attr];
       const fact = current.get(attr);
       return fact && !fact.stale ? fact.value : undefined;
+    };
+  }
+
+  async rankedLookup(partyId: string | null, overlay: ReadonlyArray<{ attributeKey: string; value: FactValue; provenance: FactProvenance }> = []): Promise<RankedLookup> {
+    if (partyId) await this.parties.assertExists(partyId);
+    const current = partyId ? await this.current(partyId) : new Map<string, ResolvedFact>();
+    const given = new Map(overlay.map((fact) => [fact.attributeKey, { value: fact.value, rank: PROVENANCE_RANK[fact.provenance] }]));
+    return (attr) => {
+      const override = given.get(attr);
+      if (override) return override;
+      const fact = current.get(attr);
+      return fact && !fact.stale ? { value: fact.value, rank: PROVENANCE_RANK[fact.provenance] } : undefined;
     };
   }
 

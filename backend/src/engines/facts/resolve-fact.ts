@@ -1,4 +1,9 @@
 import { DAY_MS } from '../../common/constants/time.constants.js';
+import type { FactValue } from '../conditions/condition.types.js';
+
+export type RankedFact = { value: FactValue; rank: number };
+
+export type RankedLookup = (attr: string) => RankedFact | undefined;
 
 export type FactCandidate = {
   rank: number;

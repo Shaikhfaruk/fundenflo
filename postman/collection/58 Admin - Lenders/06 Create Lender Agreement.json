@@ -1,0 +1,164 @@
+{
+  "name": "Create Lender Agreement",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/lenders/:id/agreements",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "lenders",
+        ":id",
+        "agreements"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{lenderId}}"
+        }
+      ]
+    },
+    "description": "Adds an agreement as `draft`; `documentId` links the signed PDF uploaded with `POST /documents` (`lenderId` field). `commissionSchemeKey` points at the commission scheme (M7). Staff only: ops leads and lender managers make changes; compliance and support read.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"reference\": \"LX-{{$timestamp}}\",\n  \"validFrom\": \"{{today}}\",\n  \"commissionNote\": \"50 bps of the disbursed amount, paid after the lender pays\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.collectionVariables.set('today', new Date().toISOString().slice(0, 10));"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "pm.collectionVariables.set('lenderAgreementId', String(pm.response.json().id));",
+          "pm.collectionVariables.set('lenderAgreementVersion', String(pm.response.json().version));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/lenders/:id/agreements",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "lenders",
+            ":id",
+            "agreements"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{lenderId}}"
+            }
+          ]
+        },
+        "description": "Adds an agreement as `draft`; `documentId` links the signed PDF uploaded with `POST /documents` (`lenderId` field). `commissionSchemeKey` points at the commission scheme (M7). Staff only: ops leads and lender managers make changes; compliance and support read.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reference\": \"LX-{{$timestamp}}\",\n  \"validFrom\": \"{{today}}\",\n  \"commissionNote\": \"50 bps of the disbursed amount, paid after the lender pays\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a122a0-3c4d-7e5f-8061-728394a5b6c7\",\n  \"reference\": \"LX-2026-01\",\n  \"status\": \"draft\",\n  \"validFrom\": \"2026-10-10\",\n  \"validTo\": null,\n  \"inForce\": false,\n  \"commissionNote\": \"50 bps of the disbursed amount, paid after the lender pays\",\n  \"commissionSchemeKey\": null,\n  \"documentId\": null,\n  \"activatedAt\": null,\n  \"terminatedAt\": null,\n  \"terminationReason\": null,\n  \"version\": 1,\n  \"createdAt\": \"2026-10-10T18:00:00.000Z\"\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/lenders/:id/agreements",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "lenders",
+            ":id",
+            "agreements"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{lenderId}}"
+            }
+          ]
+        },
+        "description": "Adds an agreement as `draft`; `documentId` links the signed PDF uploaded with `POST /documents` (`lenderId` field). `commissionSchemeKey` points at the commission scheme (M7). Staff only: ops leads and lender managers make changes; compliance and support read.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reference\": \"LX-{{$timestamp}}\",\n  \"validFrom\": \"{{today}}\",\n  \"commissionNote\": \"50 bps of the disbursed amount, paid after the lender pays\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"validTo\",\n      \"code\": \"custom\",\n      \"message\": \"must be on or after validFrom\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

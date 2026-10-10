@@ -1,0 +1,180 @@
+{
+  "name": "Update Lender Agreement",
+  "request": {
+    "method": "PATCH",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "If-Match",
+        "value": "\"{{lenderAgreementVersion}}\""
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/lenders/:id/agreements/:aid",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "lenders",
+        ":id",
+        "agreements",
+        ":aid"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{lenderId}}"
+        },
+        {
+          "key": "aid",
+          "value": "{{lenderAgreementId}}"
+        }
+      ]
+    },
+    "description": "Activates (draft → active), expires or terminates (with `terminationReason`) an agreement, or changes its end date, commission note, scheme or signed document. A lender needs an active agreement in force for its products to count. Staff only: ops leads and lender managers make changes; compliance and support read.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"status\": \"active\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{lenderAgreementVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/lenders/:id/agreements/:aid",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "lenders",
+            ":id",
+            "agreements",
+            ":aid"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{lenderId}}"
+            },
+            {
+              "key": "aid",
+              "value": "{{lenderAgreementId}}"
+            }
+          ]
+        },
+        "description": "Activates (draft → active), expires or terminates (with `terminationReason`) an agreement, or changes its end date, commission note, scheme or signed document. A lender needs an active agreement in force for its products to count. Staff only: ops leads and lender managers make changes; compliance and support read.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"active\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a122a0-3c4d-7e5f-8061-728394a5b6c7\",\n  \"reference\": \"LX-2026-01\",\n  \"status\": \"active\",\n  \"validFrom\": \"2026-10-10\",\n  \"validTo\": null,\n  \"inForce\": true,\n  \"commissionNote\": \"50 bps of the disbursed amount, paid after the lender pays\",\n  \"commissionSchemeKey\": null,\n  \"documentId\": null,\n  \"activatedAt\": \"2026-10-10T18:00:00.000Z\",\n  \"terminatedAt\": null,\n  \"terminationReason\": null,\n  \"version\": 2,\n  \"createdAt\": \"2026-10-10T18:00:00.000Z\"\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{lenderAgreementVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/lenders/:id/agreements/:aid",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "lenders",
+            ":id",
+            "agreements",
+            ":aid"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{lenderId}}"
+            },
+            {
+              "key": "aid",
+              "value": "{{lenderAgreementId}}"
+            }
+          ]
+        },
+        "description": "Activates (draft → active), expires or terminates (with `terminationReason`) an agreement, or changes its end date, commission note, scheme or signed document. A lender needs an active agreement in force for its products to count. Staff only: ops leads and lender managers make changes; compliance and support read.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"active\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"terminationReason\",\n      \"code\": \"required\",\n      \"message\": \"say why the agreement ends\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

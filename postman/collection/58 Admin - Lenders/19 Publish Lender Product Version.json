@@ -1,0 +1,115 @@
+{
+  "name": "Publish Lender Product Version",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/lender-products/:id/versions/:number/publish",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "lender-products",
+        ":id",
+        "versions",
+        ":number",
+        "publish"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{lenderProductId}}"
+        },
+        {
+          "key": "number",
+          "value": "{{lenderProductNumber}}"
+        }
+      ]
+    },
+    "description": "Publishes an approved version now or at `effectiveFrom`. Category availability, lender questions and matching use it straight away; open applications keep their pinned versions. Staff only. Lender products are versioned config (an ops lead or lender manager makes, a different staff member approves in Change Requests, then it is published). The key is `<lenderKey>.<productKey>`; the lender comes from the key. `content`: `category`, `segments`, `subSegments` (empty = all), `amountPaise` and `tenureMonths` ranges, `coverage` (`nationwide`, `states` as GST codes, `cityIds`, `includePincodes`, `excludePincodes`), `eligibility.hard[]` / `soft[]` rules (`id`, `when` condition, optional `minProvenance`, `party`: primary / any_co_applicant / all_directors, `pass` / `fail` texts; soft rules carry a `weight`), `documents[]` slots with a `stage`, optional `questionSet` and `pricingDisclosure`. Only products of active lenders with an agreement in force count for category availability, lender questions and matching.",
+    "body": {
+      "mode": "raw",
+      "raw": "{}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/lender-products/:id/versions/:number/publish",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "lender-products",
+            ":id",
+            "versions",
+            ":number",
+            "publish"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{lenderProductId}}"
+            },
+            {
+              "key": "number",
+              "value": "{{lenderProductNumber}}"
+            }
+          ]
+        },
+        "description": "Publishes an approved version now or at `effectiveFrom`. Category availability, lender questions and matching use it straight away; open applications keep their pinned versions. Staff only. Lender products are versioned config (an ops lead or lender manager makes, a different staff member approves in Change Requests, then it is published). The key is `<lenderKey>.<productKey>`; the lender comes from the key. `content`: `category`, `segments`, `subSegments` (empty = all), `amountPaise` and `tenureMonths` ranges, `coverage` (`nationwide`, `states` as GST codes, `cityIds`, `includePincodes`, `excludePincodes`), `eligibility.hard[]` / `soft[]` rules (`id`, `when` condition, optional `minProvenance`, `party`: primary / any_co_applicant / all_directors, `pass` / `fail` texts; soft rules carry a `weight`), `documents[]` slots with a `stage`, optional `questionSet` and `pricingDisclosure`. Only products of active lenders with an agreement in force count for category availability, lender questions and matching.",
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a122a0-6f70-7b82-a394-a5b6c7d8e9fa\",\n  \"resource\": \"lender_product\",\n  \"documentId\": \"01a122a0-5e6f-7a71-9283-94a5b6c7d8e9\",\n  \"documentKey\": \"lenderx.working_capital\",\n  \"number\": 1,\n  \"status\": \"published\",\n  \"content\": {\n    \"category\": \"business\",\n    \"segments\": [\n      \"msme\"\n    ],\n    \"subSegments\": [\n      \"proprietorship\",\n      \"partnership\"\n    ],\n    \"amountPaise\": {\n      \"min\": 50000000,\n      \"max\": 500000000\n    },\n    \"tenureMonths\": {\n      \"min\": 12,\n      \"max\": 36\n    },\n    \"coverage\": {\n      \"states\": [\n        \"06\"\n      ]\n    },\n    \"eligibility\": {\n      \"hard\": [\n        {\n          \"id\": \"vintage\",\n          \"when\": {\n            \"attr\": \"business.vintage_months\",\n            \"op\": \"gte\",\n            \"value\": 24\n          },\n          \"pass\": {\n            \"en\": \"Business vintage fits their policy\"\n          },\n          \"fail\": {\n            \"en\": \"They need 2 years of business history\"\n          }\n        },\n        {\n          \"id\": \"gst\",\n          \"when\": {\n            \"attr\": \"business.gst_registered\",\n            \"op\": \"eq\",\n            \"value\": true\n          },\n          \"fail\": {\n            \"en\": \"They lend only to GST-registered businesses\"\n          }\n        }\n      ],\n      \"soft\": [\n        {\n          \"id\": \"turnover\",\n          \"weight\": 3,\n          \"minProvenance\": \"extracted\",\n          \"when\": {\n            \"attr\": \"business.monthly_turnover_paise\",\n            \"op\": \"gte\",\n            \"value\": 50000000\n          }\n        }\n      ]\n    },\n    \"documents\": [\n      {\n        \"key\": \"udyam\",\n        \"documentTypes\": [\n          \"udyam_certificate\"\n        ],\n        \"stage\": \"submission\"\n      }\n    ],\n    \"pricingDisclosure\": {\n      \"en\": \"As per lender policy\"\n    }\n  },\n  \"compiled\": null,\n  \"issues\": [],\n  \"contentHash\": null,\n  \"notes\": null,\n  \"effectiveFrom\": \"2026-10-10T18:00:00.000Z\",\n  \"publishedAt\": \"2026-10-10T18:00:00.000Z\",\n  \"retiredAt\": null,\n  \"createdByUserId\": \"01a121c0-5e6f-7a71-9283-94a5b6c7d8e9\",\n  \"submittedByUserId\": null,\n  \"approvedByUserId\": null,\n  \"publishedByUserId\": null,\n  \"retiredByUserId\": null,\n  \"changeRequest\": null,\n  \"availableActions\": [\n    \"edit\",\n    \"submit\",\n    \"retire\"\n  ],\n  \"version\": 1,\n  \"createdAt\": \"2026-10-10T18:00:00.000Z\",\n  \"updatedAt\": \"2026-10-10T18:00:00.000Z\"\n}"
+    }
+  ]
+}

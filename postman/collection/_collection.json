@@ -518,6 +518,54 @@
     {
       "key": "borrowerChallengeId",
       "value": ""
+    },
+    {
+      "key": "lenderKey",
+      "value": ""
+    },
+    {
+      "key": "lenderId",
+      "value": ""
+    },
+    {
+      "key": "lenderVersion",
+      "value": ""
+    },
+    {
+      "key": "lenderAgreementId",
+      "value": ""
+    },
+    {
+      "key": "lenderAgreementVersion",
+      "value": ""
+    },
+    {
+      "key": "lenderContactId",
+      "value": ""
+    },
+    {
+      "key": "lenderContactVersion",
+      "value": ""
+    },
+    {
+      "key": "lenderProductId",
+      "value": ""
+    },
+    {
+      "key": "lenderProductDocVersion",
+      "value": ""
+    },
+    {
+      "key": "lenderProductNumber",
+      "value": ""
+    },
+    {
+      "key": "lenderProductVersionRow",
+      "value": ""
+    },
+    {
+      "key": "today",
+      "value": ""
     }
   ]
 }
