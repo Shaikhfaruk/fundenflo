@@ -142,7 +142,7 @@ Controller: `backend/src/modules/catalog/http/catalog.controller.ts` · Postman:
 
 | Method | Path | Module | Context | Milestone | Status |
 |---|---|---|---|---|---|
-| `POST` `GET` | `/applications/:id/submissions` | submissions (`application-submissions.controller.ts` → `SubmissionService.request` from an eligible result of the latest match run, `assessed` → `ready_for_submission`, one open submission per product, at most 5 open; list for borrower, partner and staff) | borrower, partner (create), staff (read) | M6 | `useful` |
+| `POST` `GET` | `/applications/:id/submissions` | submissions (`application-submissions.controller.ts` → `SubmissionService.request` from an eligible result of the latest match run, `assessed` → `ready_for_submission`, one open submission per product, at most 5 open; optional `shareWithLender: true` from a borrower records the lender-scoped `lender_sharing` consent in the same transaction (2026-10-11, also used by `/v0/applications`); list for borrower, partner and staff) | borrower, partner (create), staff (read) | M6 | `useful` |
 | `GET` | `/applications/:id/submissions/:submissionId` | submissions (`SubmissionService.get` with the event history and document requests; internal notes and rejection notes hidden from borrowers) | borrower, partner, staff | M6 | `useful` |
 | `POST` | `/applications/:id/submissions/:submissionId/withdraw` | submissions (`SubmissionService.withdraw`; added so a borrower can take a file back from one lender) | borrower, partner | M6 | `useful` |
 | `POST` | `/notifications/subscriptions` | subscriptions (`notification-subscriptions.controller.ts` → `SubscriptionService`; own module because delivery needs `UserNotifier` from auth) | borrower, partner | M5 | `useful` |

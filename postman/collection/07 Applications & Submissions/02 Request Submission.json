@@ -25,10 +25,10 @@
         }
       ]
     },
-    "description": "Asks to send the file to the lender of an `eligible` result from the latest match run. The application must be `assessed` (it moves to `ready_for_submission`), `ready_for_submission` or `submitted`; at most one open submission per product and five open per application. The submission waits in `pending_approval` until ops approve it (lender consent and documents are checked then). States: pending_approval → approved → sent_to_lender → under_review ⇄ query_raised → sanctioned → disbursed (more tranches stay disbursed), or rejected / withdrawn. Borrower and partner contexts.",
+    "description": "Asks to send the file to the lender of an `eligible` result from the latest match run. The application must be `assessed` (it moves to `ready_for_submission`), `ready_for_submission` or `submitted`; at most one open submission per product and five open per application. Optional `shareWithLender: true` (borrower context only, 403 `FORBIDDEN` otherwise) records the borrower's `lender_sharing` consent for this lender's organisation in the same step. The submission waits in `pending_approval` until ops approve it (lender consent and documents are checked then). States: pending_approval → approved → sent_to_lender → under_review ⇄ query_raised → sanctioned → disbursed (more tranches stay disbursed), or rejected / withdrawn. Borrower and partner contexts.",
     "body": {
       "mode": "raw",
-      "raw": "{\n  \"matchResultId\": \"{{matchResultId}}\"\n}",
+      "raw": "{\n  \"matchResultId\": \"{{matchResultId}}\",\n  \"shareWithLender\": true\n}",
       "options": {
         "raw": {
           "language": "json"
@@ -77,10 +77,10 @@
             }
           ]
         },
-        "description": "Asks to send the file to the lender of an `eligible` result from the latest match run. The application must be `assessed` (it moves to `ready_for_submission`), `ready_for_submission` or `submitted`; at most one open submission per product and five open per application. The submission waits in `pending_approval` until ops approve it (lender consent and documents are checked then). States: pending_approval → approved → sent_to_lender → under_review ⇄ query_raised → sanctioned → disbursed (more tranches stay disbursed), or rejected / withdrawn. Borrower and partner contexts.",
+        "description": "Asks to send the file to the lender of an `eligible` result from the latest match run. The application must be `assessed` (it moves to `ready_for_submission`), `ready_for_submission` or `submitted`; at most one open submission per product and five open per application. Optional `shareWithLender: true` (borrower context only, 403 `FORBIDDEN` otherwise) records the borrower's `lender_sharing` consent for this lender's organisation in the same step. The submission waits in `pending_approval` until ops approve it (lender consent and documents are checked then). States: pending_approval → approved → sent_to_lender → under_review ⇄ query_raised → sanctioned → disbursed (more tranches stay disbursed), or rejected / withdrawn. Borrower and partner contexts.",
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"matchResultId\": \"{{matchResultId}}\"\n}",
+          "raw": "{\n  \"matchResultId\": \"{{matchResultId}}\",\n  \"shareWithLender\": true\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -126,10 +126,10 @@
             }
           ]
         },
-        "description": "Asks to send the file to the lender of an `eligible` result from the latest match run. The application must be `assessed` (it moves to `ready_for_submission`), `ready_for_submission` or `submitted`; at most one open submission per product and five open per application. The submission waits in `pending_approval` until ops approve it (lender consent and documents are checked then). States: pending_approval → approved → sent_to_lender → under_review ⇄ query_raised → sanctioned → disbursed (more tranches stay disbursed), or rejected / withdrawn. Borrower and partner contexts.",
+        "description": "Asks to send the file to the lender of an `eligible` result from the latest match run. The application must be `assessed` (it moves to `ready_for_submission`), `ready_for_submission` or `submitted`; at most one open submission per product and five open per application. Optional `shareWithLender: true` (borrower context only, 403 `FORBIDDEN` otherwise) records the borrower's `lender_sharing` consent for this lender's organisation in the same step. The submission waits in `pending_approval` until ops approve it (lender consent and documents are checked then). States: pending_approval → approved → sent_to_lender → under_review ⇄ query_raised → sanctioned → disbursed (more tranches stay disbursed), or rejected / withdrawn. Borrower and partner contexts.",
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"matchResultId\": \"{{matchResultId}}\"\n}",
+          "raw": "{\n  \"matchResultId\": \"{{matchResultId}}\",\n  \"shareWithLender\": true\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -175,10 +175,10 @@
             }
           ]
         },
-        "description": "Asks to send the file to the lender of an `eligible` result from the latest match run. The application must be `assessed` (it moves to `ready_for_submission`), `ready_for_submission` or `submitted`; at most one open submission per product and five open per application. The submission waits in `pending_approval` until ops approve it (lender consent and documents are checked then). States: pending_approval → approved → sent_to_lender → under_review ⇄ query_raised → sanctioned → disbursed (more tranches stay disbursed), or rejected / withdrawn. Borrower and partner contexts.",
+        "description": "Asks to send the file to the lender of an `eligible` result from the latest match run. The application must be `assessed` (it moves to `ready_for_submission`), `ready_for_submission` or `submitted`; at most one open submission per product and five open per application. Optional `shareWithLender: true` (borrower context only, 403 `FORBIDDEN` otherwise) records the borrower's `lender_sharing` consent for this lender's organisation in the same step. The submission waits in `pending_approval` until ops approve it (lender consent and documents are checked then). States: pending_approval → approved → sent_to_lender → under_review ⇄ query_raised → sanctioned → disbursed (more tranches stay disbursed), or rejected / withdrawn. Borrower and partner contexts.",
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"matchResultId\": \"{{matchResultId}}\"\n}",
+          "raw": "{\n  \"matchResultId\": \"{{matchResultId}}\",\n  \"shareWithLender\": true\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -224,10 +224,10 @@
             }
           ]
         },
-        "description": "Asks to send the file to the lender of an `eligible` result from the latest match run. The application must be `assessed` (it moves to `ready_for_submission`), `ready_for_submission` or `submitted`; at most one open submission per product and five open per application. The submission waits in `pending_approval` until ops approve it (lender consent and documents are checked then). States: pending_approval → approved → sent_to_lender → under_review ⇄ query_raised → sanctioned → disbursed (more tranches stay disbursed), or rejected / withdrawn. Borrower and partner contexts.",
+        "description": "Asks to send the file to the lender of an `eligible` result from the latest match run. The application must be `assessed` (it moves to `ready_for_submission`), `ready_for_submission` or `submitted`; at most one open submission per product and five open per application. Optional `shareWithLender: true` (borrower context only, 403 `FORBIDDEN` otherwise) records the borrower's `lender_sharing` consent for this lender's organisation in the same step. The submission waits in `pending_approval` until ops approve it (lender consent and documents are checked then). States: pending_approval → approved → sent_to_lender → under_review ⇄ query_raised → sanctioned → disbursed (more tranches stay disbursed), or rejected / withdrawn. Borrower and partner contexts.",
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"matchResultId\": \"{{matchResultId}}\"\n}",
+          "raw": "{\n  \"matchResultId\": \"{{matchResultId}}\",\n  \"shareWithLender\": true\n}",
           "options": {
             "raw": {
               "language": "json"

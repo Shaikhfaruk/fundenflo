@@ -28,7 +28,7 @@ export class ApplicationSubmissionsController {
   @AllowContexts(SessionContext.borrower, SessionContext.partner)
   @CheckPolicies((ability) => ability.can(AppAction.Create, 'LenderSubmission'))
   request(@ValidParam('id', uuidSchema) id: string, @ValidBody(requestSubmissionSchema) body: RequestSubmissionDto, @CurrentActor() actor: UserActor, @CurrentAbility() ability: AppAbility, @RequestLocale() locale: Locale) {
-    return this.submissions.request(id, body.matchResultId, actor, ability, locale);
+    return this.submissions.request(id, body.matchResultId, actor, ability, locale, { shareWithLender: body.shareWithLender === true });
   }
 
   @Get(':id/submissions')

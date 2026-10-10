@@ -487,12 +487,12 @@ stateDiagram-v2
   purged --> [*]
 ```
 
-Submission (built in M6b as `submissionMachine`; every move goes through `SubmissionService.move`, which writes the append-only `submission_events` row, an application timeline entry and the outbox event; sanction, disbursal and rejection refuse any actor that is not a person; ops approval needs the applicant's consent naming the lender and the product's documents scanned; `submissions.deliver` builds the encrypted packet before `send`; the first disbursal closes the application as won and every submission closed closes it as lost):
+Submission (built in M6b as `submissionMachine`; every move goes through `SubmissionService.move`, which writes the append-only `submission_events` row, an application timeline entry and the outbox event; sanction, disbursal and rejection refuse any actor that is not a person; ops approval needs the applicant's consent naming the lender (a borrower can give it while requesting, `shareWithLender: true`) and the product's documents scanned; `submissions.deliver` builds the encrypted packet before `send`; the first disbursal closes the application as won and every submission closed closes it as lost):
 
 ```mermaid
 stateDiagram-v2
   direction LR
-  [*] --> pending_approval: request (eligible match)
+  [*] --> pending_approval: request (eligible match, optional lender-scoped sharing consent)
   pending_approval --> approved: approve (ops)
   approved --> sent_to_lender: send (worker, packet)
   sent_to_lender --> under_review: acknowledge

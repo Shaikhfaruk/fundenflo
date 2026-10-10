@@ -14,7 +14,7 @@ const lenderReference = z.string().trim().min(1).max(LENDER_REFERENCE_MAX_LENGTH
 
 const expectedVersion = z.number().int().positive().optional();
 
-export const requestSubmissionSchema = z.object({ matchResultId: uuidSchema }).strict();
+export const requestSubmissionSchema = z.object({ matchResultId: uuidSchema, shareWithLender: z.literal(true).optional() }).strict();
 export type RequestSubmissionDto = z.output<typeof requestSubmissionSchema>;
 
 export const withdrawSubmissionSchema = z.object({ reason: note }).strict();

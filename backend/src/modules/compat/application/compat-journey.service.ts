@@ -42,8 +42,6 @@ const cityOf = (location: string) => location.split(',')[0]?.trim() ?? location;
 
 const rupeesOf = (amountPaise: number | null) => (amountPaise === null ? null : amountPaise / Number(PAISE_PER_RUPEE));
 
-const LENDER_CONSENT_EVIDENCE = 'Chose this lender and confirmed sharing in the app';
-
 @Injectable()
 export class CompatJourneyService {
   constructor(
@@ -159,16 +157,7 @@ export class CompatJourneyService {
     if (!lender) throw new AppError(ErrorCode.NOT_FOUND);
     const partyId = application.actingParty.id;
     if (!(await this.consents.hasConsent(partyId, ConsentPurposeKey.LenderSharing))) throw new AppError(ErrorCode.CONSENT_REQUIRED, { details: { purpose: ConsentPurposeKey.LenderSharing, organizationId: lender.organizationId } });
-    if (!(await this.consents.hasConsent(partyId, ConsentPurposeKey.LenderSharing, { organizationId: lender.organizationId, explicitOnly: true }))) {
-      const template = await this.consents.template(JOURNEY_CONSENT_CONTEXT);
-      await this.consents.record(
-        partyId,
-        [{ purpose: ConsentPurposeKey.LenderSharing, granted: true, organizationIds: [lender.organizationId] }],
-        { channel: ConsentChannel.app, templateVersionId: template.versionId, locale, capturedByUserId: actor.userId, applicationId: application.id, evidence: LENDER_CONSENT_EVIDENCE },
-        locale,
-      );
-    }
-    const submission = await this.submissions.request(application.id, matchResultId, actor, ability, locale);
+    const submission = await this.submissions.request(application.id, matchResultId, actor, ability, locale, { shareWithLender: true });
     return toCompatApplication(await this.submissions.get(application.id, submission.id, ability, locale, actor.context), rupeesOf(application.amountPaise), locale);
   }
 

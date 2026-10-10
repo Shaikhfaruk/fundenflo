@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 
 import { actorTypeOf, type UserActor } from '../../../common/context/actor.js';
 import { RequestContext } from '../../../common/context/request-context.service.js';
-import { ApplicationEventType, ApplicationStatus, ConfigResource, MatchOutcome, SessionContext, SubmissionEventType, SubmissionStatus } from '../../../common/enums/db.enums.js';
+import { ApplicationEventType, ApplicationStatus, ConfigResource, ConsentChannel, MatchOutcome, SessionContext, SubmissionEventType, SubmissionStatus } from '../../../common/enums/db.enums.js';
 import { AppError } from '../../../common/errors/app-error.js';
 import { ErrorCode } from '../../../common/errors/error-codes.js';
 import { transitionOrThrow } from '../../../common/errors/transition.js';
@@ -25,7 +25,7 @@ import { ChangeRecorder } from '../../audit/application/change-recorder.service.
 import { AuditAction, AuditEntity } from '../../audit/domain/audit.constants.js';
 import { ConfigPublishingService } from '../../config-publishing/application/config-publishing.service.js';
 import { ConsentService } from '../../consents/application/consent.service.js';
-import { ConsentPurposeKey } from '../../consents/domain/consent.constants.js';
+import { ConsentPurposeKey, JOURNEY_CONSENT_CONTEXT } from '../../consents/domain/consent.constants.js';
 import { DocumentService } from '../../documents/application/document.service.js';
 import type { DocumentOwnerScope } from '../../documents/domain/document-owner.types.js';
 import { LenderCatalogService } from '../../lenders/application/lender-catalog.service.js';
@@ -35,6 +35,7 @@ import { MATCH_DOCUMENT_STAGES } from '../../matching/domain/matching.constants.
 import { RiskService } from '../../risk/application/risk.service.js';
 import {
   EVIDENCE_REQUIRED_EVENTS,
+  LENDER_SHARING_EVIDENCE,
   type RejectionReason,
   SUBMISSION_ACTION_EVENTS,
   SUBMISSION_EVENT_TYPES,
@@ -109,7 +110,8 @@ export class SubmissionService {
   ) {}
 
   @Transactional()
-  async request(applicationId: string, matchResultId: string, actor: UserActor, ability: AppAbility, locale: Locale) {
+  async request(applicationId: string, matchResultId: string, actor: UserActor, ability: AppAbility, locale: Locale, options: { shareWithLender?: boolean } = {}) {
+    if (options.shareWithLender && actor.context !== SessionContext.borrower) throw new AppError(ErrorCode.FORBIDDEN);
     const application = await this.applications.prepareSubmission(applicationId, ability);
     const match = await this.matching.result(matchResultId);
     if (match.applicationId !== application.id || match.matchRunId !== application.latestMatchRunId) throw new AppError(ErrorCode.VALIDATION_FAILED, { details: [{ path: 'matchResultId', code: 'stale_match', message: 'choose a lender from your latest matches' }] });
@@ -123,6 +125,7 @@ export class SubmissionService {
     }
     const lender = (await this.lenders.summaries([match.lenderId])).get(match.lenderId);
     if (!lender) throw new AppError(ErrorCode.NOT_FOUND);
+    if (options.shareWithLender) await this.shareWithLender(application.actingPartyId, lender.organizationId, application.id, actor, locale);
     const submission = await this.submissions.create({
       ref: await this.refs.next(RefKind.Submission),
       applicationId: application.id,
@@ -402,6 +405,17 @@ export class SubmissionService {
       leadId: application.leadId,
       ...extra,
     };
+  }
+
+  private async shareWithLender(partyId: string, organizationId: string, applicationId: string, actor: UserActor, locale: Locale) {
+    if (await this.consents.hasConsent(partyId, ConsentPurposeKey.LenderSharing, { organizationId, explicitOnly: true })) return;
+    const template = await this.consents.template(JOURNEY_CONSENT_CONTEXT);
+    await this.consents.record(
+      partyId,
+      [{ purpose: ConsentPurposeKey.LenderSharing, granted: true, organizationIds: [organizationId] }],
+      { channel: ConsentChannel.app, templateVersionId: template.versionId, locale, capturedByUserId: actor.userId, applicationId, evidence: LENDER_SHARING_EVIDENCE },
+      locale,
+    );
   }
 
   private event(submissionId: string, type: SubmissionEventType, details: EventDetails) {

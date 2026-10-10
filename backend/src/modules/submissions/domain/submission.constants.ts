@@ -88,6 +88,8 @@ export const SUBMISSION_NOTIFY_ROLES: readonly Role[] = [Role.lender_admin, Role
 
 export const SUBMISSIONS_OPEN_MAX = 5;
 
+export const LENDER_SHARING_EVIDENCE = 'Chose this lender and confirmed sharing in the app';
+
 export const SUBMISSIONS_PER_APPLICATION_LIMIT = 50;
 
 export const SUBMISSION_EVENTS_LIMIT = 100;

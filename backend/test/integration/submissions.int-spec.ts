@@ -73,14 +73,14 @@ describe('lender submissions, document requests and lender decisions', () => {
     return otpLogin(t, mobile, LoginAs.lender);
   };
 
-  const assessedApplication = async (businessName: string) => {
-    const created = await as(borrower).post('/applications', { segment: 'msme', subSegment: 'proprietorship', businessName, category: 'business' }).expect(201);
+  const assessedApplication = async (businessName: string, owner = borrower) => {
+    const created = await as(owner).post('/applications', { segment: 'msme', subSegment: 'proprietorship', businessName, category: 'business' }).expect(201);
     const id = created.body.id as string;
-    await as(borrower).patch(`/applications/${id}/requirement`, { purpose: 'expansion', amountPaise: 20 * LAKH, tenureMonths: 36, city: 'Gurgaon' }, created.body.version).expect(200);
-    await as(borrower).put(`/applications/${id}/answers`, { answers: [{ questionKey: 'business_age', value: '3-5' }, { questionKey: 'monthly_turnover', value: '5-25L' }, { questionKey: 'existing_emis', value: 'no' }, { questionKey: 'gst_registered', value: 'yes' }] }).expect(200);
-    await as(borrower).post(`/applications/${id}/consents`, { templateVersionId, items: [{ purpose: 'ai_documents', granted: true }] }).expect(200);
+    await as(owner).patch(`/applications/${id}/requirement`, { purpose: 'expansion', amountPaise: 20 * LAKH, tenureMonths: 36, city: 'Gurgaon' }, created.body.version).expect(200);
+    await as(owner).put(`/applications/${id}/answers`, { answers: [{ questionKey: 'business_age', value: '3-5' }, { questionKey: 'monthly_turnover', value: '5-25L' }, { questionKey: 'existing_emis', value: 'no' }, { questionKey: 'gst_registered', value: 'yes' }] }).expect(200);
+    await as(owner).post(`/applications/${id}/consents`, { templateVersionId, items: [{ purpose: 'ai_documents', granted: true }] }).expect(200);
     await t.prisma.loanApplication.update({ where: { id }, data: { status: 'assessed', scoredAt: new Date() } });
-    const matched = await as(borrower).post(`/applications/${id}/matches`).expect(201);
+    const matched = await as(owner).post(`/applications/${id}/matches`).expect(201);
     const results = new Map<string, string>(matched.body.items.map((item: { id: string; lender: { id: string } }) => [item.lender.id, item.id]));
     return { id, results };
   };
@@ -179,6 +179,15 @@ describe('lender submissions, document requests and lender decisions', () => {
     const queue = await as(ops).get('/ops/submissions').query({ status: 'disbursed' }).expect(200);
     expect(queue.body.items.map((item: { id: string }) => item.id)).toContain(requested.body.id);
     expect((await as(borrower).get(`/applications/${application.id}/submissions`).expect(200)).body.items).toHaveLength(2);
+  });
+
+  it('records the lender-scoped sharing consent when the borrower shares while applying', async () => {
+    const sharer = await otpLogin(t, randomMobile(), LoginAs.borrower);
+    const application = await assessedApplication('Mehta Exports', sharer);
+    const requested = await as(sharer).post(`/applications/${application.id}/submissions`, { matchResultId: application.results.get(first.id), shareWithLender: true }).expect(201);
+    const approval = await as(ops).post(`/ops/submissions/${requested.body.id}/approve`).expect(400);
+    expect(approval.body.details.map((issue: { code: string }) => issue.code)).toEqual(['documents_missing', 'documents_missing']);
+    await as(sharer).post(`/applications/${application.id}/submissions`, { matchResultId: application.results.get(second.id), shareWithLender: false }).expect(400);
   });
 
   it('closes the application as lost when every lender declines, withdraws on application withdrawal and assigns cases', async () => {
