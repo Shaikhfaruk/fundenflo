@@ -174,7 +174,7 @@ export function OtpSignIn() {
               {send.isPending ? t('sending') : t('sendCode')}
               {send.isPending ? null : <Icon name="arrow-forward" size={18} />}
             </Button>
-            <button type="button" aria-expanded={referralOpen} onClick={() => setReferralOpen((value) => !value)} className="mx-auto mt-2 flex min-h-11 items-center gap-1 text-sm font-medium text-gold-deep">
+            <button type="button" aria-expanded={referralOpen} onClick={() => setReferralOpen((value) => !value)} className="mx-auto mt-2 flex min-h-11 items-center gap-1 text-sm font-medium text-gold-ink">
               {referral && !errors.referralCode && !referralOpen ? t('referralApplied', { code: referral }) : t('referralToggle')}
               <motion.span animate={{ rotate: referralOpen ? 180 : 0 }} className="flex">
                 <Icon name="expand-more" size={16} />

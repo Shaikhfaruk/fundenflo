@@ -135,7 +135,7 @@ function RequirementForm({ application, categories }: { application: Application
                 <Icon name={isIconName(category.icon) ? category.icon : 'payments'} size={14} />
               </span>
               <span className="truncate text-[13px] font-semibold text-navy">{category.label}</span>
-              <span className="text-xs font-semibold text-gold-deep">{t('change')}</span>
+              <span className="text-xs font-semibold text-gold-ink">{t('change')}</span>
             </button>
             <motion.section initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08, duration: Duration.Slow, ease: EASE_OUT }} className="mt-4 rounded-xl bg-card p-4 shadow-card">
               <div className="flex items-center justify-between gap-2">
@@ -178,11 +178,11 @@ function RequirementForm({ application, categories }: { application: Application
               <button type="button" onClick={() => setPickerOpen(true)} className="flex h-[54px] w-full items-center gap-3 rounded-lg bg-field px-3.5 text-left transition-colors hover:bg-[#eceff3]">
                 <Icon name="location" size={20} className={place ? 'text-navy' : 'text-slate'} />
                 <span className={cn('min-w-0 flex-1 truncate text-[15px] font-medium text-foreground', !place && 'text-muted-foreground')}>{place?.label ?? t('selectCity')}</span>
-                <span className="text-xs font-semibold text-gold-deep">{place ? t('change') : t('select')}</span>
+                <span className="text-xs font-semibold text-gold-ink">{place ? t('change') : t('select')}</span>
               </button>
             </motion.section>
             <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.16, duration: Duration.Slow, ease: EASE_OUT }} className="mt-4 flex items-start gap-3 rounded-xl bg-gold-soft p-3.5">
-              <Icon name="verified" size={18} className="mt-0.5 text-gold-deep" />
+              <Icon name="verified" size={18} className="mt-0.5 text-gold-ink" />
               {emi && tenure ? (
                 <div className="flex flex-col gap-1">
                   <p className="text-sm text-navy">
@@ -204,7 +204,7 @@ function RequirementForm({ application, categories }: { application: Application
                 <p className="truncate text-sm font-semibold text-navy">{category.label}</p>
                 <p className="text-xs/[18px] text-muted-foreground tabular">{[formatPaise(amount, locale), tenure ? tenureLabel(tenure) : null, place?.label].filter(Boolean).join(' · ')}</p>
               </div>
-              <button type="button" onClick={() => setSubstep('amount')} className="flex min-h-8 items-center gap-1 text-xs font-semibold text-gold-deep">
+              <button type="button" onClick={() => setSubstep('amount')} className="flex min-h-8 items-center gap-1 text-xs font-semibold text-gold-ink">
                 <Icon name="edit" size={14} />
                 {t('edit')}
               </button>

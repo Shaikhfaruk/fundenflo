@@ -66,7 +66,7 @@ export function DocumentSlotCard({ item, rejected, upload, requested, locked, re
   const badge = uploading ? (
     <span className="rounded-full bg-subtle px-2.5 py-1 text-[11px] font-semibold text-navy tabular">{t('uploadingPercent', { percent: upload.progress })}</span>
   ) : processing ? (
-    <Spinner className="mt-1 size-5 text-gold-deep" aria-label={t('checking')} />
+    <Spinner className="mt-1 size-5 text-gold-ink" aria-label={t('checking')} />
   ) : item.satisfied ? (
     <span className={cn('rounded-full px-2.5 py-1 text-[11px] font-semibold tracking-[0.04em] uppercase', allVerified ? 'bg-success-soft text-success' : 'bg-info-soft text-info')}>{allVerified ? t('verified') : t('received')}</span>
   ) : showRejected || upload?.phase === 'failed' ? (
@@ -137,7 +137,7 @@ export function DocumentSlotCard({ item, rejected, upload, requested, locked, re
               <li key={document.id} className="flex items-center gap-2 rounded-lg bg-subtle/60 px-2.5 py-2">
                 <Icon name="document" size={15} className="text-muted-foreground" />
                 <span className="min-w-0 flex-1 truncate text-xs text-foreground">{document.fileName}</span>
-                <span className={cn('flex items-center gap-1 text-[11px] font-semibold', document.status === DocumentStatus.Verified ? 'text-success' : busy ? 'text-gold-deep' : 'text-info')}>
+                <span className={cn('flex items-center gap-1 text-[11px] font-semibold', document.status === DocumentStatus.Verified ? 'text-success' : busy ? 'text-gold-ink' : 'text-info')}>
                   {document.status === DocumentStatus.Verified ? <Icon name="check-circle" size={13} /> : null}
                   {busy ? t('checking') : document.status === DocumentStatus.Verified ? t('verifiedByCheck') : t('withTeam')}
                 </span>
@@ -174,7 +174,7 @@ export function DocumentSlotCard({ item, rejected, upload, requested, locked, re
                 <span className="px-1 text-[11px] text-muted-foreground">{t('passwordHint')}</span>
               </div>
             ) : (
-              <button type="button" onClick={() => setWithPassword(true)} className="self-start px-1 text-xs font-semibold text-gold-deep underline-offset-4 hover:underline">
+              <button type="button" onClick={() => setWithPassword(true)} className="self-start px-1 text-xs font-semibold text-gold-ink underline-offset-4 hover:underline">
                 {t('hasPassword')}
               </button>
             )

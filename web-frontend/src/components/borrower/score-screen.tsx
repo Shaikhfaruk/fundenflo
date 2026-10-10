@@ -100,7 +100,7 @@ function ScoreView({ applicationId, assessment }: { applicationId: string; asses
           <Icon name="arrow-forward" size={18} />
         </ButtonLink>
         {improveHref ? (
-          <ButtonLink href={improveHref} variant="ghost" className="w-full text-gold-deep">
+          <ButtonLink href={improveHref} variant="ghost" className="w-full text-gold-ink">
             <Icon name="trending-up" size={18} />
             {t('seeImprove', { count: improvement.length })}
           </ButtonLink>
@@ -134,7 +134,7 @@ function NoScore({ applicationId }: { applicationId: string }) {
           {start.isPending ? <Spinner /> : <Icon name="sparkle" size={18} />}
           {t('calculate')}
         </Button>
-        <Link href={paths.step(applicationId, JourneyScreen.Documents)} className="text-sm font-semibold text-gold-deep">
+        <Link href={paths.step(applicationId, JourneyScreen.Documents)} className="text-sm font-semibold text-gold-ink">
           {t('checkDocuments')}
         </Link>
       </section>

@@ -72,12 +72,12 @@ export function PanCard({ profile, onVerified, className }: { profile: BorrowerP
           </motion.div>
         ) : !holder ? (
           <motion.p key="type" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-start gap-2 rounded-lg bg-gold-soft px-3 py-2.5 text-[13px] text-[#5d4200]">
-            <Icon name="info" size={16} className="mt-0.5 shrink-0 text-gold-deep" />
+            <Icon name="info" size={16} className="mt-0.5 shrink-0 text-gold-ink" />
             {t('panNeedsType')}
           </motion.p>
         ) : (
           <motion.div key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col gap-4">
-            {onRecord && !onRecord.verified ? <p className="text-xs text-gold-deep">{t('panUnverified', { pan: onRecord.masked })}</p> : null}
+            {onRecord && !onRecord.verified ? <p className="text-xs text-gold-ink">{t('panUnverified', { pan: onRecord.masked })}</p> : null}
             <Field data-invalid={Boolean(issue)}>
               <FieldLabel htmlFor="pan">{t('panNumber')}</FieldLabel>
               <Input id="pan" value={pan} onChange={(event) => setPan(event.target.value.replaceAll(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, PAN_LENGTH))} autoCapitalize="characters" autoComplete="off" spellCheck={false} placeholder={t('panPlaceholder')} className="font-heading tracking-[0.18em] uppercase" aria-invalid={Boolean(issue)} />

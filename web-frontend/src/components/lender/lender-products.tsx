@@ -85,7 +85,7 @@ function ProductCard({ product, index, canPropose }: { product: LenderProduct; i
           {content.eligibility.soft.length === 0 ? <p className="text-sm text-muted-foreground">—</p> : null}
           {content.eligibility.soft.map((rule) => (
             <p key={rule.id} className="flex items-start gap-2 text-sm text-foreground">
-              <Icon name="star" size={15} className="mt-0.5 text-gold-deep" />
+              <Icon name="star" size={15} className="mt-0.5 text-gold-ink" />
               {ruleText(rule, locale)}
             </p>
           ))}

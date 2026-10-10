@@ -142,7 +142,7 @@ function RequestView({ request }: { request: ChangeRequest }) {
             ]}
           />
           {versionHref ? (
-            <Link href={versionHref} className="flex items-center gap-1 text-sm font-semibold text-gold-deep hover:underline">
+            <Link href={versionHref} className="flex items-center gap-1 text-sm font-semibold text-gold-ink hover:underline">
               {t('openVersion')}
               <Icon name="arrow-forward" size={14} />
             </Link>

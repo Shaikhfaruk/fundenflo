@@ -57,7 +57,7 @@ function ConsentCode({ target, confirm, onResend, resending, onDone }: CodeProps
   return (
     <div className="flex flex-col gap-4">
       <p className="flex items-center gap-2 rounded-lg bg-subtle px-3 py-2.5 text-sm text-navy">
-        <Icon name="sms" size={18} className="shrink-0 text-gold-deep" />
+        <Icon name="sms" size={18} className="shrink-0 text-gold-ink" />
         <span>{t('sent', { recipient: challenge.recipient })}</span>
       </p>
       {grant ? (

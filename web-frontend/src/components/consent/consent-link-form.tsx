@@ -69,7 +69,7 @@ function ConsentChoices({ token, template, expiresAt }: { token: string; templat
         {missing.length > 0 ? t('saveWithout') : t('agree')}
       </Button>
       {template.policyUrl ? (
-        <a href={template.policyUrl} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-1 text-sm font-semibold text-gold-deep">
+        <a href={template.policyUrl} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-1 text-sm font-semibold text-gold-ink">
           {t('policy')}
           <Icon name="arrow-outward" size={14} />
         </a>

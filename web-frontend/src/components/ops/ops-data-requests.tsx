@@ -78,7 +78,7 @@ function RequestSheet({ id, onClose }: { id: string; onClose: () => void }) {
               { label: t('received'), value: formatDateTime(data.createdAt, locale) },
               { label: t('due'), value: formatDate(data.dueAt, locale) },
               { label: t('details'), value: data.details ?? '—' },
-              { label: t('party'), value: <Link href={RoutePath.opsParty(data.partyId)} className="font-semibold text-gold-deep hover:underline">{t('openParty')}</Link> },
+              { label: t('party'), value: <Link href={RoutePath.opsParty(data.partyId)} className="font-semibold text-gold-ink hover:underline">{t('openParty')}</Link> },
               { label: t('response'), value: data.response ?? data.rejectedReason ?? '—' },
               { label: t('export'), value: data.exportReady ? t('exportReady', { date: formatDate(data.exportExpiresAt, locale) }) : '—' },
             ]}

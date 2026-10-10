@@ -80,7 +80,7 @@ export function ApplicationActivity({ applicationId, open }: { applicationId: st
         <motion.section initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18, duration: Duration.Slow, ease: EASE_OUT }} className="rounded-xl bg-card p-4 shadow-card">
           <div className="mb-2 flex items-center justify-between gap-2">
             <h2 className="font-heading text-lg font-semibold text-navy">{t('applications')}</h2>
-            <Link href={paths.step(applicationId, JourneyScreen.Submissions)} className="text-xs font-semibold text-gold-deep">
+            <Link href={paths.step(applicationId, JourneyScreen.Submissions)} className="text-xs font-semibold text-gold-ink">
               {t('seeAll')}
             </Link>
           </div>

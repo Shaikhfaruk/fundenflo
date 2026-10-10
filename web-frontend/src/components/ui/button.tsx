@@ -12,7 +12,7 @@ const buttonVariants = cva(
         outline: "border-border bg-card text-navy hover:bg-subtle disabled:opacity-60",
         secondary: "bg-subtle text-navy hover:bg-[#e6ebf1] disabled:opacity-60",
         ghost: "text-navy hover:bg-subtle disabled:opacity-60",
-        link: "h-auto px-0 text-gold-deep underline-offset-4 hover:underline active:not-disabled:scale-100",
+        link: "h-auto px-0 text-gold-ink underline-offset-4 hover:underline active:not-disabled:scale-100",
         destructive: "bg-error-soft text-destructive hover:bg-[#ffcdc7] disabled:opacity-60",
         hero: "bg-white/10 text-white backdrop-blur hover:bg-white/15",
       },

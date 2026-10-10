@@ -45,6 +45,7 @@
   --color-navy-soft: var(--navy-soft);
   --color-gold: var(--gold);
   --color-gold-deep: var(--gold-deep);
+  --color-gold-ink: var(--gold-ink);
   --color-gold-soft: var(--gold-soft);
   --color-canvas: var(--background);
   --color-subtle: var(--subtle);
@@ -115,6 +116,7 @@
   --navy-soft: #0d2040;
   --gold: #fdb901;
   --gold-deep: #c59b27;
+  --gold-ink: #866608;
   --gold-soft: #fff4d6;
   --subtle: #f0f4f8;
   --field: #f2f4f6;
@@ -137,7 +139,7 @@
   --secondary: var(--subtle);
   --secondary-foreground: var(--navy);
   --muted: var(--subtle);
-  --muted-foreground: #64748b;
+  --muted-foreground: #5b6b80;
   --accent: var(--subtle);
   --accent-foreground: var(--navy);
   --destructive: #ba1a1a;

@@ -75,8 +75,8 @@ function ReviewSheet({ reviewId, onClose }: { reviewId: string; onClose: () => v
           <KeyValues
             columns={1}
             items={[
-              { label: t('subject'), value: data.applicationId ? <Link href={RoutePath.opsCase(data.applicationId)} className="font-semibold text-gold-deep hover:underline">{t('openCase')}</Link> : data.subject.type },
-              { label: t('party'), value: data.partyId ? <Link href={RoutePath.opsParty(data.partyId)} className="font-semibold text-gold-deep hover:underline">{t('openParty')}</Link> : '—' },
+              { label: t('subject'), value: data.applicationId ? <Link href={RoutePath.opsCase(data.applicationId)} className="font-semibold text-gold-ink hover:underline">{t('openCase')}</Link> : data.subject.type },
+              { label: t('party'), value: data.partyId ? <Link href={RoutePath.opsParty(data.partyId)} className="font-semibold text-gold-ink hover:underline">{t('openParty')}</Link> : '—' },
               { label: t('decision'), value: data.decision ? `${decisionLabel(data.decision)} · ${data.note ?? ''}` : t('undecided') },
               { label: t('decidedAt'), value: formatDateTime(data.decidedAt, locale) },
             ]}

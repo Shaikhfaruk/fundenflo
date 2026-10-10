@@ -13,7 +13,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
       icons={{
         success: <Icon name="check-circle" size={20} className="text-success" />,
         info: <Icon name="info" size={20} className="text-info" />,
-        warning: <Icon name="error" size={20} className="text-gold-deep" />,
+        warning: <Icon name="error" size={20} className="text-gold-ink" />,
         error: <Icon name="error" size={20} className="text-destructive" />,
         loading: <Spinner className="size-[18px] text-navy" />,
       }}

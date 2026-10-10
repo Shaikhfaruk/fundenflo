@@ -4,13 +4,12 @@ import { motion } from 'motion/react';
 import type { ReactNode } from 'react';
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Duration, EASE_OUT } from '@/lib/constants/motion.constants';
+import { Duration, EASE_OUT, MAX_STAGGERED_ITEMS } from '@/lib/constants/motion.constants';
 import { cn } from '@/lib/utils';
 
 export type Column<T> = { key: string; header: string; cell: (row: T) => ReactNode; className?: string; hideOnCard?: boolean };
 
 const ROW_STEP = 0.03;
-const MAX_STAGGERED = 12;
 
 const CARD_CLASS = 'flex flex-col gap-3 rounded-xl border border-[#eef2f6] bg-card p-4 shadow-card';
 
@@ -32,7 +31,7 @@ function CardBody<T>({ row, columns, title }: { row: T; columns: Column<T>[]; ti
   );
 }
 
-const rowMotion = (index: number) => ({ initial: { opacity: 0, y: 6 }, animate: { opacity: 1, y: 0 }, transition: { delay: Math.min(index, MAX_STAGGERED) * ROW_STEP, duration: Duration.Base, ease: EASE_OUT } }) as const;
+const rowMotion = (index: number) => ({ initial: { opacity: 0, y: 6 }, animate: { opacity: 1, y: 0 }, transition: { delay: Math.min(index, MAX_STAGGERED_ITEMS) * ROW_STEP, duration: Duration.Base, ease: EASE_OUT } }) as const;
 
 export function ResponsiveList<T>({ rows, columns, rowKey, title, onRowClick, empty, footer }: { rows: T[]; columns: Column<T>[]; rowKey: (row: T) => string; title: (row: T) => ReactNode; onRowClick?: (row: T) => void; empty?: ReactNode; footer?: ReactNode }) {
   if (rows.length === 0) return <>{empty}</>;

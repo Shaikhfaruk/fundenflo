@@ -148,7 +148,7 @@ function AnalysisRun({ applicationId, analysisId }: { applicationId: string; ana
           error={retry.error ? errorText(retry.error) : null}
           note={t('kept')}
           secondary={
-            <Link href={paths.step(applicationId, JourneyScreen.Documents)} className="flex min-h-11 items-center justify-center text-sm font-semibold text-gold-deep">
+            <Link href={paths.step(applicationId, JourneyScreen.Documents)} className="flex min-h-11 items-center justify-center text-sm font-semibold text-gold-ink">
               {t('backToDocuments')}
             </Link>
           }

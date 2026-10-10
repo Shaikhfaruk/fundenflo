@@ -81,12 +81,12 @@ export function CityPicker({ open, onOpenChange, title, selected, onSelect, allo
 function CityRow({ label, detail, on, custom, onClick }: { label: string; detail?: string; on: boolean; custom?: boolean; onClick: () => void }) {
   return (
     <button type="button" onClick={onClick} aria-pressed={on} className={cn('flex min-h-12 w-full items-center gap-3 rounded-lg px-2 text-left transition-colors hover:bg-subtle focus-visible:bg-subtle focus-visible:outline-none', on && 'bg-background')}>
-      <Icon name="location" size={18} className={custom ? 'text-gold-deep' : on ? 'text-navy' : 'text-slate'} />
+      <Icon name="location" size={18} className={custom ? 'text-gold-ink' : on ? 'text-navy' : 'text-slate'} />
       <span className="flex min-w-0 flex-1 flex-col">
         <span className={cn('truncate text-[15px] text-foreground', on && 'font-semibold text-navy')}>{label}</span>
         {detail ? <span className="truncate text-xs text-muted-foreground">{detail}</span> : null}
       </span>
-      {on ? <Icon name="check" size={16} className="text-gold-deep" /> : null}
+      {on ? <Icon name="check" size={16} className="text-gold-ink" /> : null}
     </button>
   );
 }

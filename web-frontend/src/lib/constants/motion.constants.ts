@@ -15,3 +15,5 @@ export const ENTRY_OFFSET = 16;
 export const SPRING = { type: 'spring', stiffness: 420, damping: 32, mass: 0.8 } as const;
 
 export const SOFT_SPRING = { type: 'spring', stiffness: 260, damping: 28 } as const;
+
+export const MAX_STAGGERED_ITEMS = 12;

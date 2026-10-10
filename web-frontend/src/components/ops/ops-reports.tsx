@@ -17,7 +17,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useEnumLabel } from '@/hooks/use-enum-label';
 import { funnelReportQuery, partnerPerformanceQuery } from '@/lib/api/leads';
 import type { PartnerPerformance } from '@/lib/api/types/ops.types';
-import { Duration, EASE_OUT, STAGGER_STEP } from '@/lib/constants/motion.constants';
+import { Duration, EASE_OUT, MAX_STAGGERED_ITEMS, STAGGER_STEP } from '@/lib/constants/motion.constants';
 import { FUNNEL_GROUPS, REPORT_DAYS } from '@/lib/constants/ops.constants';
 import { formatPaise } from '@/lib/format/money';
 
@@ -72,7 +72,7 @@ export function OpsReports() {
         ) : (
           <ul className="flex flex-col gap-3">
             {(funnel.data?.items ?? []).map((item, index) => (
-              <motion.li key={item.key ?? `none-${index}`} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: index * STAGGER_STEP, duration: Duration.Base, ease: EASE_OUT }} className="flex flex-col gap-1.5">
+              <motion.li key={item.key ?? `none-${index}`} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: Math.min(index, MAX_STAGGERED_ITEMS) * STAGGER_STEP, duration: Duration.Base, ease: EASE_OUT }} className="flex flex-col gap-1.5">
                 <div className="flex items-center justify-between gap-2 text-sm">
                   <span className="truncate font-semibold text-foreground">{labelOf(item.key, item.label)}</span>
                   <span className="text-muted-foreground tabular">{item.total}</span>

@@ -231,7 +231,7 @@ function VersionPanel({ resource, document, version }: { resource: ConfigResourc
             { label: t('created'), value: formatDateTime(version.createdAt, locale) },
             { label: t('effectiveFrom'), value: formatDateTime(version.effectiveFrom, locale) },
             { label: t('publishedAt'), value: formatDateTime(version.publishedAt, locale) },
-            { label: t('changeRequest'), value: version.changeRequest ? <Link href={RoutePath.adminChangeRequest(version.changeRequest.id)} className="font-semibold text-gold-deep hover:underline">{version.changeRequest.reason}</Link> : '—' },
+            { label: t('changeRequest'), value: version.changeRequest ? <Link href={RoutePath.adminChangeRequest(version.changeRequest.id)} className="font-semibold text-gold-ink hover:underline">{version.changeRequest.reason}</Link> : '—' },
             { label: t('hash'), value: <span className="font-mono text-xs break-all">{version.contentHash ?? '—'}</span> },
             { label: t('retiredAt'), value: formatDateTime(version.retiredAt, locale) },
           ]}

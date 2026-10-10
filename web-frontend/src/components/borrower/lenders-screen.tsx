@@ -103,7 +103,7 @@ function LenderCard({ item, index, selected, open, applied, applicationId, onSel
         </>
       ) : null}
       {applied ? (
-        <Link href={paths.submission(applicationId, applied.id)} className="mt-2 flex items-center gap-1 text-sm font-semibold text-gold-deep">
+        <Link href={paths.submission(applicationId, applied.id)} className="mt-2 flex items-center gap-1 text-sm font-semibold text-gold-ink">
           {t('viewStatus')}
           <Icon name="arrow-forward" size={14} />
         </Link>
@@ -204,7 +204,7 @@ export function LendersScreen() {
         <section className="flex flex-col gap-2 rounded-xl bg-card p-4 shadow-card">
           <h2 className="font-heading text-lg font-semibold text-navy">{t('emptyTitle')}</h2>
           <p className="text-sm text-muted-foreground">{t('emptyBody')}</p>
-          <Link href={paths.step(id, JourneyScreen.Improve)} className="mt-1 text-sm font-semibold text-gold-deep">
+          <Link href={paths.step(id, JourneyScreen.Improve)} className="mt-1 text-sm font-semibold text-gold-ink">
             {t('seeImprove')}
           </Link>
         </section>
@@ -239,7 +239,7 @@ export function LendersScreen() {
                 <span className="truncate text-sm font-semibold text-navy">{item.lender.name ?? t('lender')}</span>
                 <span className="truncate text-xs text-muted-foreground">{item.documentsNeeded.length > 0 ? t('documentsNeeded', { count: item.documentsNeeded.length }) : t('moreDetails')}</span>
               </span>
-              <Link href={paths.step(id, JourneyScreen.Documents)} className="text-xs font-semibold text-gold-deep">
+              <Link href={paths.step(id, JourneyScreen.Documents)} className="text-xs font-semibold text-gold-ink">
                 {t('addDocuments')}
               </Link>
             </div>

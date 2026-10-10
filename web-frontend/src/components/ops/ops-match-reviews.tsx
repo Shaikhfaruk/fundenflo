@@ -39,7 +39,7 @@ export function OpsMatchReviews() {
     { key: 'party', header: t('party'), cell: (row) => <Link href={RoutePath.opsMatchReview(row.id)} className="font-semibold text-navy hover:underline">{t('candidates', { count: row.candidatePartyIds.length })}</Link>, hideOnCard: true },
     { key: 'status', header: t('status'), cell: (row) => <StatusBadge status={row.status} tone={toneOf(REVIEW_STATUS_TONE, row.status)} namespace="enums.reviewStatus" /> },
     { key: 'opened', header: t('opened'), cell: (row) => <span className="text-muted-foreground">{formatRelative(row.createdAt, locale)}</span> },
-    { key: 'open', header: '', cell: (row) => <Link href={RoutePath.opsMatchReview(row.id)} className="text-xs font-semibold text-gold-deep hover:underline">{t('review')}</Link>, className: 'text-right' },
+    { key: 'open', header: '', cell: (row) => <Link href={RoutePath.opsMatchReview(row.id)} className="text-xs font-semibold text-gold-ink hover:underline">{t('review')}</Link>, className: 'text-right' },
   ];
   return (
     <div className="flex flex-col gap-4">
@@ -108,7 +108,7 @@ function ReviewView({ review }: { review: MatchReview }) {
                   <li key={line}>{line}</li>
                 ))}
               </ul>
-              <Link href={RoutePath.opsParty(party.id)} className="px-2 text-xs font-semibold text-gold-deep hover:underline">
+              <Link href={RoutePath.opsParty(party.id)} className="px-2 text-xs font-semibold text-gold-ink hover:underline">
                 {t('openParty')}
               </Link>
             </div>

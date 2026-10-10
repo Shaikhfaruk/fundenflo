@@ -12,7 +12,8 @@ import { Link, usePathname } from '@/i18n/navigation';
 import type { MeView } from '@/lib/api/types/auth.types';
 import { SOFT_SPRING } from '@/lib/constants/motion.constants';
 import type { NavArea, NavGroup } from '@/lib/constants/navigation.constants';
-import { AppPath, HOME_BY_CONTEXT } from '@/lib/constants/routes.constants';
+import { homePathFor } from '@/lib/constants/navigation.constants';
+import { AppPath } from '@/lib/constants/routes.constants';
 import { formatPhone } from '@/lib/format/phone';
 import { cn } from '@/lib/utils';
 
@@ -26,7 +27,7 @@ function NavLinks({ groups, active, onNavigate }: { groups: NavGroup[]; active: 
     <nav className="flex flex-col gap-4">
       {groups.map((group) => (
         <div key={group.key} className="flex flex-col gap-1">
-          {groups.length > 1 && t.has(group.key) ? <p className="px-3 text-[11px] font-semibold tracking-[0.1em] text-white/45 uppercase">{t(group.key)}</p> : null}
+          {groups.length > 1 && t.has(group.key) ? <p className="px-3 text-[11px] font-semibold tracking-[0.1em] text-white/60 uppercase">{t(group.key)}</p> : null}
           {group.items.map((item) => {
             const on = active === item.href;
             return (
@@ -57,7 +58,7 @@ function ActiveNavLinks({ groups, onNavigate }: { groups: NavGroup[]; onNavigate
 function SidebarBody({ area, me, groups, onNavigate }: { area: NavArea; me: MeView | undefined; groups: NavGroup[]; onNavigate?: () => void }) {
   const t = useTranslations('shell');
   const tRoles = useTranslations('roles');
-  const home = HOME_BY_CONTEXT[me?.activeContext?.context ?? ''] ?? AppPath.Landing;
+  const home = me?.activeContext ? homePathFor(me.activeContext.context, me.activeContext.role) : AppPath.Landing;
   const role = me?.activeContext?.role;
   return (
     <div className="flex h-full flex-col gap-4 px-3 py-4">

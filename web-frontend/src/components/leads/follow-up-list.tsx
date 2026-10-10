@@ -50,7 +50,7 @@ export function FollowUpList({ items, pending, leadHref, update, onUpdated }: Pr
                 <span className="text-sm font-semibold text-foreground">{item.note}</span>
                 <span className="text-xs text-muted-foreground">{t('due', { when: formatDateTime(item.dueAt, locale) })}</span>
                 {href ? (
-                  <Link href={href} className="text-xs font-semibold text-gold-deep hover:underline">
+                  <Link href={href} className="text-xs font-semibold text-gold-ink hover:underline">
                     {item.lead?.name ? t('openNamed', { name: item.lead.name, ref: item.lead.ref }) : t('openLead')}
                   </Link>
                 ) : null}

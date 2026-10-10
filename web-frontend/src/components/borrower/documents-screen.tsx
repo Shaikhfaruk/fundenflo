@@ -215,7 +215,7 @@ function DocumentsForm({ applicationId, checklist, documents, requests }: { appl
                 <div key={request.id} className="flex flex-col gap-0.5 text-[13px]">
                   <span className="text-foreground">{request.documentTypes.map((type) => type.label).join(', ')}</span>
                   {request.note ? <span className="text-xs text-muted-foreground">{request.note}</span> : null}
-                  {request.dueAt ? <span className="text-xs font-semibold text-gold-deep">{t('dueBy', { date: formatDate(request.dueAt, locale) })}</span> : null}
+                  {request.dueAt ? <span className="text-xs font-semibold text-gold-ink">{t('dueBy', { date: formatDate(request.dueAt, locale) })}</span> : null}
                 </div>
               ))}
             </div>

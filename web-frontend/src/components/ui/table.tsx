@@ -4,10 +4,21 @@ import * as React from "react"
 import { cn } from "cn"
 
 function Table({ className, ...props }: React.ComponentProps<"table">) {
+  const container = React.useRef<HTMLDivElement>(null)
+  const [scrollable, setScrollable] = React.useState(false)
+  React.useEffect(() => {
+    const node = container.current
+    const observer = new ResizeObserver(() => setScrollable(node ? node.scrollWidth > node.clientWidth : false))
+    if (node) observer.observe(node)
+    return () => observer.disconnect()
+  }, [])
+  const focusable = scrollable ? { tabIndex: 0 } : {}
   return (
     <div
+      ref={container}
       data-slot="table-container"
-      className="relative w-full overflow-x-auto"
+      {...focusable}
+      className="relative w-full overflow-x-auto outline-none focus-visible:ring-3 focus-visible:ring-ring/30"
     >
       <table
         data-slot="table"

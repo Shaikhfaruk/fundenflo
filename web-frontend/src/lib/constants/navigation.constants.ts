@@ -2,7 +2,7 @@ import type { IconName } from '@/components/ui/icon';
 
 import { Role, SessionContext } from './auth.constants';
 import { CONFIG_RESOURCE_META, ConfigResource } from './admin.constants';
-import { AppPath } from './routes.constants';
+import { AppPath, HOME_BY_CONTEXT } from './routes.constants';
 
 export const ShellArea = {
   Borrower: 'borrower',
@@ -44,6 +44,8 @@ const ADMIN_DESK: readonly string[] = [Role.SuperAdmin, Role.OpsLead, Role.Compl
 const CATALOG_READERS: readonly string[] = [Role.SuperAdmin, Role.OpsLead, Role.OpsReviewer, Role.CreditAnalyst, Role.ComplianceOfficer, Role.Support, Role.LenderManager];
 
 const configItem = (resource: ConfigResource): NavItem => ({ key: CONFIG_RESOURCE_META[resource].nav, href: CONFIG_RESOURCE_META[resource].path, icon: CONFIG_RESOURCE_META[resource].icon, roles: CONFIG_RESOURCE_META[resource].roles });
+
+const FINANCE_DESK: readonly string[] = [Role.SuperAdmin, Role.Finance, Role.ComplianceOfficer];
 
 const ALL_STAFF: readonly string[] = [Role.SuperAdmin, Role.OpsLead, Role.OpsReviewer, Role.CreditAnalyst, Role.Finance, Role.ComplianceOfficer, Role.Support, Role.LenderManager, Role.PartnerManager];
 
@@ -174,6 +176,15 @@ export const NAVIGATION: Record<NavArea, NavGroup[]> = {
       items: [configItem(ConfigResource.ScoringModel), configItem(ConfigResource.ImprovementRule), configItem(ConfigResource.CommissionScheme)],
     },
     {
+      key: 'finance',
+      items: [
+        { key: 'receivables', href: AppPath.FinanceHome, icon: 'receipt-long', roles: FINANCE_DESK, primary: true },
+        { key: 'payouts', href: AppPath.FinancePayouts, icon: 'payments', roles: FINANCE_DESK },
+        { key: 'reconciliation', href: AppPath.FinanceReconciliation, icon: 'balance', roles: FINANCE_DESK },
+        { key: 'ledger', href: AppPath.FinanceLedger, icon: 'database', roles: FINANCE_DESK },
+      ],
+    },
+    {
       key: 'you',
       items: [{ key: 'account', href: AppPath.Account, icon: 'account', roles: ALL_STAFF, primary: true }],
     },
@@ -183,3 +194,11 @@ export const NAVIGATION: Record<NavArea, NavGroup[]> = {
 export const MAX_PRIMARY_TABS = 4;
 
 export const PORTAL_AREAS: readonly NavArea[] = [ShellArea.Partner, ShellArea.Lender, ShellArea.Staff];
+
+const ACCOUNT_KEY = 'account';
+
+export function homePathFor(context: string | null | undefined, role: string | null | undefined): string {
+  if (context !== SessionContext.Staff) return HOME_BY_CONTEXT[context ?? SessionContext.None] ?? AppPath.AccountSwitch;
+  const usable = NAVIGATION[ShellArea.Staff].flatMap((group) => group.items).filter((item) => item.key !== ACCOUNT_KEY && (!item.roles || (role ? item.roles.includes(role) : false)));
+  return (usable.find((item) => item.primary) ?? usable[0])?.href ?? AppPath.Account;
+}

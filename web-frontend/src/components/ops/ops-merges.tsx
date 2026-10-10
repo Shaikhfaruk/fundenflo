@@ -43,11 +43,11 @@ export function OpsMerges() {
       header: t('parties'),
       cell: (row) => (
         <span className="flex flex-wrap items-center gap-1.5 text-sm">
-          <Link href={RoutePath.opsParty(row.sourcePartyId)} className="font-semibold text-gold-deep hover:underline">
+          <Link href={RoutePath.opsParty(row.sourcePartyId)} className="font-semibold text-gold-ink hover:underline">
             {t('merged')}
           </Link>
           →
-          <Link href={RoutePath.opsParty(row.targetPartyId)} className="font-semibold text-gold-deep hover:underline">
+          <Link href={RoutePath.opsParty(row.targetPartyId)} className="font-semibold text-gold-ink hover:underline">
             {t('kept')}
           </Link>
         </span>

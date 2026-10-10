@@ -10,7 +10,7 @@ const iconTileVariants = cva('flex shrink-0 items-center justify-center transiti
       card: 'bg-card text-navy',
       navy: 'bg-navy text-white',
       gold: 'bg-gold text-navy',
-      goldSoft: 'bg-gold-soft text-gold-deep',
+      goldSoft: 'bg-gold-soft text-gold-ink',
       success: 'bg-success-soft text-success',
       info: 'bg-info-soft text-info',
       danger: 'bg-error-soft text-destructive',

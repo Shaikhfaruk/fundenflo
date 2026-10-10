@@ -108,7 +108,7 @@ function HowItWorks({ className }: { className?: string }) {
               <span className="text-[15px] font-semibold text-foreground">{tSteps(`${step.key}.title`)}</span>
               <span className="text-xs text-muted-foreground">{tSteps(`${step.key}.body`)}</span>
             </span>
-            <span className="ml-auto font-heading text-sm font-semibold text-slate tabular">{String(index + 1).padStart(2, '0')}</span>
+            <span className="ml-auto font-heading text-sm font-semibold text-muted-foreground tabular">{String(index + 1).padStart(2, '0')}</span>
           </StaggerListItem>
         ))}
       </StaggerList>

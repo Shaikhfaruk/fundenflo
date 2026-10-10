@@ -115,7 +115,7 @@ export function ProfileScreen() {
           <Field>
             <FieldLabel>{t('screenLanguage')}</FieldLabel>
             <Select value={locale} onValueChange={(next) => router.replace(pathname, { locale: String(next) })}>
-              <SelectTrigger className="w-full">
+              <SelectTrigger className="w-full" aria-label={t('screenLanguage')}>
                 <SelectValue>{(value: string) => LOCALE_NAMES[value] ?? value}</SelectValue>
               </SelectTrigger>
               <SelectContent>
@@ -130,7 +130,7 @@ export function ProfileScreen() {
           <Field>
             <FieldLabel>{t('messageLanguage')}</FieldLabel>
             <Select value={me.preferredLanguage ?? 'en'} onValueChange={(next) => language.mutate(String(next))}>
-              <SelectTrigger className="w-full" disabled={language.isPending}>
+              <SelectTrigger className="w-full" disabled={language.isPending} aria-label={t('messageLanguage')}>
                 <SelectValue>{(value: string) => LOCALE_NAMES[value] ?? value}</SelectValue>
               </SelectTrigger>
               <SelectContent>

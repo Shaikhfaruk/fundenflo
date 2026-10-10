@@ -268,7 +268,7 @@ function LeadView({ lead }: { lead: OpsLeadDetail }) {
               ]}
             />
             {lead.convertedApplicationId ? (
-              <Link href={RoutePath.opsCase(lead.convertedApplicationId)} className="flex items-center gap-1 text-sm font-semibold text-gold-deep hover:underline">
+              <Link href={RoutePath.opsCase(lead.convertedApplicationId)} className="flex items-center gap-1 text-sm font-semibold text-gold-ink hover:underline">
                 {t('openCase')}
                 <Icon name="arrow-forward" size={14} />
               </Link>

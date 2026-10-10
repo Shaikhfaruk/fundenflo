@@ -32,7 +32,7 @@ function TipCard({ item, index }: { item: ImprovementItem; index: number }) {
   return (
     <motion.article initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 + index * STAGGER_STEP, duration: Duration.Base, ease: EASE_OUT }} className="rounded-xl border-l-[3px] border-gold-deep bg-card py-3 pr-4 pl-4 shadow-card">
       <h2 className="flex items-center gap-2 font-heading text-[17px] leading-6 font-semibold text-navy">
-        <Icon name="error" size={18} className="text-gold-deep" />
+        <Icon name="error" size={18} className="text-gold-ink" />
         {item.title}
       </h2>
       <Block label={t('found')} body={item.found} />
@@ -72,7 +72,7 @@ export function ImproveScreen() {
           {t('continue')}
           <Icon name="arrow-forward" size={18} />
         </ButtonLink>
-        <ButtonLink href={paths.step(id, JourneyScreen.Documents)} variant="ghost" className="w-full text-gold-deep">
+        <ButtonLink href={paths.step(id, JourneyScreen.Documents)} variant="ghost" className="w-full text-gold-ink">
           {t('uploadNew')}
         </ButtonLink>
       </div>

@@ -33,7 +33,7 @@ const letter = () => LETTERS[randomInt(0, LETTERS.length)];
 
 export const randomPan = (holder = 'P') => `${letter()}${letter()}${letter()}${holder}${letter()}${String(randomInt(0, 10_000)).padStart(4, '0')}${letter()}`;
 
-const API = `${process.env.E2E_API_ORIGIN ?? 'http://localhost:3000'}/v1`;
+const API = `${process.env.E2E_API_ORIGIN ?? 'http://127.0.0.1:3000'}/v1`;
 
 export const staffApi = async <T>(method: string, path: string, body?: unknown, token?: string, version?: number): Promise<T> => {
   const headers: Record<string, string> = { 'content-type': 'application/json', 'idempotency-key': randomUUID(), ...(token ? { authorization: `Bearer ${token}` } : {}) };
@@ -58,7 +58,7 @@ export async function inviteLender(email: string, token: string): Promise<string
 
 const LAKH = 100_000_00;
 
-export type TestLender = { id: string; name: string; productId: string; organizationId: string; cleanUp: () => Promise<void> };
+export type TestLender = { id: string; key: string; name: string; productId: string; organizationId: string; cleanUp: () => Promise<void> };
 
 export async function liveTestLender(name: string, maker: string, checker: string): Promise<TestLender> {
   const key = `e2e${Date.now()}${randomInt(0, 1000)}`;
@@ -81,6 +81,7 @@ export async function liveTestLender(name: string, maker: string, checker: strin
   await api('POST', `/admin/lender-products/${product.id}/versions/1/publish`, {}, maker);
   return {
     id: lender.id,
+    key,
     name,
     productId: product.id,
     organizationId: lender.organizationId,
@@ -104,7 +105,7 @@ const borrowerSession = async () => {
   return session.accessToken;
 };
 
-const uploadPdf = async (token: string, applicationId: string, documentType: string, text: string) => {
+export const uploadPdf = async (token: string, applicationId: string, documentType: string, text: string) => {
   const form = new FormData();
   form.append('documentType', documentType);
   form.append('applicationId', applicationId);
@@ -114,7 +115,7 @@ const uploadPdf = async (token: string, applicationId: string, documentType: str
   return ((await response.json()) as { id: string }).id;
 };
 
-const waitForStatus = async (token: string, documentId: string, status: string) => {
+export const waitForStatus = async (token: string, documentId: string, status: string) => {
   for (let attempt = 0; attempt < 60; attempt += 1) {
     const document = await api<{ status: string }>('GET', `/documents/${documentId}`, undefined, token);
     if (document.status === status) return;

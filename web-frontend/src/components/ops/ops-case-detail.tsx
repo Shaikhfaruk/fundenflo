@@ -189,7 +189,7 @@ function CaseView({ detail }: { detail: OpsCaseDetail }) {
                       <span className="truncate text-xs text-muted-foreground">{t('fileLine', { name: document.fileName, when: formatRelative(document.createdAt, locale) })}</span>
                     </span>
                     <StatusBadge status={document.status} tone={toneOf(DOCUMENT_STATUS_TONE, document.status)} />
-                    <Link href={RoutePath.opsDocument(document.id)} className="text-xs font-semibold text-gold-deep hover:underline">
+                    <Link href={RoutePath.opsDocument(document.id)} className="text-xs font-semibold text-gold-ink hover:underline">
                       {document.status === 'needs_review' ? t('review') : t('open')}
                     </Link>
                   </li>
@@ -197,7 +197,7 @@ function CaseView({ detail }: { detail: OpsCaseDetail }) {
               </ul>
             )}
           </Section>
-          <Section title={t('facts')} delay={0.08} action={<Link href={RoutePath.opsParty(partyId)} className="text-xs font-semibold text-gold-deep hover:underline">{t('allFacts')}</Link>}>
+          <Section title={t('facts')} delay={0.08} action={<Link href={RoutePath.opsParty(partyId)} className="text-xs font-semibold text-gold-ink hover:underline">{t('allFacts')}</Link>}>
             {(facts.data?.items ?? []).length === 0 ? (
               <p className="text-sm text-muted-foreground">{t('noFacts')}</p>
             ) : (

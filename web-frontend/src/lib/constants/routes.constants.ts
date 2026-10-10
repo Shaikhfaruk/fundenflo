@@ -73,6 +73,9 @@ export const AppPath = {
   AdminLenders: '/admin/lenders',
   AdminDocumentTypes: '/admin/documents/types',
   FinanceHome: '/finance/receivables',
+  FinancePayouts: '/finance/payouts',
+  FinanceReconciliation: '/finance/reconciliation',
+  FinanceLedger: '/finance/ledger',
 } as const;
 
 export const HOME_BY_CONTEXT: Record<string, string> = {

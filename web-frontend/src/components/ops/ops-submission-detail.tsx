@@ -96,7 +96,7 @@ function SubmissionView({ submission }: { submission: OpsSubmissionDetail }) {
             <KeyValues
               columns={3}
               items={[
-                { label: t('case'), value: <Link href={RoutePath.opsCase(submission.applicationId)} className="font-semibold text-gold-deep hover:underline">{t('openCase')}</Link> },
+                { label: t('case'), value: <Link href={RoutePath.opsCase(submission.applicationId)} className="font-semibold text-gold-ink hover:underline">{t('openCase')}</Link> },
                 { label: t('lenderReference'), value: submission.lenderReference ?? '—' },
                 { label: t('requested'), value: formatDateTime(submission.createdAt, locale) },
                 { label: t('approvedAt'), value: formatDateTime(submission.approvedAt, locale) },

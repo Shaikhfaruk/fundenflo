@@ -112,3 +112,21 @@ export const ADMIN_TABS = {
 } satisfies Record<string, AdminTab[]>;
 
 export type AdminTabGroup = keyof typeof ADMIN_TABS;
+
+export const RECEIVABLE_STATUSES = ['accrued', 'invoiced', 'received', 'reconciled', 'written_off'] as const;
+
+export const ReceivableStatus = { Accrued: 'accrued', Invoiced: 'invoiced', Received: 'received', Reconciled: 'reconciled', WrittenOff: 'written_off' } as const;
+
+export const ReceivableAction = { Invoice: 'invoice', Receive: 'receive', Reconcile: 'reconcile', WriteOff: 'write_off' } as const;
+
+export const PAYOUT_STATUSES = ['pending', 'approved', 'paid', 'reversed'] as const;
+
+export const PayoutStatus = { Pending: 'pending', Approved: 'approved', Paid: 'paid', Reversed: 'reversed' } as const;
+
+export const RECONCILIATION_SOURCES = ['lender_statement', 'bank_statement'] as const;
+
+export const UTR_PATTERN = /^[A-Za-z0-9]{6,30}$/;
+
+export const FINANCE_NOTE_MIN_LENGTH = 3;
+
+export const FINANCE_NOTE_MAX_LENGTH = 500;

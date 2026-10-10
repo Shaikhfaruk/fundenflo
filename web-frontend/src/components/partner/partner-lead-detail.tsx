@@ -405,13 +405,13 @@ function LeadView({ lead }: { lead: PartnerLeadDetail }) {
       />
       {offered && assignment.respondBy ? (
         <p className="flex items-center gap-2 rounded-xl bg-gold-soft px-4 py-3 text-sm text-navy">
-          <Icon name="alarm" size={18} className="text-gold-deep" />
+          <Icon name="alarm" size={18} className="text-gold-ink" />
           {t('offerDeadline', { when: formatDateTime(assignment.respondBy, locale) })}
         </p>
       ) : null}
       {workable && assignment.firstContactBy ? (
         <p className="flex items-center gap-2 rounded-xl bg-subtle px-4 py-3 text-sm text-navy">
-          <Icon name="phone" size={18} className="text-gold-deep" />
+          <Icon name="phone" size={18} className="text-gold-ink" />
           {t('firstContactBy', { when: formatDateTime(assignment.firstContactBy, locale) })}
         </p>
       ) : null}

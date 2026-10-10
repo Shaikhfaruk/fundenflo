@@ -9,6 +9,8 @@ export const EXCLUDED = [
   { test: (route) => route.split(' ')[1].startsWith('/v0/'), reason: 'compat for the old Expo app' },
   { test: (route) => route.split(' ')[1].startsWith('/health/'), reason: 'infrastructure probes' },
   { test: (route) => route === 'POST /public/leads', reason: 'server-to-server lead intake with an API key' },
+  { test: (route) => route === 'GET /catalog/questions', reason: 'public question resolver for embedded lead forms; the app asks questions through /applications/:id/questions' },
+  { test: (route) => route === 'POST /borrower-profiles', reason: 'the web creates borrower profiles with the first application (POST /applications) and partners use /partner/borrowers' },
 ];
 
 export function readBackendRoutes() {

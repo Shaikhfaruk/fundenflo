@@ -40,7 +40,7 @@ export function JourneyStepper({ current, completed, activeDetail, editHref }: {
                 <span className={cn('flex-1 text-[15px] font-semibold text-foreground', !isDone && !isCurrent && 'font-medium text-muted-foreground')}>{t(stage)}</span>
                 {isCurrent ? <span className="rounded-xs bg-gold-soft px-1.5 py-0.5 text-[10px] font-bold tracking-[0.04em] text-navy uppercase">{tOverview('activeTag')}</span> : null}
                 {isDone && editHref?.(stage) ? (
-                  <Link href={editHref(stage) ?? ''} className="text-xs font-semibold text-gold-deep underline-offset-4 hover:underline">
+                  <Link href={editHref(stage) ?? ''} className="text-xs font-semibold text-gold-ink underline-offset-4 hover:underline">
                     {tOverview('edit')}
                   </Link>
                 ) : null}

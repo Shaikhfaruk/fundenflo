@@ -62,11 +62,11 @@ export function OpsSignals() {
         <span className="flex min-w-0 flex-col">
           <span className="truncate font-semibold text-navy">{pickText(attributeOf(row.attributeKey)?.label, locale) || row.attributeKey}</span>
           <span className="flex gap-2 text-xs">
-            <Link href={RoutePath.opsParty(row.partyId)} className="text-gold-deep hover:underline">
+            <Link href={RoutePath.opsParty(row.partyId)} className="text-gold-ink hover:underline">
               {t('party')}
             </Link>
             {row.applicationId ? (
-              <Link href={RoutePath.opsCase(row.applicationId)} className="text-gold-deep hover:underline">
+              <Link href={RoutePath.opsCase(row.applicationId)} className="text-gold-ink hover:underline">
                 {t('case')}
               </Link>
             ) : null}

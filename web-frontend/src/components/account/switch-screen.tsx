@@ -15,7 +15,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from '@/i18n/navigation';
 import type { MembershipView } from '@/lib/api/types/auth.types';
 import { LoginAs, MembershipStatus, SessionContext } from '@/lib/constants/auth.constants';
-import { AppPath, HOME_BY_CONTEXT } from '@/lib/constants/routes.constants';
+import { homePathFor } from '@/lib/constants/navigation.constants';
+import { AppPath } from '@/lib/constants/routes.constants';
 import { StatusTone } from '@/lib/constants/status.constants';
 import { switchContext } from '@/lib/session/client-session';
 import { useMe } from '@/lib/session/use-me';
@@ -35,7 +36,7 @@ export function SwitchScreen() {
       queryClient.clear();
       const context = payload.user.activeContext?.context ?? SessionContext.None;
       toast.success(t('switched', { role: tContexts.has(context) ? tContexts(context) : context }));
-      router.replace(HOME_BY_CONTEXT[context] ?? AppPath.AccountSwitch);
+      router.replace(homePathFor(context, payload.user.activeContext?.role));
     },
   });
   if (!me) return <Skeleton className="h-48 w-full rounded-xl" />;

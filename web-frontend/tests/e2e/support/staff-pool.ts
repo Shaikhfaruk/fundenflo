@@ -50,6 +50,8 @@ export const STAFF_POOL: Record<string, { role: string; name: string }> = Object
     [`risk-${project}`, { role: 'ops_lead', name: 'Risk Reviewer' }],
     [`admin-${project}`, { role: 'super_admin', name: 'Catalog Admin' }],
     [`auditor-${project}`, { role: 'super_admin', name: 'Records Admin' }],
+    [`finance-${project}`, { role: 'finance', name: 'Finance Desk' }],
+    [`treasurer-${project}`, { role: 'finance', name: 'Treasury Desk' }],
   ]),
 );
 

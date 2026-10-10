@@ -90,7 +90,7 @@ function ConsentsForm({ applicationId, template, current, borrowerName }: FormPr
         <Icon name="info" size={15} className="mt-px" />
         <span>{partner ? t('partner.withdrawAnytime', { name: borrowerName }) : t.rich('withdrawAnytime', { link: (chunks) => <Link href={AppPath.AccountConsents} className="font-semibold text-navy underline-offset-4 hover:underline">{chunks}</Link> })}</span>
       </p>
-      <button type="button" onClick={() => setDetailsOpen(true)} className="mt-2 flex items-center gap-1 self-start px-1 text-sm font-semibold text-gold-deep">
+      <button type="button" onClick={() => setDetailsOpen(true)} className="mt-2 flex items-center gap-1 self-start px-1 text-sm font-semibold text-gold-ink">
         {t('readDetails')}
         <Icon name="arrow-forward" size={14} />
       </button>
@@ -128,7 +128,7 @@ function ConsentsForm({ applicationId, template, current, borrowerName }: FormPr
             </section>
           ))}
           {template.policyUrl ? (
-            <a href={template.policyUrl} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-sm font-semibold text-gold-deep">
+            <a href={template.policyUrl} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-sm font-semibold text-gold-ink">
               {t('policy')}
               <Icon name="arrow-outward" size={14} />
             </a>

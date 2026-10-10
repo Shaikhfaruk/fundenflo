@@ -57,7 +57,7 @@ export function RolePicker({ value, onChange }: { value: LoginAs; onChange: (rol
                       <span className={cn('text-[15px] font-semibold text-foreground', on && 'text-navy')}>{t(`${role.id}.label`)}</span>
                       <span className="text-xs text-muted-foreground">{t(`${role.id}.hint`)}</span>
                     </span>
-                    <ZoomIn show={on} className="flex text-gold-deep">
+                    <ZoomIn show={on} className="flex text-gold-ink">
                       <Icon name="check" size={18} />
                     </ZoomIn>
                   </button>
