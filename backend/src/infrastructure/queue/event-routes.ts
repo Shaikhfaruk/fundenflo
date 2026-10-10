@@ -28,6 +28,9 @@ const ROUTES: Partial<Record<EventName, QueueName[]>> = {
   [EventName.DocumentRejected]: [QueueName.ApplicationsRefresh],
   [EventName.DocumentDeleted]: [QueueName.ApplicationsRefresh],
   [EventName.BorrowerProfileChanged]: [QueueName.ApplicationsRefresh],
+  [EventName.AnalysisRequested]: [QueueName.AnalysisRun],
+  [EventName.AnalysisCompleted]: [QueueName.NotificationsSubscriptions],
+  [EventName.ApplicationStatusChanged]: [QueueName.NotificationsSubscriptions],
 };
 
 export const EVENT_ROUTES: Partial<Record<EventName, QueueName[]>> = { ...ROUTES };

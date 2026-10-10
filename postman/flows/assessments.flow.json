@@ -1,0 +1,160 @@
+{
+  "name": "Assessments: publish a scoring model and an improvement rule, analyse a case, read the assessment, verify a fact and recompute",
+  "requires": [
+    "staffInvitation",
+    "checkerInvitation"
+  ],
+  "steps": [
+    {
+      "request": "01 Auth/06 Accept Staff Invitation.json",
+      "identity": "maker"
+    },
+    {
+      "request": "01 Auth/07 Staff Login.json",
+      "identity": "maker"
+    },
+    {
+      "request": "01 Auth/08 Verify Staff MFA.json",
+      "identity": "maker"
+    },
+    {
+      "request": "59 Admin - Scoring & Improvement/02 Create Scoring Model.json"
+    },
+    {
+      "request": "59 Admin - Scoring & Improvement/01 List Scoring Models.json"
+    },
+    {
+      "request": "59 Admin - Scoring & Improvement/03 Get Scoring Model.json"
+    },
+    {
+      "request": "59 Admin - Scoring & Improvement/04 Update Scoring Model.json"
+    },
+    {
+      "request": "59 Admin - Scoring & Improvement/06 Get Scoring Model Version.json"
+    },
+    {
+      "request": "59 Admin - Scoring & Improvement/07 Update Scoring Model Draft.json"
+    },
+    {
+      "request": "59 Admin - Scoring & Improvement/08 Submit Scoring Model Version.json"
+    },
+    {
+      "request": "01 Auth/06 Accept Staff Invitation.json",
+      "identity": "checker"
+    },
+    {
+      "request": "01 Auth/07 Staff Login.json",
+      "identity": "checker"
+    },
+    {
+      "request": "01 Auth/08 Verify Staff MFA.json",
+      "identity": "checker"
+    },
+    {
+      "request": "48 Admin - Change Requests/03 Approve Change Request.json",
+      "identity": "checker"
+    },
+    {
+      "request": "59 Admin - Scoring & Improvement/09 Publish Scoring Model Version.json",
+      "identity": "maker"
+    },
+    {
+      "request": "59 Admin - Scoring & Improvement/12 Create Improvement Rule.json"
+    },
+    {
+      "request": "59 Admin - Scoring & Improvement/11 List Improvement Rules.json"
+    },
+    {
+      "request": "59 Admin - Scoring & Improvement/13 Get Improvement Rule.json"
+    },
+    {
+      "request": "59 Admin - Scoring & Improvement/14 Update Improvement Rule.json"
+    },
+    {
+      "request": "59 Admin - Scoring & Improvement/16 Get Improvement Rule Version.json"
+    },
+    {
+      "request": "59 Admin - Scoring & Improvement/17 Update Improvement Rule Draft.json"
+    },
+    {
+      "request": "59 Admin - Scoring & Improvement/18 Submit Improvement Rule Version.json"
+    },
+    {
+      "request": "48 Admin - Change Requests/03 Approve Change Request.json",
+      "identity": "checker"
+    },
+    {
+      "request": "59 Admin - Scoring & Improvement/19 Publish Improvement Rule Version.json",
+      "identity": "maker"
+    },
+    {
+      "request": "01 Auth/01 Request OTP.json",
+      "identity": "borrower",
+      "variables": {
+        "loginAs": "borrower"
+      }
+    },
+    {
+      "request": "01 Auth/02 Verify OTP.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "04 Borrower Journey/05 Create Application.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "04 Borrower Journey/08 Update Requirement.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "04 Borrower Journey/11 Submit Application Answers.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "03 Catalog/07 Get Consent Template.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "04 Borrower Journey/16 Give Application Consents.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "06 Assessment & Matching/01 Start Analysis.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "06 Assessment & Matching/02 Get Analysis.json",
+      "identity": "borrower",
+      "waitSeconds": 3
+    },
+    {
+      "request": "06 Assessment & Matching/03 Get Assessment.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "07 Applications & Submissions/01 Subscribe To Updates.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "57 Ops - Cases/03 Verify Case Fact.json",
+      "identity": "maker"
+    },
+    {
+      "request": "57 Ops - Cases/04 Recompute Assessment.json",
+      "identity": "maker"
+    },
+    {
+      "request": "59 Admin - Scoring & Improvement/15 Create Improvement Rule Version.json",
+      "identity": "maker"
+    },
+    {
+      "request": "59 Admin - Scoring & Improvement/20 Retire Improvement Rule Version.json"
+    },
+    {
+      "request": "59 Admin - Scoring & Improvement/05 Create Scoring Model Version.json"
+    },
+    {
+      "request": "59 Admin - Scoring & Improvement/10 Retire Scoring Model Version.json"
+    }
+  ]
+}

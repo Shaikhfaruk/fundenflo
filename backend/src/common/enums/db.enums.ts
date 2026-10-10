@@ -11,6 +11,7 @@ export {
   ApplicationPartyRole,
   ApplicationPartyStatus,
   ApplicationStatus,
+  AnalysisStatus,
   AttributionKind,
   AssignmentStatus,
   AliasKind,
@@ -68,8 +69,10 @@ export {
   QuestionType,
   RelationshipType,
   Role,
+  ScoreResultStatus,
   SessionContext,
   SlaTimerStatus,
+  SubscriptionStatus,
   UserStatus,
   VerificationDecision,
 } from '../../generated/prisma/enums.js';

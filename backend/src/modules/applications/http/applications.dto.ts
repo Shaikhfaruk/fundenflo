@@ -72,3 +72,8 @@ export type LeadStartDto = z.output<typeof leadStartSchema>;
 
 export const opsCasesSchema = listApplicationsSchema.extend({ category: key.optional(), partnerOrganizationId: z.uuid().optional(), channel: z.enum(Object.values(ApplicationChannel)).optional(), q: z.string().trim().min(2).max(40).optional() });
 export type OpsCasesDto = z.output<typeof opsCasesSchema>;
+
+export const verifyFactSchema = z.object({ value: z.unknown(), reason: z.string().trim().min(3).max(500) }).strict();
+export type VerifyFactDto = z.output<typeof verifyFactSchema>;
+
+export const attributeParamSchema = z.string().regex(/^[a-z][a-z0-9_]*(\.[a-z0-9_]+)+$/);

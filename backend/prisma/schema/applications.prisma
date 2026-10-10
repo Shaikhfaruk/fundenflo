@@ -28,6 +28,7 @@ enum ApplicationEventType {
   party_added
   party_removed
   consent_recorded
+  assessment_recorded
 }
 
 enum ApplicationPartyRole {
@@ -73,6 +74,8 @@ model LoanApplication {
   pinnedVersions        Json               @default("{}") @map("pinned_versions")
   assigneeUserId        String?            @map("assignee_user_id") @db.Uuid
   slaDueAt              DateTime?          @map("sla_due_at") @db.Timestamptz(3)
+  latestScoreResultId   String?            @map("latest_score_result_id") @db.Uuid
+  scoredAt              DateTime?          @map("scored_at") @db.Timestamptz(3)
   closedAt              DateTime?          @map("closed_at") @db.Timestamptz(3)
   closeReason           String?            @map("close_reason")
   createdByUserId       String             @map("created_by_user_id") @db.Uuid
@@ -86,6 +89,8 @@ model LoanApplication {
   events          ApplicationEvent[]
   documents       Document[]
   parties         ApplicationParty[]
+  analyses        Analysis[]
+  scoreResults    ScoreResult[]
 
   @@index([actingPartyId, status])
   @@index([partyId])

@@ -3,7 +3,7 @@ import type { AbilityBuilder } from '@casl/ability';
 import type { UserActor } from '../../../common/context/actor.js';
 import { OrganizationType, Role } from '../../../common/enums/db.enums.js';
 import { AppAction, type AppAbility, NonModelSubject } from './ability.types.js';
-import { COMPLIANCE_CONFIG_RESOURCES, LENDER_CONFIG_RESOURCES, OPS_CONFIG_RESOURCES } from './access.constants.js';
+import { COMPLIANCE_CONFIG_RESOURCES, CREDIT_CONFIG_RESOURCES, LENDER_CONFIG_RESOURCES, OPS_CONFIG_RESOURCES } from './access.constants.js';
 
 type Builder = AbilityBuilder<AppAbility>;
 
@@ -53,6 +53,13 @@ export const ROLE_GRANTS: Partial<Record<Role, Grant>> = {
     can([AppAction.Read, AppAction.Update], ['BorrowerProfile', 'LoanApplication']);
     can([AppAction.Read, AppAction.Update, AppAction.Download], 'Document');
     can(AppAction.Read, ['LeadSource', 'AttributeDefinition', 'Question', 'ConsentPurpose', 'PartnerProfile', 'DocumentType', 'Lender', NonModelSubject.Catalog]);
+  },
+  [Role.credit_analyst]: ({ can }) => {
+    can(AppAction.Read, ['AttributeDefinition', 'Question', 'DocumentType', 'Party', 'BorrowerProfile', 'Lender', NonModelSubject.Catalog]);
+    can([AppAction.Read, AppAction.Update], 'LoanApplication');
+    can([AppAction.Read, AppAction.Download], 'Document');
+    can([AppAction.Read, AppAction.Approve], 'ConfigDocument', { resource: { in: CREDIT_CONFIG_RESOURCES } });
+    can(CONFIG_MAKER, 'ConfigDocument', { resource: { in: CREDIT_CONFIG_RESOURCES } });
   },
   [Role.compliance_officer]: ({ can }) => {
     can(AppAction.Read, ['User', 'Membership', 'Invitation', 'Organization', 'AuditEvent', 'AttributeDefinition', 'Party', 'Question', 'DocumentType', NonModelSubject.Catalog]);

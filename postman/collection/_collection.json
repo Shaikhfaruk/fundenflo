@@ -566,6 +566,46 @@
     {
       "key": "today",
       "value": ""
+    },
+    {
+      "key": "analysisId",
+      "value": ""
+    },
+    {
+      "key": "scoreResultId",
+      "value": ""
+    },
+    {
+      "key": "scoringModelId",
+      "value": ""
+    },
+    {
+      "key": "scoringModelDocVersion",
+      "value": ""
+    },
+    {
+      "key": "scoringModelNumber",
+      "value": ""
+    },
+    {
+      "key": "scoringModelVersionRow",
+      "value": ""
+    },
+    {
+      "key": "improvementRuleId",
+      "value": ""
+    },
+    {
+      "key": "improvementRuleDocVersion",
+      "value": ""
+    },
+    {
+      "key": "improvementRuleNumber",
+      "value": ""
+    },
+    {
+      "key": "improvementRuleVersionRow",
+      "value": ""
     }
   ]
 }

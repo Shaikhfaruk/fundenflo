@@ -1,0 +1,105 @@
+{
+  "name": "Get Analysis",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/analyses/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "analyses",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{analysisId}}"
+        }
+      ]
+    },
+    "description": "Analysis status and steps (`pending`, `active`, `done`, `skipped` with a reason such as `no_scoring_model`, `failed`). Borrower, partner and staff contexts."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/analyses/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "analyses",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{analysisId}}"
+            }
+          ]
+        },
+        "description": "Analysis status and steps (`pending`, `active`, `done`, `skipped` with a reason such as `no_scoring_model`, `failed`). Borrower, partner and staff contexts."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a122b0-1a2b-7c3d-8e4f-5061728394a5\",\n  \"applicationId\": \"01a12260-2b3c-7d4e-9f50-61728394a5b6\",\n  \"status\": \"done\",\n  \"steps\": [\n    {\n      \"id\": \"documents\",\n      \"label\": \"Reading Your Documents\",\n      \"state\": \"done\",\n      \"detail\": {\n        \"documents\": 2\n      }\n    },\n    {\n      \"id\": \"score\",\n      \"label\": \"Calculating Your Financial Health Score\",\n      \"state\": \"done\",\n      \"detail\": {\n        \"status\": \"scored\",\n        \"value\": 57,\n        \"model\": \"msme.health\"\n      }\n    }\n  ],\n  \"documentIds\": [],\n  \"scoreResultId\": \"01a122b0-2b3c-7d4e-9f50-61728394a5b6\",\n  \"failureReason\": null,\n  \"createdAt\": \"2026-10-10T19:00:00.000Z\",\n  \"startedAt\": \"2026-10-10T19:00:00.000Z\",\n  \"finishedAt\": \"2026-10-10T19:00:00.000Z\"\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/analyses/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "analyses",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{analysisId}}"
+            }
+          ]
+        },
+        "description": "Analysis status and steps (`pending`, `active`, `done`, `skipped` with a reason such as `no_scoring_model`, `failed`). Borrower, partner and staff contexts."
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

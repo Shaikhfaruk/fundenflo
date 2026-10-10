@@ -1,0 +1,83 @@
+enum AnalysisStatus {
+  queued
+  running
+  done
+  failed
+}
+
+enum ScoreResultStatus {
+  scored
+  insufficient
+}
+
+model Analysis {
+  id                String         @id @default(uuid(7)) @db.Uuid
+  applicationId     String         @map("application_id") @db.Uuid
+  partyId           String         @map("party_id") @db.Uuid
+  status            AnalysisStatus @default(queued)
+  steps             Json           @default("[]")
+  documentIds       String[]       @map("document_ids") @db.Uuid
+  requestedByUserId String         @map("requested_by_user_id") @db.Uuid
+  scoreResultId     String?        @unique @map("score_result_id") @db.Uuid
+  failureReason     String?        @map("failure_reason")
+  startedAt         DateTime?      @map("started_at") @db.Timestamptz(3)
+  finishedAt        DateTime?      @map("finished_at") @db.Timestamptz(3)
+  version           Int            @default(1)
+  createdAt         DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt         DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  application LoanApplication @relation(fields: [applicationId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  scoreResult ScoreResult?    @relation(fields: [scoreResultId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([applicationId, createdAt])
+  @@index([status, createdAt])
+  @@map("analyses")
+}
+
+model ScoreResult {
+  id               String            @id @default(uuid(7)) @db.Uuid
+  applicationId    String            @map("application_id") @db.Uuid
+  partyId          String            @map("party_id") @db.Uuid
+  modelDocumentId  String            @map("model_document_id") @db.Uuid
+  modelKey         String            @map("model_key")
+  modelVersionId   String            @map("model_version_id") @db.Uuid
+  modelNumber      Int               @map("model_number")
+  status           ScoreResultStatus
+  value            Int?
+  band             Json?
+  factors          Json
+  limitations      Json
+  inputs           Json
+  consents         Json
+  inputHash        String            @map("input_hash")
+  computedByUserId String?           @map("computed_by_user_id") @db.Uuid
+  createdAt        DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  application LoanApplication   @relation(fields: [applicationId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  analysis    Analysis?
+  items       ImprovementItem[]
+
+  @@index([applicationId, createdAt])
+  @@map("score_results")
+}
+
+model ImprovementItem {
+  id                   String   @id @default(uuid(7)) @db.Uuid
+  scoreResultId        String   @map("score_result_id") @db.Uuid
+  applicationId        String   @map("application_id") @db.Uuid
+  ruleKey              String   @map("rule_key")
+  ruleVersionId        String   @map("rule_version_id") @db.Uuid
+  priority             Int
+  title                Json
+  found                Json
+  why                  Json
+  action               Json
+  evidence             Json
+  evidenceDocumentType String?  @map("evidence_document_type")
+  createdAt            DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  scoreResult ScoreResult @relation(fields: [scoreResultId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([scoreResultId, priority])
+  @@map("improvement_items")
+}

@@ -1,0 +1,71 @@
+{
+  "name": "List Scoring Models",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/scoring-models?limit=25",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "scoring-models"
+      ],
+      "query": [
+        {
+          "key": "limit",
+          "value": "25"
+        }
+      ]
+    },
+    "description": "Scoring Models with active and open versions. Staff only: credit analysts make, another staff member approves, then it is published (ops leads approve too). `content`: `scope` (`segments`, `subSegments`; the most specific published model wins), `factors[]` (`key`, `label`, `max`, `method` `bands` (first passing `when` gives `points`; an unknown band stops and counts as missing) or `linear` (`attr` from → to scaled to `max`), `missing`: `insufficient` (no score at all), `exclude_renormalise` or `zero`, optional `requiresConsent` purpose and `minProvenance`), `attentionBelowPct`, `bands[]` (`min` 0–100 with labels, one at 0). Thresholds are a credit decision; nothing is seeded."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/scoring-models?limit=25",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "scoring-models"
+          ],
+          "query": [
+            {
+              "key": "limit",
+              "value": "25"
+            }
+          ]
+        },
+        "description": "Scoring Models with active and open versions. Staff only: credit analysts make, another staff member approves, then it is published (ops leads approve too). `content`: `scope` (`segments`, `subSegments`; the most specific published model wins), `factors[]` (`key`, `label`, `max`, `method` `bands` (first passing `when` gives `points`; an unknown band stops and counts as missing) or `linear` (`attr` from → to scaled to `max`), `missing`: `insufficient` (no score at all), `exclude_renormalise` or `zero`, optional `requiresConsent` purpose and `minProvenance`), `attentionBelowPct`, `bands[]` (`min` 0–100 with labels, one at 0). Thresholds are a credit decision; nothing is seeded."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a122b0-2b3c-7d4e-9f50-61728394a5b6\",\n      \"resource\": \"scoring_model\",\n      \"key\": \"msme.health\",\n      \"name\": {\n        \"en\": \"Scoring Model\"\n      },\n      \"description\": null,\n      \"status\": \"active\",\n      \"activeVersion\": null,\n      \"openVersion\": {\n        \"id\": \"01a122b0-2b3c-7d4e-9f50-61728394a5b6\",\n        \"number\": 1,\n        \"status\": \"draft\"\n      },\n      \"versions\": [],\n      \"version\": 1,\n      \"createdAt\": \"2026-10-10T19:00:00.000Z\",\n      \"updatedAt\": \"2026-10-10T19:00:00.000Z\"\n    }\n  ],\n  \"nextCursor\": null\n}"
+    }
+  ]
+}

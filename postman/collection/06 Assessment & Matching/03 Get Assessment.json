@@ -1,0 +1,109 @@
+{
+  "name": "Get Assessment",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/applications/:id/assessment",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "applications",
+        ":id",
+        "assessment"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{applicationId}}"
+        }
+      ]
+    },
+    "description": "The latest score: value 0–100, band, factors (score, max, attention, status `scored` / `missing` / `excluded` / `consent_missing`), limitations, what it was based on, and the improvement plan. 404 until a score exists. Borrower and partner contexts; only applications the caller can see."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.collectionVariables.set('scoreResultId', String(pm.response.json().score.id));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/applications/:id/assessment",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "applications",
+            ":id",
+            "assessment"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            }
+          ]
+        },
+        "description": "The latest score: value 0–100, band, factors (score, max, attention, status `scored` / `missing` / `excluded` / `consent_missing`), limitations, what it was based on, and the improvement plan. 404 until a score exists. Borrower and partner contexts; only applications the caller can see."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"score\": {\n    \"id\": \"01a122b0-2b3c-7d4e-9f50-61728394a5b6\",\n    \"analysisId\": \"01a122b0-1a2b-7c3d-8e4f-5061728394a5\",\n    \"status\": \"scored\",\n    \"value\": 57,\n    \"band\": \"Fair — A Few Gaps To Close\",\n    \"assessedAt\": \"2026-10-10T19:00:00.000Z\",\n    \"factors\": [\n      {\n        \"id\": \"vintage\",\n        \"label\": \"Business Vintage\",\n        \"score\": 2,\n        \"max\": 10,\n        \"attention\": true,\n        \"status\": \"scored\"\n      },\n      {\n        \"id\": \"turnover\",\n        \"label\": \"Profitability & Margins\",\n        \"score\": 12,\n        \"max\": 20,\n        \"attention\": false,\n        \"status\": \"scored\"\n      },\n      {\n        \"id\": \"credit\",\n        \"label\": \"Credit History\",\n        \"score\": null,\n        \"max\": 10,\n        \"attention\": false,\n        \"status\": \"excluded\"\n      }\n    ],\n    \"limitations\": [\n      {\n        \"factor\": \"credit\",\n        \"reason\": \"excluded\"\n      }\n    ],\n    \"basedOn\": {\n      \"documents\": 2,\n      \"facts\": 4\n    },\n    \"model\": {\n      \"key\": \"msme.health\",\n      \"number\": 1\n    }\n  },\n  \"improvement\": [\n    {\n      \"id\": \"01a122b0-3c4d-7e5f-8061-728394a5b6c7\",\n      \"rule\": \"emis.repayment\",\n      \"priority\": 10,\n      \"title\": \"Existing EMIs Weigh On Your Repayment Capacity\",\n      \"found\": \"You have existing EMIs and a score of 57.\",\n      \"why\": \"Lenders look at how much of your income already goes to EMIs.\",\n      \"action\": \"Close or consolidate a small loan before applying.\",\n      \"evidence\": \"A loan closure letter or a recent bank statement.\",\n      \"evidenceDocumentType\": \"bank_statement\"\n    }\n  ]\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/applications/:id/assessment",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "applications",
+            ":id",
+            "assessment"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            }
+          ]
+        },
+        "description": "The latest score: value 0–100, band, factors (score, max, attention, status `scored` / `missing` / `excluded` / `consent_missing`), limitations, what it was based on, and the improvement plan. 404 until a score exists. Borrower and partner contexts; only applications the caller can see."
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"details\": {\n    \"reason\": \"not_assessed\"\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

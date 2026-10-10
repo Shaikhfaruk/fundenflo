@@ -78,6 +78,10 @@ const ROUTES: Partial<Record<EventName, (payload: Payload) => RealtimeTarget[]>>
   [EventName.ImportValidated]: (payload) => [{ kind: 'emit', rooms: [RealtimeRoom.staff], event: RealtimeEvent.ImportChanged, data: { importId: text(payload, 'entityId') } }],
   [EventName.ImportCommitted]: (payload) => [{ kind: 'emit', rooms: [RealtimeRoom.staff], event: RealtimeEvent.ImportChanged, data: { importId: text(payload, 'entityId') } }],
   [EventName.ImportUndone]: (payload) => [{ kind: 'emit', rooms: [RealtimeRoom.staff], event: RealtimeEvent.ImportChanged, data: { importId: text(payload, 'entityId') } }],
+  [EventName.AnalysisCompleted]: (payload) => {
+    const userId = text(payload, 'requestedByUserId');
+    return userId ? [{ kind: 'emit', rooms: [RealtimeRoom.user(userId)], event: RealtimeEvent.AnalysisChanged, data: { analysisId: text(payload, 'analysisId'), applicationId: text(payload, 'applicationId'), status: text(payload, 'status') } }] : [];
+  },
   [EventName.DocumentScanned]: document,
   [EventName.DocumentRejected]: document,
   [EventName.DocumentDeleted]: document,

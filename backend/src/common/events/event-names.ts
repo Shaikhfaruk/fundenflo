@@ -82,6 +82,9 @@ export const EventName = {
   DocumentDeleted: 'document.deleted',
   LenderChanged: 'lender.changed',
   LenderProductProposed: 'lender_product.proposed',
+  AnalysisRequested: 'analysis.requested',
+  AnalysisCompleted: 'analysis.completed',
+  ScoreComputed: 'score.computed',
 } as const;
 
 export type EventName = (typeof EventName)[keyof typeof EventName];

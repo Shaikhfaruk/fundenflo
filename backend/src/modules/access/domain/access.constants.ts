@@ -45,6 +45,8 @@ export const COMPLIANCE_CONFIG_RESOURCES: ConfigResource[] = [ConfigResource.con
 
 export const LENDER_CONFIG_RESOURCES: ConfigResource[] = [ConfigResource.lender_product];
 
+export const CREDIT_CONFIG_RESOURCES: ConfigResource[] = [ConfigResource.scoring_model, ConfigResource.improvement_rule];
+
 export const ApiScope = {
   LeadsCreate: 'leads:create',
 } as const;

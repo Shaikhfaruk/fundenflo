@@ -1,0 +1,129 @@
+{
+  "name": "Subscribe To Updates",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/notifications/subscriptions",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "notifications",
+        "subscriptions"
+      ]
+    },
+    "description": "Asks for a message when an analysis completes (`analysis.completed`, one message) or an application changes status (`application.status_changed`, every change). `push` falls back to SMS when the user has no device; `whatsapp` is refused until a WhatsApp provider is configured. Borrower and partner contexts; only for records the caller can see.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"event\": \"analysis.completed\",\n  \"entityId\": \"{{analysisId}}\",\n  \"channel\": \"push\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/notifications/subscriptions",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "notifications",
+            "subscriptions"
+          ]
+        },
+        "description": "Asks for a message when an analysis completes (`analysis.completed`, one message) or an application changes status (`application.status_changed`, every change). `push` falls back to SMS when the user has no device; `whatsapp` is refused until a WhatsApp provider is configured. Borrower and partner contexts; only for records the caller can see.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"event\": \"analysis.completed\",\n  \"entityId\": \"{{analysisId}}\",\n  \"channel\": \"push\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a122b0-4d5e-7f60-8172-8394a5b6c7d8\",\n  \"event\": \"analysis.completed\",\n  \"entityType\": \"analysis\",\n  \"entityId\": \"01a122b0-1a2b-7c3d-8e4f-5061728394a5\",\n  \"channel\": \"push\",\n  \"status\": \"pending\",\n  \"sentAt\": null,\n  \"createdAt\": \"2026-10-10T19:00:00.000Z\"\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/notifications/subscriptions",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "notifications",
+            "subscriptions"
+          ]
+        },
+        "description": "Asks for a message when an analysis completes (`analysis.completed`, one message) or an application changes status (`application.status_changed`, every change). `push` falls back to SMS when the user has no device; `whatsapp` is refused until a WhatsApp provider is configured. Borrower and partner contexts; only for records the caller can see.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"event\": \"analysis.completed\",\n  \"entityId\": \"{{analysisId}}\",\n  \"channel\": \"push\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"channel\",\n      \"code\": \"channel_unavailable\",\n      \"message\": \"whatsapp updates are not available yet; use push or sms\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

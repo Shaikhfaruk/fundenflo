@@ -12,6 +12,8 @@ export const QueueName = {
   RealtimePublish: 'realtime.publish',
   DocumentsScan: 'documents.scan',
   ApplicationsRefresh: 'applications.refresh',
+  AnalysisRun: 'analysis.run',
+  NotificationsSubscriptions: 'notifications.subscriptions',
 } as const;
 
 export type QueueName = (typeof QueueName)[keyof typeof QueueName];

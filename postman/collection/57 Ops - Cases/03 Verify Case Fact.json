@@ -1,0 +1,171 @@
+{
+  "name": "Verify Case Fact",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/ops/cases/:id/facts/:attribute/verify",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "cases",
+        ":id",
+        "facts",
+        ":attribute",
+        "verify"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{applicationId}}"
+        },
+        {
+          "key": "attribute",
+          "value": "business.monthly_turnover_paise"
+        }
+      ]
+    },
+    "description": "Records an `ops_verified` fact for the case (on the business for business attributes, on the person otherwise) with a reason in the timeline. It outranks declared and extracted values in scoring and lender rules. Staff context.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"value\": 300000000,\n  \"reason\": \"Checked six months of bank credits\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/cases/:id/facts/:attribute/verify",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "cases",
+            ":id",
+            "facts",
+            ":attribute",
+            "verify"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            },
+            {
+              "key": "attribute",
+              "value": "business.monthly_turnover_paise"
+            }
+          ]
+        },
+        "description": "Records an `ops_verified` fact for the case (on the business for business attributes, on the person otherwise) with a reason in the timeline. It outranks declared and extracted values in scoring and lender rules. Staff context.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"value\": 300000000,\n  \"reason\": \"Checked six months of bank credits\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"partyId\": \"01a12260-3c4d-7e5f-8061-728394a5b6c7\",\n  \"fact\": {\n    \"attributeKey\": \"business.monthly_turnover_paise\",\n    \"value\": 300000000,\n    \"provenance\": \"ops_verified\"\n  }\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/cases/:id/facts/:attribute/verify",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "cases",
+            ":id",
+            "facts",
+            ":attribute",
+            "verify"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            },
+            {
+              "key": "attribute",
+              "value": "business.monthly_turnover_paise"
+            }
+          ]
+        },
+        "description": "Records an `ops_verified` fact for the case (on the business for business attributes, on the person otherwise) with a reason in the timeline. It outranks declared and extracted values in scoring and lender rules. Staff context.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"value\": 300000000,\n  \"reason\": \"Checked six months of bank credits\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"attribute\",\n      \"code\": \"unknown_attribute\",\n      \"message\": \"unknown or inactive attribute nope.attr\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

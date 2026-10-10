@@ -1,0 +1,109 @@
+{
+  "name": "Get Improvement Rule",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/admin/improvement-rules/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "improvement-rules",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{improvementRuleId}}"
+        }
+      ]
+    },
+    "description": "One improvement rule with its version summaries. Staff only, same lifecycle as scoring models. `content`: `scope.segments` (empty = all), `trigger` condition over facts and `score.value`, `factor.<key>.pct|score|attention`, `priority` (lower first), texts `title`, `found`, `why`, `action`, `evidence` with `{{attribute}}` / `{{score.value}}` / `{{factor.<key>.pct}}` placeholders, optional `evidenceDocumentType`."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.collectionVariables.set('improvementRuleDocVersion', String(pm.response.json().version));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/improvement-rules/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "improvement-rules",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{improvementRuleId}}"
+            }
+          ]
+        },
+        "description": "One improvement rule with its version summaries. Staff only, same lifecycle as scoring models. `content`: `scope.segments` (empty = all), `trigger` condition over facts and `score.value`, `factor.<key>.pct|score|attention`, `priority` (lower first), texts `title`, `found`, `why`, `action`, `evidence` with `{{attribute}}` / `{{score.value}}` / `{{factor.<key>.pct}}` placeholders, optional `evidenceDocumentType`."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a122b0-2b3c-7d4e-9f50-61728394a5b6\",\n  \"resource\": \"improvement_rule\",\n  \"key\": \"turnover.evidence\",\n  \"name\": {\n    \"en\": \"Improvement Rule\"\n  },\n  \"description\": null,\n  \"status\": \"active\",\n  \"activeVersion\": null,\n  \"openVersion\": {\n    \"id\": \"01a122b0-2b3c-7d4e-9f50-61728394a5b6\",\n    \"number\": 1,\n    \"status\": \"draft\"\n  },\n  \"versions\": [],\n  \"version\": 1,\n  \"createdAt\": \"2026-10-10T19:00:00.000Z\",\n  \"updatedAt\": \"2026-10-10T19:00:00.000Z\"\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/admin/improvement-rules/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "improvement-rules",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{improvementRuleId}}"
+            }
+          ]
+        },
+        "description": "One improvement rule with its version summaries. Staff only, same lifecycle as scoring models. `content`: `scope.segments` (empty = all), `trigger` condition over facts and `score.value`, `factor.<key>.pct|score|attention`, `priority` (lower first), texts `title`, `found`, `why`, `action`, `evidence` with `{{attribute}}` / `{{score.value}}` / `{{factor.<key>.pct}}` placeholders, optional `evidenceDocumentType`."
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

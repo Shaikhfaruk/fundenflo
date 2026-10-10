@@ -27,8 +27,8 @@ Approval and rejection are not per resource: they go through the shared checker 
 | `consent-templates` | consents | M1 | `useful` |
 | `document-requirements` | documents | M2 | `useful` |
 | `lender-products` (plus `/versions/:number/simulate`) | lenders | M4 | `useful` |
-| `scoring-models` | assessments | M5 | `planned` |
-| `improvement-rules` | assessments | M5 | `planned` |
+| `scoring-models` | assessments | M5 | `useful` |
+| `improvement-rules` | assessments | M5 | `useful` |
 | `commission-schemes` | commissions | M7 | `planned` |
 
 ## 00 Health
@@ -131,9 +131,9 @@ Controller: `backend/src/modules/catalog/http/catalog.controller.ts` · Postman:
 
 | Method | Path | Module | Context | Milestone | Status |
 |---|---|---|---|---|---|
-| `POST` | `/applications/:id/analyses` | assessments | borrower, partner | M5 | `planned` |
-| `GET` | `/analyses/:id` | assessments | borrower, partner | M5 | `planned` |
-| `GET` | `/applications/:id/assessment` | assessments | borrower, partner | M5 | `planned` |
+| `POST` | `/applications/:id/analyses` | assessments (`application-assessments.controller.ts` → `AnalysisService.request`; queue `analysis.run`) | borrower, partner | M5 | `useful` |
+| `GET` | `/analyses/:id` | assessments (`analyses.controller.ts`; staff can read too) | borrower, partner, staff | M5 | `useful` |
+| `GET` | `/applications/:id/assessment` | assessments (`AnalysisService.assessment`) | borrower, partner | M5 | `useful` |
 | `POST` | `/applications/:id/matches` | matching | borrower, partner | M6 | `planned` |
 | `GET` | `/applications/:id/matches/latest` | matching | borrower, partner | M6 | `planned` |
 
@@ -143,7 +143,7 @@ Controller: `backend/src/modules/catalog/http/catalog.controller.ts` · Postman:
 |---|---|---|---|---|---|
 | `POST` | `/applications/:id/submissions` | applications | borrower, partner | M6 | `planned` |
 | `GET` | `/applications/:id/submissions/:sid` | applications | borrower, partner | M6 | `planned` |
-| `POST` | `/notifications/subscriptions` | notifications | borrower, partner | M5 | `planned` |
+| `POST` | `/notifications/subscriptions` | subscriptions (`notification-subscriptions.controller.ts` → `SubscriptionService`; own module because delivery needs `UserNotifier` from auth) | borrower, partner | M5 | `useful` |
 
 ## 08 Leads & Imports
 
@@ -332,8 +332,8 @@ Planned:
 |---|---|---|---|---|---|
 | `GET` | `/ops/cases` | applications (`ops-cases.controller.ts` → `ApplicationService.list` with status, category, channel, firm and reference filters) | staff | M3 | `useful` |
 | `GET` | `/ops/cases/:id` | applications (`ops-cases.controller.ts` → `OpsCaseService.detail`) | staff | M3 | `useful` |
-| `POST` | `/ops/cases/:id/facts/:attribute/verify` | attributes | staff | M5 | `planned` |
-| `POST` | `/ops/assessments/:id/recompute` | assessments | staff | M5 | `planned` |
+| `POST` | `/ops/cases/:id/facts/:attribute/verify` | applications (`ops-cases.controller.ts` → `ApplicationService.verifyFact` → `FactService.record` as `ops_verified`) | staff | M5 | `useful` |
+| `POST` | `/ops/assessments/:id/recompute` | assessments (`ops-assessments.controller.ts` → `AnalysisService.recompute`) | staff | M5 | `useful` |
 | `POST` | `/ops/cases/:id/assign` | applications | staff | M6 | `planned` |
 | `POST` | `/ops/cases/:id/document-requests` | applications | staff | M6 | `planned` |
 | `POST` | `/ops/cases/:id/approve-submission` | applications | staff | M6 | `planned` |
@@ -419,6 +419,25 @@ Built in M1.4 (Postman `49 Admin - Consents/`). Controllers: `backend/src/module
 | `POST` | `/admin/consent-templates/:id/versions/:number/submit` | consents | staff | M1 | `useful` |
 | `POST` | `/admin/consent-templates/:id/versions/:number/publish` | consents | staff | M1 | `useful` |
 | `POST` | `/admin/consent-templates/:id/versions/:number/retire` | consents | staff | M1 | `useful` |
+
+Built in M5 (Postman `59 Admin - Scoring & Improvement/`). Versioned config controllers for `scoring-models` and `improvement-rules` (CASL `ConfigDocument`; credit analysts make).
+
+| Method | Path | Module | Context | Milestone | Status |
+|---|---|---|---|---|---|
+| `GET` `POST` | `/admin/scoring-models` | assessments | staff | M5 | `useful` |
+| `GET` `PATCH` | `/admin/scoring-models/:id` | assessments | staff | M5 | `useful` |
+| `POST` | `/admin/scoring-models/:id/versions` | assessments | staff | M5 | `useful` |
+| `GET` `PATCH` | `/admin/scoring-models/:id/versions/:number` | assessments | staff | M5 | `useful` |
+| `POST` | `/admin/scoring-models/:id/versions/:number/submit` | assessments | staff | M5 | `useful` |
+| `POST` | `/admin/scoring-models/:id/versions/:number/publish` | assessments | staff | M5 | `useful` |
+| `POST` | `/admin/scoring-models/:id/versions/:number/retire` | assessments | staff | M5 | `useful` |
+| `GET` `POST` | `/admin/improvement-rules` | assessments | staff | M5 | `useful` |
+| `GET` `PATCH` | `/admin/improvement-rules/:id` | assessments | staff | M5 | `useful` |
+| `POST` | `/admin/improvement-rules/:id/versions` | assessments | staff | M5 | `useful` |
+| `GET` `PATCH` | `/admin/improvement-rules/:id/versions/:number` | assessments | staff | M5 | `useful` |
+| `POST` | `/admin/improvement-rules/:id/versions/:number/submit` | assessments | staff | M5 | `useful` |
+| `POST` | `/admin/improvement-rules/:id/versions/:number/publish` | assessments | staff | M5 | `useful` |
+| `POST` | `/admin/improvement-rules/:id/versions/:number/retire` | assessments | staff | M5 | `useful` |
 
 Built in M4 (Postman `58 Admin - Lenders/`). Controllers: `backend/src/modules/lenders/http/admin-lenders.controller.ts` (CASL `Lender`), the versioned config controller for `lender-products` and `admin-lender-product-simulate.controller.ts` (CASL `ConfigDocument` with `resource: lender_product`).
 

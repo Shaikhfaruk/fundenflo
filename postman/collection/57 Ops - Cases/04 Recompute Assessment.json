@@ -1,0 +1,103 @@
+{
+  "name": "Recompute Assessment",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/ops/assessments/:id/recompute",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "assessments",
+        ":id",
+        "recompute"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{scoreResultId}}"
+        }
+      ]
+    },
+    "description": "`reproduce` recomputes a stored result from its own model version, inputs and consents and says whether it `matches` (nothing is stored). `current` scores the case again with the published model and current facts and stores a new result. Staff context.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"mode\": \"reproduce\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/assessments/:id/recompute",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "assessments",
+            ":id",
+            "recompute"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{scoreResultId}}"
+            }
+          ]
+        },
+        "description": "`reproduce` recomputes a stored result from its own model version, inputs and consents and says whether it `matches` (nothing is stored). `current` scores the case again with the published model and current facts and stores a new result. Staff context.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"mode\": \"reproduce\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"mode\": \"reproduce\",\n  \"matches\": true,\n  \"original\": {\n    \"status\": \"scored\",\n    \"value\": 57\n  },\n  \"recomputed\": {\n    \"status\": \"scored\",\n    \"value\": 57,\n    \"factors\": []\n  }\n}"
+    }
+  ]
+}

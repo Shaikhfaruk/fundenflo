@@ -1,0 +1,154 @@
+{
+  "name": "Create Scoring Model Version",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/scoring-models/:id/versions",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "scoring-models",
+        ":id",
+        "versions"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{scoringModelId}}"
+        }
+      ]
+    },
+    "description": "Opens the next draft, copying the latest published version unless `content` or `fromNumber` is given. Staff only: credit analysts make, another staff member approves, then it is published (ops leads approve too). `content`: `scope` (`segments`, `subSegments`; the most specific published model wins), `factors[]` (`key`, `label`, `max`, `method` `bands` (first passing `when` gives `points`; an unknown band stops and counts as missing) or `linear` (`attr` from → to scaled to `max`), `missing`: `insufficient` (no score at all), `exclude_renormalise` or `zero`, optional `requiresConsent` purpose and `minProvenance`), `attentionBelowPct`, `bands[]` (`min` 0–100 with labels, one at 0). Thresholds are a credit decision; nothing is seeded.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"notes\": \"Next revision\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "pm.collectionVariables.set('scoringModelNumber', String(pm.response.json().number));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/scoring-models/:id/versions",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "scoring-models",
+            ":id",
+            "versions"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{scoringModelId}}"
+            }
+          ]
+        },
+        "description": "Opens the next draft, copying the latest published version unless `content` or `fromNumber` is given. Staff only: credit analysts make, another staff member approves, then it is published (ops leads approve too). `content`: `scope` (`segments`, `subSegments`; the most specific published model wins), `factors[]` (`key`, `label`, `max`, `method` `bands` (first passing `when` gives `points`; an unknown band stops and counts as missing) or `linear` (`attr` from → to scaled to `max`), `missing`: `insufficient` (no score at all), `exclude_renormalise` or `zero`, optional `requiresConsent` purpose and `minProvenance`), `attentionBelowPct`, `bands[]` (`min` 0–100 with labels, one at 0). Thresholds are a credit decision; nothing is seeded.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"notes\": \"Next revision\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a122b0-2b3c-7d4e-9f50-61728394a5b6\",\n  \"documentId\": \"01a122b0-2b3c-7d4e-9f50-61728394a5b6\",\n  \"documentKey\": \"msme.health\",\n  \"number\": 2,\n  \"status\": \"draft\",\n  \"content\": {\n    \"scope\": {\n      \"segments\": [\n        \"msme\"\n      ]\n    },\n    \"attentionBelowPct\": 60,\n    \"bands\": [\n      {\n        \"min\": 0,\n        \"label\": {\n          \"en\": \"Needs Work Before Matching\"\n        }\n      },\n      {\n        \"min\": 40,\n        \"label\": {\n          \"en\": \"Fair — A Few Gaps To Close\"\n        }\n      },\n      {\n        \"min\": 60,\n        \"label\": {\n          \"en\": \"Good — Ready For Funding\"\n        }\n      },\n      {\n        \"min\": 80,\n        \"label\": {\n          \"en\": \"Strong — Ready For Funding\"\n        }\n      }\n    ],\n    \"factors\": [\n      {\n        \"key\": \"vintage\",\n        \"label\": {\n          \"en\": \"Business Vintage\"\n        },\n        \"max\": 10,\n        \"method\": \"linear\",\n        \"linear\": {\n          \"attr\": \"business.vintage_months\",\n          \"from\": 0,\n          \"to\": 60\n        }\n      },\n      {\n        \"key\": \"turnover\",\n        \"label\": {\n          \"en\": \"Profitability & Margins\"\n        },\n        \"max\": 20,\n        \"method\": \"bands\",\n        \"missing\": \"zero\",\n        \"bands\": [\n          {\n            \"when\": {\n              \"attr\": \"business.monthly_turnover_paise\",\n              \"op\": \"gte\",\n              \"value\": 250000000\n            },\n            \"points\": 20\n          },\n          {\n            \"when\": {\n              \"attr\": \"business.monthly_turnover_paise\",\n              \"op\": \"gte\",\n              \"value\": 50000000\n            },\n            \"points\": 12\n          }\n        ]\n      },\n      {\n        \"key\": \"gst\",\n        \"label\": {\n          \"en\": \"GST & ITR Consistency\"\n        },\n        \"max\": 15,\n        \"method\": \"bands\",\n        \"missing\": \"zero\",\n        \"bands\": [\n          {\n            \"when\": {\n              \"attr\": \"business.gst_registered\",\n              \"op\": \"eq\",\n              \"value\": true\n            },\n            \"points\": 15\n          }\n        ]\n      }\n    ]\n  },\n  \"compiled\": null,\n  \"issues\": [],\n  \"notes\": null,\n  \"effectiveFrom\": null,\n  \"publishedAt\": null,\n  \"retiredAt\": null,\n  \"createdByUserId\": \"01a121c0-5e6f-7a71-9283-94a5b6c7d8e9\",\n  \"changeRequest\": null,\n  \"version\": 1,\n  \"createdAt\": \"2026-10-10T19:00:00.000Z\",\n  \"updatedAt\": \"2026-10-10T19:00:00.000Z\"\n}"
+    },
+    {
+      "name": "409 OPEN_VERSION_EXISTS",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/scoring-models/:id/versions",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "scoring-models",
+            ":id",
+            "versions"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{scoringModelId}}"
+            }
+          ]
+        },
+        "description": "Opens the next draft, copying the latest published version unless `content` or `fromNumber` is given. Staff only: credit analysts make, another staff member approves, then it is published (ops leads approve too). `content`: `scope` (`segments`, `subSegments`; the most specific published model wins), `factors[]` (`key`, `label`, `max`, `method` `bands` (first passing `when` gives `points`; an unknown band stops and counts as missing) or `linear` (`attr` from → to scaled to `max`), `missing`: `insufficient` (no score at all), `exclude_renormalise` or `zero`, optional `requiresConsent` purpose and `minProvenance`), `attentionBelowPct`, `bands[]` (`min` 0–100 with labels, one at 0). Thresholds are a credit decision; nothing is seeded.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"notes\": \"Next revision\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"OPEN_VERSION_EXISTS\",\n  \"message\": \"A version is already in progress. Publish or retire it first.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

@@ -1,0 +1,115 @@
+{
+  "name": "Retire Improvement Rule Version",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/improvement-rules/:id/versions/:number/retire",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "improvement-rules",
+        ":id",
+        "versions",
+        ":number",
+        "retire"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{improvementRuleId}}"
+        },
+        {
+          "key": "number",
+          "value": "{{improvementRuleNumber}}"
+        }
+      ]
+    },
+    "description": "Takes a version out of use. Staff only, same lifecycle as scoring models. `content`: `scope.segments` (empty = all), `trigger` condition over facts and `score.value`, `factor.<key>.pct|score|attention`, `priority` (lower first), texts `title`, `found`, `why`, `action`, `evidence` with `{{attribute}}` / `{{score.value}}` / `{{factor.<key>.pct}}` placeholders, optional `evidenceDocumentType`.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"reason\": \"Superseded\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/improvement-rules/:id/versions/:number/retire",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "improvement-rules",
+            ":id",
+            "versions",
+            ":number",
+            "retire"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{improvementRuleId}}"
+            },
+            {
+              "key": "number",
+              "value": "{{improvementRuleNumber}}"
+            }
+          ]
+        },
+        "description": "Takes a version out of use. Staff only, same lifecycle as scoring models. `content`: `scope.segments` (empty = all), `trigger` condition over facts and `score.value`, `factor.<key>.pct|score|attention`, `priority` (lower first), texts `title`, `found`, `why`, `action`, `evidence` with `{{attribute}}` / `{{score.value}}` / `{{factor.<key>.pct}}` placeholders, optional `evidenceDocumentType`.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reason\": \"Superseded\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a122b0-2b3c-7d4e-9f50-61728394a5b6\",\n  \"documentId\": \"01a122b0-2b3c-7d4e-9f50-61728394a5b6\",\n  \"documentKey\": \"turnover.evidence\",\n  \"number\": 1,\n  \"status\": \"retired\",\n  \"content\": {\n    \"trigger\": {\n      \"attr\": \"factor.turnover.pct\",\n      \"op\": \"lt\",\n      \"value\": 60\n    },\n    \"priority\": 10,\n    \"title\": {\n      \"en\": \"Show More Of Your Turnover\"\n    },\n    \"found\": {\n      \"en\": \"Your score is {{score.value}} and turnover scores {{factor.turnover.pct}}% of its maximum.\"\n    },\n    \"why\": {\n      \"en\": \"Lenders size limits on monthly turnover.\"\n    },\n    \"action\": {\n      \"en\": \"Upload twelve months of bank statements so all credits are counted.\"\n    },\n    \"evidence\": {\n      \"en\": \"Bank statements for the last 12 months.\"\n    },\n    \"evidenceDocumentType\": \"bank_statement\"\n  },\n  \"compiled\": null,\n  \"issues\": [],\n  \"notes\": null,\n  \"effectiveFrom\": null,\n  \"publishedAt\": null,\n  \"retiredAt\": \"2026-10-10T19:00:00.000Z\",\n  \"createdByUserId\": \"01a121c0-5e6f-7a71-9283-94a5b6c7d8e9\",\n  \"changeRequest\": null,\n  \"version\": 1,\n  \"createdAt\": \"2026-10-10T19:00:00.000Z\",\n  \"updatedAt\": \"2026-10-10T19:00:00.000Z\"\n}"
+    }
+  ]
+}

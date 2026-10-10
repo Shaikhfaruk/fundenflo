@@ -19,6 +19,8 @@ export const DLT_TEMPLATE_ENV: Partial<Record<NotificationTemplateKey, string>> 
   [NotificationTemplateKey.LeadHandedOver]: 'SMS_DLT_TEMPLATE_LEAD_HANDED_OVER',
   [NotificationTemplateKey.LeadFirstContactDue]: 'SMS_DLT_TEMPLATE_LEAD_FIRST_CONTACT_DUE',
   [NotificationTemplateKey.FollowUpDue]: 'SMS_DLT_TEMPLATE_FOLLOW_UP_DUE',
+  [NotificationTemplateKey.AnalysisCompleted]: 'SMS_DLT_TEMPLATE_ANALYSIS_COMPLETED',
+  [NotificationTemplateKey.ApplicationStatusChanged]: 'SMS_DLT_TEMPLATE_APPLICATION_STATUS',
 };
 
 export const NOTIFICATION_TEMPLATE_SEEDS: TemplateSeed[] = [
@@ -132,4 +134,8 @@ export const NOTIFICATION_TEMPLATE_SEEDS: TemplateSeed[] = [
   { key: NotificationTemplateKey.LeadHandedOver, channel: NotificationChannel.push, locale: 'en', subject: 'Lead {{ref}} assigned to you', body: 'Contact the borrower before {{firstContactBy}}.' },
   { key: NotificationTemplateKey.LeadFirstContactDue, channel: NotificationChannel.push, locale: 'en', subject: 'Call the borrower for {{ref}}', body: 'First contact is due by {{firstContactBy}}.' },
   { key: NotificationTemplateKey.FollowUpDue, channel: NotificationChannel.push, locale: 'en', subject: 'Follow-up due', body: 'Follow-up on lead {{ref}} is due at {{dueAt}}.' },
+  { key: NotificationTemplateKey.AnalysisCompleted, channel: NotificationChannel.push, locale: 'en', subject: 'Your assessment is ready', body: 'Open FundenFlo to see your financial health score for {{ref}}.' },
+  { key: NotificationTemplateKey.AnalysisCompleted, channel: NotificationChannel.sms, locale: 'en', subject: null, body: 'FundenFlo: your financial health assessment for {{ref}} is ready. Open the app to see your score.' },
+  { key: NotificationTemplateKey.ApplicationStatusChanged, channel: NotificationChannel.push, locale: 'en', subject: 'Update on {{ref}}', body: 'Your application is now {{status}}.' },
+  { key: NotificationTemplateKey.ApplicationStatusChanged, channel: NotificationChannel.sms, locale: 'en', subject: null, body: 'FundenFlo: your loan application {{ref}} is now {{status}}.' },
 ];

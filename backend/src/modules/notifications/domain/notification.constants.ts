@@ -10,6 +10,8 @@ export const NotificationTemplateKey = {
   LeadFirstContactDue: 'lead.first_contact_due',
   LeadFirstContactMissed: 'lead.first_contact_missed',
   FollowUpDue: 'follow_up.due',
+  AnalysisCompleted: 'analysis.completed',
+  ApplicationStatusChanged: 'application.status_changed',
 } as const;
 
 export type NotificationTemplateKey = (typeof NotificationTemplateKey)[keyof typeof NotificationTemplateKey];

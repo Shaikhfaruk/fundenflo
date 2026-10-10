@@ -103,3 +103,8 @@ These are the places where a second copy is most tempting. Use the one listed.
 | Screening a case against a product and evaluating its rules | `screenProduct` / `evaluateProduct` in `engines/lending` | Rule loops in services (matching must use these) |
 | Facts with their trust level for rules | `FactService.rankedLookup()` | Reading `borrower_facts` provenance in other modules |
 | Creating an organization without an owner (lenders) | `OrganizationService.registerActive()` | Writing `organizations` from lenders or ops code |
+| Computing a financial health score | `ScoringService.score()` → `computeScore` | Factor maths in controllers, matching or the compat layer |
+| Running document analysis for a case | `AnalysisService` (queue `analysis.run`) | Scoring inline in HTTP requests |
+| Correcting or confirming a fact as ops | `ApplicationService.verifyFact()` (`ops_verified` through `FactService`) | Writing `borrower_facts` from ops controllers |
+| Telling a user when something finishes | `POST /notifications/subscriptions` + a `@SubscriptionTargetFor` provider | Per-feature notification flags or ad-hoc sends after events |
+| Storing scoring models and improvement rules | Config resources `scoring_model` / `improvement_rule` | `scoring_models` / `improvement_rules` tables (planned in §9, replaced by the config store) |

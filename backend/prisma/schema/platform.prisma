@@ -114,3 +114,26 @@ model NotificationDelivery {
   @@index([status, requestedAt])
   @@map("notification_deliveries")
 }
+
+enum SubscriptionStatus {
+  pending
+  sent
+  cancelled
+}
+
+model NotificationSubscription {
+  id         String              @id @default(uuid(7)) @db.Uuid
+  userId     String              @map("user_id") @db.Uuid
+  event      String
+  entityType String              @map("entity_type")
+  entityId   String              @map("entity_id") @db.Uuid
+  channel    NotificationChannel
+  status     SubscriptionStatus  @default(pending)
+  sentAt     DateTime?           @map("sent_at") @db.Timestamptz(3)
+  createdAt  DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt  DateTime            @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@unique([userId, event, entityId, channel])
+  @@index([event, entityId, status])
+  @@map("notification_subscriptions")
+}

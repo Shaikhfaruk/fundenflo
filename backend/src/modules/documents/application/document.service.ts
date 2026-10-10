@@ -102,6 +102,10 @@ export class DocumentService {
     return toPage(rows, query.limit, toDocumentView);
   }
 
+  async analysable(partyId: string, applicationId: string) {
+    return (await this.documents.heldFor(partyId, applicationId)).filter((document) => CLEAN_DOCUMENT_STATES.includes(document.status));
+  }
+
   async get(id: string, ability: AppAbility) {
     return toDocumentView(await this.visible(id, ability, AppAction.Read));
   }

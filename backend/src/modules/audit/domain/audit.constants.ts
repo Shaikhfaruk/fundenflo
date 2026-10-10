@@ -100,6 +100,11 @@ export const AuditAction = {
   LenderContactCreated: 'lender.contact_created',
   LenderContactChanged: 'lender.contact_changed',
   LenderProductProposed: 'lender_product.proposed',
+  AnalysisRequested: 'analysis.requested',
+  AnalysisCompleted: 'analysis.completed',
+  ScoreComputed: 'score.computed',
+  AssessmentRecomputed: 'assessment.recomputed',
+  FactVerified: 'fact.verified',
 } as const;
 
 export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction];
@@ -143,6 +148,8 @@ export const AuditEntity = {
   LoanApplication: 'loan_application',
   Document: 'document',
   Lender: 'lender',
+  Analysis: 'analysis',
+  ScoreResult: 'score_result',
   LenderAgreement: 'lender_agreement',
   LenderContact: 'lender_contact',
 } as const;

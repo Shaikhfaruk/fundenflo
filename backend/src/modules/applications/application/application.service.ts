@@ -2,7 +2,7 @@ import { accessibleBy } from '@casl/prisma/runtime';
 import { Transactional } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
 
-import { AnswerChannel, ApplicationChannel, ApplicationEventType, ApplicationPartyConsent, ApplicationPartyRole, ApplicationPartyStatus, ApplicationStatus, ConsentChannel } from '../../../common/enums/db.enums.js';
+import { AnswerChannel, ApplicationChannel, ApplicationEventType, ApplicationPartyConsent, ApplicationPartyRole, ApplicationPartyStatus, ApplicationStatus, AttributeSubject, ConsentChannel, FactProvenance } from '../../../common/enums/db.enums.js';
 import { AppError } from '../../../common/errors/app-error.js';
 import { ErrorCode } from '../../../common/errors/error-codes.js';
 import { transitionOrThrow } from '../../../common/errors/transition.js';
@@ -19,6 +19,9 @@ import type { Prisma } from '../../../generated/prisma/client.js';
 import { AppAction, type AppAbility } from '../../access/domain/ability.types.js';
 import { ChangeRecorder } from '../../audit/application/change-recorder.service.js';
 import { AuditAction, AuditEntity } from '../../audit/domain/audit.constants.js';
+import { AttributeDictionary } from '../../attributes/application/attribute-dictionary.service.js';
+import { FactService } from '../../attributes/application/fact.service.js';
+import { FactSourceType } from '../../attributes/domain/attribute.constants.js';
 import { BorrowerKycService } from '../../borrowers/application/borrower-kyc.service.js';
 import { BorrowerProfileService } from '../../borrowers/application/borrower-profile.service.js';
 import { CatalogQueryService } from '../../catalog/application/catalog-query.service.js';
@@ -70,6 +73,8 @@ export class ApplicationService {
     private readonly partnerLeads: PartnerLeadService,
     private readonly refs: RefGenerator,
     private readonly changes: ChangeRecorder,
+    private readonly dictionary: AttributeDictionary,
+    private readonly facts: FactService,
   ) {}
 
   @Transactional()
@@ -228,6 +233,23 @@ export class ApplicationService {
     return { consents: result.consents, missingRequired: result.missingRequired, application: toApplicationView(await this.require(id)) };
   }
 
+  @Transactional()
+  async verifyFact(id: string, attributeKey: string, input: { value: unknown; reason: string }, userId: string, ability: AppAbility) {
+    const application = await this.visible(id, ability, AppAction.Update);
+    const definition = (await this.dictionary.active()).get(attributeKey);
+    if (!definition) throw new AppError(ErrorCode.VALIDATION_FAILED, { details: [{ path: 'attribute', code: 'unknown_attribute', message: `unknown or inactive attribute ${attributeKey}` }] });
+    const partyId = definition.subject === AttributeSubject.person ? application.actingPartyId : application.partyId;
+    const [fact] = await this.facts.record(partyId, [{ attributeKey, value: input.value }], { provenance: FactProvenance.ops_verified, sourceType: FactSourceType.OpsEntry, applicationId: id, recordedByUserId: userId });
+    await this.timeline.record(id, ApplicationEventType.note, { note: input.reason, data: { factVerified: attributeKey, partyId } });
+    await this.changes.record({ action: AuditAction.FactVerified, entityType: AuditEntity.LoanApplication, entityId: id, event: EventName.ApplicationUpdated, metadata: { attributeKey, partyId, reason: input.reason }, payload: { applicationId: id, partyId: application.partyId } });
+    return { partyId, fact };
+  }
+
+  async subject(id: string) {
+    const application = await this.require(id);
+    return { id: application.id, ref: application.ref, partyId: application.partyId, actingPartyId: application.actingPartyId, segmentKey: application.segmentKey, subSegmentKey: application.subSegmentKey };
+  }
+
   async openForChange(id: string, ability: AppAbility) {
     const application = await this.visible(id, ability, AppAction.Update);
     if (!PRE_SUBMISSION_APPLICATION_STATES.includes(application.status)) throw new AppError(ErrorCode.INVALID_TRANSITION, { details: { from: application.status, event: 'edit', allowed: [] } });
@@ -240,6 +262,16 @@ export class ApplicationService {
   }
 
   async refresh(id: string) {
+    await this.refreshStage(id);
+  }
+
+  @Transactional()
+  async recordAssessment(id: string, scoreResultId: string, scored: boolean) {
+    await this.applications.lock(id);
+    const application = await this.require(id);
+    await this.applications.update(id, { latestScoreResultId: scoreResultId, scoredAt: scored ? new Date() : null });
+    await this.timeline.record(id, ApplicationEventType.assessment_recorded, { data: { scoreResultId, scored } });
+    if (scored && application.status === ApplicationStatus.documents_pending) await this.transition(application, ApplicationEvent.Assess);
     await this.refreshStage(id);
   }
 
@@ -324,7 +356,7 @@ export class ApplicationService {
       partiesPendingConsent: coParties.filter((row) => (CO_PARTY_ROLES as readonly string[]).includes(row.role) && row.consentStatus !== ApplicationPartyConsent.granted).map((row) => row.id),
       documentsMissing: checklist.items.filter((item) => item.required && !item.conditional && !item.satisfied).map((item) => item.key),
       detailsVerified,
-      scored: false,
+      scored: application.scoredAt !== null,
       matched: false,
       applied: false,
     };

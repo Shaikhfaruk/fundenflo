@@ -1,0 +1,151 @@
+{
+  "name": "Start Analysis",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/applications/:id/analyses",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "applications",
+        ":id",
+        "analyses"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{applicationId}}"
+        }
+      ]
+    },
+    "description": "Queues an analysis of the case (worker queue `analysis.run`): read the clean documents (all of them unless `documentIds` is given), then compute the financial health score with the published scoring model and fire improvement rules. Needs `ai_documents` consent. Only one analysis runs per application; asking again returns it. Poll `GET /analyses/:id` or listen for `analysis.changed`. Borrower and partner contexts; only applications the caller can see.",
+    "body": {
+      "mode": "raw",
+      "raw": "{}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 202', () => pm.response.to.have.status(202));",
+          "pm.collectionVariables.set('analysisId', String(pm.response.json().id));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "202 Accepted",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/applications/:id/analyses",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "applications",
+            ":id",
+            "analyses"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            }
+          ]
+        },
+        "description": "Queues an analysis of the case (worker queue `analysis.run`): read the clean documents (all of them unless `documentIds` is given), then compute the financial health score with the published scoring model and fire improvement rules. Needs `ai_documents` consent. Only one analysis runs per application; asking again returns it. Poll `GET /analyses/:id` or listen for `analysis.changed`. Borrower and partner contexts; only applications the caller can see.",
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Accepted",
+      "code": 202,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a122b0-1a2b-7c3d-8e4f-5061728394a5\",\n  \"applicationId\": \"01a12260-2b3c-7d4e-9f50-61728394a5b6\",\n  \"status\": \"queued\",\n  \"steps\": [\n    {\n      \"id\": \"documents\",\n      \"label\": \"Reading Your Documents\",\n      \"state\": \"pending\",\n      \"detail\": null\n    },\n    {\n      \"id\": \"score\",\n      \"label\": \"Calculating Your Financial Health Score\",\n      \"state\": \"pending\",\n      \"detail\": null\n    }\n  ],\n  \"documentIds\": [],\n  \"scoreResultId\": null,\n  \"failureReason\": null,\n  \"createdAt\": \"2026-10-10T19:00:00.000Z\",\n  \"startedAt\": null,\n  \"finishedAt\": null\n}"
+    },
+    {
+      "name": "403 CONSENT_REQUIRED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/applications/:id/analyses",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "applications",
+            ":id",
+            "analyses"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            }
+          ]
+        },
+        "description": "Queues an analysis of the case (worker queue `analysis.run`): read the clean documents (all of them unless `documentIds` is given), then compute the financial health score with the published scoring model and fire improvement rules. Needs `ai_documents` consent. Only one analysis runs per application; asking again returns it. Poll `GET /analyses/:id` or listen for `analysis.changed`. Borrower and partner contexts; only applications the caller can see.",
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Forbidden",
+      "code": 403,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"CONSENT_REQUIRED\",\n  \"message\": \"Consent for this purpose is needed first.\",\n  \"details\": {\n    \"purpose\": \"ai_documents\"\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 
+import { AttributesModule } from '../attributes/attributes.module.js';
 import { AuthModule } from '../auth/auth.module.js';
 import { BorrowersModule } from '../borrowers/borrowers.module.js';
 import { CatalogModule } from '../catalog/catalog.module.js';
@@ -12,6 +13,7 @@ import { ApplicationDocumentOwner } from './application/application-document.own
 import { ApplicationMergeParticipant } from './application/application-merge.participant.js';
 import { ApplicationPartyService } from './application/application-party.service.js';
 import { ApplicationTimeline } from './application/application-timeline.service.js';
+import { ApplicationStatusSubscriptionTarget } from './application/application-status-subscription.target.js';
 import { ApplicationService } from './application/application.service.js';
 import { OpsCaseService } from './application/ops-case.service.js';
 import { ApplicationsController } from './http/applications.controller.js';
@@ -23,9 +25,9 @@ import { ApplicationRepository } from './infrastructure/application.repository.j
 export const APPLICATION_PROCESSORS = [ApplicationRefreshProcessor];
 
 @Module({
-  imports: [AuthModule, BorrowersModule, CatalogModule, ConsentsModule, DocumentsModule, LeadsModule, PartiesModule, QuestionnairesModule],
+  imports: [AttributesModule, AuthModule, BorrowersModule, CatalogModule, ConsentsModule, DocumentsModule, LeadsModule, PartiesModule, QuestionnairesModule],
   controllers: [ApplicationsController, PartnerApplicationsController, OpsCasesController],
-  providers: [ApplicationRepository, ApplicationTimeline, ApplicationService, ApplicationPartyService, OpsCaseService, ApplicationDocumentOwner, ApplicationMergeParticipant],
+  providers: [ApplicationRepository, ApplicationTimeline, ApplicationService, ApplicationPartyService, OpsCaseService, ApplicationStatusSubscriptionTarget, ApplicationDocumentOwner, ApplicationMergeParticipant],
   exports: [ApplicationService, ApplicationPartyService],
 })
 export class ApplicationsModule {}
