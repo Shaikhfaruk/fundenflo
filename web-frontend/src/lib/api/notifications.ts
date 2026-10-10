@@ -9,3 +9,7 @@ export const notificationKeys = { preferences: ['notification-preferences'] as c
 export const notificationPreferencesQuery = () => queryOptions({ queryKey: notificationKeys.preferences, queryFn: () => apiRequest<NotificationPreferences>('GET /me/notification-preferences') });
 
 export const updateNotificationPreferences = (body: { sms: boolean; email: boolean; push: boolean }, version: number) => apiRequest<NotificationPreferences>('PUT /me/notification-preferences', { body, version });
+
+export type SubscriptionInput = { event: string; entityId: string; channel: string };
+
+export const subscribeToUpdates = (body: SubscriptionInput) => apiRequest<{ id: string; event: string; channel: string }>('POST /notifications/subscriptions', { body });

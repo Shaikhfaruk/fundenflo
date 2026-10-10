@@ -6,6 +6,7 @@ export const AppPath = {
   StaffLogin: '/staff/login',
   StaffInvite: '/staff/invite',
   Offline: '/offline',
+  ConsentLink: '/consent',
   Account: '/account',
   AccountSecurity: '/account/security',
   AccountConsents: '/account/consents',
@@ -52,4 +53,5 @@ export const NEXT_PARAM = 'next';
 export const RoutePath = {
   application: (id: string) => `${AppPath.BorrowerHome}/applications/${id}`,
   applicationStep: (id: string, step: string) => `${AppPath.BorrowerHome}/applications/${id}/${step}`,
+  submission: (id: string, submissionId: string) => `${AppPath.BorrowerHome}/applications/${id}/submissions/${submissionId}`,
 };

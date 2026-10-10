@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 
+import { ApplicationActivity } from '@/components/borrower/application-activity';
 import { useCategoryLabel } from '@/components/borrower/category-labels';
 import { JourneyStepper } from '@/components/borrower/journey-stepper';
 import { useTenureLabel } from '@/components/journey/use-tenure-label';
@@ -20,7 +21,7 @@ import { applicationQuery, nextStepQuery } from '@/lib/api/journey';
 import { Duration, EASE_OUT } from '@/lib/constants/motion.constants';
 import { screenForStage } from '@/lib/constants/journey.constants';
 import { AppPath, RoutePath } from '@/lib/constants/routes.constants';
-import { APPLICATION_STATUS_TONE, toneOf } from '@/lib/constants/status.constants';
+import { APPLICATION_STATUS_TONE, CLOSED_APPLICATION_STATUSES, toneOf } from '@/lib/constants/status.constants';
 import { formatDate } from '@/lib/format/date';
 import { formatPaise } from '@/lib/format/money';
 
@@ -120,6 +121,7 @@ export function ApplicationOverview() {
               {t('allDone')}
             </motion.p>
           ) : null}
+          <ApplicationActivity applicationId={app.id} open={!CLOSED_APPLICATION_STATUSES.includes(app.status)} />
         </div>
         <motion.section {...rise(0.14)} className="rounded-xl bg-card p-4 shadow-card">
           <h2 className="mb-3 font-heading text-lg font-semibold text-navy">{t('journey')}</h2>

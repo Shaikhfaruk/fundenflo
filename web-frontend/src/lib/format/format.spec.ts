@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { formatDate, formatRelative } from './date';
+import { formatFileSize, formatSizeLimit } from './file-size';
 import { estimateEmiPaise, formatPaise, groupRupees, paiseFromRupees } from './money';
 
 describe('money', () => {
@@ -34,5 +35,14 @@ describe('dates', () => {
     const now = Date.parse('2026-10-10T12:00:00.000Z');
     expect(formatRelative('2026-10-10T10:00:00.000Z', 'en', now)).toBe('2 hours ago');
     expect(formatRelative('2026-10-11T12:00:00.000Z', 'en', now)).toBe('tomorrow');
+  });
+});
+
+describe('file size', () => {
+  it('shows small files in KB and larger ones in MB', () => {
+    expect(formatFileSize(300)).toBe('1 KB');
+    expect(formatFileSize(512_000)).toBe('500 KB');
+    expect(formatFileSize(3_250_000)).toBe('3.1 MB');
+    expect(formatSizeLimit(10_485_760)).toBe('10 MB');
   });
 });

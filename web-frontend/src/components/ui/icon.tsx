@@ -129,6 +129,7 @@ const ICONS = {
   'refresh': refreshIcon,
   'edit': editOutlineIcon,
   'id-card': badgeOutlineIcon,
+  'badge': badgeOutlineIcon,
   'bank': accountBalanceOutlineIcon,
   'upload': uploadFileOutlineIcon,
   'scan': documentScannerOutlineIcon,

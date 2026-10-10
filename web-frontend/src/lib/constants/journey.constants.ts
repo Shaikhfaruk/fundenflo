@@ -17,6 +17,13 @@ export const JourneyScreen = {
   Questions: 'questions',
   People: 'people',
   Consents: 'consents',
+  Documents: 'documents',
+  Verify: 'verify',
+  Analysis: 'analysis',
+  Score: 'score',
+  Improve: 'improve',
+  Lenders: 'lenders',
+  Submissions: 'submissions',
 } as const;
 
 export type JourneyScreen = (typeof JourneyScreen)[keyof typeof JourneyScreen];
@@ -30,6 +37,13 @@ export const JOURNEY_SCREEN_STEP: Record<JourneyScreen, number> = {
   [JourneyScreen.Questions]: 3,
   [JourneyScreen.People]: 4,
   [JourneyScreen.Consents]: 4,
+  [JourneyScreen.Documents]: 5,
+  [JourneyScreen.Verify]: 5,
+  [JourneyScreen.Analysis]: 5,
+  [JourneyScreen.Score]: 6,
+  [JourneyScreen.Improve]: 6,
+  [JourneyScreen.Lenders]: 6,
+  [JourneyScreen.Submissions]: 6,
 };
 
 const BlockerCode = {
@@ -40,8 +54,25 @@ export const screenForStage = (stage: string | null | undefined, blockerCode?: s
   if (stage === JourneyStage.Requirement || stage === JourneyStage.Category) return JourneyScreen.Requirement;
   if (stage === JourneyStage.PreCheck) return JourneyScreen.Questions;
   if (stage === JourneyStage.Consent) return blockerCode === BlockerCode.PartiesConsentPending ? JourneyScreen.People : JourneyScreen.Consents;
+  if (stage === JourneyStage.Documents) return JourneyScreen.Documents;
+  if (stage === JourneyStage.VerifyDetails) return JourneyScreen.Verify;
+  if (stage === JourneyStage.Score) return JourneyScreen.Score;
+  if (stage === JourneyStage.Matching) return JourneyScreen.Lenders;
+  if (stage === JourneyStage.Apply) return blockerCode ? JourneyScreen.Lenders : JourneyScreen.Submissions;
   return null;
 };
+
+export const MatchOutcome = { Eligible: 'eligible', NeedsInfo: 'needs_info' } as const;
+
+export const SUBMISSION_WITHDRAW_MIN_LENGTH = 3;
+
+export const SUBMISSION_WITHDRAW_MAX_LENGTH = 1_000;
+
+export const APPLICATION_WITHDRAW_MAX_LENGTH = 500;
+
+export const UpdateChannel = { Sms: 'sms', Push: 'push' } as const;
+
+export const UpdateEvent = { AnalysisCompleted: 'analysis.completed', ApplicationStatusChanged: 'application.status_changed', SubmissionStatusChanged: 'submission.status_changed' } as const;
 
 export const QuestionStage = { PreCheck: 'pre_check' } as const;
 

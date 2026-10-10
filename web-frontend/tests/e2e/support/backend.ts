@@ -34,22 +34,68 @@ export const randomPan = (holder = 'P') => `${letter()}${letter()}${letter()}${h
 
 const API = `${process.env.E2E_API_ORIGIN ?? 'http://localhost:3000'}/v1`;
 
-const api = async <T>(method: string, path: string, body?: unknown, token?: string): Promise<T> => {
-  const response = await fetch(`${API}${path}`, { method, headers: { 'content-type': 'application/json', 'idempotency-key': randomUUID(), ...(token ? { authorization: `Bearer ${token}` } : {}) }, body: body === undefined ? undefined : JSON.stringify(body) });
+const api = async <T>(method: string, path: string, body?: unknown, token?: string, version?: number): Promise<T> => {
+  const headers: Record<string, string> = { 'content-type': 'application/json', 'idempotency-key': randomUUID(), ...(token ? { authorization: `Bearer ${token}` } : {}) };
+  if (version !== undefined) headers['if-match'] = `"${version}"`;
+  const response = await fetch(`${API}${path}`, { method, headers, body: body === undefined ? undefined : JSON.stringify(body) });
   const text = await response.text();
   if (!response.ok) throw new Error(`${method} ${path} -> ${response.status} ${text}`);
   return (text ? JSON.parse(text) : null) as T;
 };
 
-export async function inviteLender(email: string): Promise<string> {
-  const staffEmail = randomEmail('e2e.lender.setup');
+export async function staffToken(role: string, name: string): Promise<string> {
+  const email = randomEmail(`e2e.${role}`);
   const password = `Passw0rd-${randomUUID()}`;
-  await api('POST', '/auth/staff/invitations/accept', { token: inviteStaff(staffEmail, 'super_admin'), fullName: 'Lender Setup', password });
-  const login = await api<{ mfaToken: string; mfaSetup: { secret: string } }>('POST', '/auth/staff/login', { email: staffEmail, password });
+  await api('POST', '/auth/staff/invitations/accept', { token: inviteStaff(email, role), fullName: name, password });
+  const login = await api<{ mfaToken: string; mfaSetup: { secret: string } }>('POST', '/auth/staff/login', { email, password });
   const session = await api<{ accessToken: string }>('POST', '/auth/staff/mfa/verify', { mfaToken: login.mfaToken, code: generateSync({ secret: login.mfaSetup.secret }) });
-  const lenders = await api<{ items: Array<{ name: string; organizationId: string }> }>('GET', '/admin/lenders', undefined, session.accessToken);
-  const lender = lenders.items[0];
+  return session.accessToken;
+}
+
+export async function inviteLender(email: string): Promise<string> {
+  const token = await staffToken('super_admin', 'Lender Setup');
+  const lenders = await api<{ items: Array<{ name: string; organizationId: string; status: string }> }>('GET', '/admin/lenders', undefined, token);
+  const lender = lenders.items.find((item) => item.status === 'active') ?? lenders.items[0];
   if (!lender) throw new Error('No lender organisation to invite into. Run pnpm db:seed in backend/.');
-  await api('POST', '/admin/invitations', { organizationId: lender.organizationId, role: 'lender_admin', email }, session.accessToken);
+  await api('POST', '/admin/invitations', { organizationId: lender.organizationId, role: 'lender_admin', email }, token);
   return lender.name;
 }
+
+const LAKH = 100_000_00;
+
+export type TestLender = { id: string; name: string; productId: string; cleanUp: () => Promise<void> };
+
+export async function liveTestLender(name: string, maker: string, checker: string): Promise<TestLender> {
+  const key = `e2e${Date.now()}`;
+  const lender = await api<{ id: string; version: number }>('POST', '/admin/lenders', { key, name, kind: 'nbfc' }, maker);
+  const active = await api<{ version: number }>('PATCH', `/admin/lenders/${lender.id}`, { status: 'active' }, maker, lender.version);
+  const agreement = await api<{ id: string; version: number }>('POST', `/admin/lenders/${lender.id}/agreements`, { reference: `${key}-1`, validFrom: new Date().toISOString().slice(0, 10) }, maker);
+  await api('PATCH', `/admin/lenders/${lender.id}/agreements/${agreement.id}`, { status: 'active' }, maker, agreement.version);
+  const content = {
+    category: 'business',
+    segments: ['msme'],
+    amountPaise: { min: LAKH, max: 100 * LAKH },
+    tenureMonths: { min: 12, max: 60 },
+    coverage: { nationwide: true },
+    eligibility: { hard: [{ id: 'gst', when: { attr: 'business.gst_registered', op: 'eq', value: true }, pass: { en: 'You are GST registered' } }], soft: [] },
+    documents: [{ key: 'statement', documentTypes: ['bank_statement'], stage: 'assessment' }],
+  };
+  const product = await api<{ id: string }>('POST', '/admin/lender-products', { key: `${key}.working_capital`, name: { en: `${name} Working Capital` }, content }, maker);
+  const submitted = await api<{ changeRequest: { id: string } }>('POST', `/admin/lender-products/${product.id}/versions/1/submit`, { reason: 'End-to-end test product' }, maker);
+  await api('POST', `/admin/change-requests/${submitted.changeRequest.id}/approve`, {}, checker);
+  await api('POST', `/admin/lender-products/${product.id}/versions/1/publish`, {}, maker);
+  return {
+    id: lender.id,
+    name,
+    productId: product.id,
+    cleanUp: async () => {
+      await api('POST', `/admin/lender-products/${product.id}/versions/1/retire`, { reason: 'End-to-end test finished' }, maker);
+      const current = await api<{ version: number }>('GET', `/admin/lenders/${lender.id}`, undefined, maker);
+      await api('PATCH', `/admin/lenders/${lender.id}`, { status: 'offboarded' }, maker, current.version ?? active.version);
+    },
+  };
+}
+
+export const opsReviewDocument = (token: string, documentId: string, fields: Array<{ attributeKey: string; value: unknown }>) => api('POST', `/ops/documents/${documentId}/review`, { outcome: 'verified', fields }, token);
+
+export const opsApproveSubmission = (token: string, submissionId: string) => api<{ status: string }>('POST', `/ops/submissions/${submissionId}/approve`, { note: 'Checked in end-to-end test' }, token);

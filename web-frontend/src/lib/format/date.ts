@@ -31,3 +31,5 @@ export function formatRelative(iso: string | null | undefined, locale = 'en', no
   for (const [unit, size] of RELATIVE_UNITS) if (Math.abs(seconds) >= size) return format.format(Math.round(seconds / size), unit);
   return format.format(seconds, 'second');
 }
+
+export const todayIsoDate = () => new Date().toISOString().slice(0, 10);

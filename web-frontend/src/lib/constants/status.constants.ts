@@ -37,6 +37,24 @@ export const APPLICATION_STATUS_TONE: Record<string, StatusTone> = {
   expired: StatusTone.Neutral,
 };
 
+export const SubmissionStatus = {
+  PendingApproval: 'pending_approval',
+  Approved: 'approved',
+  SentToLender: 'sent_to_lender',
+  UnderReview: 'under_review',
+  QueryRaised: 'query_raised',
+  Sanctioned: 'sanctioned',
+  Disbursed: 'disbursed',
+  Rejected: 'rejected',
+  Withdrawn: 'withdrawn',
+} as const;
+
+export const CLOSED_SUBMISSION_STATUSES: readonly string[] = [SubmissionStatus.Rejected, SubmissionStatus.Withdrawn];
+
+export const WITHDRAWABLE_SUBMISSION_STATUSES: readonly string[] = [SubmissionStatus.PendingApproval, SubmissionStatus.Approved, SubmissionStatus.SentToLender, SubmissionStatus.UnderReview, SubmissionStatus.QueryRaised, SubmissionStatus.Sanctioned];
+
+export const SUBMISSION_PROGRESS: readonly string[] = [SubmissionStatus.PendingApproval, SubmissionStatus.Approved, SubmissionStatus.SentToLender, SubmissionStatus.UnderReview, SubmissionStatus.Sanctioned, SubmissionStatus.Disbursed];
+
 export const SUBMISSION_STATUS_TONE: Record<string, StatusTone> = {
   pending_approval: StatusTone.Warning,
   approved: StatusTone.Info,

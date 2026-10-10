@@ -46,3 +46,16 @@ export type ApplicationParty = {
 };
 
 export type AddPartyInput = { role: string; name: string; mobile: string; countryCode?: string; relationship?: string };
+
+export type ApplicationEvent = {
+  id: string;
+  type: string;
+  fromStatus: string | null;
+  toStatus: string | null;
+  reason: string | null;
+  note: string | null;
+  data: Record<string, unknown> | null;
+  actorType: string;
+  actorUserId: string | null;
+  createdAt: string;
+};

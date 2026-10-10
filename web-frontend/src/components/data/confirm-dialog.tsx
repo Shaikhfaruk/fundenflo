@@ -7,9 +7,9 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Spinner } from '@/components/ui/spinner';
 
-type Props = { open: boolean; onOpenChange: (open: boolean) => void; title: string; description?: string; confirmLabel: string; destructive?: boolean; pending?: boolean; onConfirm: () => void; children?: ReactNode };
+type Props = { open: boolean; onOpenChange: (open: boolean) => void; title: string; description?: string; confirmLabel: string; destructive?: boolean; pending?: boolean; confirmDisabled?: boolean; onConfirm: () => void; children?: ReactNode };
 
-export function ConfirmDialog({ open, onOpenChange, title, description, confirmLabel, destructive, pending, onConfirm, children }: Props) {
+export function ConfirmDialog({ open, onOpenChange, title, description, confirmLabel, destructive, pending, confirmDisabled, onConfirm, children }: Props) {
   const t = useTranslations('common');
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -23,7 +23,7 @@ export function ConfirmDialog({ open, onOpenChange, title, description, confirmL
           <Button variant="outline" onClick={() => onOpenChange(false)} disabled={pending}>
             {t('cancel')}
           </Button>
-          <Button variant={destructive ? 'destructive' : 'default'} onClick={onConfirm} disabled={pending}>
+          <Button variant={destructive ? 'destructive' : 'default'} onClick={onConfirm} disabled={pending || confirmDisabled}>
             {pending ? <Spinner /> : null}
             {confirmLabel}
           </Button>
