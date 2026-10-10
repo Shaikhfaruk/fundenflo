@@ -6,7 +6,7 @@ const ROUTES: Partial<Record<EventName, QueueName[]>> = {
   [EventName.MembershipChanged]: [QueueName.AuthSessionRevocations],
   [EventName.UserStatusChanged]: [QueueName.AuthSessionRevocations],
   [EventName.OrganizationStatusChanged]: [QueueName.AuthSessionRevocations],
-  [EventName.ConsentGranted]: [QueueName.LeadsConsentSync, QueueName.ApplicationsRefresh],
+  [EventName.ConsentGranted]: [QueueName.LeadsConsentSync, QueueName.ApplicationsRefresh, QueueName.DocumentsExtract],
   [EventName.ConsentWithdrawn]: [QueueName.LeadsConsentSync, QueueName.ApplicationsRefresh],
   [EventName.PartyMerged]: [QueueName.LeadsConsentSync],
   [EventName.PartyMergeReverted]: [QueueName.LeadsConsentSync],
@@ -29,6 +29,7 @@ const ROUTES: Partial<Record<EventName, QueueName[]>> = {
   [EventName.DocumentDeleted]: [QueueName.ApplicationsRefresh],
   [EventName.BorrowerProfileChanged]: [QueueName.ApplicationsRefresh],
   [EventName.AnalysisRequested]: [QueueName.AnalysisRun],
+  [EventName.DocumentScanned]: [QueueName.DocumentsExtract],
   [EventName.AnalysisCompleted]: [QueueName.NotificationsSubscriptions],
   [EventName.ApplicationStatusChanged]: [QueueName.NotificationsSubscriptions],
 };

@@ -14,6 +14,7 @@ export const QueueName = {
   ApplicationsRefresh: 'applications.refresh',
   AnalysisRun: 'analysis.run',
   NotificationsSubscriptions: 'notifications.subscriptions',
+  DocumentsExtract: 'documents.extract',
 } as const;
 
 export type QueueName = (typeof QueueName)[keyof typeof QueueName];

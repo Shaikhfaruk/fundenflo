@@ -108,3 +108,6 @@ These are the places where a second copy is most tempting. Use the one listed.
 | Correcting or confirming a fact as ops | `ApplicationService.verifyFact()` (`ops_verified` through `FactService`) | Writing `borrower_facts` from ops controllers |
 | Telling a user when something finishes | `POST /notifications/subscriptions` + a `@SubscriptionTargetFor` provider | Per-feature notification flags or ad-hoc sends after events |
 | Storing scoring models and improvement rules | Config resources `scoring_model` / `improvement_rule` | `scoring_models` / `improvement_rules` tables (planned in §9, replaced by the config store) |
+| Reading values out of a document | `ExtractionService` through the `DocumentExtractor` port | Calling OCR or LLM providers from other modules |
+| Keying or correcting values from a document | `POST /ops/documents/:id/review` (`ExtractionService.review`) | Ops writing facts for documents through other routes |
+| Spotting declared vs observed contradictions | `ConsistencyService` (run by `FactService.record` for non-declared facts) | Per-feature comparisons in extraction, scoring or ops code |

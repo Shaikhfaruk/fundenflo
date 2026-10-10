@@ -43,7 +43,8 @@
 | `document.scan_overdue` | documents (`DocumentScanSlaHandler`, 15 min after upload or the last re-queue) | `documents.scan` | — | M3 | `useful` | spec `documents-upload` |
 | `lender.changed` | lenders (`LenderService`: lender, agreement and contact changes, via `ChangeRecorder`) | none yet (the lender cache is cleared after commit) | — | M4 | `useful` | spec `lenders` |
 | `lender_product.proposed` | lenders (`LenderPortalService.propose`) | none yet (M7 notifies the lender manager) | — | M4 | `useful` | spec `lenders` |
-| `document.verified` | documents (M5 extraction / ops review) | applications, notifications | user room | M5 | `planned` | §8.3 |
+| `document.verified` · `document.needs_review` | documents (`ExtractionService`: extraction result or ops review) | `realtime.publish` (`document.changed`) | uploader's user room + partner org room | M5 | `useful` | spec `extraction` |
+| `consistency.signal_raised` · `consistency.signal_resolved` | attributes (`ConsistencyService`, after any non-declared fact write) | none yet (M8 risk queue) | — | M5 | `useful` | spec `extraction` |
 | `analysis.requested` | assessments (`AnalysisService.request`) | `analysis.run` | — | M5 | `useful` | spec `assessments` |
 | `analysis.completed` | assessments (`AnalysisService.finish` / `fail`; payload status, requester, score result) | `notifications.subscriptions`; `realtime.publish` (`analysis.changed`); M6 matching | requester's user room | M5 | `useful` | spec `assessments`; flow `assessments` |
 | `score.computed` | assessments (`ScoringService.score`) | none yet (M6 matching re-runs) | — | M5 | `useful` | spec `assessments` |

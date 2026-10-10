@@ -1,0 +1,75 @@
+{
+  "name": "List Document Extractions",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/ops/documents/:id/extractions",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "documents",
+        ":id",
+        "extractions"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{documentId}}"
+        }
+      ]
+    },
+    "description": "Every extraction of a document, newest first: the extractor (`manual` until an AI provider is configured, `ops` for reviews), model and prompt version, classification, fields with confidence and the reason it needs review. Documents waiting for keying are `GET /documents?status=needs_review`. Staff only: ops leads and reviewers act; support reads."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/ops/documents/:id/extractions",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "documents",
+            ":id",
+            "extractions"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{documentId}}"
+            }
+          ]
+        },
+        "description": "Every extraction of a document, newest first: the extractor (`manual` until an AI provider is configured, `ops` for reviews), model and prompt version, classification, fields with confidence and the reason it needs review. Documents waiting for keying are `GET /documents?status=needs_review`. Staff only: ops leads and reviewers act; support reads."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a122c0-2b3c-7d4e-9f50-61728394a5b6\",\n      \"extractor\": \"manual\",\n      \"model\": null,\n      \"promptVersion\": null,\n      \"status\": \"needs_review\",\n      \"classifiedAs\": null,\n      \"classConfidence\": null,\n      \"fields\": [],\n      \"reason\": \"manual_keying\",\n      \"reviewedByUserId\": null,\n      \"createdAt\": \"2026-10-10T20:00:00.000Z\"\n    }\n  ]\n}"
+    }
+  ]
+}

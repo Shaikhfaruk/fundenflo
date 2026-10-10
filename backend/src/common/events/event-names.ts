@@ -85,6 +85,10 @@ export const EventName = {
   AnalysisRequested: 'analysis.requested',
   AnalysisCompleted: 'analysis.completed',
   ScoreComputed: 'score.computed',
+  ConsistencySignalRaised: 'consistency.signal_raised',
+  ConsistencySignalResolved: 'consistency.signal_resolved',
+  DocumentVerified: 'document.verified',
+  DocumentNeedsReview: 'document.needs_review',
 } as const;
 
 export type EventName = (typeof EventName)[keyof typeof EventName];

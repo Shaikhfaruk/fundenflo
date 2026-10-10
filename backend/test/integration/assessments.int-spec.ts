@@ -119,13 +119,13 @@ describe('scoring models, analyses, assessments and notification subscriptions',
     expect((await as(borrower).post(`/applications/${applicationId}/analyses`).expect(403)).body.code).toBe('CONSENT_REQUIRED');
     await as(borrower).post(`/applications/${applicationId}/consents`, { templateVersionId, items: allGranted }).expect(200);
     const queued = await as(borrower).post(`/applications/${applicationId}/analyses`).expect(202);
-    expect(queued.body).toMatchObject({ status: 'queued', steps: [{ id: 'documents', state: 'pending', label: 'Reading Your Documents' }, { id: 'score', state: 'pending' }] });
+    expect(queued.body).toMatchObject({ status: 'queued', steps: [{ id: 'documents', state: 'pending', label: 'Reading Your Documents' }, { id: 'consistency', state: 'pending' }, { id: 'score', state: 'pending' }] });
     expect((await as(borrower).post(`/applications/${applicationId}/analyses`).expect(202)).body.id).toBe(queued.body.id);
 
     expect(await run(queued.body.id)).toBe('done');
     expect(await run(queued.body.id)).toBeNull();
     const done = await as(borrower).get(`/analyses/${queued.body.id}`).expect(200);
-    expect(done.body).toMatchObject({ status: 'done', steps: [{ id: 'documents', state: 'done' }, { id: 'score', state: 'done', detail: { status: 'scored', value: 57, model: 'msme.health' } }] });
+    expect(done.body).toMatchObject({ status: 'done', steps: [{ id: 'documents', state: 'done' }, { id: 'consistency', state: 'done', detail: { openSignals: 0 } }, { id: 'score', state: 'done', detail: { status: 'scored', value: 57, model: 'msme.health' } }] });
 
     const assessment = await as(borrower).get(`/applications/${applicationId}/assessment`).expect(200);
     expect(assessment.body.score).toMatchObject({ analysisId: queued.body.id, status: 'scored', value: 57, band: 'Fair — A Few Gaps To Close', model: { key: 'msme.health', number: 1 } });
@@ -167,7 +167,7 @@ describe('scoring models, analyses, assessments and notification subscriptions',
     expect(subscription.body).toMatchObject({ status: 'pending', channel: 'sms', entityType: 'analysis' });
 
     await run(analysis.body.id);
-    expect((await as(person).get(`/analyses/${analysis.body.id}`).expect(200)).body.steps[1]).toMatchObject({ state: 'skipped', detail: { reason: 'no_scoring_model' } });
+    expect((await as(person).get(`/analyses/${analysis.body.id}`).expect(200)).body.steps[2]).toMatchObject({ state: 'skipped', detail: { reason: 'no_scoring_model' } });
     await as(person).get(`/applications/${personal.body.id}/assessment`).expect(404);
 
     const before = await t.prisma.notificationDelivery.count({ where: { templateKey: 'analysis.completed' } });

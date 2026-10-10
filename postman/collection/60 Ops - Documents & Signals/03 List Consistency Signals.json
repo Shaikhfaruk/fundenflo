@@ -1,0 +1,80 @@
+{
+  "name": "List Consistency Signals",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/ops/consistency-signals?status=open&applicationId={{applicationId}}",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "consistency-signals"
+      ],
+      "query": [
+        {
+          "key": "status",
+          "value": "open"
+        },
+        {
+          "key": "applicationId",
+          "value": "{{applicationId}}"
+        }
+      ]
+    },
+    "description": "Places where extracted or ops-verified figures contradict what the borrower declared by more than 20% (or differ for yes/no and choice answers), with severity (`low` < 50%, `medium` < 100%, `high`). Staff only: ops leads and reviewers act; support reads."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "const first = pm.response.json().items[0]; if (first) pm.collectionVariables.set('consistencySignalId', first.id);"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/ops/consistency-signals?status=open&applicationId={{applicationId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "consistency-signals"
+          ],
+          "query": [
+            {
+              "key": "status",
+              "value": "open"
+            },
+            {
+              "key": "applicationId",
+              "value": "{{applicationId}}"
+            }
+          ]
+        },
+        "description": "Places where extracted or ops-verified figures contradict what the borrower declared by more than 20% (or differ for yes/no and choice answers), with severity (`low` < 50%, `medium` < 100%, `high`). Staff only: ops leads and reviewers act; support reads."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a122c0-1a2b-7c3d-8e4f-5061728394a5\",\n      \"partyId\": \"01a12260-3c4d-7e5f-8061-728394a5b6c7\",\n      \"applicationId\": \"01a12260-2b3c-7d4e-9f50-61728394a5b6\",\n      \"attributeKey\": \"business.monthly_turnover_paise\",\n      \"declaredValue\": {\n        \"min\": 50000000,\n        \"max\": 249999999\n      },\n      \"observedValue\": 400000000,\n      \"observedProvenance\": \"ops_verified\",\n      \"deviationPct\": 60,\n      \"severity\": \"medium\",\n      \"status\": \"open\",\n      \"resolutionNote\": null,\n      \"resolvedAt\": null,\n      \"version\": 1,\n      \"createdAt\": \"2026-10-10T20:00:00.000Z\"\n    }\n  ],\n  \"nextCursor\": null\n}"
+    }
+  ]
+}

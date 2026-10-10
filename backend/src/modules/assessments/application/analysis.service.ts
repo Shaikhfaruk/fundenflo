@@ -11,6 +11,7 @@ import type { CompiledScoringModel } from '../../../engines/scoring/scoring.type
 import type { Prisma } from '../../../generated/prisma/client.js';
 import type { AppAbility } from '../../access/domain/ability.types.js';
 import { ApplicationService } from '../../applications/application/application.service.js';
+import { ConsistencyService } from '../../attributes/application/consistency.service.js';
 import { AuditService } from '../../audit/application/audit.service.js';
 import { ChangeRecorder } from '../../audit/application/change-recorder.service.js';
 import { AuditAction, AuditEntity } from '../../audit/domain/audit.constants.js';
@@ -25,7 +26,7 @@ import { ScoringService } from './scoring.service.js';
 
 const json = (value: unknown) => value as Prisma.InputJsonValue;
 
-const initialSteps = (): AnalysisStep[] => [AnalysisStepKey.Documents, AnalysisStepKey.Score].map((key) => ({ key, state: AnalysisStepState.Pending, detail: null }));
+const initialSteps = (): AnalysisStep[] => [AnalysisStepKey.Documents, AnalysisStepKey.Consistency, AnalysisStepKey.Score].map((key) => ({ key, state: AnalysisStepState.Pending, detail: null }));
 
 const withStep = (steps: AnalysisStep[], key: AnalysisStepKey, state: AnalysisStepState, detail: Record<string, unknown> | null = null) => steps.map((step) => (step.key === key ? { ...step, state, detail } : step));
 
@@ -42,6 +43,7 @@ export class AnalysisService {
     private readonly config: ConfigPublishingService,
     private readonly changes: ChangeRecorder,
     private readonly auditLog: AuditService,
+    private readonly consistency: ConsistencyService,
   ) {}
 
   async request(applicationId: string, input: { documentIds?: string[] }, userId: string, ability: AppAbility, locale: Locale) {
@@ -83,6 +85,7 @@ export class AnalysisService {
       const application = await this.applications.subject(claimed.applicationId);
       const clean = new Set((await this.documents.analysable(application.partyId, application.id)).map((document) => document.id));
       let steps = withStep(claimed.steps, AnalysisStepKey.Documents, AnalysisStepState.Done, { documents: claimed.documentIds.filter((documentId) => clean.has(documentId)).length });
+      steps = withStep(steps, AnalysisStepKey.Consistency, AnalysisStepState.Done, { openSignals: await this.consistency.openCount([...new Set([application.partyId, application.actingPartyId])]) });
       steps = withStep(steps, AnalysisStepKey.Score, AnalysisStepState.Active);
       await this.repository.updateAnalysis(id, { steps: json(steps) });
       const model = await this.scoring.modelFor(application.segmentKey, application.subSegmentKey);

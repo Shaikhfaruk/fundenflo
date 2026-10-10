@@ -1,0 +1,76 @@
+{
+  "name": "Extraction: AI-consented upload goes to ops keying, ops verify figures, a contradiction raises a signal and ops resolve it",
+  "requires": [
+    "staffInvitation"
+  ],
+  "steps": [
+    {
+      "request": "01 Auth/01 Request OTP.json",
+      "identity": "borrower",
+      "variables": {
+        "loginAs": "borrower"
+      }
+    },
+    {
+      "request": "01 Auth/02 Verify OTP.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "04 Borrower Journey/05 Create Application.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "04 Borrower Journey/08 Update Requirement.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "04 Borrower Journey/11 Submit Application Answers.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "03 Catalog/07 Get Consent Template.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "04 Borrower Journey/16 Give Application Consents.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "05 Documents/01 Upload Document.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "05 Documents/03 Get Document.json",
+      "identity": "borrower",
+      "waitSeconds": 4
+    },
+    {
+      "request": "01 Auth/06 Accept Staff Invitation.json",
+      "identity": "maker"
+    },
+    {
+      "request": "01 Auth/07 Staff Login.json",
+      "identity": "maker"
+    },
+    {
+      "request": "01 Auth/08 Verify Staff MFA.json",
+      "identity": "maker"
+    },
+    {
+      "request": "60 Ops - Documents & Signals/01 List Document Extractions.json",
+      "identity": "maker"
+    },
+    {
+      "request": "60 Ops - Documents & Signals/02 Review Document.json",
+      "identity": "maker"
+    },
+    {
+      "request": "60 Ops - Documents & Signals/03 List Consistency Signals.json",
+      "identity": "maker"
+    },
+    {
+      "request": "60 Ops - Documents & Signals/04 Resolve Consistency Signal.json",
+      "identity": "maker"
+    }
+  ]
+}

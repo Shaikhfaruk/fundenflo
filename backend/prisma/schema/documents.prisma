@@ -88,11 +88,12 @@ model Document {
   createdAt             DateTime              @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt             DateTime              @updatedAt @map("updated_at") @db.Timestamptz(3)
 
-  documentType    DocumentType      @relation(fields: [documentTypeId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  party           Party             @relation("document_party", fields: [partyId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  borrowerProfile BorrowerProfile?  @relation(fields: [borrowerProfileId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  application     LoanApplication?  @relation(fields: [applicationId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  documentType    DocumentType         @relation(fields: [documentTypeId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  party           Party                @relation("document_party", fields: [partyId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  borrowerProfile BorrowerProfile?     @relation(fields: [borrowerProfileId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  application     LoanApplication?     @relation(fields: [applicationId], references: [id], onDelete: Restrict, onUpdate: Restrict)
   agreements      LenderAgreement[]
+  extractions     DocumentExtraction[]
 
   @@index([partyId, status])
   @@index([partyId, sha256])
@@ -100,4 +101,31 @@ model Document {
   @@index([borrowerProfileId, createdAt])
   @@index([status, updatedAt])
   @@map("documents")
+}
+
+enum ExtractionStatus {
+  extracted
+  needs_review
+  reviewed
+  failed
+}
+
+model DocumentExtraction {
+  id               String           @id @default(uuid(7)) @db.Uuid
+  documentId       String           @map("document_id") @db.Uuid
+  extractor        String
+  model            String?
+  promptVersion    String?          @map("prompt_version")
+  status           ExtractionStatus
+  classifiedAs     String?          @map("classified_as")
+  classConfidence  Decimal?         @map("class_confidence") @db.Decimal(4, 3)
+  fields           Json             @default("[]")
+  reason           String?
+  reviewedByUserId String?          @map("reviewed_by_user_id") @db.Uuid
+  createdAt        DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  document Document @relation(fields: [documentId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([documentId, createdAt])
+  @@map("document_extractions")
 }

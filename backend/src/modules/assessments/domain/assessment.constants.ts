@@ -12,6 +12,7 @@ export const DEFAULT_IMPROVEMENT_PRIORITY = 50;
 
 export const AnalysisStepKey = {
   Documents: 'documents',
+  Consistency: 'consistency',
   Score: 'score',
 } as const;
 
@@ -29,6 +30,7 @@ export type AnalysisStepState = (typeof AnalysisStepState)[keyof typeof Analysis
 
 export const ANALYSIS_STEP_LABELS: Record<AnalysisStepKey, { en: string; hi: string }> = {
   [AnalysisStepKey.Documents]: { en: 'Reading Your Documents', hi: 'आपके दस्तावेज़ पढ़े जा रहे हैं' },
+  [AnalysisStepKey.Consistency]: { en: 'Checking Your Figures Match', hi: 'आपके आंकड़ों का मिलान किया जा रहा है' },
   [AnalysisStepKey.Score]: { en: 'Calculating Your Financial Health Score', hi: 'आपका वित्तीय स्वास्थ्य स्कोर निकाला जा रहा है' },
 };
 

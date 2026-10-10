@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { CatalogStatus, DataSensitivity, type FactProvenance } from '../../../common/enums/db.enums.js';
+import { CatalogStatus, DataSensitivity, FactProvenance } from '../../../common/enums/db.enums.js';
 import { EventName } from '../../../common/events/event-names.js';
 import { AppError } from '../../../common/errors/app-error.js';
 import { ErrorCode } from '../../../common/errors/error-codes.js';
@@ -17,6 +17,7 @@ import { type FactSourceType, MAX_FACTS_PER_WRITE, PROVENANCE_RANK } from '../do
 import { type AttributeShape, normaliseFactValue } from '../domain/fact-value.js';
 import { FactRepository } from '../infrastructure/fact.repository.js';
 import { AttributeDictionary } from './attribute-dictionary.service.js';
+import { ConsistencyService } from './consistency.service.js';
 import type { AttributeView, ResolvedFact } from './attribute.views.js';
 
 export type FactInput = {
@@ -47,6 +48,7 @@ export class FactService {
     private readonly cipher: FieldCipher,
     private readonly changes: ChangeRecorder,
     private readonly parties: PartyService,
+    private readonly consistency: ConsistencyService,
   ) {}
 
   async record(partyId: string, inputs: FactInput[], context: FactContext): Promise<ResolvedFact[]> {
@@ -107,6 +109,7 @@ export class FactService {
       metadata: { keys: created.map((fact) => fact.attributeKey), provenance: context.provenance, sourceType: context.sourceType, leadId: context.leadId ?? null },
       payload: { partyId, keys: created.map((fact) => fact.attributeKey), leadId: context.leadId ?? null },
     });
+    if (context.provenance !== FactProvenance.declared) await this.consistency.review(partyId, created);
     return created.map((fact) => this.toResolved(fact, dictionary.get(fact.attributeKey), now));
   }
 

@@ -52,6 +52,14 @@ export const DOCUMENT_SCAN_MAX_ATTEMPTS = 6;
 
 export const DOCUMENT_SCAN_CONCURRENCY = 4;
 
+export const EXTRACTION_MIN_CONFIDENCE = 0.7;
+
+export const EXTRACTION_CLASS_MIN_CONFIDENCE = 0.6;
+
+export const OPS_EXTRACTOR = 'ops';
+
+export const EXTRACTION_PENDING_BATCH = 50;
+
 export const DocumentOwnerKind = {
   Application: 'application',
   BorrowerProfile: 'borrower_profile',

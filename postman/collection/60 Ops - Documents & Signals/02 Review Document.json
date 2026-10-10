@@ -1,0 +1,203 @@
+{
+  "name": "Review Document",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/ops/documents/:id/review",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "documents",
+        ":id",
+        "review"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{documentId}}"
+        }
+      ]
+    },
+    "description": "Verifies a document with the values read from it (stored as `ops_verified` facts that outrank declared answers; differences from what the borrower declared raise consistency signals), or rejects it with `rejectReason` (`wrong_document`, `illegible`, `outdated`, `other`), which reopens its checklist slot. Staff only: ops leads and reviewers act; support reads.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"outcome\": \"verified\",\n  \"fields\": [\n    {\n      \"attributeKey\": \"business.monthly_turnover_paise\",\n      \"value\": 400000000\n    }\n  ],\n  \"note\": \"Average credits over six months\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/documents/:id/review",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "documents",
+            ":id",
+            "review"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{documentId}}"
+            }
+          ]
+        },
+        "description": "Verifies a document with the values read from it (stored as `ops_verified` facts that outrank declared answers; differences from what the borrower declared raise consistency signals), or rejects it with `rejectReason` (`wrong_document`, `illegible`, `outdated`, `other`), which reopens its checklist slot. Staff only: ops leads and reviewers act; support reads.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"outcome\": \"verified\",\n  \"fields\": [\n    {\n      \"attributeKey\": \"business.monthly_turnover_paise\",\n      \"value\": 400000000\n    }\n  ],\n  \"note\": \"Average credits over six months\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12270-1a2b-7c3d-8e4f-5061728394a5\",\n  \"status\": \"verified\"\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/documents/:id/review",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "documents",
+            ":id",
+            "review"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{documentId}}"
+            }
+          ]
+        },
+        "description": "Verifies a document with the values read from it (stored as `ops_verified` facts that outrank declared answers; differences from what the borrower declared raise consistency signals), or rejects it with `rejectReason` (`wrong_document`, `illegible`, `outdated`, `other`), which reopens its checklist slot. Staff only: ops leads and reviewers act; support reads.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"outcome\": \"verified\",\n  \"fields\": [\n    {\n      \"attributeKey\": \"business.monthly_turnover_paise\",\n      \"value\": 400000000\n    }\n  ],\n  \"note\": \"Average credits over six months\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"rejectReason\",\n      \"code\": \"required\",\n      \"message\": \"say why the document is rejected\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "409 INVALID_TRANSITION",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/documents/:id/review",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "documents",
+            ":id",
+            "review"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{documentId}}"
+            }
+          ]
+        },
+        "description": "Verifies a document with the values read from it (stored as `ops_verified` facts that outrank declared answers; differences from what the borrower declared raise consistency signals), or rejects it with `rejectReason` (`wrong_document`, `illegible`, `outdated`, `other`), which reopens its checklist slot. Staff only: ops leads and reviewers act; support reads.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"outcome\": \"verified\",\n  \"fields\": [\n    {\n      \"attributeKey\": \"business.monthly_turnover_paise\",\n      \"value\": 400000000\n    }\n  ],\n  \"note\": \"Average credits over six months\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"INVALID_TRANSITION\",\n  \"message\": \"This action is not allowed in the current state.\",\n  \"details\": {\n    \"from\": \"verified\",\n    \"event\": \"verify\",\n    \"allowed\": [\n      \"reject\",\n      \"expire\",\n      \"delete\",\n      \"purge\"\n    ]\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

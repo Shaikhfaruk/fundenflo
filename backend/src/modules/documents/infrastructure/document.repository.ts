@@ -2,7 +2,8 @@ import { TransactionHost } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
 
 import { ACTIVE_DOCUMENT_STATES } from '../../../engines/state-machines/machines/document.machine.js';
-import type { DocumentStatus, Prisma } from '../../../generated/prisma/client.js';
+import { DocumentStatus } from '../../../common/enums/db.enums.js';
+import type { Prisma } from '../../../generated/prisma/client.js';
 import type { PrismaTx } from '../../../infrastructure/database/database.types.js';
 
 export const documentInclude = {
@@ -55,6 +56,18 @@ export class DocumentRepository {
 
   update(id: string, data: Prisma.DocumentUncheckedUpdateManyInput) {
     return this.txHost.tx.document.updateMany({ where: { id }, data: { ...data, version: { increment: 1 } } });
+  }
+
+  createExtraction(data: Prisma.DocumentExtractionUncheckedCreateInput) {
+    return this.txHost.tx.documentExtraction.create({ data });
+  }
+
+  extractions(documentId: string) {
+    return this.txHost.tx.documentExtraction.findMany({ where: { documentId }, orderBy: { createdAt: 'desc' } });
+  }
+
+  async scannedForProfiles(borrowerProfileIds: string[], take: number) {
+    return (await this.txHost.tx.document.findMany({ where: { borrowerProfileId: { in: borrowerProfileIds }, status: DocumentStatus.scanned }, select: { id: true }, orderBy: { id: 'asc' }, take })).map((row) => row.id);
   }
 
   async idsOfParty(partyId: string) {

@@ -98,6 +98,7 @@ export const envSchema = z
     STORAGE_CONTAINER: z.string().regex(/^[a-z0-9](?:[a-z0-9-]{1,61}[a-z0-9])$/, 'must be a valid blob container name'),
 
     KYC_DRIVER: z.enum(['stub']).default('stub'),
+    EXTRACTION_DRIVER: z.enum(['manual']).default('manual'),
 
     ANTIVIRUS_DRIVER: z.enum(['clamav', 'eicar']).default('eicar'),
     CLAMAV_HOST: optional(z.string().min(1)),

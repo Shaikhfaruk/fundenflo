@@ -66,6 +66,14 @@ export class BorrowerProfileService {
     return profile;
   }
 
+  async actingPartyOf(borrowerProfileId: string): Promise<string | null> {
+    return (await this.profiles.findOne({ id: borrowerProfileId }))?.actingPartyId ?? null;
+  }
+
+  async profileIdsActedBy(partyId: string): Promise<string[]> {
+    return (await this.profiles.idsOfParty(partyId)).acting;
+  }
+
   @Transactional()
   async update(id: string, patch: BorrowerProfilePatch, expectedVersion: number | undefined, ability: AppAbility) {
     const profile = await this.get(id, ability, AppAction.Update);

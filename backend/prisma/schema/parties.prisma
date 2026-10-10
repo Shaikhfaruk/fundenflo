@@ -65,6 +65,7 @@ model Party {
   actingApplications LoanApplication[]   @relation("application_acting_party")
   documents          Document[]          @relation("document_party")
   applicationRoles   ApplicationParty[]  @relation("application_party_member")
+  consistencySignals ConsistencySignal[] @relation("consistency_party")
   businessLeads      Lead[]              @relation("lead_business")
 
   @@index([kind, status])

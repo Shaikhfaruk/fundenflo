@@ -334,6 +334,10 @@ Planned:
 | `GET` | `/ops/cases/:id` | applications (`ops-cases.controller.ts` → `OpsCaseService.detail`) | staff | M3 | `useful` |
 | `POST` | `/ops/cases/:id/facts/:attribute/verify` | applications (`ops-cases.controller.ts` → `ApplicationService.verifyFact` → `FactService.record` as `ops_verified`) | staff | M5 | `useful` |
 | `POST` | `/ops/assessments/:id/recompute` | assessments (`ops-assessments.controller.ts` → `AnalysisService.recompute`) | staff | M5 | `useful` |
+| `GET` | `/ops/documents/:id/extractions` | documents (`ops-documents.controller.ts` → `ExtractionService.extractions`; added for the keying queue) | staff | M5 | `useful` |
+| `POST` | `/ops/documents/:id/review` | documents (`ExtractionService.review`: verify with `ops_verified` facts or reject with a reason) | staff | M5 | `useful` |
+| `GET` | `/ops/consistency-signals` | attributes (`ops-consistency-signals.controller.ts` → `ConsistencyService.list`) | staff | M5 | `useful` |
+| `POST` | `/ops/consistency-signals/:id/resolve` | attributes (`ConsistencyService.resolve`) | staff | M5 | `useful` |
 | `POST` | `/ops/cases/:id/assign` | applications | staff | M6 | `planned` |
 | `POST` | `/ops/cases/:id/document-requests` | applications | staff | M6 | `planned` |
 | `POST` | `/ops/cases/:id/approve-submission` | applications | staff | M6 | `planned` |

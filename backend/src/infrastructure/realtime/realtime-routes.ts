@@ -83,6 +83,8 @@ const ROUTES: Partial<Record<EventName, (payload: Payload) => RealtimeTarget[]>>
     return userId ? [{ kind: 'emit', rooms: [RealtimeRoom.user(userId)], event: RealtimeEvent.AnalysisChanged, data: { analysisId: text(payload, 'analysisId'), applicationId: text(payload, 'applicationId'), status: text(payload, 'status') } }] : [];
   },
   [EventName.DocumentScanned]: document,
+  [EventName.DocumentVerified]: document,
+  [EventName.DocumentNeedsReview]: document,
   [EventName.DocumentRejected]: document,
   [EventName.DocumentDeleted]: document,
   [EventName.MembershipChanged]: (payload) => {

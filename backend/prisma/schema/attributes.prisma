@@ -82,3 +82,43 @@ model BorrowerFact {
   @@index([applicationId])
   @@map("borrower_facts")
 }
+
+enum SignalSeverity {
+  low
+  medium
+  high
+}
+
+enum SignalStatus {
+  open
+  resolved
+  dismissed
+}
+
+model ConsistencySignal {
+  id                 String         @id @default(uuid(7)) @db.Uuid
+  partyId            String         @map("party_id") @db.Uuid
+  applicationId      String?        @map("application_id") @db.Uuid
+  attributeKey       String         @map("attribute_key")
+  declaredFactId     String         @map("declared_fact_id") @db.Uuid
+  observedFactId     String         @map("observed_fact_id") @db.Uuid
+  observedProvenance FactProvenance @map("observed_provenance")
+  declaredValue      Json           @map("declared_value")
+  observedValue      Json           @map("observed_value")
+  deviationPct       Decimal?       @map("deviation_pct") @db.Decimal(8, 2)
+  severity           SignalSeverity
+  status             SignalStatus   @default(open)
+  resolutionNote     String?        @map("resolution_note")
+  resolvedByUserId   String?        @map("resolved_by_user_id") @db.Uuid
+  resolvedAt         DateTime?      @map("resolved_at") @db.Timestamptz(3)
+  version            Int            @default(1)
+  createdAt          DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt          DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  party Party @relation("consistency_party", fields: [partyId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@unique([observedFactId, attributeKey])
+  @@index([partyId, status])
+  @@index([status, createdAt])
+  @@map("consistency_signals")
+}

@@ -13,6 +13,7 @@ export const FactSourceType = {
   LeadCapture: 'lead_capture',
   Import: 'import',
   OpsEntry: 'ops_entry',
+  DocumentExtraction: 'document_extraction',
   Integration: 'integration',
 } as const;
 
@@ -31,3 +32,9 @@ export const STRING_FACT_MAX_LENGTH = 2_000;
 export const MAX_ENUM_VALUES = 200;
 
 export const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+
+export const CONSISTENCY_TOLERANCE_PCT = 20;
+
+export const CONSISTENCY_MEDIUM_FROM_PCT = 50;
+
+export const CONSISTENCY_HIGH_FROM_PCT = 100;
