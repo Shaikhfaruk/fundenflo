@@ -134,8 +134,8 @@ Controller: `backend/src/modules/catalog/http/catalog.controller.ts` · Postman:
 | `POST` | `/applications/:id/analyses` | assessments (`application-assessments.controller.ts` → `AnalysisService.request`; queue `analysis.run`) | borrower, partner | M5 | `useful` |
 | `GET` | `/analyses/:id` | assessments (`analyses.controller.ts`; staff can read too) | borrower, partner, staff | M5 | `useful` |
 | `GET` | `/applications/:id/assessment` | assessments (`AnalysisService.assessment`) | borrower, partner | M5 | `useful` |
-| `POST` | `/applications/:id/matches` | matching | borrower, partner | M6 | `planned` |
-| `GET` | `/applications/:id/matches/latest` | matching | borrower, partner | M6 | `planned` |
+| `POST` | `/applications/:id/matches` | matching (`application-matches.controller.ts` → `MatchingService.request`) | borrower, partner | M6 | `useful` |
+| `GET` | `/applications/:id/matches/latest` | matching (`MatchingService.latest`; staff see ineligible products and rule results) | borrower, partner, staff | M6 | `useful` |
 
 ## 07 Applications & Submissions
 

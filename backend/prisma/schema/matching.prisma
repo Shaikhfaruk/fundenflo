@@ -1,0 +1,49 @@
+enum MatchOutcome {
+  eligible
+  needs_info
+  ineligible
+}
+
+model MatchRun {
+  id                String   @id @default(uuid(7)) @db.Uuid
+  applicationId     String   @map("application_id") @db.Uuid
+  scoreResultId     String?  @map("score_result_id") @db.Uuid
+  request           Json
+  productVersionIds String[] @map("product_version_ids") @db.Uuid
+  eligibleCount     Int      @map("eligible_count")
+  triggeredByUserId String?  @map("triggered_by_user_id") @db.Uuid
+  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  application LoanApplication @relation(fields: [applicationId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  results     MatchResult[]
+
+  @@index([applicationId, createdAt])
+  @@map("match_runs")
+}
+
+model MatchResult {
+  id                String       @id @default(uuid(7)) @db.Uuid
+  matchRunId        String       @map("match_run_id") @db.Uuid
+  applicationId     String       @map("application_id") @db.Uuid
+  lenderId          String       @map("lender_id") @db.Uuid
+  productDocumentId String       @map("product_document_id") @db.Uuid
+  productVersionId  String       @map("product_version_id") @db.Uuid
+  productKey        String       @map("product_key")
+  productName       Json         @map("product_name")
+  outcome           MatchOutcome
+  rank              Int
+  fit               Int
+  screen            Json
+  hard              Json
+  soft              Json
+  reasons           Json
+  missingAttributes String[]     @map("missing_attributes")
+  documentsNeeded   String[]     @map("documents_needed")
+  createdAt         DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  run MatchRun @relation(fields: [matchRunId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@unique([matchRunId, productVersionId])
+  @@index([applicationId, outcome])
+  @@map("match_results")
+}

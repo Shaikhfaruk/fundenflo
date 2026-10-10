@@ -57,6 +57,10 @@ export class ConfigPublishingService {
     return toPage(rows, query.limit, (row) => toConfigDocumentView(row, now));
   }
 
+  async names(resource: ConfigResource, ids: string[]): Promise<Map<string, unknown>> {
+    return new Map((await this.repo.documentNames(resource, ids)).map((document) => [document.id, document.name]));
+  }
+
   async getDocument(resource: ConfigResource, id: string) {
     return toConfigDocumentView(await this.requireDocument(resource, id), new Date());
   }

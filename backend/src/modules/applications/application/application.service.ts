@@ -10,7 +10,7 @@ import { EventName } from '../../../common/events/event-names.js';
 import { assertVersion } from '../../../common/http/versioning.js';
 import { DEFAULT_LOCALE, type Locale } from '../../../common/i18n/locale.js';
 import { type PageQuery, pageWindow, toPage } from '../../../common/listing/cursor-page.js';
-import { paiseFromNumber } from '../../../common/money/paise.js';
+import { paiseFromNumber, paiseToNumber } from '../../../common/money/paise.js';
 import { RefGenerator, RefKind } from '../../../infrastructure/database/ref-generator.js';
 import { remainingRequired } from '../../../engines/questionnaire/resolve.js';
 import type { QuestionnaireContext } from '../../../engines/questionnaire/questionnaire.types.js';
@@ -245,6 +245,31 @@ export class ApplicationService {
     return { partyId, fact };
   }
 
+  async matchSubject(id: string) {
+    const application = await this.require(id);
+    return {
+      id: application.id,
+      partyId: application.partyId,
+      actingPartyId: application.actingPartyId,
+      segmentKey: application.segmentKey,
+      subSegmentKey: application.subSegmentKey,
+      categoryKey: application.categoryKey,
+      amountPaise: application.amountPaise === null ? null : paiseToNumber(application.amountPaise),
+      tenureMonths: application.tenureMonths,
+      location: { stateId: application.stateId, cityId: application.cityId, pincode: application.pincode },
+      latestScoreResultId: application.latestScoreResultId,
+      status: application.status,
+    };
+  }
+
+  @Transactional()
+  async recordMatch(id: string, matchRunId: string, eligibleCount: number) {
+    await this.applications.lock(id);
+    await this.applications.update(id, { latestMatchRunId: matchRunId, matchedAt: eligibleCount > 0 ? new Date() : null });
+    await this.timeline.record(id, ApplicationEventType.match_recorded, { data: { matchRunId, eligibleCount } });
+    await this.refreshStage(id);
+  }
+
   async subject(id: string) {
     const application = await this.require(id);
     return { id: application.id, ref: application.ref, partyId: application.partyId, actingPartyId: application.actingPartyId, segmentKey: application.segmentKey, subSegmentKey: application.subSegmentKey };
@@ -357,7 +382,7 @@ export class ApplicationService {
       documentsMissing: checklist.items.filter((item) => item.required && !item.conditional && !item.satisfied).map((item) => item.key),
       detailsVerified,
       scored: application.scoredAt !== null,
-      matched: false,
+      matched: application.matchedAt !== null,
       applied: false,
     };
   }

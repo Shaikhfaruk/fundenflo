@@ -1,0 +1,111 @@
+{
+  "name": "Get Latest Matches",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/applications/:id/matches/latest",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "applications",
+        ":id",
+        "matches",
+        "latest"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{applicationId}}"
+        }
+      ]
+    },
+    "description": "The latest match run. Staff also see `ineligible` products and each product's screening and rule results. Only products of active lenders with an agreement in force, in the application's category, are considered. Borrower, partner and staff contexts."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/applications/:id/matches/latest",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "applications",
+            ":id",
+            "matches",
+            "latest"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            }
+          ]
+        },
+        "description": "The latest match run. Staff also see `ineligible` products and each product's screening and rule results. Only products of active lenders with an agreement in force, in the application's category, are considered. Borrower, partner and staff contexts."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a122d0-1a2b-7c3d-8e4f-5061728394a5\",\n  \"applicationId\": \"01a12260-2b3c-7d4e-9f50-61728394a5b6\",\n  \"scoreResultId\": \"01a122b0-2b3c-7d4e-9f50-61728394a5b6\",\n  \"eligibleCount\": 1,\n  \"createdAt\": \"2026-10-10T21:00:00.000Z\",\n  \"items\": [\n    {\n      \"id\": \"01a122d0-2b3c-7d4e-9f50-61728394a5b6\",\n      \"rank\": 1,\n      \"outcome\": \"eligible\",\n      \"fit\": 100,\n      \"lender\": {\n        \"id\": \"01a122a0-1a2b-7c3d-8e4f-5061728394a5\",\n        \"key\": \"lenderx\",\n        \"name\": \"Lender X Finance Ltd\",\n        \"organizationId\": \"01a122a0-2b3c-7d4e-9f50-61728394a5b6\"\n      },\n      \"product\": {\n        \"id\": \"01a122a0-5e6f-7a71-9283-94a5b6c7d8e9\",\n        \"key\": \"lenderx.working_capital\",\n        \"versionId\": \"01a122a0-6f70-7b82-a394-a5b6c7d8e9fa\",\n        \"name\": \"Lender X Working Capital\"\n      },\n      \"reasons\": [\n        \"They lend in your area\",\n        \"Business vintage fits their policy\"\n      ],\n      \"missingAttributes\": [],\n      \"documentsNeeded\": [\n        \"udyam\"\n      ]\n    },\n    {\n      \"id\": \"01a122d0-3c4d-7e5f-8061-728394a5b6c7\",\n      \"rank\": 2,\n      \"outcome\": \"needs_info\",\n      \"fit\": 100,\n      \"lender\": {\n        \"id\": \"01a122a0-7a8b-7c9d-8e0f-a1b2c3d4e5f6\",\n        \"key\": \"lendery\",\n        \"name\": \"Lender Y Capital\",\n        \"organizationId\": \"01a122a0-8b9c-7d0e-9f1a-b2c3d4e5f6a7\"\n      },\n      \"product\": {\n        \"id\": \"01a122a0-9c0d-7e1f-8a2b-c3d4e5f6a7b8\",\n        \"key\": \"lendery.msme_loan\",\n        \"versionId\": \"01a122a0-0d1e-7f2a-9b3c-d4e5f6a7b8c9\",\n        \"name\": \"Lender Y MSME Loan\"\n      },\n      \"reasons\": [\n        \"They lend in your area\"\n      ],\n      \"missingAttributes\": [\n        \"person.work_experience_months\"\n      ],\n      \"documentsNeeded\": []\n    }\n  ]\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/applications/:id/matches/latest",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "applications",
+            ":id",
+            "matches",
+            "latest"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            }
+          ]
+        },
+        "description": "The latest match run. Staff also see `ineligible` products and each product's screening and rule results. Only products of active lenders with an agreement in force, in the application's category, are considered. Borrower, partner and staff contexts."
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"details\": {\n    \"reason\": \"not_matched\"\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

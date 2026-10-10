@@ -89,6 +89,7 @@ export const EventName = {
   ConsistencySignalResolved: 'consistency.signal_resolved',
   DocumentVerified: 'document.verified',
   DocumentNeedsReview: 'document.needs_review',
+  MatchCompleted: 'match.completed',
 } as const;
 
 export type EventName = (typeof EventName)[keyof typeof EventName];

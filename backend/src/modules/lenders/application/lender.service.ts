@@ -82,6 +82,10 @@ export class LenderService {
     return toLenderView(await this.visible(id, ability, AppAction.Read));
   }
 
+  async summaries(ids: string[]) {
+    return new Map((await this.lenders.list({ id: { in: ids } }, ids.length)).map((lender) => [lender.id, { id: lender.id, key: lender.key, name: lender.organization.name, organizationId: lender.organizationId }]));
+  }
+
   async forOrganization(organizationId: string) {
     const lender = await this.lenders.findOne({ organizationId });
     if (!lender) throw new AppError(ErrorCode.NOT_FOUND);

@@ -55,6 +55,7 @@ export {
   LeadUrgency,
   LoginAs,
   LoginMethod,
+  MatchOutcome,
   MatchReviewStatus,
   MembershipStatus,
   NotificationChannel,

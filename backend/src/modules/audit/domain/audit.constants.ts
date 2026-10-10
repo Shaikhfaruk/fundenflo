@@ -109,6 +109,7 @@ export const AuditAction = {
   ConsistencySignalResolved: 'consistency.signal_resolved',
   DocumentExtracted: 'document.extracted',
   DocumentReviewed: 'document.reviewed',
+  MatchCompleted: 'match.completed',
 } as const;
 
 export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction];
@@ -156,6 +157,7 @@ export const AuditEntity = {
   ScoreResult: 'score_result',
   ConsistencySignal: 'consistency_signal',
   DocumentExtraction: 'document_extraction',
+  MatchRun: 'match_run',
   LenderAgreement: 'lender_agreement',
   LenderContact: 'lender_contact',
 } as const;

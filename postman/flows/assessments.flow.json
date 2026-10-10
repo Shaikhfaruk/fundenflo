@@ -1,5 +1,5 @@
 {
-  "name": "Assessments: publish a scoring model and an improvement rule, analyse a case, read the assessment, verify a fact and recompute",
+  "name": "Assessments: publish a scoring model and an improvement rule, analyse a case, read the assessment, match lenders, verify a fact and recompute",
   "requires": [
     "staffInvitation",
     "checkerInvitation"
@@ -129,6 +129,14 @@
     },
     {
       "request": "06 Assessment & Matching/03 Get Assessment.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "06 Assessment & Matching/04 Match Lenders.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "06 Assessment & Matching/05 Get Latest Matches.json",
       "identity": "borrower"
     },
     {

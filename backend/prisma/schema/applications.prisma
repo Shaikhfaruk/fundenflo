@@ -29,6 +29,7 @@ enum ApplicationEventType {
   party_removed
   consent_recorded
   assessment_recorded
+  match_recorded
 }
 
 enum ApplicationPartyRole {
@@ -76,6 +77,8 @@ model LoanApplication {
   slaDueAt              DateTime?          @map("sla_due_at") @db.Timestamptz(3)
   latestScoreResultId   String?            @map("latest_score_result_id") @db.Uuid
   scoredAt              DateTime?          @map("scored_at") @db.Timestamptz(3)
+  latestMatchRunId      String?            @map("latest_match_run_id") @db.Uuid
+  matchedAt             DateTime?          @map("matched_at") @db.Timestamptz(3)
   closedAt              DateTime?          @map("closed_at") @db.Timestamptz(3)
   closeReason           String?            @map("close_reason")
   createdByUserId       String             @map("created_by_user_id") @db.Uuid
@@ -91,6 +94,7 @@ model LoanApplication {
   parties         ApplicationParty[]
   analyses        Analysis[]
   scoreResults    ScoreResult[]
+  matchRuns       MatchRun[]
 
   @@index([actingPartyId, status])
   @@index([partyId])

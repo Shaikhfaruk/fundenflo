@@ -30,6 +30,7 @@ const ROUTES: Partial<Record<EventName, QueueName[]>> = {
   [EventName.BorrowerProfileChanged]: [QueueName.ApplicationsRefresh],
   [EventName.AnalysisRequested]: [QueueName.AnalysisRun],
   [EventName.DocumentScanned]: [QueueName.DocumentsExtract],
+  [EventName.ScoreComputed]: [QueueName.MatchingRun],
   [EventName.AnalysisCompleted]: [QueueName.NotificationsSubscriptions],
   [EventName.ApplicationStatusChanged]: [QueueName.NotificationsSubscriptions],
 };

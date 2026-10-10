@@ -111,3 +111,4 @@ These are the places where a second copy is most tempting. Use the one listed.
 | Reading values out of a document | `ExtractionService` through the `DocumentExtractor` port | Calling OCR or LLM providers from other modules |
 | Keying or correcting values from a document | `POST /ops/documents/:id/review` (`ExtractionService.review`) | Ops writing facts for documents through other routes |
 | Spotting declared vs observed contradictions | `ConsistencyService` (run by `FactService.record` for non-declared facts) | Per-feature comparisons in extraction, scoring or ops code |
+| Matching an application to lender products | `MatchingService.run()` → `matchProducts` | Product filtering in controllers, the compat layer or lender code |

@@ -47,7 +47,8 @@
 | `consistency.signal_raised` · `consistency.signal_resolved` | attributes (`ConsistencyService`, after any non-declared fact write) | none yet (M8 risk queue) | — | M5 | `useful` | spec `extraction` |
 | `analysis.requested` | assessments (`AnalysisService.request`) | `analysis.run` | — | M5 | `useful` | spec `assessments` |
 | `analysis.completed` | assessments (`AnalysisService.finish` / `fail`; payload status, requester, score result) | `notifications.subscriptions`; `realtime.publish` (`analysis.changed`); M6 matching | requester's user room | M5 | `useful` | spec `assessments`; flow `assessments` |
-| `score.computed` | assessments (`ScoringService.score`) | none yet (M6 matching re-runs) | — | M5 | `useful` | spec `assessments` |
+| `score.computed` | assessments (`ScoringService.score`) | `matching.run` | — | M5 | `useful` | spec `assessments` |
+| `match.completed` | matching (`MatchingService.persist`) | none yet (submissions use the latest run) | — | M6 | `useful` | spec `matching` |
 | `submission.status.changed` · `submission.disbursed` | applications | commissions, leads, notifications | user, partner org, lender org rooms | M6 | `planned` | §8.2 |
 | `receivable.received` · `payout.paid` · `payout.reversed` | commissions | notifications, reports | partner org room | M7 | `planned` | §8.5 |
 | `risk.signal.raised` | risk, documents | ops queue (assignment) | ops room | M8 | `planned` | §13 |

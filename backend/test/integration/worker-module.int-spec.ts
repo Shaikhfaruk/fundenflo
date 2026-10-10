@@ -8,6 +8,7 @@ import { AnalysisRunProcessor } from '../../src/modules/assessments/infrastructu
 import { DocumentExtractProcessor } from '../../src/modules/documents/infrastructure/document-extract.processor.js';
 import { DocumentScanProcessor } from '../../src/modules/documents/infrastructure/document-scan.processor.js';
 import { LeadRoutingProcessor } from '../../src/modules/leads/infrastructure/lead-routing.processor.js';
+import { MatchingRunProcessor } from '../../src/modules/matching/infrastructure/matching-run.processor.js';
 import { SubscriptionDeliveryProcessor } from '../../src/modules/subscriptions/infrastructure/subscription-delivery.processor.js';
 import { WorkerModule } from '../../src/worker.module.js';
 
@@ -20,6 +21,7 @@ describe('worker process', () => {
     expect(moduleRef.get(ApplicationRefreshProcessor)).toBeInstanceOf(ApplicationRefreshProcessor);
     expect(moduleRef.get(AnalysisRunProcessor)).toBeInstanceOf(AnalysisRunProcessor);
     expect(moduleRef.get(SubscriptionDeliveryProcessor)).toBeInstanceOf(SubscriptionDeliveryProcessor);
+    expect(moduleRef.get(MatchingRunProcessor)).toBeInstanceOf(MatchingRunProcessor);
     await moduleRef.close();
   });
 });

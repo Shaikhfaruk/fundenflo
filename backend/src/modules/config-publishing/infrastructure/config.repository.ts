@@ -82,6 +82,10 @@ export class ConfigRepository {
     return this.txHost.tx.configVersion.updateMany({ where: { id, ...guard }, data: { ...data, version: { increment: 1 } } });
   }
 
+  documentNames(resource: ConfigResource, ids: string[]) {
+    return this.txHost.tx.configDocument.findMany({ where: { resource, id: { in: ids } }, select: { id: true, name: true } });
+  }
+
   listPublished(resource: ConfigResource) {
     return this.txHost.tx.configVersion.findMany({
       where: { status: ConfigVersionStatus.published, document: { resource, status: CatalogStatus.active } },

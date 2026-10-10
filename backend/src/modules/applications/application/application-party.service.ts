@@ -2,7 +2,7 @@ import { Transactional } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
 
 import type { UserActor } from '../../../common/context/actor.js';
-import { ApplicationEventType, ApplicationPartyConsent, type ApplicationPartyRole, ApplicationPartyStatus, ConsentChannel, ContactType, SessionContext } from '../../../common/enums/db.enums.js';
+import { ApplicationEventType, ApplicationPartyConsent, ApplicationPartyRole, ApplicationPartyStatus, ConsentChannel, ContactType, SessionContext } from '../../../common/enums/db.enums.js';
 import { AppError } from '../../../common/errors/app-error.js';
 import { ErrorCode } from '../../../common/errors/error-codes.js';
 import { EventName } from '../../../common/events/event-names.js';
@@ -42,6 +42,11 @@ export class ApplicationPartyService {
     private readonly me: MeService,
     private readonly changes: ChangeRecorder,
   ) {}
+
+  async partyIdsByRole(applicationId: string) {
+    const rows = await this.repository.parties(applicationId, ApplicationPartyStatus.active);
+    return { coApplicants: rows.filter((row) => row.role === ApplicationPartyRole.co_applicant).map((row) => row.partyId), directors: rows.filter((row) => row.role === ApplicationPartyRole.director).map((row) => row.partyId) };
+  }
 
   async list(applicationId: string, ability: AppAbility) {
     await this.applications.get(applicationId, ability);

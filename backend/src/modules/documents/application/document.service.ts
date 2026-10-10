@@ -102,6 +102,10 @@ export class DocumentService {
     return toPage(rows, query.limit, toDocumentView);
   }
 
+  async heldTypes(partyId: string, applicationId: string): Promise<Set<string>> {
+    return new Set((await this.documents.heldFor(partyId, applicationId)).map((document) => document.documentType.key));
+  }
+
   async analysable(partyId: string, applicationId: string) {
     return (await this.documents.heldFor(partyId, applicationId)).filter((document) => CLEAN_DOCUMENT_STATES.includes(document.status));
   }
