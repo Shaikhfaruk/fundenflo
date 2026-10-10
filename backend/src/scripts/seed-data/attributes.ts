@@ -17,6 +17,14 @@ export const SEED_ATTRIBUTE_PROVENANCE: FactProvenance[] = Object.values(FactPro
 const option = (value: string, label: string): EnumOption => ({ value, label: { en: label } });
 
 export const ATTRIBUTE_SEEDS: AttributeSeed[] = [
+  { key: 'banking.avg_monthly_inflow_paise', label: 'Average Monthly Inflow', dataType: AttributeDataType.money, unit: 'paise', subject: AttributeSubject.any, sensitivity: DataSensitivity.financial, freshnessDays: 90 },
+  { key: 'banking.avg_monthly_balance_paise', label: 'Average Monthly Balance', dataType: AttributeDataType.money, unit: 'paise', subject: AttributeSubject.any, sensitivity: DataSensitivity.financial, freshnessDays: 90 },
+  { key: 'banking.monthly_emi_outflow_paise', label: 'Monthly EMI Outflow', dataType: AttributeDataType.money, unit: 'paise', subject: AttributeSubject.any, sensitivity: DataSensitivity.financial, freshnessDays: 90 },
+  { key: 'banking.bounces_6m', label: 'Bounced Payments In Six Months', dataType: AttributeDataType.integer, unit: 'count', subject: AttributeSubject.any, sensitivity: DataSensitivity.financial, freshnessDays: 90 },
+  { key: 'banking.statement_months', label: 'Months Of Bank Statement', dataType: AttributeDataType.integer, unit: 'months', subject: AttributeSubject.any, sensitivity: DataSensitivity.financial, freshnessDays: 90 },
+  { key: 'gst.annual_turnover_paise', label: 'GST Turnover In Twelve Months', dataType: AttributeDataType.money, unit: 'paise', subject: AttributeSubject.business, sensitivity: DataSensitivity.financial, freshnessDays: 180 },
+  { key: 'gst.filed_months_12m', label: 'GST Returns Filed In Twelve Months', dataType: AttributeDataType.integer, unit: 'months', subject: AttributeSubject.business, sensitivity: DataSensitivity.financial, freshnessDays: 180 },
+  { key: 'itr.total_income_paise', label: 'Total Income As Per ITR', dataType: AttributeDataType.money, unit: 'paise', subject: AttributeSubject.any, sensitivity: DataSensitivity.financial, freshnessDays: 400 },
   {
     key: 'business.vintage_months',
     label: 'Business Age',

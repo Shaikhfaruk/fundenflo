@@ -102,7 +102,13 @@ export const envSchema = z
     STORAGE_CONTAINER: z.string().regex(/^[a-z0-9](?:[a-z0-9-]{1,61}[a-z0-9])$/, 'must be a valid blob container name'),
 
     KYC_DRIVER: z.enum(['stub']).default('stub'),
-    EXTRACTION_DRIVER: z.enum(['manual']).default('manual'),
+    EXTRACTION_DRIVER: z.enum(['manual', 'openai', 'azure_openai']).default('manual'),
+    EXTRACTION_MODEL: optional(z.string().min(1).max(100)),
+    OPENAI_API_KEY: optional(z.string().min(20)),
+    OPENAI_BASE_URL: z.url({ protocol: /^https?$/ }).default('https://api.openai.com/v1'),
+    AZURE_OPENAI_ENDPOINT: optional(z.url({ protocol: /^https$/ })),
+    AZURE_OPENAI_API_KEY: optional(z.string().min(20)),
+    AZURE_OPENAI_DEPLOYMENT: optional(z.string().min(1).max(100)),
 
     ANTIVIRUS_DRIVER: z.enum(['clamav', 'eicar']).default('eicar'),
     CLAMAV_HOST: optional(z.string().min(1)),
@@ -136,6 +142,15 @@ export const envSchema = z
       issue('STORAGE_ACCOUNT_URL', 'set STORAGE_ACCOUNT_URL (managed identity) or STORAGE_CONNECTION_STRING');
     }
     if (env.ANTIVIRUS_DRIVER === 'clamav' && !env.CLAMAV_HOST) issue('CLAMAV_HOST', 'required when ANTIVIRUS_DRIVER=clamav');
+    if (env.EXTRACTION_DRIVER === 'openai') {
+      if (!env.OPENAI_API_KEY) issue('OPENAI_API_KEY', 'required when EXTRACTION_DRIVER=openai');
+      if (!env.EXTRACTION_MODEL) issue('EXTRACTION_MODEL', 'required when EXTRACTION_DRIVER=openai');
+    }
+    if (env.EXTRACTION_DRIVER === 'azure_openai') {
+      if (!env.AZURE_OPENAI_ENDPOINT) issue('AZURE_OPENAI_ENDPOINT', 'required when EXTRACTION_DRIVER=azure_openai');
+      if (!env.AZURE_OPENAI_API_KEY) issue('AZURE_OPENAI_API_KEY', 'required when EXTRACTION_DRIVER=azure_openai');
+      if (!env.AZURE_OPENAI_DEPLOYMENT && !env.EXTRACTION_MODEL) issue('AZURE_OPENAI_DEPLOYMENT', 'required when EXTRACTION_DRIVER=azure_openai');
+    }
 
     if (env.NODE_ENV === 'production') {
       if (env.SMS_DRIVER === 'log') issue('SMS_DRIVER', 'a real SMS provider is required in production');

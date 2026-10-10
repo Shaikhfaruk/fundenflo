@@ -9,6 +9,10 @@ import { documentRequirementContentSchema, toCompiledRequirement } from '../../m
 import { SYSTEM_LEAD_SOURCES } from '../../modules/leads/domain/lead.constants.js';
 import { compileQuestion } from '../../modules/questionnaires/application/questionnaire.views.js';
 import type { NotificationTemplateKey } from '../../modules/notifications/domain/notification.constants.js';
+import { improvementRuleContentSchema, toCompiledImprovementRule } from '../../modules/assessments/domain/improvement-rule.schema.js';
+import { scoringModelContentSchema, toCompiledScoringModel } from '../../modules/assessments/domain/scoring-model.schema.js';
+import { PROVENANCE_RANK } from '../../modules/attributes/domain/attribute.constants.js';
+import { IMPROVEMENT_RULE_SEEDS, SCORING_MODEL_SEEDS } from './assessments.js';
 import { ATTRIBUTE_SEEDS, SEED_ATTRIBUTE_PROVENANCE } from './attributes.js';
 import { CONSENT_PURPOSE_SEEDS, JOURNEY_CONSENT_TEMPLATE } from './consents.js';
 import { CATEGORY_SEEDS, categoryAmounts, SEGMENT_CATEGORY_ORDER, SEGMENT_SEEDS } from './catalog.js';
@@ -33,6 +37,8 @@ export type SeedResult = {
   leadSources: number;
   documentTypes: number;
   documentRequirements: number;
+  scoringModels: number;
+  improvementRules: number;
 };
 
 function dltTemplateId(template: TemplateSeed, env: NodeJS.ProcessEnv): string | null {
@@ -227,12 +233,27 @@ async function seedLeadSources(prisma: PrismaClient) {
 
 async function seedDocuments(prisma: PrismaClient) {
   for (const seed of DOCUMENT_TYPE_SEEDS) {
-    await prisma.documentType.upsert({ where: { key: seed.key }, create: seed, update: {} });
+    const existing = await prisma.documentType.findUnique({ where: { key: seed.key } });
+    if (!existing) await prisma.documentType.create({ data: seed });
+    else if (existing.producesAttributes.length === 0 && seed.producesAttributes.length > 0) await prisma.documentType.update({ where: { key: seed.key }, data: { producesAttributes: seed.producesAttributes } });
   }
   for (const seed of DOCUMENT_REQUIREMENT_SEEDS) {
     if (await configExists(prisma, ConfigResource.document_requirement, seed.key)) continue;
     const content = documentRequirementContentSchema.parse(seed.content);
     await seedPublishedConfig(prisma, { resource: ConfigResource.document_requirement, key: seed.key, name: seed.name, notes: 'Seeded from the v0.1 app documentsFor() checklist', content, compiled: toCompiledRequirement(content) });
+  }
+}
+
+async function seedAssessments(prisma: PrismaClient) {
+  for (const seed of SCORING_MODEL_SEEDS) {
+    if (await configExists(prisma, ConfigResource.scoring_model, seed.key)) continue;
+    const content = scoringModelContentSchema.parse(seed.content);
+    await seedPublishedConfig(prisma, { resource: ConfigResource.scoring_model, key: seed.key, name: seed.name, notes: 'Default model from the v0.1 app score factors; review with the credit team', content, compiled: toCompiledScoringModel(content, (provenance) => PROVENANCE_RANK[provenance]) });
+  }
+  for (const seed of IMPROVEMENT_RULE_SEEDS) {
+    if (await configExists(prisma, ConfigResource.improvement_rule, seed.key)) continue;
+    const content = improvementRuleContentSchema.parse(seed.content);
+    await seedPublishedConfig(prisma, { resource: ConfigResource.improvement_rule, key: seed.key, name: seed.name, notes: 'Default improvement tip from the v0.1 app; review with the credit team', content, compiled: toCompiledImprovementRule(content) });
   }
 }
 
@@ -248,6 +269,7 @@ export async function runSeed(prisma: PrismaClient, env: NodeJS.ProcessEnv): Pro
   await seedConsents(prisma);
   await seedLeadSources(prisma);
   await seedDocuments(prisma);
+  await seedAssessments(prisma);
   return {
     organizationId: organization.id,
     templates: NOTIFICATION_TEMPLATE_SEEDS.length,
@@ -264,5 +286,7 @@ export async function runSeed(prisma: PrismaClient, env: NodeJS.ProcessEnv): Pro
     leadSources: SYSTEM_LEAD_SOURCES.length,
     documentTypes: DOCUMENT_TYPE_SEEDS.length,
     documentRequirements: DOCUMENT_REQUIREMENT_SEEDS.length,
+    scoringModels: SCORING_MODEL_SEEDS.length,
+    improvementRules: IMPROVEMENT_RULE_SEEDS.length,
   };
 }

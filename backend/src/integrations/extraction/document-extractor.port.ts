@@ -5,10 +5,13 @@ export const DOCUMENT_EXTRACTOR = Symbol('DOCUMENT_EXTRACTOR');
 
 export const InjectDocumentExtractor = () => Inject(DOCUMENT_EXTRACTOR);
 
+export type ExtractionAttribute = { key: string; label: string; dataType: string; unit: string | null; enumValues: string[] };
+
 export type ExtractionRequest = {
   documentType: string;
+  documentLabel: string;
   extractorKey: string | null;
-  producesAttributes: string[];
+  attributes: ExtractionAttribute[];
   mimeType: string;
   body: Readable;
   password: string | null;
@@ -30,3 +33,13 @@ export type ExtractionOutcome = {
 export interface DocumentExtractor {
   extract(request: ExtractionRequest): Promise<ExtractionOutcome>;
 }
+
+export const ExtractionReason = {
+  ProviderFailed: 'extractor_failed',
+  PasswordRequired: 'password_required',
+  WrongPassword: 'wrong_password',
+  EncryptedScan: 'encrypted_scan',
+  UnsupportedType: 'unsupported_type',
+  FieldsMissing: 'fields_missing',
+  NoFields: 'no_fields_configured',
+} as const;

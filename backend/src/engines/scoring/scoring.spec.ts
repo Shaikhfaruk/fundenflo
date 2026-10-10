@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
+import { selectScoringModel } from './select-model.js';
+
 import { buildImprovementPlan, scoreLookup } from '../improvement/build-plan.js';
 import type { CompiledImprovementRule } from '../improvement/improvement.types.js';
 import type { RankedLookup } from '../facts/resolve-fact.js';
@@ -89,5 +91,16 @@ describe('improvement plan', () => {
       lookup,
     );
     expect(fired.map((entry) => entry.key)).toEqual(['emis', 'bounces']);
+  });
+});
+
+const candidate = (key: string, segments: string[], subSegments: string[] = []) => ({ key, meta: key, model: { scope: { segments, subSegments }, attentionBelowPct: 60, bands: [], factors: [] } });
+
+describe('scoring model selection', () => {
+  it('prefers a sub-segment model, then the first key, and returns nothing when no scope matches', () => {
+    const models = [candidate('score.msme', ['msme']), candidate('msme.proprietor', ['msme'], ['proprietorship']), candidate('alpha.msme', ['msme'])];
+    expect(selectScoringModel(models, 'msme', 'proprietorship')?.key).toBe('msme.proprietor');
+    expect(selectScoringModel(models, 'msme', 'llp')?.key).toBe('alpha.msme');
+    expect(selectScoringModel(models, 'individual', 'salaried')).toBeNull();
   });
 });

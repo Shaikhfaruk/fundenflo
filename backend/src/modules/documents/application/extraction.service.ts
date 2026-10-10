@@ -11,9 +11,10 @@ import { DocumentEvent, documentMachine } from '../../../engines/state-machines/
 import { CipherPurpose } from '../../../infrastructure/crypto/crypto.constants.js';
 import { FieldCipher } from '../../../infrastructure/crypto/field-cipher.service.js';
 import { InjectObjectStorage, type ObjectStorage } from '../../../infrastructure/storage/storage.port.js';
-import { type DocumentExtractor, type ExtractedField, type ExtractionOutcome, InjectDocumentExtractor } from '../../../integrations/extraction/document-extractor.port.js';
+import { type DocumentExtractor, type ExtractedField, type ExtractionAttribute, type ExtractionOutcome, ExtractionReason, InjectDocumentExtractor } from '../../../integrations/extraction/document-extractor.port.js';
 import type { Prisma } from '../../../generated/prisma/client.js';
 import { AppAction, type AppAbility } from '../../access/domain/ability.types.js';
+import { AttributeDictionary } from '../../attributes/application/attribute-dictionary.service.js';
 import { FactService } from '../../attributes/application/fact.service.js';
 import { FactSourceType } from '../../attributes/domain/attribute.constants.js';
 import { ChangeRecorder } from '../../audit/application/change-recorder.service.js';
@@ -42,6 +43,7 @@ export class ExtractionService {
     private readonly profiles: BorrowerProfileService,
     private readonly consents: ConsentService,
     private readonly facts: FactService,
+    private readonly dictionary: AttributeDictionary,
     private readonly cipher: FieldCipher,
     private readonly changes: ChangeRecorder,
     @InjectDocumentExtractor() private readonly extractor: DocumentExtractor,
@@ -56,15 +58,9 @@ export class ExtractionService {
     const claimed = await this.claim(documentId);
     if (!claimed) return 'skipped';
     const type = (await this.types.activeByKeys([claimed.documentType.key])).get(claimed.documentType.key);
-    const outcome = await this.extractor.extract({
-      documentType: claimed.documentType.key,
-      extractorKey: claimed.documentType.extractorKey,
-      producesAttributes: type?.producesAttributes ?? [],
-      mimeType: claimed.mimeType,
-      body: await this.storage.read(claimed.storageKey),
-      password: claimed.passwordEnc ? this.cipher.decrypt(claimed.passwordEnc, CipherPurpose.DocumentPassword) : null,
-    });
-    return this.finish(claimed, outcome, new Set(type?.producesAttributes ?? []));
+    const produces = type?.producesAttributes ?? [];
+    const outcome = await this.runExtractor(claimed, await this.attributesFor(produces));
+    return this.finish(claimed, outcome, new Set(produces));
   }
 
   async extractPending(partyId: string): Promise<number> {
@@ -102,6 +98,30 @@ export class ExtractionService {
     await this.documents.updateFromStatus(documentId, document.status, { status: next });
     await this.record(document, AuditAction.DocumentReviewed, EventName.DocumentVerified, next, { extractionId: extraction.id, outcome: input.outcome, fields: input.fields.map((field) => field.attributeKey) });
     return this.view(documentId);
+  }
+
+  private async attributesFor(keys: string[]): Promise<ExtractionAttribute[]> {
+    const active = await this.dictionary.active();
+    return keys.flatMap((key) => {
+      const view = active.get(key);
+      return view ? [{ key, label: view.label.en ?? key, dataType: view.dataType, unit: view.unit, enumValues: (view.enumValues ?? []).map((option) => option.value) }] : [];
+    });
+  }
+
+  private async runExtractor(document: DocumentRow, attributes: ExtractionAttribute[]): Promise<ExtractionOutcome> {
+    try {
+      return await this.extractor.extract({
+        documentType: document.documentType.key,
+        documentLabel: (document.documentType.label as { en?: string } | null)?.en ?? document.documentType.key,
+        extractorKey: document.documentType.extractorKey,
+        attributes,
+        mimeType: document.mimeType,
+        body: await this.storage.read(document.storageKey),
+        password: document.passwordEnc ? this.cipher.decrypt(document.passwordEnc, CipherPurpose.DocumentPassword) : null,
+      });
+    } catch {
+      return { extractor: OPS_EXTRACTOR, model: null, promptVersion: null, classifiedAs: null, classConfidence: null, fields: [], needsReview: true, reason: ExtractionReason.ProviderFailed };
+    }
   }
 
   @Transactional()

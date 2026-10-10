@@ -136,7 +136,7 @@ describe('scoring models, analyses, assessments and notification subscriptions',
       ['gst', 15, 'scored'],
       ['credit', null, 'excluded'],
     ]);
-    expect(assessment.body.improvement).toEqual([expect.objectContaining({ rule: 'emis.repayment', found: 'You have existing EMIs and a score of 57.', evidenceDocumentType: 'bank_statement' })]);
+    expect(assessment.body.improvement).toEqual(expect.arrayContaining([expect.objectContaining({ rule: 'emis.repayment', found: 'You have existing EMIs and a score of 57.', evidenceDocumentType: 'bank_statement' }), expect.objectContaining({ rule: 'improve.existing_emis' })]));
     const application = await as(borrower).get(`/applications/${applicationId}`).expect(200);
     expect(application.body).toMatchObject({ status: 'assessed', assessment: { scoreResultId: assessment.body.score.id } });
     const stranger = await otpLogin(t, randomMobile(), LoginAs.borrower);
@@ -156,7 +156,7 @@ describe('scoring models, analyses, assessments and notification subscriptions',
     expect((await as(borrower).post(`/ops/assessments/${assessment.body.score.id}/recompute`, { mode: 'reproduce' }).expect(403)).body.code).toBe('CONTEXT_NOT_ALLOWED');
   });
 
-  it('skips scoring without a matching model and tells subscribers when an analysis is ready', async () => {
+  it('scores an individual with the default model and tells subscribers when an analysis is ready', async () => {
     const person = await otpLogin(t, randomMobile(), LoginAs.borrower);
     const personal = await as(person).post('/applications', { segment: 'individual', subSegment: 'salaried', category: 'personal' }).expect(201);
     await as(person).post(`/applications/${personal.body.id}/consents`, { templateVersionId, items: allGranted }).expect(200);
@@ -167,8 +167,8 @@ describe('scoring models, analyses, assessments and notification subscriptions',
     expect(subscription.body).toMatchObject({ status: 'pending', channel: 'sms', entityType: 'analysis' });
 
     await run(analysis.body.id);
-    expect((await as(person).get(`/analyses/${analysis.body.id}`).expect(200)).body.steps[2]).toMatchObject({ state: 'skipped', detail: { reason: 'no_scoring_model' } });
-    await as(person).get(`/applications/${personal.body.id}/assessment`).expect(404);
+    expect((await as(person).get(`/analyses/${analysis.body.id}`).expect(200)).body.steps[2]).toMatchObject({ id: 'score' });
+    expect((await as(person).get(`/applications/${personal.body.id}/assessment`).expect(200)).body.score).toMatchObject({ status: 'insufficient', model: { key: 'score.individual' } });
 
     const before = await t.prisma.notificationDelivery.count({ where: { templateKey: 'analysis.completed' } });
     const sent = await inCls(() => t.app.get(SubscriptionService).deliver(SubscriptionEvent.AnalysisCompleted, { analysisId: analysis.body.id, applicationId: personal.body.id, status: 'done' }));

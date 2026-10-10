@@ -35,14 +35,14 @@ const type = (key: string, label: string, description: string, icon: string, ext
 
 export const DOCUMENT_TYPE_SEEDS: DocumentTypeSeed[] = [
   type('pan', 'PAN Card', 'PAN Of The Applicant Or Business', 'badge', { sensitivity: DataSensitivity.personal }),
-  type('bank_statement', 'Bank Statement', 'Last 6 Months · Main Account', 'bank', { periodRule: 'last_6_months', freshnessDays: 45 }),
-  type('itr', 'Income Tax Return', 'ITR For Assessment Year {{assessmentYear}}', 'receipt', { periodRule: 'latest_assessment_year' }),
-  type('gstr_3b', 'GST Returns', 'Last 12 Months GSTR-3B', 'receipt', { periodRule: 'last_12_months' }),
-  type('salary_slip', 'Salary Slips', 'Last 3 Months', 'payments', { periodRule: 'last_3_months', freshnessDays: 60 }),
+  type('bank_statement', 'Bank Statement', 'Last 6 Months · Main Account', 'bank', { periodRule: 'last_6_months', freshnessDays: 45, producesAttributes: ['banking.avg_monthly_inflow_paise', 'banking.avg_monthly_balance_paise', 'banking.monthly_emi_outflow_paise', 'banking.bounces_6m', 'banking.statement_months'] }),
+  type('itr', 'Income Tax Return', 'ITR For Assessment Year {{assessmentYear}}', 'receipt', { periodRule: 'latest_assessment_year', producesAttributes: ['itr.total_income_paise'] }),
+  type('gstr_3b', 'GST Returns', 'Last 12 Months GSTR-3B', 'receipt', { periodRule: 'last_12_months', producesAttributes: ['gst.annual_turnover_paise', 'gst.filed_months_12m'] }),
+  type('salary_slip', 'Salary Slips', 'Last 3 Months', 'payments', { periodRule: 'last_3_months', freshnessDays: 60, producesAttributes: ['person.net_monthly_income_paise'] }),
   type('property_papers', 'Property Papers', 'Sale Deed Or Title Document', 'home'),
   type('vehicle_quotation', 'Vehicle Quotation', 'Proforma Invoice From The Dealer', 'car', { sensitivity: DataSensitivity.public }),
   type('machinery_quotation', 'Machinery Quotation', 'Quotation From The Supplier', 'quote', { sensitivity: DataSensitivity.public }),
-  type('udyam_certificate', 'Udyam Registration', 'Udyam Registration Certificate', 'badge', { sensitivity: DataSensitivity.public }),
+  type('udyam_certificate', 'Udyam Registration', 'Udyam Registration Certificate', 'badge', { sensitivity: DataSensitivity.public, producesAttributes: ['business.vintage_months'] }),
   type('sanction_letter', 'Sanction Letter', 'Sanction Letter From The Lender', 'receipt'),
   type('disbursement_advice', 'Disbursement Advice', 'Disbursal Confirmation From The Lender', 'receipt'),
 ];
