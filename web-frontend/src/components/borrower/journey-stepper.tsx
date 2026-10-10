@@ -5,13 +5,14 @@ import { useTranslations } from 'next-intl';
 import type { ReactNode } from 'react';
 
 import { Icon } from '@/components/ui/icon';
+import { Link } from '@/i18n/navigation';
 import { Duration, EASE_OUT } from '@/lib/constants/motion.constants';
-import { JOURNEY_ORDER } from '@/lib/constants/status.constants';
+import { JOURNEY_ORDER } from '@/lib/constants/journey.constants';
 import { cn } from '@/lib/utils';
 
 const ROW_STEP = 0.05;
 
-export function JourneyStepper({ current, completed, activeDetail }: { current: string | null; completed: string[]; activeDetail?: ReactNode }) {
+export function JourneyStepper({ current, completed, activeDetail, editHref }: { current: string | null; completed: string[]; activeDetail?: ReactNode; editHref?: (stage: string) => string | null }) {
   const t = useTranslations('journey');
   const tOverview = useTranslations('borrower.overview');
   const done = new Set(completed);
@@ -38,6 +39,11 @@ export function JourneyStepper({ current, completed, activeDetail }: { current: 
               <div className="flex items-center gap-2">
                 <span className={cn('flex-1 text-[15px] font-semibold text-foreground', !isDone && !isCurrent && 'font-medium text-muted-foreground')}>{t(stage)}</span>
                 {isCurrent ? <span className="rounded-xs bg-gold-soft px-1.5 py-0.5 text-[10px] font-bold tracking-[0.04em] text-navy uppercase">{tOverview('activeTag')}</span> : null}
+                {isDone && editHref?.(stage) ? (
+                  <Link href={editHref(stage) ?? ''} className="text-xs font-semibold text-gold-deep underline-offset-4 hover:underline">
+                    {tOverview('edit')}
+                  </Link>
+                ) : null}
               </div>
               <span className="mt-0.5 text-[13px] leading-[18px] text-muted-foreground">{isDone ? tOverview('done') : isCurrent ? (activeDetail ?? tOverview('inProgress')) : tOverview('upcoming')}</span>
             </div>

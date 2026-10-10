@@ -145,7 +145,12 @@ export class ApplicationService {
   }
 
   async get(id: string, ability: AppAbility) {
-    return toApplicationView(await this.visible(id, ability, AppAction.Read));
+    return this.detailView(await this.visible(id, ability, AppAction.Read));
+  }
+
+  private async detailView(application: ApplicationRow) {
+    const view = toApplicationView(application);
+    return { ...view, location: { ...view.location, city: await this.places.city(application.cityId) } };
   }
 
   @Transactional()
@@ -183,12 +188,14 @@ export class ApplicationService {
     await this.timeline.record(id, ApplicationEventType.requirement_changed, { data: { fields: Object.keys(patch) } });
     await this.refreshStage(id);
     await this.changes.record({ action: AuditAction.ApplicationChanged, entityType: AuditEntity.LoanApplication, entityId: id, event: EventName.ApplicationUpdated, metadata: { ref: application.ref, fields: Object.keys(patch) }, payload: { applicationId: id } });
-    return toApplicationView(await this.require(id));
+    return this.detailView(await this.require(id));
   }
 
   async questions(id: string, stage: string, ability: AppAbility) {
     const application = await this.visible(id, ability, AppAction.Read);
-    return this.questionnaires.resolve(this.contextOf(application, stage), application.partyId);
+    const resolved = await this.questionnaires.resolve(this.contextOf(application, stage), application.partyId);
+    const answers = await this.questionnaires.latestAnswers(application.partyId, resolved.questions.map((item) => item.question.key));
+    return { ...resolved, answers };
   }
 
   @Transactional()

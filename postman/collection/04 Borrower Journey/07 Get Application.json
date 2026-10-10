@@ -19,7 +19,7 @@
         }
       ]
     },
-    "description": "One application with its requirement, status, journey stage and pinned config versions. Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records."
+    "description": "One application with its requirement, status, journey stage and pinned config versions. Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records. `location.city` names the matched city (`id`, `name`, `state`) or is `null`."
   },
   "event": [
     {
@@ -55,7 +55,7 @@
             }
           ]
         },
-        "description": "One application with its requirement, status, journey stage and pinned config versions. Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records."
+        "description": "One application with its requirement, status, journey stage and pinned config versions. Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records. `location.city` names the matched city (`id`, `name`, `state`) or is `null`."
       },
       "status": "OK",
       "code": 200,
@@ -66,7 +66,7 @@
           "value": "application/json; charset=utf-8"
         }
       ],
-      "body": "{\n  \"id\": \"01a12260-2b3c-7d4e-9f50-61728394a5b6\",\n  \"ref\": \"AP-26-000001\",\n  \"borrowerProfileId\": \"01a12260-1a2b-7c3d-8e4f-5061728394a5\",\n  \"party\": {\n    \"id\": \"01a12260-3c4d-7e5f-8061-728394a5b6c7\",\n    \"kind\": \"business\",\n    \"displayName\": \"Kapoor Electricals\"\n  },\n  \"actingParty\": {\n    \"id\": \"01a12260-4d5e-7f60-8172-8394a5b6c7d8\",\n    \"displayName\": \"Rohit Kapoor\"\n  },\n  \"channel\": \"direct\",\n  \"partnerOrganizationId\": null,\n  \"leadId\": null,\n  \"segmentKey\": \"msme\",\n  \"subSegmentKey\": \"proprietorship\",\n  \"categoryKey\": \"business\",\n  \"purposeKey\": \"expansion\",\n  \"purposeNote\": null,\n  \"amountPaise\": 250000000,\n  \"tenureMonths\": 36,\n  \"location\": {\n    \"stateId\": \"01a12184-0bb1-773e-ba9c-a22c64991340\",\n    \"cityId\": \"01a12184-0bb1-773e-ba9c-a22c64991341\",\n    \"pincode\": null\n  },\n  \"status\": \"draft\",\n  \"journeyStage\": \"pre_check\",\n  \"pinnedVersions\": {},\n  \"closedAt\": null,\n  \"closeReason\": null,\n  \"version\": 2,\n  \"createdAt\": \"2026-10-10T16:00:00.000Z\",\n  \"updatedAt\": \"2026-10-10T16:00:00.000Z\"\n}"
+      "body": "{\n  \"id\": \"01a12260-2b3c-7d4e-9f50-61728394a5b6\",\n  \"ref\": \"AP-26-000001\",\n  \"borrowerProfileId\": \"01a12260-1a2b-7c3d-8e4f-5061728394a5\",\n  \"party\": {\n    \"id\": \"01a12260-3c4d-7e5f-8061-728394a5b6c7\",\n    \"kind\": \"business\",\n    \"displayName\": \"Kapoor Electricals\"\n  },\n  \"actingParty\": {\n    \"id\": \"01a12260-4d5e-7f60-8172-8394a5b6c7d8\",\n    \"displayName\": \"Rohit Kapoor\"\n  },\n  \"channel\": \"direct\",\n  \"partnerOrganizationId\": null,\n  \"leadId\": null,\n  \"segmentKey\": \"msme\",\n  \"subSegmentKey\": \"proprietorship\",\n  \"categoryKey\": \"business\",\n  \"purposeKey\": \"expansion\",\n  \"purposeNote\": null,\n  \"amountPaise\": 250000000,\n  \"tenureMonths\": 36,\n  \"location\": {\n    \"stateId\": \"01a12184-0bb1-773e-ba9c-a22c64991340\",\n    \"cityId\": \"01a12184-0bb1-773e-ba9c-a22c64991341\",\n    \"pincode\": null,\n    \"city\": {\n      \"id\": \"01a12184-0bb1-773e-ba9c-a22c64991341\",\n      \"name\": \"Pune\",\n      \"state\": {\n        \"gstCode\": \"27\",\n        \"name\": \"Maharashtra\"\n      }\n    }\n  },\n  \"status\": \"draft\",\n  \"journeyStage\": \"pre_check\",\n  \"pinnedVersions\": {},\n  \"closedAt\": null,\n  \"closeReason\": null,\n  \"version\": 2,\n  \"createdAt\": \"2026-10-10T16:00:00.000Z\",\n  \"updatedAt\": \"2026-10-10T16:00:00.000Z\"\n}"
     },
     {
       "name": "404 NOT_FOUND",
@@ -89,7 +89,7 @@
             }
           ]
         },
-        "description": "One application with its requirement, status, journey stage and pinned config versions. Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records."
+        "description": "One application with its requirement, status, journey stage and pinned config versions. Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records. `location.city` names the matched city (`id`, `name`, `state`) or is `null`."
       },
       "status": "Not Found",
       "code": 404,

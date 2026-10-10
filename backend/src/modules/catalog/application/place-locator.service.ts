@@ -12,6 +12,12 @@ export type ResolvedLocation = { stateId: string | null; cityId: string | null; 
 export class PlaceLocator {
   constructor(private readonly geo: GeoService) {}
 
+  async city(cityId: string | null) {
+    if (!cityId) return null;
+    const city = await this.geo.findActiveCity(cityId);
+    return city ? { id: city.id, name: city.name, state: { gstCode: city.state.gstCode, name: city.state.name } } : null;
+  }
+
   async locate(input: LocationInput): Promise<ResolvedLocation> {
     const pincode = input.pincode ?? null;
     let cityId: string | null = null;

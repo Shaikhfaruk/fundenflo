@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { changedAfter, compareChanges, decodeCursor, encodeCursor } from './sync-cursor.js';
+import { changedAfter, compareChanges, cursorAt, decodeCursor, encodeCursor } from './sync-cursor.js';
 import { SyncType } from './sync.types.js';
 
 const at = new Date('2026-10-10T10:00:00.000Z');
@@ -27,5 +27,12 @@ describe('sync cursor', () => {
       { type: SyncType.Assignment, id: 'z', version: 1, updatedAt: at },
     ].toSorted(compareChanges);
     expect(sorted.map((change) => `${change.type}:${change.id}`)).toEqual(['assignment:z', 'lead:c', 'lead:a']);
+  });
+
+  it('starts a time cursor before every change made at or after that time', () => {
+    const cursor = cursorAt(at);
+    expect(changedAfter(SyncType.Assignment, cursor)).toEqual({ OR: [{ updatedAt: { gt: at } }, { updatedAt: at, id: { gt: '' } }] });
+    expect(changedAfter(SyncType.FollowUp, cursor)).toEqual({ updatedAt: { gte: at } });
+    expect(changedAfter(SyncType.Lead, cursor)).toEqual({ updatedAt: { gte: at } });
   });
 });

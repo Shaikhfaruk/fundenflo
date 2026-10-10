@@ -1,6 +1,6 @@
 import type { PartyRef } from './common.types';
 
-type ApplicationLocation = { stateId: string | null; cityId: string | null; pincode: string | null };
+type ApplicationLocation = { stateId: string | null; cityId: string | null; pincode: string | null; city?: { id: string; name: string; state: { gstCode: string; name: string } } | null };
 
 export type Application = {
   id: string;
@@ -30,3 +30,19 @@ export type Application = {
 };
 
 export type CreateApplicationInput = { segment: string; subSegment?: string; businessName?: string; category: string };
+
+export type RequirementInput = { category?: string; purpose?: string | null; purposeNote?: string | null; amountPaise?: number; tenureMonths?: number; cityId?: string; city?: string; pincode?: string };
+
+export type ApplicationParty = {
+  id: string;
+  party: PartyRef & { displayName: string | null };
+  role: string;
+  relationship: string | null;
+  status: string;
+  consentStatus: string;
+  consentedAt: string | null;
+  mobile: string | null;
+  createdAt: string;
+};
+
+export type AddPartyInput = { role: string; name: string; mobile: string; countryCode?: string; relationship?: string };

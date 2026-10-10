@@ -1,4 +1,4 @@
-import { JOURNEY_ORDER } from '@/lib/constants/status.constants';
+import { JOURNEY_ORDER } from '@/lib/constants/journey.constants';
 
 export const journeyStep = (stage: string | null | undefined) => {
   const index = stage ? JOURNEY_ORDER.indexOf(stage) : -1;

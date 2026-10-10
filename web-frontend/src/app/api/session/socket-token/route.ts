@@ -11,5 +11,5 @@ export async function POST(request: NextRequest) {
   if (origin !== serverEnv.APP_ORIGIN && origin !== request.nextUrl.origin) return crossSiteResponse();
   const { accessToken } = readTokens(request.cookies);
   if (!accessToken) return NextResponse.json({ code: ErrorCode.TokenExpired, message: 'Your session has expired. Refresh it or sign in again.' }, { status: 401 });
-  return NextResponse.json({ token: accessToken }, { headers: { 'cache-control': 'no-store' } });
+  return NextResponse.json({ token: accessToken, origin: serverEnv.API_ORIGIN }, { headers: { 'cache-control': 'no-store' } });
 }

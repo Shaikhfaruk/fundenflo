@@ -23,3 +23,20 @@ export function formatPaise(paise: number | null | undefined, locale = 'en', com
   if (paise === null || paise === undefined) return '—';
   return formatter(locale, compact).format(rupeesFromPaise(paise));
 }
+
+const BPS_PER_UNIT = 10_000;
+const MONTHS_PER_YEAR = 12;
+
+const grouping = new Intl.NumberFormat(INDIAN_LOCALE, { maximumFractionDigits: 0 });
+
+export const groupRupees = (rupees: number) => grouping.format(rupees);
+
+export const rupeesFromPaiseValue = (paise: number) => Math.round(rupeesFromPaise(paise));
+
+export function estimateEmiPaise(principalPaise: number, annualRateBps: number, months: number): number {
+  if (principalPaise <= 0 || months <= 0) return 0;
+  const monthlyRate = annualRateBps / BPS_PER_UNIT / MONTHS_PER_YEAR;
+  if (monthlyRate === 0) return Math.round(principalPaise / months);
+  const growth = (1 + monthlyRate) ** months;
+  return Math.round((principalPaise * monthlyRate * growth) / (growth - 1));
+}

@@ -26,7 +26,7 @@
         }
       ]
     },
-    "description": "The questions for a stage, resolved for this application's segment, sub-segment and category and the facts already known, plus questions lenders and scoring still need (progressive profiling, `progressive[]`). Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records."
+    "description": "The questions for a stage, resolved for this application's segment, sub-segment and category and the facts already known, plus questions lenders and scoring still need (progressive profiling, `progressive[]`). `answers[]` holds the latest answer to each listed question for this application's borrower (`questionKey`, `value` as sent to PUT answers, `answeredAt`), so screens can prefill a step the borrower revisits. Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records."
   },
   "event": [
     {
@@ -68,7 +68,7 @@
             }
           ]
         },
-        "description": "The questions for a stage, resolved for this application's segment, sub-segment and category and the facts already known, plus questions lenders and scoring still need (progressive profiling, `progressive[]`). Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records."
+        "description": "The questions for a stage, resolved for this application's segment, sub-segment and category and the facts already known, plus questions lenders and scoring still need (progressive profiling, `progressive[]`). `answers[]` holds the latest answer to each listed question for this application's borrower (`questionKey`, `value` as sent to PUT answers, `answeredAt`), so screens can prefill a step the borrower revisits. Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records."
       },
       "status": "OK",
       "code": 200,
@@ -79,7 +79,7 @@
           "value": "application/json; charset=utf-8"
         }
       ],
-      "body": "{\n  \"sets\": [\n    {\n      \"key\": \"pre_check.msme\",\n      \"versionId\": \"01a121bb-0c1d-7e2f-8a3b-4c5d6e7f8091\",\n      \"number\": 1\n    }\n  ],\n  \"sections\": [],\n  \"questions\": [],\n  \"hidden\": []\n}"
+      "body": "{\n  \"sets\": [\n    {\n      \"key\": \"pre_check.msme\",\n      \"versionId\": \"01a121bb-0c1d-7e2f-8a3b-4c5d6e7f8091\",\n      \"number\": 1\n    }\n  ],\n  \"sections\": [],\n  \"questions\": [],\n  \"hidden\": [],\n  \"answers\": [\n    {\n      \"questionKey\": \"business_age\",\n      \"value\": \"3-5\",\n      \"answeredAt\": \"2026-10-10T18:20:41.512Z\"\n    }\n  ]\n}"
     }
   ]
 }

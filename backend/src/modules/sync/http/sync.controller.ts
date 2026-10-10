@@ -11,6 +11,7 @@ import { SYNC_DEFAULT_LIMIT, SYNC_MAX_LIMIT, SyncType } from '../domain/sync.typ
 
 const syncQuerySchema = z.object({
   since: z.string().max(500).optional(),
+  updatedSince: z.coerce.date().optional(),
   types: z
     .string()
     .transform((value) => value.split(',').map((type) => type.trim()).filter(Boolean))

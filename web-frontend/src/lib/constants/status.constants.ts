@@ -24,20 +24,6 @@ const ApplicationStatus = {
 
 export const CLOSED_APPLICATION_STATUSES: readonly string[] = [ApplicationStatus.ClosedWon, ApplicationStatus.ClosedLost, ApplicationStatus.Withdrawn, ApplicationStatus.Expired];
 
-const JourneyStage = {
-  Category: 'category',
-  Requirement: 'requirement',
-  PreCheck: 'pre_check',
-  Consent: 'consent',
-  Documents: 'documents',
-  VerifyDetails: 'verify_details',
-  Score: 'score',
-  Matching: 'matching',
-  Apply: 'apply',
-} as const;
-
-export const JOURNEY_ORDER: readonly string[] = Object.values(JourneyStage);
-
 export const APPLICATION_STATUS_TONE: Record<string, StatusTone> = {
   draft: StatusTone.Neutral,
   pre_screened: StatusTone.Info,

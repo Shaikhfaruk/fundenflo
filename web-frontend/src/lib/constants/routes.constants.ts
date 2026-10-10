@@ -14,6 +14,7 @@ export const AppPath = {
   AccountSwitch: '/account/switch',
   BorrowerHome: '/app',
   BorrowerNewApplication: '/app/applications/new',
+  BorrowerProfile: '/app/profile',
   PartnerHome: '/partner',
   PartnerSignup: '/partner/signup',
   LenderHome: '/lender',

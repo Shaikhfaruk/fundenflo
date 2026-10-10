@@ -24,3 +24,9 @@ export function inviteStaff(email: string, role: string): string {
   if (!token) throw new Error(`No invitation code in invite-staff output:\n${output}`);
   return token;
 }
+
+const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXY';
+
+const letter = () => LETTERS[randomInt(0, LETTERS.length)];
+
+export const randomPan = (holder = 'P') => `${letter()}${letter()}${letter()}${holder}${letter()}${String(randomInt(0, 10_000)).padStart(4, '0')}${letter()}`;

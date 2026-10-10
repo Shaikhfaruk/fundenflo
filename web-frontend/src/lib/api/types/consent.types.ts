@@ -19,3 +19,5 @@ export type ConsentTemplate = { context: string; versionId: string; number: numb
 export type ConsentItemInput = { purpose: string; granted: boolean; organizationIds?: string[] };
 
 export type ConsentRecordResult = { consents: ConsentState[]; missingRequired: string[] };
+
+export type ConsentOtpChallenge = { challengeId: string; resendIn: number; expiresIn: number; recipient: string; template: ConsentTemplate };

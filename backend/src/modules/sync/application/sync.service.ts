@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { AppError } from '../../../common/errors/app-error.js';
 import { ErrorCode } from '../../../common/errors/error-codes.js';
-import { compareChanges, decodeCursor, encodeCursor } from '../domain/sync-cursor.js';
+import { compareChanges, cursorAt, decodeCursor, encodeCursor } from '../domain/sync-cursor.js';
 import type { SyncChange, SyncScope, SyncType } from '../domain/sync.types.js';
 import { SyncSourceRegistry } from './sync-source.registry.js';
 
@@ -10,8 +10,8 @@ import { SyncSourceRegistry } from './sync-source.registry.js';
 export class SyncService {
   constructor(private readonly registry: SyncSourceRegistry) {}
 
-  async changes(scope: SyncScope, request: { since?: string; types?: SyncType[]; limit: number }) {
-    const cursor = request.since ? decodeCursor(request.since) : null;
+  async changes(scope: SyncScope, request: { since?: string; updatedSince?: Date; types?: SyncType[]; limit: number }) {
+    const cursor = request.since ? decodeCursor(request.since) : request.updatedSince ? cursorAt(request.updatedSince) : null;
     if (request.since && !cursor) throw new AppError(ErrorCode.VALIDATION_FAILED, { details: [{ path: 'since', code: 'invalid_cursor', message: 'use nextCursor from an earlier response' }] });
     const types = request.types ?? this.registry.types();
     const unknown = types.filter((type) => !this.registry.get(type));

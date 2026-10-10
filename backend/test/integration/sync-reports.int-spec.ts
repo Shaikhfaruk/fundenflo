@@ -77,6 +77,10 @@ describe('delta sync, lead reports and the partner dashboard', () => {
     const after = await sync(ops.accessToken, { types: 'lead', since: since ?? '' }).expect(200);
     expect(after.body.items).toEqual([expect.objectContaining({ type: 'lead', id: leadIds[2], version: lead.body.version + 1 })]);
 
+    const caughtUp = await sync(ops.accessToken, { types: 'lead', updatedSince: after.body.items[0].updatedAt }).expect(200);
+    expect(caughtUp.body.items.map((change: Change) => change.id)).toEqual([leadIds[2]]);
+    expect((await sync(ops.accessToken, { types: 'lead', updatedSince: new Date(Date.now() + HOUR_MS).toISOString() }).expect(200)).body.items).toEqual([]);
+    await sync(ops.accessToken, { updatedSince: 'not-a-date' }).expect(400);
     await sync(ops.accessToken, { since: 'garbage' }).expect(400);
     await sync(ops.accessToken, { types: 'payout' }).expect(400);
   });

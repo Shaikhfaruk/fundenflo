@@ -16,6 +16,10 @@ export class AnswerRepository {
     return this.txHost.tx.answer.findMany({ where: { partyId, questionKey, id: idFilter }, orderBy: { id: 'desc' }, take });
   }
 
+  latestForQuestions(partyId: string, questionKeys: string[]) {
+    return this.txHost.tx.answer.findMany({ where: { partyId, questionKey: { in: questionKeys } }, orderBy: [{ questionKey: 'asc' }, { id: 'desc' }], distinct: ['questionKey'], select: { questionKey: true, value: true, createdAt: true } });
+  }
+
   async answerIdsOfParty(partyId: string) {
     return (await this.txHost.tx.answer.findMany({ where: { partyId }, select: { id: true } })).map((row) => row.id);
   }

@@ -17,8 +17,11 @@ test('a borrower signs in, starts an application and manages their account', asy
   const category = page.locator('button[aria-pressed]:not([aria-disabled])').filter({ hasText: /₹/ }).first();
   await category.click();
   await page.getByRole('button', { name: 'Create Application' }).click();
+  await expect(page).toHaveURL(/\/app\/applications\/[0-9a-f-]+\/requirement$/);
+  await page.getByRole('link', { name: 'Back' }).click();
   await expect(page).toHaveURL(/\/app\/applications\/[0-9a-f-]+$/);
   await expect(page.getByText('Application Status')).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Continue' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Your Progress' })).toBeVisible();
 
   await page.goto('/app');

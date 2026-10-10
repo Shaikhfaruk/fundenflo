@@ -19,7 +19,7 @@ It covers all seven areas: public pages, borrower, partner (CA/DSA), lender, ops
 |---|---|---|
 | Framework | Next.js App Router, React Server Components, Turbopack | `next` 16.4.0, `react` 19.3.0 |
 | Language | TypeScript, strict | 5.x |
-| Styling | Tailwind CSS with design tokens in CSS variables; light theme only, matching the native app (owner, 2026-10-10) | `tailwindcss` 4.3.3 |
+| Styling | Tailwind CSS with design tokens in CSS variables, compiled by `@tailwindcss/postcss` (the Turbopack loader served stale CSS from its cache); light theme only, matching the native app (owner, 2026-10-10) | `tailwindcss` 4.3.3 |
 | Components | shadcn/ui source copied into `src/components/ui` (Base UI primitives, `base-nova` style), restyled to the native app's Sovereign Advisory system with 44 px touch targets on phones; Material Symbols icons through `@iconify-icons/material-symbols` (offline modules, same names as the native app); motion with `motion` | shadcn 4.21.4, `@base-ui/react` 1.9.0 |
 | Data | TanStack Query on the client; server components for first paint | 5.104.1 |
 | Forms | React Hook Form + Zod (same Zod major as the backend) | 7.89.0 / `zod` 4.6.5 |
@@ -153,7 +153,7 @@ Full table: [`inventory/web-frontend.md`](inventory/web-frontend.md). Summary:
 |---|---|---|
 | W0 | Foundation: app, tokens and components, BFF sessions, proxy and errors, endpoint registry and coverage check, PWA (manifest, service worker, offline, install and update prompts), text catalogue and translate script, shells per role, OTP and staff sign-in with MFA, invitation, context switch, account screens | Sign-in for every role works on phone and desktop; Lighthouse PWA installable; owner reviews the look |
 | W0.5 | Native design rework (owner, 2026-10-10): native theme, logo and icons, motion layer, intro splash and slides, sign-in with Login As, borrower, portal and auth shells, every W0 screen rebuilt | Owner signs off the side-by-side review against the native and Stitch screens |
-| W1 | Borrower journey I: home, application start, requirement, pre-check questions, people and co-applicant OTP, consents, borrower profile and PAN | A borrower reaches "documents" from a fresh sign-up |
+| W1 | Borrower journey I: home, application start, requirement, pre-check questions, people and co-applicant OTP, consents, borrower profile and PAN; realtime bridge, sync catch-up, native push-token bridge (built 2026-10-11) | A borrower reaches "documents" from a fresh sign-up (Playwright `journey.spec.ts`, desktop and phone) |
 | W2 | Borrower journey II: documents (upload, checklist, requests), analysis and assessment, matches, submissions, timeline, withdraw, subscriptions, public consent link | A borrower submits to a lender end to end |
 | W3 | Partner I: sign-up, dashboard, leads inbox and detail, activities, follow-ups, own leads, offline conversion, convert to application | A CA accepts a lead and converts it |
 | W4 | Partner II: clients and filed applications (journey in partner mode, borrower consent OTP), referrals and codes, commissions, team, profile, KYC, capacity, service areas, disputes | A CA files a case and sees commission |

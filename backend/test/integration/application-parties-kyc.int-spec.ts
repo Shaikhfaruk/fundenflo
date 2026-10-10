@@ -105,6 +105,7 @@ describe('application consents, co-applicants and PAN verification', () => {
     expect((await as(owner).get(`/applications/${application.id}/next-step`).expect(200)).body).toMatchObject({ stage: 'verify_details', blockers: [{ code: 'details_unverified' }] });
 
     const path = `/borrower-profiles/${application.borrowerProfileId}/kyc/pan`;
+    expect((await as(owner).get(`/borrower-profiles/${application.borrowerProfileId}`).expect(200)).body.kyc).toEqual({ panHolder: 'P', pan: null });
     expect((await as(owner).post(path, { pan: 'ABCCR1234F', name: 'Suresh Rana' }).expect(400)).body.details[0].code).toBe('holder_mismatch');
     expect((await as(owner).post(path, { pan: 'ABCPR1234Z', name: 'Suresh Rana' }).expect(400)).body.details[0].code).toBe('not_found');
     await as(owner).post(path, { pan: 'not-a-pan' }).expect(400);
@@ -113,6 +114,7 @@ describe('application consents, co-applicants and PAN verification', () => {
     const stored = await t.prisma.partyIdentifier.findFirstOrThrow({ where: { partyId: application.actingParty.id, type: 'pan' } });
     expect(stored.valueEnc).toMatch(/^v1:/);
     expect(stored.verifiedAt).not.toBeNull();
+    expect((await as(owner).get(`/borrower-profiles/${application.borrowerProfileId}`).expect(200)).body.kyc).toEqual({ panHolder: 'P', pan: { masked: 'ABCPR••••F', verified: true, verifiedAt: expect.any(String) } });
     expect((await as(owner).get(`/applications/${application.id}/next-step`).expect(200)).body).toMatchObject({ stage: 'score', completed: expect.arrayContaining(['verify_details']) });
 
     const other = await otpLogin(t, randomMobile(), LoginAs.borrower);
@@ -122,6 +124,7 @@ describe('application consents, co-applicants and PAN verification', () => {
     expect(unmatched.body).toMatchObject({ verified: true, nameMatch: true });
     const msmeNoType = await as(other).post('/borrower-profiles', { segment: 'msme', businessName: 'Kumar Tools' }).expect(201);
     expect((await as(other).post(`/borrower-profiles/${msmeNoType.body.id}/kyc/pan`, { pan: 'BCDFK5678G' }).expect(400)).body.details[0].path).toBe('subSegment');
+    expect((await as(other).get(`/borrower-profiles/${msmeNoType.body.id}`).expect(200)).body.kyc).toEqual({ panHolder: null, pan: null });
     await as(borrower).post(`/borrower-profiles/${profile.body.id}/kyc/pan`, { pan: 'CDEPK5678H', name: 'Kiran Kumar' }).expect(404);
   });
 });

@@ -99,13 +99,13 @@ Controller: `backend/src/modules/catalog/http/catalog.controller.ts` · Postman:
 | Method | Path | Module | Context | Milestone | Status |
 |---|---|---|---|---|---|
 | `POST` `GET` | `/borrower-profiles` | borrowers (`borrower-profiles.controller.ts` → `BorrowerProfileService`; POST borrower only, partners register clients with `/partner/borrowers`) | borrower, partner | M3 | `useful` |
-| `GET` `PATCH` | `/borrower-profiles/:id` | borrowers (`borrower-profiles.controller.ts`) | borrower, partner | M3 | `useful` |
+| `GET` `PATCH` | `/borrower-profiles/:id` | borrowers (`borrower-profiles.controller.ts`; GET adds `kyc` from `BorrowerKycService.kycOf`: PAN holder type and masked, verified PAN, added W1 2026-10-10 for the web profile screen) | borrower, partner | M3 | `useful` |
 | `POST` | `/borrower-profiles/:id/kyc/pan` | borrowers (`borrower-profiles.controller.ts` → `BorrowerKycService.verifyPan`; `PanVerifier` port) | borrower, partner | M3 | `useful` |
 | `POST` `GET` | `/applications` | applications (`applications.controller.ts` → `ApplicationService`; create is borrower-only until M3c adds `/partner/applications`) | borrower, partner | M3 | `useful` |
-| `GET` | `/applications/:id` | applications (`applications.controller.ts`) | borrower, partner | M3 | `useful` |
-| `PATCH` | `/applications/:id/requirement` | applications (`applications.controller.ts`; If-Match) | borrower, partner | M3 | `useful` |
+| `GET` | `/applications/:id` | applications (`applications.controller.ts`; adds `location.city` through `PlaceLocator.city`, W1 2026-10-10) | borrower, partner | M3 | `useful` |
+| `PATCH` | `/applications/:id/requirement` | applications (`applications.controller.ts`; If-Match; response adds `location.city` through `PlaceLocator.city`, W1 2026-10-10) | borrower, partner | M3 | `useful` |
 | `GET` | `/applications/:id/next-step` | applications (`applications.controller.ts` → `computeJourney`) | borrower, partner | M3 | `useful` |
-| `GET` | `/applications/:id/questions` | applications (`applications.controller.ts` → `QuestionnaireService.resolve`) | borrower, partner | M3 | `useful` |
+| `GET` | `/applications/:id/questions` | applications (`applications.controller.ts` → `QuestionnaireService.resolve` + `latestAnswers`; `answers[]` latest answer per listed question, added W1 2026-10-10 so the web pre-check prefills) | borrower, partner | M3 | `useful` |
 | `PUT` | `/applications/:id/answers` | applications (`applications.controller.ts` → `QuestionnaireService.submitAnswers`) | borrower, partner | M3 | `useful` |
 | `POST` `GET` | `/applications/:id/parties` | applications (`applications.controller.ts` → `ApplicationPartyService`; GET added to show everyone on the case) | borrower, partner | M3 | `useful` |
 | `DELETE` | `/applications/:id/parties/:pid` | applications (`ApplicationPartyService.remove`; added for co-applicants who drop out) | borrower, partner | M3 | `useful` |
@@ -227,7 +227,7 @@ The WebSocket namespace `/v1/realtime` (built in M1.9a) is documented with its r
 
 | Method | Path | Module | Context | Milestone | Status |
 |---|---|---|---|---|---|
-| `GET` | `/sync/changes` | sync (`sync.controller.ts` → `SyncService`; sources in leads and activities) | any | M1 | `useful` |
+| `GET` | `/sync/changes` | sync (`sync.controller.ts` → `SyncService`; sources in leads and activities; `updatedSince` time catch-up added W1 2026-10-11 for the web realtime bridge) | any | M1 | `useful` |
 
 ## 10 Partner Portal - Onboarding, Team & Leads
 

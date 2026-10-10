@@ -3,7 +3,7 @@ import { queryOptions } from '@tanstack/react-query';
 import { apiRequest } from './client';
 import type { PartnerDashboard, PartnerProfile, PartnerSignupInput } from './types/partner.types';
 
-const partnerKeys = {
+export const partnerKeys = {
   all: ['partner'] as const,
   dashboard: () => [...partnerKeys.all, 'dashboard'] as const,
   profile: () => [...partnerKeys.all, 'profile'] as const,

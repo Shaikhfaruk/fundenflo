@@ -5,7 +5,7 @@ import { PAGE_SIZE } from './leads';
 import type { Page } from './types/common.types';
 import type { LenderSubmission } from './types/submission.types';
 
-const lenderKeys = {
+export const lenderKeys = {
   all: ['lender'] as const,
   submissions: (status?: string) => [...lenderKeys.all, 'submissions', status ?? 'all'] as const,
 };

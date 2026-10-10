@@ -60,6 +60,8 @@ describe('borrower profiles and applications', () => {
     const requirement = await as(borrower).patch(`/applications/${id}/requirement`, { purpose: 'expansion', amountPaise: 25 * LAKH, tenureMonths: 36, city: 'Gurgaon' }, created.body.version).expect(200);
     expect(requirement.body).toMatchObject({ amountPaise: 25 * LAKH, tenureMonths: 36, journeyStage: 'pre_check' });
     expect(requirement.body.location.cityId).not.toBeNull();
+    expect(requirement.body.location.city).toMatchObject({ id: requirement.body.location.cityId, name: 'Gurugram', state: { name: 'Haryana' } });
+    expect((await as(borrower).get(`/applications/${id}`).expect(200)).body.location.city.name).toBe('Gurugram');
     await as(borrower).patch(`/applications/${id}/requirement`, { tenureMonths: 24 }, created.body.version).expect(409);
 
     const step = await as(borrower).get(`/applications/${id}/next-step`).expect(200);
@@ -67,8 +69,12 @@ describe('borrower profiles and applications', () => {
     expect(step.body.blockers[0].details.toSorted((left: string, right: string) => left.localeCompare(right))).toEqual(['business_age', 'existing_emis', 'gst_registered', 'monthly_turnover']);
     const questions = await as(borrower).get(`/applications/${id}/questions`).expect(200);
     expect(questions.body.questions.map((item: { question: { key: string } }) => item.question.key)).toEqual(expect.arrayContaining(['business_age', 'monthly_turnover']));
+    expect(questions.body.answers).toEqual([]);
 
     await as(borrower).put(`/applications/${id}/answers`, { answers: [{ questionKey: 'business_age', value: '1-3' }, { questionKey: 'monthly_turnover', value: '5-25L' }, { questionKey: 'existing_emis', value: 'no' }, { questionKey: 'gst_registered', value: 'yes' }] }).expect(200);
+    await as(borrower).put(`/applications/${id}/answers`, { answers: [{ questionKey: 'business_age', value: '3-5' }] }).expect(200);
+    const prefilled = (await as(borrower).get(`/applications/${id}/questions`).expect(200)).body.answers as Array<{ questionKey: string; value: unknown; answeredAt: string }>;
+    expect(Object.fromEntries(prefilled.map((answer) => [answer.questionKey, answer.value]))).toEqual({ business_age: '3-5', monthly_turnover: '5-25L', existing_emis: 'no', gst_registered: 'yes' });
     const screened = await as(borrower).get(`/applications/${id}`).expect(200);
     expect(screened.body).toMatchObject({ status: 'pre_screened', journeyStage: 'consent' });
     expect(screened.body.pinnedVersions.preCheck).toHaveLength(1);

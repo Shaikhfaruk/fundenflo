@@ -22,3 +22,7 @@ export type LoanCategory = {
 };
 
 export type GeoState = { gstCode: string; name: string; kind: string };
+
+export type City = { id: string; name: string; state: { gstCode: string; name: string } };
+
+export type PincodePlace = { pincode: string; district: string | null; state: { gstCode: string; name: string } | null; city: { id: string; name: string } | null };

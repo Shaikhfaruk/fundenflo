@@ -52,7 +52,7 @@ export const NAVIGATION: Record<NavArea, NavGroup[]> = {
       items: [
         { key: 'home', href: AppPath.BorrowerHome, icon: 'tab-home', primary: true },
         { key: 'newApplication', href: AppPath.BorrowerNewApplication, icon: 'add', primary: true },
-        { key: 'profile', href: AppPath.Account, icon: 'account', primary: true },
+        { key: 'profile', href: AppPath.BorrowerProfile, icon: 'account', primary: true },
       ],
     },
   ],

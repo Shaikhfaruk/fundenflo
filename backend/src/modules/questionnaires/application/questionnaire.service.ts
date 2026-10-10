@@ -143,6 +143,11 @@ export class QuestionnaireService {
     return { answers: saved.map(toAnswerView), facts: recorded, remaining: remainingRequired(after, known), hidden: after.hidden };
   }
 
+  async latestAnswers(partyId: string, questionKeys: string[]) {
+    if (questionKeys.length === 0) return [];
+    return (await this.answers.latestForQuestions(partyId, questionKeys)).map((answer) => ({ questionKey: answer.questionKey, value: answer.value, answeredAt: answer.createdAt.toISOString() }));
+  }
+
   async listAnswers(partyId: string, query: PageQuery & { questionKey?: string }) {
     await this.parties.assertExists(partyId);
     const window = pageWindow(query);

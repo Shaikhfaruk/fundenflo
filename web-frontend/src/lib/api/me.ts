@@ -33,3 +33,5 @@ export const removeLogin = (id: string) => apiRequest<void>('DELETE /me/logins/:
 export const startMobileChange = (body: { mobile: string; countryCode?: string }) => apiRequest<OtpIssued>('POST /me/mobile-change', { body });
 
 export const verifyMobileChange = (body: { challengeId: string; otp: string }) => apiRequest<MeView>('POST /me/mobile-change/verify', { body });
+
+export const setPushToken = (token: string | null) => apiRequest<unknown>('PUT /me/sessions/current/push-token', { body: { token } });

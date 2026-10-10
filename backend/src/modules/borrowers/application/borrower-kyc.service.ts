@@ -47,6 +47,12 @@ export class BorrowerKycService {
     return this.store(id, partyId, input.pan, namesCompatible(result.nameOnRecord, party.displayName ?? name), result);
   }
 
+  async kycOf(profile: KycSubject) {
+    const holder = this.expectedHolder(profile);
+    const pan = holder ? await this.parties.identifier(this.kycPartyId(profile, holder), IdentifierType.pan) : null;
+    return { panHolder: holder ?? null, pan: pan ? { masked: pan.masked, verified: pan.verified, verifiedAt: pan.verifiedAt?.toISOString() ?? null } : null };
+  }
+
   async panVerifiedFor(borrowerProfileId: string): Promise<boolean> {
     const profile = await this.repository.findOne({ id: borrowerProfileId });
     const expected = profile ? this.expectedHolder(profile) : undefined;

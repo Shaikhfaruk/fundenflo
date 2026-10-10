@@ -26,13 +26,13 @@ flowchart LR
     APP[Borrower app - Expo, old demo, not developed further]
     PUB[Public lead forms]
   end
-  subgraph Web["web-frontend - Next.js 16.4 (W0 + W0.5 native design, 2026-10-10)"]
+  subgraph Web["web-frontend - Next.js 16.4 (W0, W0.5 native design, W1 borrower journey + realtime, 2026-10-11)"]
     UI[Website + installable PWA + native WebView wrapper<br/>borrower, partner, lender, ops, admin, finance]
     BFF[Next.js server: session cookies, /api proxy, refresh]
   end
   UI -->|same origin| BFF
   BFF -->|HTTPS /v1 Bearer| API
-  UI -->|WebSocket /v1/realtime, short-lived token| API
+  UI -->|WebSocket /v1/realtime, token from /api/session/socket-token; on reconnect GET /sync/changes?updatedSince| API
   subgraph Backend
     API[API process - NestJS]
     WRK[Worker process - NestJS standalone]

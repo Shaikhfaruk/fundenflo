@@ -8,15 +8,18 @@ import { useState } from 'react';
 
 import { useCategoryLabel } from '@/components/borrower/category-labels';
 import { JourneyStepper } from '@/components/borrower/journey-stepper';
+import { useTenureLabel } from '@/components/journey/use-tenure-label';
 import { StatusBadge } from '@/components/data/status-badge';
 import { Icon } from '@/components/ui/icon';
+import { ButtonLink } from '@/components/ui/button-link';
 import { IconTile } from '@/components/ui/icon-tile';
 import { Skeleton } from '@/components/ui/skeleton';
 import { StepHeader } from '@/components/ui/step-header';
 import { partyName } from '@/lib/api/applications';
 import { applicationQuery, nextStepQuery } from '@/lib/api/journey';
 import { Duration, EASE_OUT } from '@/lib/constants/motion.constants';
-import { AppPath } from '@/lib/constants/routes.constants';
+import { screenForStage } from '@/lib/constants/journey.constants';
+import { AppPath, RoutePath } from '@/lib/constants/routes.constants';
 import { APPLICATION_STATUS_TONE, toneOf } from '@/lib/constants/status.constants';
 import { formatDate } from '@/lib/format/date';
 import { formatPaise } from '@/lib/format/money';
@@ -31,6 +34,7 @@ export function ApplicationOverview() {
   const tJourney = useTranslations('journey');
   const locale = useLocale();
   const categoryLabel = useCategoryLabel();
+  const tenureLabel = useTenureLabel();
   const { id } = useParams<{ id: string }>();
   const application = useQuery(applicationQuery(id));
   const nextStep = useQuery(nextStepQuery(id));
@@ -47,6 +51,7 @@ export function ApplicationOverview() {
   if (!application.data) return null;
   const app = application.data;
   const blockers = nextStep.data?.blockers ?? [];
+  const nextScreen = screenForStage(nextStep.data?.stage, blockers[0]?.code);
   const blockerText = (code: string, count: number) => (tBlockers.has(code) ? tBlockers(code, { count }) : tBlockers('generic'));
   const copy = async () => {
     await navigator.clipboard.writeText(app.ref);
@@ -71,7 +76,7 @@ export function ApplicationOverview() {
             <dl className="mt-3 grid grid-cols-2 gap-3 text-sm">
               <div>
                 <dt className="text-xs text-muted-foreground">{t('tenure')}</dt>
-                <dd className="font-semibold text-foreground tabular">{app.tenureMonths ? t('months', { count: app.tenureMonths }) : '—'}</dd>
+                <dd className="font-semibold text-foreground tabular">{app.tenureMonths ? tenureLabel(app.tenureMonths) : '—'}</dd>
               </div>
               <div>
                 <dt className="text-xs text-muted-foreground">{t('started')}</dt>
@@ -99,6 +104,14 @@ export function ApplicationOverview() {
                     </li>
                   ))}
                 </ul>
+                {nextScreen ? (
+                  <ButtonLink href={RoutePath.applicationStep(app.id, nextScreen)} size="sm" className="mt-2 self-start">
+                    {t('continue')}
+                    <Icon name="arrow-forward" size={16} />
+                  </ButtonLink>
+                ) : (
+                  <p className="mt-1 text-xs text-muted-foreground">{t('comingNext')}</p>
+                )}
               </div>
             </motion.section>
           ) : nextStep.data ? (
@@ -111,7 +124,15 @@ export function ApplicationOverview() {
         <motion.section {...rise(0.14)} className="rounded-xl bg-card p-4 shadow-card">
           <h2 className="mb-3 font-heading text-lg font-semibold text-navy">{t('journey')}</h2>
           {nextStep.data ? (
-            <JourneyStepper current={nextStep.data.stage ?? app.journeyStage} completed={nextStep.data.completed} activeDetail={blockers[0] ? blockerText(blockers[0].code, blockers[0].details.length) : undefined} />
+            <JourneyStepper
+              current={nextStep.data.stage ?? app.journeyStage}
+              completed={nextStep.data.completed}
+              activeDetail={blockers[0] ? blockerText(blockers[0].code, blockers[0].details.length) : undefined}
+              editHref={(stage) => {
+                const screen = screenForStage(stage);
+                return screen ? RoutePath.applicationStep(app.id, screen) : null;
+              }}
+            />
           ) : (
             <Skeleton className="h-80 w-full" />
           )}

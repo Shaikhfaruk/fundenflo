@@ -19,7 +19,7 @@
         }
       ]
     },
-    "description": "One borrower profile. Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records."
+    "description": "One borrower profile, with `kyc`: `panHolder` is the PAN type this profile needs (`P` person for individuals and proprietors, `F` firm, `C` company, `E` LLP; `null` until the business type is set) and `pan` is the PAN on record (`masked`, `verified`, `verifiedAt`) or `null`. Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records."
   },
   "event": [
     {
@@ -55,7 +55,7 @@
             }
           ]
         },
-        "description": "One borrower profile. Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records."
+        "description": "One borrower profile, with `kyc`: `panHolder` is the PAN type this profile needs (`P` person for individuals and proprietors, `F` firm, `C` company, `E` LLP; `null` until the business type is set) and `pan` is the PAN on record (`masked`, `verified`, `verifiedAt`) or `null`. Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records."
       },
       "status": "OK",
       "code": 200,
@@ -66,7 +66,7 @@
           "value": "application/json; charset=utf-8"
         }
       ],
-      "body": "{\n  \"id\": \"01a12260-1a2b-7c3d-8e4f-5061728394a5\",\n  \"party\": {\n    \"id\": \"01a12260-3c4d-7e5f-8061-728394a5b6c7\",\n    \"kind\": \"business\",\n    \"displayName\": \"Kapoor Electricals\"\n  },\n  \"actingParty\": {\n    \"id\": \"01a12260-4d5e-7f60-8172-8394a5b6c7d8\",\n    \"displayName\": \"Rohit Kapoor\"\n  },\n  \"segmentKey\": \"msme\",\n  \"subSegmentKey\": \"proprietorship\",\n  \"incorporatedOn\": null,\n  \"status\": \"active\",\n  \"channel\": \"direct\",\n  \"partnerOrganizationId\": null,\n  \"version\": 1,\n  \"createdAt\": \"2026-10-10T16:00:00.000Z\",\n  \"updatedAt\": \"2026-10-10T16:00:00.000Z\"\n}"
+      "body": "{\n  \"id\": \"01a12260-1a2b-7c3d-8e4f-5061728394a5\",\n  \"party\": {\n    \"id\": \"01a12260-3c4d-7e5f-8061-728394a5b6c7\",\n    \"kind\": \"business\",\n    \"displayName\": \"Kapoor Electricals\"\n  },\n  \"actingParty\": {\n    \"id\": \"01a12260-4d5e-7f60-8172-8394a5b6c7d8\",\n    \"displayName\": \"Rohit Kapoor\"\n  },\n  \"segmentKey\": \"msme\",\n  \"subSegmentKey\": \"proprietorship\",\n  \"incorporatedOn\": null,\n  \"status\": \"active\",\n  \"channel\": \"direct\",\n  \"partnerOrganizationId\": null,\n  \"version\": 1,\n  \"createdAt\": \"2026-10-10T16:00:00.000Z\",\n  \"updatedAt\": \"2026-10-10T16:00:00.000Z\",\n  \"kyc\": {\n    \"panHolder\": \"P\",\n    \"pan\": {\n      \"masked\": \"ABCPR••••F\",\n      \"verified\": true,\n      \"verifiedAt\": \"2026-10-10T18:22:05.118Z\"\n    }\n  }\n}"
     },
     {
       "name": "404 NOT_FOUND",
@@ -89,7 +89,7 @@
             }
           ]
         },
-        "description": "One borrower profile. Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records."
+        "description": "One borrower profile, with `kyc`: `panHolder` is the PAN type this profile needs (`P` person for individuals and proprietors, `F` firm, `C` company, `E` LLP; `null` until the business type is set) and `pan` is the PAN on record (`masked`, `verified`, `verifiedAt`) or `null`. Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records."
       },
       "status": "Not Found",
       "code": 404,

@@ -8,6 +8,10 @@ export function changedAfter(type: SyncType, cursor: SyncCursor | null): Updated
   return type > cursor.type ? { updatedAt: { gte: cursor.at } } : { updatedAt: { gt: cursor.at } };
 }
 
+const FIRST_TYPE = Object.values(SyncType).toSorted()[0] ?? SyncType.Assignment;
+
+export const cursorAt = (at: Date): SyncCursor => ({ at, type: FIRST_TYPE, id: '' });
+
 export const compareChanges = (left: SyncChange, right: SyncChange) =>
   left.updatedAt.getTime() - right.updatedAt.getTime() || left.type.localeCompare(right.type) || left.id.localeCompare(right.id);
 

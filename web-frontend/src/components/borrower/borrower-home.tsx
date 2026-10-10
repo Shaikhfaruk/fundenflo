@@ -18,6 +18,7 @@ import { Link } from '@/i18n/navigation';
 import { applicationsQuery, partyName } from '@/lib/api/applications';
 import type { Application } from '@/lib/api/types/application.types';
 import { Duration, EASE_OUT, STAGGER_STEP } from '@/lib/constants/motion.constants';
+import { screenForStage } from '@/lib/constants/journey.constants';
 import { AppPath, RoutePath } from '@/lib/constants/routes.constants';
 import { APPLICATION_STATUS_TONE, CLOSED_APPLICATION_STATUSES, toneOf } from '@/lib/constants/status.constants';
 import { formatRelative } from '@/lib/format/date';
@@ -30,6 +31,11 @@ const HOW_IT_WORKS: readonly { key: string; icon: IconName }[] = [
   { key: 'score', icon: 'monitoring' },
   { key: 'lenders', icon: 'verified' },
 ];
+
+const nextHref = (application: Application) => {
+  const screen = screenForStage(application.journeyStage);
+  return screen ? RoutePath.applicationStep(application.id, screen) : RoutePath.application(application.id);
+};
 
 function ActiveCard({ application }: { application: Application }) {
   const t = useTranslations('borrower.home');
@@ -158,7 +164,7 @@ export function BorrowerHome() {
         {active ? <ActiveCard application={active} /> : null}
         {active ? (
           <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.14, duration: Duration.Base, ease: EASE_OUT }}>
-            <Link href={RoutePath.application(active.id)} className="flex items-center gap-3 rounded-xl bg-gold-soft p-3.5 transition-transform active:scale-[0.99]">
+            <Link href={nextHref(active)} className="flex items-center gap-3 rounded-xl bg-gold-soft p-3.5 transition-transform active:scale-[0.99]">
               <IconTile icon="error" tone="gold" className="size-9 rounded-[10px]" />
               <span className="flex min-w-0 flex-1 flex-col">
                 <span className="text-sm font-semibold text-navy">{t('pendingTask')}</span>

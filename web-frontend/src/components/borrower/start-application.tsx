@@ -24,12 +24,12 @@ import { ApiError } from '@/lib/api/api-error';
 import { applicationKeys, createApplication } from '@/lib/api/applications';
 import { categoriesQuery, segmentsQuery } from '@/lib/api/catalog';
 import { Duration, EASE_OUT } from '@/lib/constants/motion.constants';
+import { JOURNEY_TOTAL_STEPS, JourneyScreen, START_STEP } from '@/lib/constants/journey.constants';
 import { AppPath, RoutePath } from '@/lib/constants/routes.constants';
 import { formatPaise } from '@/lib/format/money';
 
 const BPS_PER_PERCENT = 100;
 const BUSINESS_SEGMENT = 'msme';
-const START_STEPS = 2;
 const SEGMENT_FALLBACK_ICON: IconName = 'person';
 const CATEGORY_FALLBACK_ICON: IconName = 'payments';
 
@@ -58,7 +58,7 @@ export function StartApplication() {
     onSuccess: (application) => {
       void queryClient.invalidateQueries({ queryKey: applicationKeys.all });
       toast.success(t('created', { ref: application.ref }));
-      router.replace(RoutePath.application(application.id));
+      router.replace(RoutePath.applicationStep(application.id, JourneyScreen.Requirement));
     },
     onError: (error) => {
       const issue = error instanceof ApiError ? error.fieldIssues[0] : undefined;
@@ -71,7 +71,7 @@ export function StartApplication() {
   const ready = segmentReady && Boolean(category);
   return (
     <div className="mx-auto flex w-full max-w-[560px] flex-1 flex-col">
-      <StepHeader step={step} total={START_STEPS} onBack={step > 1 ? () => setStep(1) : undefined} backHref={step === 1 ? AppPath.BorrowerHome : undefined} />
+      <StepHeader step={step === 1 ? START_STEP.who : START_STEP.what} total={JOURNEY_TOTAL_STEPS} onBack={step > 1 ? () => setStep(1) : undefined} backHref={step === 1 ? AppPath.BorrowerHome : undefined} />
       <AnimatePresence mode="wait" initial={false}>
         {step === 1 ? (
           <motion.section key="who" {...SWAP} className="mt-4 flex flex-1 flex-col">

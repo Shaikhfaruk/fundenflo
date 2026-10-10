@@ -9,6 +9,8 @@ import { Toaster } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { createQueryClient } from '@/lib/api/query-client';
 import { MutationErrorToasts } from './mutation-error-toasts';
+import { NativePushBridge } from './native-push-bridge';
+import { RealtimeBridge } from './realtime-bridge';
 import { SessionWatcher } from './session-watcher';
 
 export function AppProviders({ children }: { children: ReactNode }) {
@@ -19,6 +21,8 @@ export function AppProviders({ children }: { children: ReactNode }) {
         <TooltipProvider>
           <SessionWatcher />
           <MutationErrorToasts />
+          <RealtimeBridge />
+          <NativePushBridge />
           {children}
           <Toaster closeButton position="top-center" />
           <ServiceWorkerRegister />

@@ -43,7 +43,8 @@ export class BorrowerProfilesController {
   @Get(':id')
   @canRead
   async get(@ValidParam('id', uuidSchema) id: string, @CurrentAbility() ability: AppAbility) {
-    return toBorrowerProfileView(await this.profiles.get(id, ability));
+    const profile = await this.profiles.get(id, ability);
+    return { ...toBorrowerProfileView(profile), kyc: await this.kyc.kycOf(profile) };
   }
 
   @Patch(':id')

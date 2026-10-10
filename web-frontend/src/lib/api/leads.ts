@@ -6,7 +6,7 @@ import type { OpsLead, OpsLeadFilter } from './types/lead.types';
 
 export const PAGE_SIZE = 25;
 
-const opsLeadKeys = {
+export const opsLeadKeys = {
   all: ['ops-leads'] as const,
   list: (filter: OpsLeadFilter) => [...opsLeadKeys.all, 'list', filter] as const,
 };

@@ -77,6 +77,8 @@ export const switchContext = (body: { membershipId: string } | { loginAs: 'borro
   return payload;
 });
 
+export const socketToken = () => post<{ token: string; origin: string }>(SessionRoute.SocketToken);
+
 export async function signOut() {
   await post<void>(SessionRoute.Logout).catch(() => undefined);
   emitSession(SessionSignal.Ended);
