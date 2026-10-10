@@ -17,6 +17,14 @@ export class FieldCipher implements OnModuleInit {
     this.ring = ring;
   }
 
+  get activeKeyId(): string {
+    return this.requireRing().activeKeyId;
+  }
+
+  reencrypt(token: string, purpose: CipherPurpose): string {
+    return this.encrypt(this.decrypt(token, purpose), purpose);
+  }
+
   encrypt(plaintext: string, purpose: CipherPurpose): string {
     const ring = this.requireRing();
     const key = ring.keys.get(ring.activeKeyId) as Buffer;

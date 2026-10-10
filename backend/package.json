@@ -27,6 +27,7 @@
     "db:deploy": "prisma migrate deploy",
     "db:seed": "prisma db seed",
     "keys:generate": "node dist/scripts/generate-keys.js",
+    "keys:reencrypt": "node dist/scripts/reencrypt-keys.js",
     "staff:invite": "node dist/scripts/invite-staff.js",
     "postman:build": "node ../postman/scripts/build.ts",
     "postman:split": "node ../postman/scripts/split.ts",

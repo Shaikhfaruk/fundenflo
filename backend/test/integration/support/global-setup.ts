@@ -33,6 +33,7 @@ export default async function setup(project: TestProject) {
   const { privateKey } = await generateKeyPair('ES256', { extractable: true });
   const signingKey = { ...(await exportJWK(privateKey)), kid: randomUUID(), alg: 'ES256' };
   const dataKeyId = `dk-${randomUUID()}`;
+  const retiredDataKeyId = `dk-${randomUUID()}`;
 
   project.provide('testEnv', {
     NODE_ENV: 'test',
@@ -44,7 +45,7 @@ export default async function setup(project: TestProject) {
     JWT_SIGNING_KEYS: JSON.stringify([signingKey]),
     CRYPTO_DRIVER: 'local',
     CRYPTO_ACTIVE_KEY_ID: dataKeyId,
-    CRYPTO_LOCAL_KEYS: JSON.stringify({ [dataKeyId]: randomBytes(32).toString('base64') }),
+    CRYPTO_LOCAL_KEYS: JSON.stringify({ [dataKeyId]: randomBytes(32).toString('base64'), [retiredDataKeyId]: randomBytes(32).toString('base64') }),
     BLIND_INDEX_KEY: randomBytes(32).toString('base64'),
     OTP_HASH_KEY: randomBytes(32).toString('base64'),
     AUTH_OTP_STATIC_CODE: TEST_OTP_CODE,

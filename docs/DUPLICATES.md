@@ -17,6 +17,7 @@ These are the places where a second copy is most tempting. Use the one listed.
 
 | Need | Use only | Do not build |
 |---|---|---|
+| Moving encrypted values to a new data key | `FieldKeyRotation` over `ENCRYPTED_COLUMNS` (add every new long-lived encrypted column there) | Per-module re-encryption scripts or updates that bypass the rotation setting |
 | Several database reads in one use case | Sequential `await`s, or `mapInSequence` for a list | `Promise.all` over Prisma calls (a transaction connection would run two queries at once; pg@9 makes that an error) |
 | A duration in milliseconds | `MINUTE_MS`, `HOUR_MS`, `DAY_MS` from `common/constants/time.constants.ts` | Inline `60_000` / `3600_000` literals |
 | WhatsApp or marketing opt-in | Consent purposes `whatsapp` / `marketing` through `POST /me/consents` and withdraw | A preference flag for the same opt-in |

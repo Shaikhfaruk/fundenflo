@@ -544,7 +544,7 @@ flowchart LR
   UC[Use case in one DB transaction] -->|state change + event row| OB[(outbox_events)]
   OB --> RELAY[outbox.relay]
   SCHED[worker-scheduler: job schedulers] -->|every 1 s| RELAY
-  SCHED -->|hourly| MAINT[maintenance.cleanup: @MaintenanceTask methods: OTP, sessions, tokens, idempotency, exports, document freshness, retention purge, orphan files]
+  SCHED -->|hourly| MAINT[maintenance.cleanup: @MaintenanceTask methods: OTP, sessions, tokens, idempotency, exports, document freshness, retention purge, orphan files, re-encryption to the active data key]
   MAINT -->|document.expired| APPREF
   RELAY --> Q[[BullMQ queues]]
   Q --> REVOKE[auth.session-revocations]

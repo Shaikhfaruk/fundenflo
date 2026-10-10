@@ -18,7 +18,8 @@ Every encrypted value is stored as `version:keyId:iv:tag:ciphertext`, so old val
 
 1. Add a new key to the ring (`CRYPTO_LOCAL_KEYS` locally; a data key wrapped by Key Vault in `CRYPTO_WRAPPED_KEYS` in Azure).
 2. Set `CRYPTO_ACTIVE_KEY_ID` to it and deploy; new writes use it.
-3. Keep old keys in the ring. Re-encrypting old values is not automated yet; do not remove a key while data encrypted with it exists.
+3. Keep the old key in the ring. The worker's hourly `crypto.reencrypt-retired-keys` task moves old values to the active key (one minute per run); to finish at once (for example after a leak) run `pnpm keys:reencrypt` with the same settings. It prints how many values it moved, any value it could not read, and every column still on an older key.
+4. Remove the old key from the ring only after `pnpm keys:reencrypt` reports that every encrypted value uses the active key, then deploy. Short-lived encrypted values (OTP challenge payloads, MFA challenges, queued notification jobs) expire within minutes; wait 15 minutes after switching before removing the key.
 
 ## Blind index and OTP keys (`BLIND_INDEX_KEY`, `OTP_HASH_KEY`)
 

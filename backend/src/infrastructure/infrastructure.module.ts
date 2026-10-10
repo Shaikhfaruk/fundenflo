@@ -17,6 +17,7 @@ import { DatabaseModule } from './database/database.module.js';
 import { RefGenerator } from './database/ref-generator.js';
 import { PrismaService } from './database/prisma.service.js';
 import { IdempotencyInterceptor } from './idempotency/idempotency.interceptor.js';
+import { FieldKeyRotation } from './crypto/field-key-rotation.service.js';
 import { IdempotencyMaintenance } from './idempotency/idempotency.maintenance.js';
 import { buildLoggerParams } from './logger/logger.config.js';
 import { OutboxService } from './outbox/outbox.service.js';
@@ -31,7 +32,7 @@ export type InfrastructureOptions = {
   processName: 'api' | 'worker' | 'script';
 };
 
-const sharedProviders = [CacheService, OutboxService, RateLimiter, RevocationRegistry, IdempotencyInterceptor, IdempotencyMaintenance, IpRateLimitGuard, RefGenerator];
+const sharedProviders = [CacheService, OutboxService, RateLimiter, RevocationRegistry, IdempotencyInterceptor, IdempotencyMaintenance, IpRateLimitGuard, RefGenerator, FieldKeyRotation];
 
 @Global()
 @Module({})
