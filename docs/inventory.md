@@ -2,7 +2,7 @@
 
 > The map of everything in the system. **Search here before creating any function, class, route, worker, queue, channel or file, and reuse or extend what is listed.**
 > Any change that adds, renames, moves, removes or changes the behaviour or callers of an item updates this inventory and the matching diagram in [`ARCHITECTURE.md`](ARCHITECTURE.md) in the same change.
-> Known duplicates: [`DUPLICATES.md`](DUPLICATES.md). Design: [`BACKEND_ARCHITECTURE_PLAN.md`](BACKEND_ARCHITECTURE_PLAN.md).
+> Known duplicates: [`DUPLICATES.md`](DUPLICATES.md). Design: [`BACKEND_ARCHITECTURE_PLAN.md`](BACKEND_ARCHITECTURE_PLAN.md), web: [`FRONTEND_ARCHITECTURE_PLAN.md`](FRONTEND_ARCHITECTURE_PLAN.md).
 > Last updated: 2026-10-10 · Backend: **M0 foundation + M1.1 catalog + M1.2 attributes, facts and conditions + M1.3 config publishing and questionnaires + M1.4 consents + M1.5 partners light + M1.6a/b leads core, consent links and drop-offs + M1.7 imports + M1.8a routing rules and lead assignments + M1.8b CA lead inbox + M1.8c SLA timers, activities and follow-ups + M1.8d lead notifications, referrals, CA edits and offline conversions + M1.6c party match reviews and merges + M1.9a realtime and push + M1.9b sync, reports and partner dashboard built: **M1 complete**; **M2 config core built** (document types, versioned document requirements, checklist, progressive profiling hook); **M3a built** (borrower profiles, loan applications, requirement, pre-check, next-step journey, lead conversion); **M3b built** (private document upload, type sniffing, antivirus scan queue, download links, checklist satisfaction, application refresh queue, merge participants for profiles, applications and documents); **M3c built** (application consents, co-applicants with OTP consent, PAN verification, partner-filed applications, lead conversion by CAs, ops case view); **M4 built** (lenders, agreements, contacts, versioned lender products with simulation, category availability, lender knock-out questions, lender portal); **M5a built** (scoring models, improvement rules, analyses, score results, recompute, ops-verified facts, notification subscriptions); **M5b built** (consent-gated document extraction with ops keying, consistency signals); **M6a built** (lender matching); **M6b built** (lender submissions with ops approval, encrypted packets, lender portal decisions, document requests, case assignment, lead closing); **M3d built** (compat `/v0` for the current app); **M7a built** (partner KYC, referral codes, signup attribution, attribution disputes); **M7b built** (commission schemes, double-entry ledger, receivables, partner payouts, reconciliation, partner statements); **M8a built** (risk signals, fraud reviews and holds); **M8b built** (DPDP access, correction and erasure); **M8c built** (document freshness expiry, retention purge, orphan-file clean-up, runbooks); missed M1 items built 2026-10-10 (notification preferences, notification template admin) (387 routes, 25 queues, 303 tests). Remaining M1+ items are `planned`.
 > Automated checks: `pnpm inventory:check` (routes ↔ `inventory/api-routes.md`), `pnpm postman:coverage` (routes ↔ Postman), `pnpm lint:boundaries` (module rules).
 
@@ -28,6 +28,7 @@ Items marked `dead` or `duplicate` are never deleted without the owner's review.
 | Events, real-time channels, notifications | [`inventory/events-and-channels.md`](inventory/events-and-channels.md) | Domain events, rooms, notification templates |
 | Shared building blocks (engines, infrastructure, common) | [`inventory/shared-building-blocks.md`](inventory/shared-building-blocks.md) | Reusable components and where enums/constants live |
 | Frontend app (reference, not edited) | [`inventory/frontend-api-calls.md`](inventory/frontend-api-calls.md) | 19 service functions calling 17 endpoints |
+| Web frontend (`web-frontend/`, Next.js) | [`inventory/web-frontend.md`](inventory/web-frontend.md) | 90 screens planned covering 367 backend routes (all except `/v0`, health and API-key lead intake) |
 
 ## Repository files
 
@@ -36,6 +37,8 @@ Items marked `dead` or `duplicate` are never deleted without the owner's review.
 | `.claude/CLAUDE.md` | Working rules for this repo | `useful` | Loaded as project instructions; local only (git-ignored) |
 | `.claude/context/` | Machine-readable working context, by topic and date | `useful` | Local only (git-ignored) |
 | `docs/BACKEND_ARCHITECTURE_PLAN.md` | Architecture and build plan | `useful` | Source for every `planned` row |
+| `docs/FRONTEND_ARCHITECTURE_PLAN.md` | Web frontend architecture and build plan (Next.js PWA for every role) | `useful` | Source for the `planned` rows in `inventory/web-frontend.md` |
+| `web-frontend/` | Next.js web app, PWA and WebView target | `planned` | Empty folder created 2026-10-10; W0 scaffolds it |
 | `docs/ARCHITECTURE.md` | Living diagrams | `useful` | Linked from every inventory table |
 | `docs/inventory.md`, `docs/inventory/*.md` | This system map | `useful` | — |
 | `docs/DUPLICATES.md` | Known duplicates register and single-implementation rules | `useful` | No open duplicates as of 2026-10-09 |

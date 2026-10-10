@@ -23,12 +23,16 @@
 ```mermaid
 flowchart LR
   subgraph Clients
-    APP[Borrower app - Expo]
-    PW[Partner web / app - CA, DSA]
-    LW[Lender web]
-    OW[Ops / Admin web]
+    APP[Borrower app - Expo, old demo, not developed further]
     PUB[Public lead forms]
   end
+  subgraph Web["web-frontend - Next.js 16.4 (planned 2026-10-10)"]
+    UI[Website + installable PWA + native WebView wrapper<br/>borrower, partner, lender, ops, admin, finance]
+    BFF[Next.js server: session cookies, /api proxy, refresh]
+  end
+  UI -->|same origin| BFF
+  BFF -->|HTTPS /v1 Bearer| API
+  UI -->|WebSocket /v1/realtime, short-lived token| API
   subgraph Backend
     API[API process - NestJS]
     WRK[Worker process - NestJS standalone]
@@ -60,7 +64,7 @@ flowchart LR
   API -->|webhooks in| External
 ```
 
-Hosting, networking and pipelines are owned by infra (Pradeep, Azure) and are not drawn here.
+Hosting, networking and pipelines are owned by infra (Pradeep, Azure) and are not drawn here. Web frontend design and screen map: [`FRONTEND_ARCHITECTURE_PLAN.md`](FRONTEND_ARCHITECTURE_PLAN.md), [`inventory/web-frontend.md`](inventory/web-frontend.md).
 
 ---
 
