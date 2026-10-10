@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { defineMachine, TransitionError } from './define-machine.js';
+import { applicationMachine } from './machines/application.machine.js';
 import { assignmentMachine } from './machines/assignment.machine.js';
 import { configVersionMachine } from './machines/config-version.machine.js';
 import { importBatchMachine } from './machines/import-batch.machine.js';
@@ -101,5 +102,22 @@ describe('assignmentMachine', () => {
     expect(assignmentMachine.next('offered', 'expire')).toBe('expired');
     expect(assignmentMachine.can('offered', 'return')).toBe(false);
     expect(assignmentMachine.events('declined')).toEqual([]);
+  });
+});
+
+describe('application machine', () => {
+  it('moves a case forward one step at a time and closes only from submitted', () => {
+    expect(applicationMachine.next('draft', 'pre_screen')).toBe('pre_screened');
+    expect(applicationMachine.can('draft', 'submit')).toBe(false);
+    expect(applicationMachine.next('submitted', 'win')).toBe('closed_won');
+    expect(applicationMachine.can('pre_screened', 'win')).toBe(false);
+    expect(applicationMachine.next('assessed', 'reopen')).toBe('documents_pending');
+  });
+
+  it('can be withdrawn while open or submitted and expires only while open', () => {
+    expect(applicationMachine.next('submitted', 'withdraw')).toBe('withdrawn');
+    expect(applicationMachine.can('submitted', 'expire')).toBe(false);
+    expect(applicationMachine.can('closed_won', 'withdraw')).toBe(false);
+    expect(applicationMachine.next('documents_pending', 'expire')).toBe('expired');
   });
 });

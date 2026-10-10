@@ -1,0 +1,73 @@
+{
+  "name": "Get Next Step",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/applications/:id/next-step",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "applications",
+        ":id",
+        "next-step"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{applicationId}}"
+        }
+      ]
+    },
+    "description": "Server-driven journey: the first stage not yet done (`category`, `requirement`, `pre_check`, `consent`, `documents`, `verify_details`, `score`, `matching`, `apply`), the stages already done and what blocks the current one (e.g. unanswered question keys, missing consent purposes, missing document slots). Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/applications/:id/next-step",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "applications",
+            ":id",
+            "next-step"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            }
+          ]
+        },
+        "description": "Server-driven journey: the first stage not yet done (`category`, `requirement`, `pre_check`, `consent`, `documents`, `verify_details`, `score`, `matching`, `apply`), the stages already done and what blocks the current one (e.g. unanswered question keys, missing consent purposes, missing document slots). Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"stage\": \"pre_check\",\n  \"completed\": [\n    \"category\",\n    \"requirement\"\n  ],\n  \"blockers\": [\n    {\n      \"stage\": \"pre_check\",\n      \"code\": \"questions_unanswered\",\n      \"details\": [\n        \"business_age\",\n        \"monthly_turnover\",\n        \"existing_emis\",\n        \"gst_registered\"\n      ]\n    }\n  ]\n}"
+    }
+  ]
+}

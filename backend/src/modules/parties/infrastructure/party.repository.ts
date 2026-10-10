@@ -1,7 +1,7 @@
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
 
-import { type ContactType, MatchReviewStatus, PartyKind, PartyStatus } from '../../../common/enums/db.enums.js';
+import { type ContactType, MatchReviewStatus, PartyKind, PartyStatus, type RelationshipType } from '../../../common/enums/db.enums.js';
 import type { Prisma } from '../../../generated/prisma/client.js';
 import type { PrismaTx } from '../../../infrastructure/database/database.types.js';
 
@@ -80,6 +80,18 @@ export class PartyRepository {
 
   moveIdentifiers(ids: string[], partyId: string) {
     return this.txHost.tx.partyIdentifier.updateMany({ where: { id: { in: ids } }, data: { partyId } });
+  }
+
+  findRelationship(fromPartyId: string, toPartyId: string, type: RelationshipType) {
+    return this.txHost.tx.partyRelationship.findFirst({ where: { fromPartyId, toPartyId, type, endedAt: null } });
+  }
+
+  createRelationship(data: Prisma.PartyRelationshipUncheckedCreateInput) {
+    return this.txHost.tx.partyRelationship.create({ data });
+  }
+
+  businessesOf(personPartyId: string) {
+    return this.txHost.tx.party.findMany({ where: { kind: PartyKind.business, status: PartyStatus.active, relationshipsTo: { some: { fromPartyId: personPartyId, endedAt: null } } } });
   }
 
   relationshipsTouching(partyId: string) {

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { EventName } from '../../../common/events/event-names.js';
-import { type ContactType, PartyKind } from '../../../common/enums/db.enums.js';
+import { type ContactType, PartyKind, type RelationshipType } from '../../../common/enums/db.enums.js';
 import { AppError } from '../../../common/errors/app-error.js';
 import { ErrorCode } from '../../../common/errors/error-codes.js';
 import { assertVersion } from '../../../common/http/versioning.js';
@@ -86,6 +86,14 @@ export class PartyService {
 
   async hasUsableContact(partyId: string, type: ContactType): Promise<boolean> {
     return (await this.parties.listContacts(partyId)).some((contact) => contact.type === type && !contact.invalidAt && !contact.doNotContact);
+  }
+
+  async linkRelationship(fromPartyId: string, toPartyId: string, type: RelationshipType) {
+    return (await this.parties.findRelationship(fromPartyId, toPartyId, type)) ?? this.parties.createRelationship({ fromPartyId, toPartyId, type, startedAt: new Date() });
+  }
+
+  businessesOf(personPartyId: string) {
+    return this.parties.businessesOf(personPartyId);
   }
 
   async assertExists(partyId: string): Promise<void> {

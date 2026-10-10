@@ -97,21 +97,21 @@ Controller: `backend/src/modules/catalog/http/catalog.controller.ts` · Postman:
 
 | Method | Path | Module | Context | Milestone | Status |
 |---|---|---|---|---|---|
-| `POST` `GET` | `/borrower-profiles` | borrowers | borrower, partner | M3 | `planned` |
-| `GET` `PATCH` | `/borrower-profiles/:id` | borrowers | borrower, partner | M3 | `planned` |
+| `POST` `GET` | `/borrower-profiles` | borrowers (`borrower-profiles.controller.ts` → `BorrowerProfileService`; borrower context in M3a, partner in M3c) | borrower, partner | M3 | `useful` |
+| `GET` `PATCH` | `/borrower-profiles/:id` | borrowers (`borrower-profiles.controller.ts`) | borrower, partner | M3 | `useful` |
 | `POST` | `/borrower-profiles/:id/kyc/pan` | borrowers | borrower, partner | M3 | `planned` |
-| `POST` `GET` | `/applications` | applications | borrower, partner | M3 | `planned` |
-| `GET` | `/applications/:id` | applications | borrower, partner | M3 | `planned` |
-| `PATCH` | `/applications/:id/requirement` | applications | borrower, partner | M3 | `planned` |
-| `GET` | `/applications/:id/next-step` | applications | borrower, partner | M3 | `planned` |
-| `GET` | `/applications/:id/questions` | questionnaires | borrower, partner | M3 | `planned` |
-| `PUT` | `/applications/:id/answers` | questionnaires | borrower, partner | M3 | `planned` |
+| `POST` `GET` | `/applications` | applications (`applications.controller.ts` → `ApplicationService`; create is borrower-only until M3c adds `/partner/applications`) | borrower, partner | M3 | `useful` |
+| `GET` | `/applications/:id` | applications (`applications.controller.ts`) | borrower, partner | M3 | `useful` |
+| `PATCH` | `/applications/:id/requirement` | applications (`applications.controller.ts`; If-Match) | borrower, partner | M3 | `useful` |
+| `GET` | `/applications/:id/next-step` | applications (`applications.controller.ts` → `computeJourney`) | borrower, partner | M3 | `useful` |
+| `GET` | `/applications/:id/questions` | applications (`applications.controller.ts` → `QuestionnaireService.resolve`) | borrower, partner | M3 | `useful` |
+| `PUT` | `/applications/:id/answers` | applications (`applications.controller.ts` → `QuestionnaireService.submitAnswers`) | borrower, partner | M3 | `useful` |
 | `POST` | `/applications/:id/parties` | applications | borrower, partner | M3 | `planned` |
 | `POST` | `/applications/:id/parties/:pid/consent-otp` | consents | borrower, partner | M3 | `planned` |
 | `POST` | `/applications/:id/consents` | consents | borrower | M3 | `planned` |
-| `GET` | `/applications/:id/document-checklist` | documents | borrower, partner | M3 | `planned` |
-| `GET` | `/applications/:id/timeline` | applications | borrower, partner | M3 | `planned` |
-| `POST` | `/applications/:id/withdraw` | applications | borrower, partner | M3 | `planned` |
+| `GET` | `/applications/:id/document-checklist` | applications (`applications.controller.ts` → `DocumentChecklistService`) | borrower, partner | M3 | `useful` |
+| `GET` | `/applications/:id/timeline` | applications (`applications.controller.ts` → `ApplicationTimeline`) | borrower, partner | M3 | `useful` |
+| `POST` | `/applications/:id/withdraw` | applications (`applications.controller.ts` → `ApplicationService.withdraw`) | borrower, partner | M3 | `useful` |
 | `GET` | `/applications/:id/document-requests` | applications | borrower, partner | M6 | `planned` |
 
 ## 05 Documents

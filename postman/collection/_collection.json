@@ -474,6 +474,22 @@
     {
       "key": "documentRequirementVersionRow",
       "value": ""
+    },
+    {
+      "key": "borrowerProfileId",
+      "value": ""
+    },
+    {
+      "key": "borrowerProfileVersion",
+      "value": ""
+    },
+    {
+      "key": "applicationId",
+      "value": ""
+    },
+    {
+      "key": "applicationVersion",
+      "value": ""
     }
   ]
 }

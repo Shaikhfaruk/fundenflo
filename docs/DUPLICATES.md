@@ -78,3 +78,8 @@ These are the places where a second copy is most tempting. Use the one listed.
 | Adding lead routing jobs | `LeadRoutingQueue`, and outbox events for re-routing after an assignment closes | `QueueRegistry.get(LeadsRoute).add` elsewhere, or enqueueing inside a transaction |
 | Hiding a person's name before a CA accepts | `maskName()` in `engines/party-matching` | Per-view name truncation |
 | Checking a membership belongs to an organization before handing work to it | `MembershipService.requireActiveMember()` | Reading `memberships` from other modules |
+| Resolving free-text city, state or pincode to catalog ids | `PlaceLocator` (catalog) | Per-module city lookups (the old `LeadLocator` in leads was moved here in M3a) |
+| Creating a borrower profile or the business party behind it | `BorrowerProfileService.ensure()` | Writing `borrower_profiles` or business `parties` from applications, partners or leads |
+| Changing an application's status | `ApplicationService.transition()` (state machine, event row, audit, outbox) | Updating `loan_applications.status` from other services or controllers |
+| Marking a lead converted when its person starts an application | `LeadService.convertToApplication()` | Closing lead assignments or setting `convertedApplicationId` from applications |
+| Deciding an application's next step and blockers | `computeJourney()` in `applications/domain/journey.ts` | Per-client or per-controller stage logic |

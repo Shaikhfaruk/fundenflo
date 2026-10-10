@@ -48,18 +48,22 @@ model Party {
   createdAt         DateTime    @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt         DateTime    @updatedAt @map("updated_at") @db.Timestamptz(3)
 
-  contacts          PartyContact[]
-  identifiers       PartyIdentifier[]
-  relationshipsFrom PartyRelationship[] @relation("relationship_from")
-  relationshipsTo   PartyRelationship[] @relation("relationship_to")
-  user              User?
-  organization      Organization?
-  facts             BorrowerFact[]
-  answers           Answer[]
-  consentRecords    ConsentRecord[]
-  consentRequests   ConsentRequest[]
-  leads             Lead[]              @relation("lead_person")
-  businessLeads     Lead[]              @relation("lead_business")
+  contacts           PartyContact[]
+  identifiers        PartyIdentifier[]
+  relationshipsFrom  PartyRelationship[] @relation("relationship_from")
+  relationshipsTo    PartyRelationship[] @relation("relationship_to")
+  user               User?
+  organization       Organization?
+  facts              BorrowerFact[]
+  answers            Answer[]
+  consentRecords     ConsentRecord[]
+  consentRequests    ConsentRequest[]
+  leads              Lead[]              @relation("lead_person")
+  borrowerProfiles   BorrowerProfile[]   @relation("borrower_party")
+  actingProfiles     BorrowerProfile[]   @relation("borrower_acting_party")
+  applications       LoanApplication[]   @relation("application_party")
+  actingApplications LoanApplication[]   @relation("application_acting_party")
+  businessLeads      Lead[]              @relation("lead_business")
 
   @@index([kind, status])
   @@map("parties")

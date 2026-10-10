@@ -1,0 +1,90 @@
+enum ApplicationStatus {
+  draft
+  pre_screened
+  documents_pending
+  assessed
+  ready_for_submission
+  submitted
+  closed_won
+  closed_lost
+  withdrawn
+  expired
+}
+
+enum ApplicationChannel {
+  direct
+  partner
+  ops
+}
+
+enum ApplicationEventType {
+  created
+  requirement_changed
+  answers_recorded
+  status_changed
+  stage_changed
+  lead_linked
+  note
+}
+
+model LoanApplication {
+  id                    String             @id @default(uuid(7)) @db.Uuid
+  ref                   String             @unique
+  borrowerProfileId     String             @map("borrower_profile_id") @db.Uuid
+  partyId               String             @map("party_id") @db.Uuid
+  actingPartyId         String             @map("acting_party_id") @db.Uuid
+  channel               ApplicationChannel
+  partnerOrganizationId String?            @map("partner_organization_id") @db.Uuid
+  leadId                String?            @unique @map("lead_id") @db.Uuid
+  segmentKey            String             @map("segment_key")
+  subSegmentKey         String?            @map("sub_segment_key")
+  categoryKey           String?            @map("category_key")
+  purposeKey            String?            @map("purpose_key")
+  purposeNote           String?            @map("purpose_note")
+  amountPaise           BigInt?            @map("amount_paise")
+  tenureMonths          Int?               @map("tenure_months")
+  stateId               String?            @map("state_id") @db.Uuid
+  cityId                String?            @map("city_id") @db.Uuid
+  pincode               String?
+  status                ApplicationStatus  @default(draft)
+  journeyStage          String             @default("category") @map("journey_stage")
+  pinnedVersions        Json               @default("{}") @map("pinned_versions")
+  assigneeUserId        String?            @map("assignee_user_id") @db.Uuid
+  slaDueAt              DateTime?          @map("sla_due_at") @db.Timestamptz(3)
+  closedAt              DateTime?          @map("closed_at") @db.Timestamptz(3)
+  closeReason           String?            @map("close_reason")
+  createdByUserId       String             @map("created_by_user_id") @db.Uuid
+  version               Int                @default(1)
+  createdAt             DateTime           @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt             DateTime           @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  borrowerProfile BorrowerProfile    @relation(fields: [borrowerProfileId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  party           Party              @relation("application_party", fields: [partyId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  actingParty     Party              @relation("application_acting_party", fields: [actingPartyId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  events          ApplicationEvent[]
+
+  @@index([actingPartyId, status])
+  @@index([partyId])
+  @@index([partnerOrganizationId, status])
+  @@index([status, createdAt])
+  @@map("loan_applications")
+}
+
+model ApplicationEvent {
+  id            String               @id @default(uuid(7)) @db.Uuid
+  applicationId String               @map("application_id") @db.Uuid
+  type          ApplicationEventType
+  fromStatus    ApplicationStatus?   @map("from_status")
+  toStatus      ApplicationStatus?   @map("to_status")
+  reason        String?
+  note          String?
+  data          Json?
+  actorType     ActorType            @map("actor_type")
+  actorUserId   String?              @map("actor_user_id") @db.Uuid
+  createdAt     DateTime             @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  application LoanApplication @relation(fields: [applicationId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([applicationId, createdAt])
+  @@map("application_events")
+}

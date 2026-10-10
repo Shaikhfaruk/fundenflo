@@ -6,6 +6,7 @@ import type {
   ApiClient,
   AttributeDefinition,
   AuditEvent,
+  BorrowerProfile,
   ConfigDocument,
   ConsentPurpose,
   DocumentType,
@@ -15,6 +16,7 @@ import type {
   Lead,
   LeadAssignment,
   LeadSource,
+  LoanApplication,
   Membership,
   OfflineConversion,
   Organization,
@@ -68,6 +70,8 @@ export type AppSubjects =
       FollowUp: FollowUp;
       OfflineConversion: OfflineConversion;
       DocumentType: DocumentType;
+      BorrowerProfile: BorrowerProfile;
+      LoanApplication: LoanApplication;
     }>;
 
 export type AppAbility = Ability<[AppAction, AppSubjects], PrismaQueryOf<Prisma.TypeMap>>;

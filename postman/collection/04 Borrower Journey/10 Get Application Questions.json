@@ -1,0 +1,85 @@
+{
+  "name": "Get Application Questions",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/applications/:id/questions?stage=pre_check",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "applications",
+        ":id",
+        "questions"
+      ],
+      "query": [
+        {
+          "key": "stage",
+          "value": "pre_check"
+        }
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{applicationId}}"
+        }
+      ]
+    },
+    "description": "The questions for a stage, resolved for this application's segment, sub-segment and category and the facts already known, plus questions lenders and scoring still need (progressive profiling, `progressive[]`). Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/applications/:id/questions?stage=pre_check",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "applications",
+            ":id",
+            "questions"
+          ],
+          "query": [
+            {
+              "key": "stage",
+              "value": "pre_check"
+            }
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            }
+          ]
+        },
+        "description": "The questions for a stage, resolved for this application's segment, sub-segment and category and the facts already known, plus questions lenders and scoring still need (progressive profiling, `progressive[]`). Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"sets\": [\n    {\n      \"key\": \"pre_check.msme\",\n      \"versionId\": \"01a121bb-0c1d-7e2f-8a3b-4c5d6e7f8091\",\n      \"number\": 1\n    }\n  ],\n  \"sections\": [],\n  \"questions\": [],\n  \"hidden\": []\n}"
+    }
+  ]
+}

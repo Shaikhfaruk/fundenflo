@@ -80,6 +80,12 @@ export const AuditAction = {
   LeadReferred: 'lead.referred',
   OfflineConversionReported: 'lead.offline_conversion_reported',
   OfflineConversionDecided: 'lead.offline_conversion_decided',
+  BorrowerProfileCreated: 'borrower_profile.created',
+  BorrowerProfileChanged: 'borrower_profile.changed',
+  ApplicationCreated: 'application.created',
+  ApplicationChanged: 'application.changed',
+  ApplicationStatusChanged: 'application.status_changed',
+  LeadConverted: 'lead.converted',
 } as const;
 
 export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction];
@@ -119,6 +125,8 @@ export const AuditEntity = {
   ImportBatch: 'import_batch',
   LeadAssignment: 'lead_assignment',
   OfflineConversion: 'offline_conversion',
+  BorrowerProfile: 'borrower_profile',
+  LoanApplication: 'loan_application',
 } as const;
 
 export type AuditEntity = (typeof AuditEntity)[keyof typeof AuditEntity];

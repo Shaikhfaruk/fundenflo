@@ -1,0 +1,150 @@
+{
+  "name": "Withdraw Application",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/applications/:id/withdraw",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "applications",
+        ":id",
+        "withdraw"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{applicationId}}"
+        }
+      ]
+    },
+    "description": "Closes an open or submitted application as withdrawn; it can no longer change. Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"reason\": \"Got a loan from my own bank\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/applications/:id/withdraw",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "applications",
+            ":id",
+            "withdraw"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            }
+          ]
+        },
+        "description": "Closes an open or submitted application as withdrawn; it can no longer change. Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reason\": \"Got a loan from my own bank\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12260-2b3c-7d4e-9f50-61728394a5b6\",\n  \"ref\": \"AP-26-000001\",\n  \"borrowerProfileId\": \"01a12260-1a2b-7c3d-8e4f-5061728394a5\",\n  \"party\": {\n    \"id\": \"01a12260-3c4d-7e5f-8061-728394a5b6c7\",\n    \"kind\": \"business\",\n    \"displayName\": \"Kapoor Electricals\"\n  },\n  \"actingParty\": {\n    \"id\": \"01a12260-4d5e-7f60-8172-8394a5b6c7d8\",\n    \"displayName\": \"Rohit Kapoor\"\n  },\n  \"channel\": \"direct\",\n  \"partnerOrganizationId\": null,\n  \"leadId\": null,\n  \"segmentKey\": \"msme\",\n  \"subSegmentKey\": \"proprietorship\",\n  \"categoryKey\": \"business\",\n  \"purposeKey\": \"expansion\",\n  \"purposeNote\": null,\n  \"amountPaise\": 250000000,\n  \"tenureMonths\": 36,\n  \"location\": {\n    \"stateId\": \"01a12184-0bb1-773e-ba9c-a22c64991340\",\n    \"cityId\": \"01a12184-0bb1-773e-ba9c-a22c64991341\",\n    \"pincode\": null\n  },\n  \"status\": \"withdrawn\",\n  \"journeyStage\": \"pre_check\",\n  \"pinnedVersions\": {},\n  \"closedAt\": \"2026-10-10T16:00:00.000Z\",\n  \"closeReason\": \"Got a loan from my own bank\",\n  \"version\": 2,\n  \"createdAt\": \"2026-10-10T16:00:00.000Z\",\n  \"updatedAt\": \"2026-10-10T16:00:00.000Z\"\n}"
+    },
+    {
+      "name": "409 INVALID_TRANSITION",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/applications/:id/withdraw",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "applications",
+            ":id",
+            "withdraw"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            }
+          ]
+        },
+        "description": "Closes an open or submitted application as withdrawn; it can no longer change. Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reason\": \"Got a loan from my own bank\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"INVALID_TRANSITION\",\n  \"message\": \"This action is not allowed in the current state.\",\n  \"details\": {\n    \"from\": \"withdrawn\",\n    \"event\": \"withdraw\",\n    \"allowed\": []\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

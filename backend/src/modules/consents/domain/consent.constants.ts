@@ -41,3 +41,5 @@ export const CONSENT_REQUEST_TOKEN_BYTES = 32;
 export const CONSENT_LINK_TOKEN_PARAM = 'token';
 
 export const CONSENT_LINK_RATE_LIMIT = { name: 'consent-link', limit: 30, windowSeconds: 3600 } as const;
+
+export const JOURNEY_CONSENT_CONTEXT = 'journey';

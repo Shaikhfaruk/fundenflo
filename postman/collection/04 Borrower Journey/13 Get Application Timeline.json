@@ -1,0 +1,73 @@
+{
+  "name": "Get Application Timeline",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/applications/:id/timeline",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "applications",
+        ":id",
+        "timeline"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{applicationId}}"
+        }
+      ]
+    },
+    "description": "Append-only events of the case, newest first: created, requirement changes, answers, status and stage changes, lead link. Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/applications/:id/timeline",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "applications",
+            ":id",
+            "timeline"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            }
+          ]
+        },
+        "description": "Append-only events of the case, newest first: created, requirement changes, answers, status and stage changes, lead link. Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a12260-5e6f-7a71-9283-94a5b6c7d8e9\",\n      \"type\": \"status_changed\",\n      \"fromStatus\": \"draft\",\n      \"toStatus\": \"pre_screened\",\n      \"reason\": null,\n      \"note\": null,\n      \"data\": null,\n      \"actorType\": \"user\",\n      \"actorUserId\": \"01a12260-4d5e-7f60-8172-8394a5b6c7d8\",\n      \"createdAt\": \"2026-10-10T16:00:00.000Z\"\n    }\n  ]\n}"
+    }
+  ]
+}

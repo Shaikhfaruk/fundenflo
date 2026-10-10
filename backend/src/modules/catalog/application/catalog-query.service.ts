@@ -43,6 +43,10 @@ export class CatalogQueryService {
     };
   }
 
+  async categoryConfig(key: string, locale: Locale): Promise<CategoryConfigView | null> {
+    return (await this.categoryConfigs(locale, undefined)).find((config) => config.key === key) ?? null;
+  }
+
   async categoryLabel(key: string, locale: Locale): Promise<string> {
     return (await this.categoryConfigs(locale, undefined)).find((config) => config.key === key)?.label ?? key;
   }

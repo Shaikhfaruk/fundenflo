@@ -1,7 +1,7 @@
 import { Transactional } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
 
-import { ContactType, LeadEventType, type LeadConsentStatus, type LeadFlag, type LeadLostReason, LeadStatus, LeadUnqualifiedReason, type LeadUrgency } from '../../../common/enums/db.enums.js';
+import { AssignmentStatus, ContactType, LeadEventType, type LeadConsentStatus, type LeadFlag, type LeadLostReason, LeadStatus, LeadUnqualifiedReason, type LeadUrgency } from '../../../common/enums/db.enums.js';
 import { EventName } from '../../../common/events/event-names.js';
 import { AppError } from '../../../common/errors/app-error.js';
 import { ErrorCode } from '../../../common/errors/error-codes.js';
@@ -15,6 +15,7 @@ import type { Prisma } from '../../../generated/prisma/client.js';
 import { ChangeRecorder } from '../../audit/application/change-recorder.service.js';
 import { AuditAction, AuditEntity } from '../../audit/domain/audit.constants.js';
 import { CatalogQueryService } from '../../catalog/application/catalog-query.service.js';
+import { PlaceLocator } from '../../catalog/application/place-locator.service.js';
 import { ConsentRequestService } from '../../consents/application/consent-request.service.js';
 import { PartyService } from '../../parties/application/party.service.js';
 import { DEFAULT_LEAD_CONSENT_CONTEXT } from '../domain/lead.constants.js';
@@ -22,7 +23,6 @@ import { AssignmentCloseReason } from '../domain/lead-routing.constants.js';
 import { LeadRepository } from '../infrastructure/lead.repository.js';
 import { LeadAssignmentService } from './lead-assignment.service.js';
 import { LeadConsentPolicy } from './lead-consent.policy.js';
-import { LeadLocator } from './lead-locator.service.js';
 import { scoreFor } from './lead-scoring.js';
 import { LeadTimeline } from './lead-timeline.service.js';
 import { toLeadDetailView, toLeadView } from './lead.views.js';
@@ -70,13 +70,15 @@ const REF_PATTERN = /^LD-\d{2}-\d+$/i;
 
 const KEEPS_ASSIGNMENTS: ReadonlySet<LeadEvent> = new Set([LeadEvent.Qualify, LeadEvent.Start]);
 
+const CONVERTIBLE: readonly LeadStatus[] = [LeadStatus.new, LeadStatus.qualified, LeadStatus.in_progress];
+
 @Injectable()
 export class LeadService {
   constructor(
     private readonly leads: LeadRepository,
     private readonly parties: PartyService,
     private readonly catalog: CatalogQueryService,
-    private readonly locator: LeadLocator,
+    private readonly locator: PlaceLocator,
     private readonly consentPolicy: LeadConsentPolicy,
     private readonly timeline: LeadTimeline,
     private readonly changes: ChangeRecorder,
@@ -166,6 +168,21 @@ export class LeadService {
     if (!KEEPS_ASSIGNMENTS.has(action.event)) await this.assignments.closeActive(id, AssignmentCloseReason.LeadStatusChanged);
     await this.statusChanged(lead, next, reason, action.note ?? null);
     return this.get(id);
+  }
+
+  @Transactional()
+  async convertToApplication(partyIds: string[], applicationId: string): Promise<string | null> {
+    const [lead] = await this.leads.findOpenForParties(partyIds, CONVERTIBLE);
+    if (!lead) return null;
+    await this.leads.lockLead(lead.id);
+    for (const assignment of (await this.leads.assignmentsForLead(lead.id)).filter((row) => ACTIVE_ASSIGNMENT_STATES.includes(row.status))) {
+      if (assignment.status === AssignmentStatus.offered) await this.assignments.revoke(assignment, AssignmentCloseReason.LeadStatusChanged);
+      else await this.assignments.complete(assignment, AssignmentCloseReason.ConvertedToApplication, null);
+    }
+    await this.leads.update(lead.id, { convertedApplicationId: applicationId });
+    await this.act(lead.id, { event: LeadEvent.Convert, note: 'Application started' });
+    await this.changes.record({ action: AuditAction.LeadConverted, entityType: AuditEntity.Lead, entityId: lead.id, event: EventName.LeadConverted, metadata: { ref: lead.ref, applicationId }, payload: { leadId: lead.id, applicationId } });
+    return lead.id;
   }
 
   @Transactional()

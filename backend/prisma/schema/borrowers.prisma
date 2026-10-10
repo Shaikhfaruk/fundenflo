@@ -1,0 +1,27 @@
+enum BorrowerProfileStatus {
+  active
+  archived
+}
+
+model BorrowerProfile {
+  id                    String                @id @default(uuid(7)) @db.Uuid
+  partyId               String                @unique @map("party_id") @db.Uuid
+  actingPartyId         String                @map("acting_party_id") @db.Uuid
+  segmentKey            String                @map("segment_key")
+  subSegmentKey         String?               @map("sub_segment_key")
+  incorporatedOn        DateTime?             @map("incorporated_on") @db.Date
+  status                BorrowerProfileStatus @default(active)
+  createdByUserId       String                @map("created_by_user_id") @db.Uuid
+  partnerOrganizationId String?               @map("partner_organization_id") @db.Uuid
+  version               Int                   @default(1)
+  createdAt             DateTime              @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt             DateTime              @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  party        Party             @relation("borrower_party", fields: [partyId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  actingParty  Party             @relation("borrower_acting_party", fields: [actingPartyId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  applications LoanApplication[]
+
+  @@index([actingPartyId])
+  @@index([partnerOrganizationId])
+  @@map("borrower_profiles")
+}

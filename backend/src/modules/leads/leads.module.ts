@@ -19,7 +19,6 @@ import { LeadCaptureService } from './application/lead-capture.service.js';
 import { LeadConsentPolicy } from './application/lead-consent.policy.js';
 import { LeadConversionService } from './application/lead-conversion.service.js';
 import { LeadImportHandler } from './application/lead-import.handler.js';
-import { LeadLocator } from './application/lead-locator.service.js';
 import { LeadMergeParticipant } from './application/lead-merge.participant.js';
 import { LeadNotificationService } from './application/lead-notification.service.js';
 import { LeadReportService } from './application/lead-report.service.js';
@@ -76,7 +75,6 @@ const AdminRoutingRulesController = createVersionedConfigController({ resource: 
     LeadRepository,
     LeadRoutingQueue,
     LeadTimeline,
-    LeadLocator,
     LeadConsentPolicy,
     LeadSourceService,
     LeadCaptureService,

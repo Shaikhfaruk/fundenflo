@@ -2,14 +2,14 @@ import { Injectable } from '@nestjs/common';
 
 import { AppError } from '../../../common/errors/app-error.js';
 import { ErrorCode } from '../../../common/errors/error-codes.js';
-import { GeoService } from '../../catalog/application/geo.service.js';
+import { GeoService } from './geo.service.js';
 
 export type LocationInput = { cityId?: string; city?: string; pincode?: string };
 
 export type ResolvedLocation = { stateId: string | null; cityId: string | null; pincode: string | null; text: string | null; unmapped: boolean };
 
 @Injectable()
-export class LeadLocator {
+export class PlaceLocator {
   constructor(private readonly geo: GeoService) {}
 
   async locate(input: LocationInput): Promise<ResolvedLocation> {

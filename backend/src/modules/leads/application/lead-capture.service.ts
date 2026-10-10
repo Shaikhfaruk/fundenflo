@@ -25,6 +25,7 @@ import { RefGenerator, RefKind } from '../../../infrastructure/database/ref-gene
 import { ChangeRecorder } from '../../audit/application/change-recorder.service.js';
 import { AuditAction, AuditEntity } from '../../audit/domain/audit.constants.js';
 import { CatalogQueryService } from '../../catalog/application/catalog-query.service.js';
+import { PlaceLocator } from '../../catalog/application/place-locator.service.js';
 import type { ConfigIssue } from '../../config-publishing/domain/config.types.js';
 import { ConsentService, type ConsentItemInput } from '../../consents/application/consent.service.js';
 import { PartyResolver, type UnverifiedContact } from '../../parties/application/party-resolver.service.js';
@@ -35,7 +36,6 @@ import { QuestionnaireStage } from '../../questionnaires/domain/questionnaire.co
 import { LEAD_DUPLICATE_WINDOW_DAYS, LEAD_RAW_PAYLOAD_MAX_BYTES } from '../domain/lead.constants.js';
 import { LeadRepository } from '../infrastructure/lead.repository.js';
 import { LeadConsentPolicy } from './lead-consent.policy.js';
-import { LeadLocator } from './lead-locator.service.js';
 import { LeadTimeline } from './lead-timeline.service.js';
 import { scoreFor } from './lead-scoring.js';
 import { type LeadSourceView, toLeadDetailView } from './lead.views.js';
@@ -93,7 +93,7 @@ export class LeadCaptureService {
     private readonly resolver: PartyResolver,
     private readonly parties: PartyService,
     private readonly catalog: CatalogQueryService,
-    private readonly locator: LeadLocator,
+    private readonly locator: PlaceLocator,
     private readonly consents: ConsentService,
     private readonly consentPolicy: LeadConsentPolicy,
     private readonly questionnaires: QuestionnaireService,

@@ -1,0 +1,85 @@
+{
+  "name": "Get Application Document Checklist",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/applications/:id/document-checklist?stage=assessment",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "applications",
+        ":id",
+        "document-checklist"
+      ],
+      "query": [
+        {
+          "key": "stage",
+          "value": "assessment"
+        }
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{applicationId}}"
+        }
+      ]
+    },
+    "description": "The document checklist for this application, with conditions resolved against the borrower's facts. Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/applications/:id/document-checklist?stage=assessment",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "applications",
+            ":id",
+            "document-checklist"
+          ],
+          "query": [
+            {
+              "key": "stage",
+              "value": "assessment"
+            }
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            }
+          ]
+        },
+        "description": "The document checklist for this application, with conditions resolved against the borrower's facts. Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"stage\": \"assessment\",\n  \"requirements\": [\n    {\n      \"key\": \"assessment.base\",\n      \"versionId\": \"01a12250-3c4d-7e5f-8061-728394a5b6c7\"\n    }\n  ],\n  \"items\": [\n    {\n      \"key\": \"bank_statement\",\n      \"label\": \"Bank Statement\",\n      \"description\": \"Last 6 Months · Main Account\",\n      \"required\": true,\n      \"minCount\": 1,\n      \"anyOf\": false,\n      \"conditional\": false,\n      \"documentTypes\": [],\n      \"neededBy\": [\n        \"assessment.base\"\n      ]\n    }\n  ],\n  \"hidden\": []\n}"
+    }
+  ]
+}

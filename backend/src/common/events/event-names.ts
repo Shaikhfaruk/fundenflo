@@ -70,6 +70,11 @@ export const EventName = {
   OfflineConversionReported: 'lead.offline_conversion.reported',
   OfflineConversionVerified: 'lead.offline_conversion.verified',
   OfflineConversionRejected: 'lead.offline_conversion.rejected',
+  BorrowerProfileChanged: 'borrower_profile.changed',
+  ApplicationCreated: 'application.created',
+  ApplicationUpdated: 'application.updated',
+  ApplicationStatusChanged: 'application.status.changed',
+  LeadConverted: 'lead.converted',
 } as const;
 
 export type EventName = (typeof EventName)[keyof typeof EventName];

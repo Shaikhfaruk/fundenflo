@@ -72,6 +72,7 @@ export const AssignmentCloseReason = {
   LeadLost: 'lead_lost',
   RevokedByOps: 'revoked_by_ops',
   OfflineConversionVerified: 'offline_conversion_verified',
+  ConvertedToApplication: 'converted_to_application',
 } as const;
 
 export type AssignmentCloseReason = (typeof AssignmentCloseReason)[keyof typeof AssignmentCloseReason];

@@ -175,6 +175,10 @@ export class LeadRepository {
     return this.txHost.tx.offlineConversion.count({ where });
   }
 
+  findOpenForParties(partyIds: string[], openStatuses: readonly LeadStatus[]) {
+    return this.txHost.tx.lead.findMany({ where: { OR: [{ partyId: { in: partyIds } }, { businessPartyId: { in: partyIds } }], status: { in: [...openStatuses] }, convertedApplicationId: null }, orderBy: { createdAt: 'desc' } });
+  }
+
   addFlag(id: string, flag: LeadFlag) {
     return this.txHost.tx.lead.updateMany({ where: { id, NOT: { flags: { has: flag } } }, data: { flags: { push: flag }, version: { increment: 1 } } });
   }

@@ -1,0 +1,65 @@
+{
+  "name": "Borrower journey: profile, application, requirement, pre-check, consent and documents next step",
+  "steps": [
+    {
+      "request": "01 Auth/01 Request OTP.json",
+      "variables": {
+        "loginAs": "borrower"
+      }
+    },
+    {
+      "request": "01 Auth/02 Verify OTP.json"
+    },
+    {
+      "request": "04 Borrower Journey/01 Create Borrower Profile.json"
+    },
+    {
+      "request": "04 Borrower Journey/02 List Borrower Profiles.json"
+    },
+    {
+      "request": "04 Borrower Journey/03 Get Borrower Profile.json"
+    },
+    {
+      "request": "04 Borrower Journey/04 Update Borrower Profile.json"
+    },
+    {
+      "request": "04 Borrower Journey/05 Create Application.json"
+    },
+    {
+      "request": "04 Borrower Journey/06 List Applications.json"
+    },
+    {
+      "request": "04 Borrower Journey/08 Update Requirement.json"
+    },
+    {
+      "request": "04 Borrower Journey/09 Get Next Step.json"
+    },
+    {
+      "request": "04 Borrower Journey/10 Get Application Questions.json"
+    },
+    {
+      "request": "04 Borrower Journey/11 Submit Application Answers.json"
+    },
+    {
+      "request": "04 Borrower Journey/07 Get Application.json"
+    },
+    {
+      "request": "03 Catalog/07 Get Consent Template.json"
+    },
+    {
+      "request": "02 Me/13 Give Consents.json"
+    },
+    {
+      "request": "04 Borrower Journey/09 Get Next Step.json"
+    },
+    {
+      "request": "04 Borrower Journey/12 Get Application Document Checklist.json"
+    },
+    {
+      "request": "04 Borrower Journey/13 Get Application Timeline.json"
+    },
+    {
+      "request": "04 Borrower Journey/14 Withdraw Application.json"
+    }
+  ]
+}

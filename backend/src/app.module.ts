@@ -15,6 +15,8 @@ import { ConfigPublishingModule } from './modules/config-publishing/config-publi
 import { ConsentsModule } from './modules/consents/consents.module.js';
 import { HealthModule } from './modules/health/health.module.js';
 import { ImportsModule } from './modules/imports/imports.module.js';
+import { ApplicationsModule } from './modules/applications/applications.module.js';
+import { BorrowersModule } from './modules/borrowers/borrowers.module.js';
 import { DocumentsModule } from './modules/documents/documents.module.js';
 import { LeadsModule } from './modules/leads/leads.module.js';
 import { ActivitiesModule } from './modules/activities/activities.module.js';
@@ -40,6 +42,8 @@ import { QuestionnairesModule } from './modules/questionnaires/questionnaires.mo
     ConsentsModule,
     PartnersModule,
     DocumentsModule,
+    BorrowersModule,
+    ApplicationsModule,
     ActivitiesModule,
     SlaModule,
     RealtimeModule.forRoot({ worker: false }),

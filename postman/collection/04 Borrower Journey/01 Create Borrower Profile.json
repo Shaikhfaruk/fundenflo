@@ -1,0 +1,128 @@
+{
+  "name": "Create Borrower Profile",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/borrower-profiles",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "borrower-profiles"
+      ]
+    },
+    "description": "The borrower role on a party: for an individual, the signed-in person; for an MSME, the business (created and linked to the person as proprietor, partner or director by `subSegment`). Returns the existing profile if there is one. Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"segment\": \"msme\",\n  \"subSegment\": \"proprietorship\",\n  \"businessName\": \"Kapoor Electricals\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "pm.collectionVariables.set('borrowerProfileId', String(pm.response.json().id));",
+          "pm.collectionVariables.set('borrowerProfileVersion', String(pm.response.json().version));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/borrower-profiles",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "borrower-profiles"
+          ]
+        },
+        "description": "The borrower role on a party: for an individual, the signed-in person; for an MSME, the business (created and linked to the person as proprietor, partner or director by `subSegment`). Returns the existing profile if there is one. Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"segment\": \"msme\",\n  \"subSegment\": \"proprietorship\",\n  \"businessName\": \"Kapoor Electricals\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12260-1a2b-7c3d-8e4f-5061728394a5\",\n  \"party\": {\n    \"id\": \"01a12260-3c4d-7e5f-8061-728394a5b6c7\",\n    \"kind\": \"business\",\n    \"displayName\": \"Kapoor Electricals\"\n  },\n  \"actingParty\": {\n    \"id\": \"01a12260-4d5e-7f60-8172-8394a5b6c7d8\",\n    \"displayName\": \"Rohit Kapoor\"\n  },\n  \"segmentKey\": \"msme\",\n  \"subSegmentKey\": \"proprietorship\",\n  \"incorporatedOn\": null,\n  \"status\": \"active\",\n  \"channel\": \"direct\",\n  \"partnerOrganizationId\": null,\n  \"version\": 1,\n  \"createdAt\": \"2026-10-10T16:00:00.000Z\",\n  \"updatedAt\": \"2026-10-10T16:00:00.000Z\"\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/borrower-profiles",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "borrower-profiles"
+          ]
+        },
+        "description": "The borrower role on a party: for an individual, the signed-in person; for an MSME, the business (created and linked to the person as proprietor, partner or director by `subSegment`). Returns the existing profile if there is one. Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"segment\": \"msme\",\n  \"subSegment\": \"proprietorship\",\n  \"businessName\": \"Kapoor Electricals\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"businessName\",\n      \"code\": \"required\",\n      \"message\": \"a business borrower needs the business name\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

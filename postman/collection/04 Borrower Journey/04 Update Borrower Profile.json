@@ -1,0 +1,159 @@
+{
+  "name": "Update Borrower Profile",
+  "request": {
+    "method": "PATCH",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "If-Match",
+        "value": "\"{{borrowerProfileVersion}}\""
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/borrower-profiles/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "borrower-profiles",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{borrowerProfileId}}"
+        }
+      ]
+    },
+    "description": "Changes the sub-segment, incorporation date or business name. Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"incorporatedOn\": \"2019-04-01\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{borrowerProfileVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/borrower-profiles/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "borrower-profiles",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{borrowerProfileId}}"
+            }
+          ]
+        },
+        "description": "Changes the sub-segment, incorporation date or business name. Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"incorporatedOn\": \"2019-04-01\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12260-1a2b-7c3d-8e4f-5061728394a5\",\n  \"party\": {\n    \"id\": \"01a12260-3c4d-7e5f-8061-728394a5b6c7\",\n    \"kind\": \"business\",\n    \"displayName\": \"Kapoor Electricals\"\n  },\n  \"actingParty\": {\n    \"id\": \"01a12260-4d5e-7f60-8172-8394a5b6c7d8\",\n    \"displayName\": \"Rohit Kapoor\"\n  },\n  \"segmentKey\": \"msme\",\n  \"subSegmentKey\": \"proprietorship\",\n  \"incorporatedOn\": \"2019-04-01\",\n  \"status\": \"active\",\n  \"channel\": \"direct\",\n  \"partnerOrganizationId\": null,\n  \"version\": 2,\n  \"createdAt\": \"2026-10-10T16:00:00.000Z\",\n  \"updatedAt\": \"2026-10-10T16:00:00.000Z\"\n}"
+    },
+    {
+      "name": "409 VERSION_CONFLICT",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{borrowerProfileVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/borrower-profiles/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "borrower-profiles",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{borrowerProfileId}}"
+            }
+          ]
+        },
+        "description": "Changes the sub-segment, incorporation date or business name. Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"incorporatedOn\": \"2019-04-01\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VERSION_CONFLICT\",\n  \"message\": \"This record was changed by someone else. Reload it and try again.\",\n  \"details\": {\n    \"currentVersion\": 2\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

@@ -177,6 +177,14 @@ export class ConsentService {
     );
   }
 
+  async missingRequired(partyId: string, contextKey: string): Promise<string[]> {
+    const active = (await this.config.active<CompiledConsentTemplate>(ConfigResource.consent_template)).find((entry) => entry.key === contextKey);
+    if (!active) return [];
+    const required = active.compiled.items.filter((item) => item.required).map((item) => item.purpose);
+    const summary = await this.summary(partyId, required);
+    return required.filter((purpose) => !summary.get(purpose)?.granted);
+  }
+
   async allowedOrganizations(partyId: string, purpose: string, organizationIds: string[]): Promise<Set<string>> {
     const entry = (await this.states(partyId, [purpose])).get(purpose);
     return new Set(entry ? organizationIds.filter((organizationId) => consentAllows(entry.state, organizationId)) : []);
