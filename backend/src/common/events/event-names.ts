@@ -1,6 +1,9 @@
 export const EventName = {
   PartyCreated: 'party.created',
   PartyMatchReviewOpened: 'party.match_review.opened',
+  PartyMerged: 'party.merged',
+  PartyMergeReverted: 'party.merge_reverted',
+  PartyMatchReviewResolved: 'party.match_review.resolved',
   UserSignedUp: 'user.signed_up',
   UserStatusChanged: 'user.status_changed',
   UserMobileChanged: 'user.mobile_changed',

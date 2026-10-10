@@ -59,4 +59,17 @@ export class ConsentRepository {
   history(partyId: string, purposeKey: string | undefined, take: number, idFilter?: { lt: string }) {
     return this.txHost.tx.consentRecord.findMany({ where: { partyId, purposeKey, id: idFilter }, orderBy: { id: 'desc' }, take });
   }
+
+  async consentIdsOfParty(partyId: string) {
+    const [records, requests] = await Promise.all([
+      this.txHost.tx.consentRecord.findMany({ where: { partyId }, select: { id: true } }),
+      this.txHost.tx.consentRequest.findMany({ where: { partyId }, select: { id: true } }),
+    ]);
+    return { records: records.map((row) => row.id), requests: requests.map((row) => row.id) };
+  }
+
+  async moveConsents(ids: { records: string[]; requests: string[] }, partyId: string) {
+    await this.txHost.tx.consentRecord.updateMany({ where: { id: { in: ids.records } }, data: { partyId } });
+    await this.txHost.tx.consentRequest.updateMany({ where: { id: { in: ids.requests } }, data: { partyId } });
+  }
 }

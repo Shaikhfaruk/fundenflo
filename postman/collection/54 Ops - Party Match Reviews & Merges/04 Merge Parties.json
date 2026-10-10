@@ -1,0 +1,133 @@
+{
+  "name": "Merge Parties",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/ops/parties/merge",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "parties",
+        "merge"
+      ]
+    },
+    "description": "Merges two parties found by ops without a review. Both must be active and of the same kind; different PAN or GSTIN numbers, two logins or two organizations are refused with the reasons in `details`. Staff only; reading needs party read access, deciding and merging need party update access (ops lead, ops reviewer). A merge moves everything attached to the merged party to the survivor in one transaction: contacts (duplicates stay behind, their verified and do-not-contact flags carry over), identifiers, relationships, the login and organization (refused when both parties have one), facts, answers, consent records and requests, and leads. The merged party is kept with status `merged`, and the merge can be reverted.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"survivorPartyId\": \"{{survivorPartyId}}\",\n  \"mergedPartyId\": \"{{duplicatePartyId}}\",\n  \"reason\": \"Found the duplicate while calling the borrower\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "pm.collectionVariables.set('partyMergeId', String(pm.response.json().id));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/parties/merge",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "parties",
+            "merge"
+          ]
+        },
+        "description": "Merges two parties found by ops without a review. Both must be active and of the same kind; different PAN or GSTIN numbers, two logins or two organizations are refused with the reasons in `details`. Staff only; reading needs party read access, deciding and merging need party update access (ops lead, ops reviewer). A merge moves everything attached to the merged party to the survivor in one transaction: contacts (duplicates stay behind, their verified and do-not-contact flags carry over), identifiers, relationships, the login and organization (refused when both parties have one), facts, answers, consent records and requests, and leads. The merged party is kept with status `merged`, and the merge can be reverted.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"survivorPartyId\": \"{{survivorPartyId}}\",\n  \"mergedPartyId\": \"{{duplicatePartyId}}\",\n  \"reason\": \"Found the duplicate while calling the borrower\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12240-4d5e-7f60-8172-8394a5b6c7d8\",\n  \"sourcePartyId\": \"01a12240-2b3c-7d4e-9f50-61728394a5b6\",\n  \"targetPartyId\": \"01a12240-1a2b-7c3d-8e4f-5061728394a5\",\n  \"reason\": \"Same person; the second caller gave a wrong name\",\n  \"mergedByUserId\": \"01a121c0-5e6f-7a71-9283-94a5b6c7d8e9\",\n  \"mergedAt\": \"2026-10-10T13:00:00.000Z\",\n  \"revertedAt\": null,\n  \"revertedByUserId\": null\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/parties/merge",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "parties",
+            "merge"
+          ]
+        },
+        "description": "Merges two parties found by ops without a review. Both must be active and of the same kind; different PAN or GSTIN numbers, two logins or two organizations are refused with the reasons in `details`. Staff only; reading needs party read access, deciding and merging need party update access (ops lead, ops reviewer). A merge moves everything attached to the merged party to the survivor in one transaction: contacts (duplicates stay behind, their verified and do-not-contact flags carry over), identifiers, relationships, the login and organization (refused when both parties have one), facts, answers, consent records and requests, and leads. The merged party is kept with status `merged`, and the merge can be reverted.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"survivorPartyId\": \"{{survivorPartyId}}\",\n  \"mergedPartyId\": \"{{duplicatePartyId}}\",\n  \"reason\": \"Found the duplicate while calling the borrower\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"identifiers.pan\",\n      \"code\": \"identifier_conflict\",\n      \"message\": \"the two parties have different PAN numbers\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

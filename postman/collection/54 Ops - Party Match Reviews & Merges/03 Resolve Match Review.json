@@ -1,0 +1,203 @@
+{
+  "name": "Resolve Match Review",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/ops/party-match-reviews/:id/resolve",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "party-match-reviews",
+        ":id",
+        "resolve"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{matchReviewId}}"
+        }
+      ]
+    },
+    "description": "`merge` merges `mergedPartyId` into `survivorPartyId` (both from this review) and marks the review `linked`; `dismiss` marks it `dismissed` (different people). `note` is required. Staff only; reading needs party read access, deciding and merging need party update access (ops lead, ops reviewer). A merge moves everything attached to the merged party to the survivor in one transaction: contacts (duplicates stay behind, their verified and do-not-contact flags carry over), identifiers, relationships, the login and organization (refused when both parties have one), facts, answers, consent records and requests, and leads. The merged party is kept with status `merged`, and the merge can be reverted.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"decision\": \"merge\",\n  \"survivorPartyId\": \"{{survivorPartyId}}\",\n  \"mergedPartyId\": \"{{duplicatePartyId}}\",\n  \"note\": \"Same person; the second caller gave a wrong name\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/party-match-reviews/:id/resolve",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "party-match-reviews",
+            ":id",
+            "resolve"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{matchReviewId}}"
+            }
+          ]
+        },
+        "description": "`merge` merges `mergedPartyId` into `survivorPartyId` (both from this review) and marks the review `linked`; `dismiss` marks it `dismissed` (different people). `note` is required. Staff only; reading needs party read access, deciding and merging need party update access (ops lead, ops reviewer). A merge moves everything attached to the merged party to the survivor in one transaction: contacts (duplicates stay behind, their verified and do-not-contact flags carry over), identifiers, relationships, the login and organization (refused when both parties have one), facts, answers, consent records and requests, and leads. The merged party is kept with status `merged`, and the merge can be reverted.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"decision\": \"merge\",\n  \"survivorPartyId\": \"{{survivorPartyId}}\",\n  \"mergedPartyId\": \"{{duplicatePartyId}}\",\n  \"note\": \"Same person; the second caller gave a wrong name\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12240-3c4d-7e5f-8061-728394a5b6c7\",\n  \"partyId\": \"01a12240-2b3c-7d4e-9f50-61728394a5b6\",\n  \"candidatePartyIds\": [\n    \"01a12240-1a2b-7c3d-8e4f-5061728394a5\"\n  ],\n  \"signals\": [\n    {\n      \"partyId\": \"01a12240-1a2b-7c3d-8e4f-5061728394a5\",\n      \"signal\": \"shared_contact\",\n      \"contactType\": \"mobile\"\n    }\n  ],\n  \"status\": \"linked\",\n  \"resolution\": \"Same person; the second caller gave a wrong name\",\n  \"resolvedByUserId\": \"01a121c0-5e6f-7a71-9283-94a5b6c7d8e9\",\n  \"resolvedAt\": \"2026-10-10T13:00:00.000Z\",\n  \"createdAt\": \"2026-10-10T13:00:00.000Z\"\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/party-match-reviews/:id/resolve",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "party-match-reviews",
+            ":id",
+            "resolve"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{matchReviewId}}"
+            }
+          ]
+        },
+        "description": "`merge` merges `mergedPartyId` into `survivorPartyId` (both from this review) and marks the review `linked`; `dismiss` marks it `dismissed` (different people). `note` is required. Staff only; reading needs party read access, deciding and merging need party update access (ops lead, ops reviewer). A merge moves everything attached to the merged party to the survivor in one transaction: contacts (duplicates stay behind, their verified and do-not-contact flags carry over), identifiers, relationships, the login and organization (refused when both parties have one), facts, answers, consent records and requests, and leads. The merged party is kept with status `merged`, and the merge can be reverted.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"decision\": \"merge\",\n  \"survivorPartyId\": \"{{survivorPartyId}}\",\n  \"mergedPartyId\": \"{{duplicatePartyId}}\",\n  \"note\": \"Same person; the second caller gave a wrong name\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"parties\",\n      \"code\": \"two_logins\",\n      \"message\": \"both parties have their own login; they are treated as different people\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "409 INVALID_TRANSITION",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/party-match-reviews/:id/resolve",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "party-match-reviews",
+            ":id",
+            "resolve"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{matchReviewId}}"
+            }
+          ]
+        },
+        "description": "`merge` merges `mergedPartyId` into `survivorPartyId` (both from this review) and marks the review `linked`; `dismiss` marks it `dismissed` (different people). `note` is required. Staff only; reading needs party read access, deciding and merging need party update access (ops lead, ops reviewer). A merge moves everything attached to the merged party to the survivor in one transaction: contacts (duplicates stay behind, their verified and do-not-contact flags carry over), identifiers, relationships, the login and organization (refused when both parties have one), facts, answers, consent records and requests, and leads. The merged party is kept with status `merged`, and the merge can be reverted.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"decision\": \"merge\",\n  \"survivorPartyId\": \"{{survivorPartyId}}\",\n  \"mergedPartyId\": \"{{duplicatePartyId}}\",\n  \"note\": \"Same person; the second caller gave a wrong name\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"INVALID_TRANSITION\",\n  \"message\": \"This action is not allowed in the current state.\",\n  \"details\": {\n    \"from\": \"linked\",\n    \"event\": \"dismiss\",\n    \"allowed\": []\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

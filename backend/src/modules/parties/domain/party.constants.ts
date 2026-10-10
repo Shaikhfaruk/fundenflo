@@ -22,3 +22,24 @@ export const MatchSignal = {
   SharedVerifiedContact: 'shared_verified_contact',
   SharedContact: 'shared_contact',
 } as const;
+
+export const PARTY_MERGE_PARTICIPANT_METADATA = 'parties:merge-participant';
+
+export const PartyMergeParticipantKey = {
+  Core: 'parties',
+  Users: 'users',
+  Organizations: 'organizations',
+  Facts: 'facts',
+  Answers: 'answers',
+  Consents: 'consents',
+  Leads: 'leads',
+} as const;
+
+export type PartyMergeParticipantKey = (typeof PartyMergeParticipantKey)[keyof typeof PartyMergeParticipantKey];
+
+export const MatchReviewDecision = {
+  Merge: 'merge',
+  Dismiss: 'dismiss',
+} as const;
+
+export type MatchReviewDecision = (typeof MatchReviewDecision)[keyof typeof MatchReviewDecision];

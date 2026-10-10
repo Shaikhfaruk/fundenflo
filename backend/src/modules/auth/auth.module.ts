@@ -7,6 +7,7 @@ import { AdminUsersService } from './application/admin-users.service.js';
 import { LoginIdentifierService } from './application/login-identifier.service.js';
 import { LoginMethodsService } from './application/login-methods.service.js';
 import { MeViewBuilder } from './application/me-view.builder.js';
+import { UserMergeParticipant } from './application/user-merge.participant.js';
 import { UserNotifier } from './application/user-notifier.service.js';
 import { MeService } from './application/me.service.js';
 import { OtpLoginService } from './application/otp-login.service.js';
@@ -26,6 +27,7 @@ import { SessionsModule } from './sessions.module.js';
   imports: [SessionsModule, PartiesModule, AccessModule],
   controllers: [AuthController, StaffAuthController, MeController, AdminUsersController],
   providers: [
+    UserMergeParticipant,
     IdentityRepository,
     OtpChallengeRepository,
     LoginIdentifierService,

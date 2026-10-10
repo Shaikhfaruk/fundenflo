@@ -1,0 +1,81 @@
+{
+  "name": "List Match Reviews",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/ops/party-match-reviews?status=open&limit=25",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "party-match-reviews"
+      ],
+      "query": [
+        {
+          "key": "status",
+          "value": "open"
+        },
+        {
+          "key": "limit",
+          "value": "25"
+        }
+      ]
+    },
+    "description": "Possible duplicates found while capturing leads or signing people in (for example the same mobile with a different name), newest first. `status`: `open` (default), `linked`, `dismissed`. Staff only; reading needs party read access, deciding and merging need party update access (ops lead, ops reviewer). A merge moves everything attached to the merged party to the survivor in one transaction: contacts (duplicates stay behind, their verified and do-not-contact flags carry over), identifiers, relationships, the login and organization (refused when both parties have one), facts, answers, consent records and requests, and leads. The merged party is kept with status `merged`, and the merge can be reverted."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "const review = pm.response.json().items[0];",
+          "if (review) { pm.collectionVariables.set('matchReviewId', review.id); pm.collectionVariables.set('duplicatePartyId', review.partyId); pm.collectionVariables.set('survivorPartyId', review.candidatePartyIds[0]); }"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/ops/party-match-reviews?status=open&limit=25",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "party-match-reviews"
+          ],
+          "query": [
+            {
+              "key": "status",
+              "value": "open"
+            },
+            {
+              "key": "limit",
+              "value": "25"
+            }
+          ]
+        },
+        "description": "Possible duplicates found while capturing leads or signing people in (for example the same mobile with a different name), newest first. `status`: `open` (default), `linked`, `dismissed`. Staff only; reading needs party read access, deciding and merging need party update access (ops lead, ops reviewer). A merge moves everything attached to the merged party to the survivor in one transaction: contacts (duplicates stay behind, their verified and do-not-contact flags carry over), identifiers, relationships, the login and organization (refused when both parties have one), facts, answers, consent records and requests, and leads. The merged party is kept with status `merged`, and the merge can be reverted."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a12240-3c4d-7e5f-8061-728394a5b6c7\",\n      \"partyId\": \"01a12240-2b3c-7d4e-9f50-61728394a5b6\",\n      \"candidatePartyIds\": [\n        \"01a12240-1a2b-7c3d-8e4f-5061728394a5\"\n      ],\n      \"signals\": [\n        {\n          \"partyId\": \"01a12240-1a2b-7c3d-8e4f-5061728394a5\",\n          \"signal\": \"shared_contact\",\n          \"contactType\": \"mobile\"\n        }\n      ],\n      \"status\": \"open\",\n      \"resolution\": null,\n      \"resolvedByUserId\": null,\n      \"resolvedAt\": null,\n      \"createdAt\": \"2026-10-10T13:00:00.000Z\"\n    }\n  ],\n  \"nextCursor\": null\n}"
+    }
+  ]
+}

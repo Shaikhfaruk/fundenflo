@@ -1,0 +1,50 @@
+{
+  "name": "Duplicate people: match review from lead capture, merge, history, revert and direct merge",
+  "requires": [
+    "staffInvitation"
+  ],
+  "steps": [
+    {
+      "request": "01 Auth/06 Accept Staff Invitation.json"
+    },
+    {
+      "request": "01 Auth/07 Staff Login.json"
+    },
+    {
+      "request": "01 Auth/08 Verify Staff MFA.json"
+    },
+    {
+      "request": "08 Leads & Imports/02 Create Lead.json",
+      "variables": {
+        "leadName": "Ramesh Kumar"
+      }
+    },
+    {
+      "request": "08 Leads & Imports/02 Create Lead.json",
+      "variables": {
+        "leadName": "Suresh Patel"
+      }
+    },
+    {
+      "request": "54 Ops - Party Match Reviews & Merges/01 List Match Reviews.json"
+    },
+    {
+      "request": "54 Ops - Party Match Reviews & Merges/02 Get Match Review.json"
+    },
+    {
+      "request": "54 Ops - Party Match Reviews & Merges/03 Resolve Match Review.json"
+    },
+    {
+      "request": "54 Ops - Party Match Reviews & Merges/05 List Party Merges.json"
+    },
+    {
+      "request": "54 Ops - Party Match Reviews & Merges/06 Revert Party Merge.json"
+    },
+    {
+      "request": "54 Ops - Party Match Reviews & Merges/04 Merge Parties.json"
+    },
+    {
+      "request": "54 Ops - Party Match Reviews & Merges/06 Revert Party Merge.json"
+    }
+  ]
+}

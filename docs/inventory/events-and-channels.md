@@ -7,8 +7,8 @@
 
 | Event | Producer | Consumers | Real-time | Milestone | Status | Evidence |
 |---|---|---|---|---|---|---|
-| `party.created` · `party.match_review.opened` | parties (`party.service.ts`, `party-resolver.service.ts`) | none yet (M1: leads relink, ops review queue) | — | M0 | `useful` | §3.3 |
-| `party.merged` | parties | sync, leads (relink), audit | — | M1 | `planned` | §3.3 |
+| `party.created` · `party.match_review.opened` | parties (`party.service.ts`, `party-resolver.service.ts`) | none (the review queue reads `party_match_reviews` directly) | — | M0 | `useful` | §3.3 |
+| `party.merged` · `party.merge_reverted` · `party.match_review.resolved` | parties (`party-merge.service.ts`, via `ChangeRecorder`) | `leads.consent-sync` (recompute consent status of the survivor's open leads; on revert also the restored party); M1.9: sync | — | M1 | `useful` | spec `party-merge`; flow `party-merge` |
 | `user.signed_up` | auth (`otp-login.service.ts`) | `leads.dropoff` (borrower sign-ups); M7: referral attribution | — | M0 | `useful` | §3.4 |
 | `user.status_changed` | auth (`admin-users.service.ts`) | `auth.session-revocations` | — | M0 | `useful` | §3.4 |
 | `user.mobile_changed` · `login.linked` · `login.removed` | auth (`login-methods.service.ts`) | none yet | — | M0 | `useful` | §3.4 |

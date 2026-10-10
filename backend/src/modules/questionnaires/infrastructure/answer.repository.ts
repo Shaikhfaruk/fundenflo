@@ -15,4 +15,12 @@ export class AnswerRepository {
   listForParty(partyId: string, questionKey: string | undefined, take: number, idFilter?: { lt: string }) {
     return this.txHost.tx.answer.findMany({ where: { partyId, questionKey, id: idFilter }, orderBy: { id: 'desc' }, take });
   }
+
+  async answerIdsOfParty(partyId: string) {
+    return (await this.txHost.tx.answer.findMany({ where: { partyId }, select: { id: true } })).map((row) => row.id);
+  }
+
+  moveAnswers(ids: string[], partyId: string) {
+    return this.txHost.tx.answer.updateMany({ where: { id: { in: ids } }, data: { partyId } });
+  }
 }

@@ -209,8 +209,6 @@ Planned:
 
 | Method | Path | Module | Context | Milestone | Status |
 |---|---|---|---|---|---|
-| `GET` | `/ops/party-match-reviews` | parties | staff | M1 | `planned` |
-| `POST` | `/ops/party-match-reviews/:id/resolve` | parties | staff | M1 | `planned` |
 | `GET` | `/ops/reports/leads/funnel` | leads | staff | M1 | `planned` |
 | `GET` | `/ops/reports/partners/performance` | leads | staff | M1 | `planned` |
 
@@ -298,6 +296,17 @@ Planned:
 | `POST` | `/lender/submissions/:id/document-requests` | applications | lender | M6 | `planned` |
 
 ## 30 Ops Console
+
+Built in M1.6c (Postman `54 Ops - Party Match Reviews & Merges/`). Controller: `backend/src/modules/parties/http/ops-party-merges.controller.ts` → `PartyMergeService` (party read / update access).
+
+| Method | Path | Module | Context | Milestone | Status |
+|---|---|---|---|---|---|
+| `GET` | `/ops/party-match-reviews` | parties | staff | M1 | `useful` |
+| `GET` | `/ops/party-match-reviews/:id` | parties | staff | M1 | `useful` |
+| `POST` | `/ops/party-match-reviews/:id/resolve` | parties | staff | M1 | `useful` |
+| `POST` | `/ops/parties/merge` | parties | staff | M1 | `useful` |
+| `GET` | `/ops/party-merges` | parties | staff | M1 | `useful` |
+| `POST` | `/ops/party-merges/:id/revert` | parties | staff | M1 | `useful` |
 
 Built in M1.2 (Postman `50 Ops - Party Facts/`). Controller: `backend/src/modules/attributes/http/ops-facts.controller.ts`.
 

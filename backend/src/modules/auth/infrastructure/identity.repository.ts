@@ -84,4 +84,12 @@ export class IdentityRepository {
   updateStaffCredential(userId: string, data: Prisma.StaffCredentialUncheckedUpdateInput) {
     return this.txHost.tx.staffCredential.update({ where: { userId }, data });
   }
+
+  findUserByParty(partyId: string) {
+    return this.txHost.tx.user.findUnique({ where: { partyId }, select: { id: true } });
+  }
+
+  moveUserParty(userId: string, partyId: string) {
+    return this.txHost.tx.user.update({ where: { id: userId }, data: { partyId } });
+  }
 }

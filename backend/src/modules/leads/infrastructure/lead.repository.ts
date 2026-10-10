@@ -87,6 +87,19 @@ export class LeadRepository {
     return this.txHost.tx.offlineConversion.updateMany({ where: { id, status }, data: { ...data, version: { increment: 1 } } });
   }
 
+  async leadIdsOfParty(partyId: string) {
+    const [person, business] = await Promise.all([
+      this.txHost.tx.lead.findMany({ where: { partyId }, select: { id: true } }),
+      this.txHost.tx.lead.findMany({ where: { businessPartyId: partyId }, select: { id: true } }),
+    ]);
+    return { person: person.map((row) => row.id), business: business.map((row) => row.id) };
+  }
+
+  async moveLeads(ids: { person: string[]; business: string[] }, partyId: string) {
+    await this.txHost.tx.lead.updateMany({ where: { id: { in: ids.person } }, data: { partyId, version: { increment: 1 } } });
+    await this.txHost.tx.lead.updateMany({ where: { id: { in: ids.business } }, data: { businessPartyId: partyId, version: { increment: 1 } } });
+  }
+
   addFlag(id: string, flag: LeadFlag) {
     return this.txHost.tx.lead.updateMany({ where: { id, NOT: { flags: { has: flag } } }, data: { flags: { push: flag }, version: { increment: 1 } } });
   }

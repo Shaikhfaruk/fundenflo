@@ -6,6 +6,7 @@ import { AuthModule } from '../auth/auth.module.js';
 import { ConfigPublishingModule } from '../config-publishing/config-publishing.module.js';
 import { createVersionedConfigController } from '../config-publishing/http/versioned-config.controller.js';
 import { PartiesModule } from '../parties/parties.module.js';
+import { ConsentMergeParticipant } from './application/consent-merge.participant.js';
 import { ConsentPurposeService } from './application/consent-purpose.service.js';
 import { ConsentRequestService } from './application/consent-request.service.js';
 import { ConsentTemplateHandler } from './application/consent-template.handler.js';
@@ -26,7 +27,7 @@ const AdminConsentTemplatesController = createVersionedConfigController({
 @Module({
   imports: [AccessModule, AuthModule, ConfigPublishingModule, PartiesModule],
   controllers: [AdminConsentPurposesController, AdminConsentTemplatesController, CatalogConsentTemplatesController, MeConsentsController, OpsConsentsController, PublicConsentRequestsController],
-  providers: [ConsentRepository, ConsentPurposeService, ConsentTemplateHandler, ConsentService, ConsentRequestService],
+  providers: [ConsentMergeParticipant, ConsentRepository, ConsentPurposeService, ConsentTemplateHandler, ConsentService, ConsentRequestService],
   exports: [ConsentService, ConsentRequestService],
 })
 export class ConsentsModule {}

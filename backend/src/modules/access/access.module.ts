@@ -4,6 +4,7 @@ import { PartiesModule } from '../parties/parties.module.js';
 import { ApiClientService } from './application/api-client.service.js';
 import { InvitationService } from './application/invitation.service.js';
 import { MembershipService } from './application/membership.service.js';
+import { OrganizationMergeParticipant } from './application/organization-merge.participant.js';
 import { OrganizationService } from './application/organization.service.js';
 import { AdminApiClientsController } from './http/admin-api-clients.controller.js';
 import { AdminInvitationsController } from './http/admin-invitations.controller.js';
@@ -15,7 +16,7 @@ import { ApiClientRepository } from './infrastructure/api-client.repository.js';
 @Module({
   imports: [PartiesModule],
   controllers: [AdminMembershipsController, AdminInvitationsController, AdminApiClientsController],
-  providers: [AccessRepository, ApiClientRepository, MembershipService, InvitationService, OrganizationService, ApiClientService, ApiKeyGuard],
+  providers: [OrganizationMergeParticipant, AccessRepository, ApiClientRepository, MembershipService, InvitationService, OrganizationService, ApiClientService, ApiKeyGuard],
   exports: [AccessRepository, MembershipService, InvitationService, OrganizationService, ApiClientService, ApiKeyGuard],
 })
 export class AccessModule {}

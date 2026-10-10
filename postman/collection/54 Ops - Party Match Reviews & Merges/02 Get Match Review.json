@@ -1,0 +1,108 @@
+{
+  "name": "Get Match Review",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/ops/party-match-reviews/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "party-match-reviews",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{matchReviewId}}"
+        }
+      ]
+    },
+    "description": "One review with every party involved: name, masked contacts and identifiers, whether it has a login or organization. Staff only; reading needs party read access, deciding and merging need party update access (ops lead, ops reviewer). A merge moves everything attached to the merged party to the survivor in one transaction: contacts (duplicates stay behind, their verified and do-not-contact flags carry over), identifiers, relationships, the login and organization (refused when both parties have one), facts, answers, consent records and requests, and leads. The merged party is kept with status `merged`, and the merge can be reverted."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/ops/party-match-reviews/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "party-match-reviews",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{matchReviewId}}"
+            }
+          ]
+        },
+        "description": "One review with every party involved: name, masked contacts and identifiers, whether it has a login or organization. Staff only; reading needs party read access, deciding and merging need party update access (ops lead, ops reviewer). A merge moves everything attached to the merged party to the survivor in one transaction: contacts (duplicates stay behind, their verified and do-not-contact flags carry over), identifiers, relationships, the login and organization (refused when both parties have one), facts, answers, consent records and requests, and leads. The merged party is kept with status `merged`, and the merge can be reverted."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12240-3c4d-7e5f-8061-728394a5b6c7\",\n  \"partyId\": \"01a12240-2b3c-7d4e-9f50-61728394a5b6\",\n  \"candidatePartyIds\": [\n    \"01a12240-1a2b-7c3d-8e4f-5061728394a5\"\n  ],\n  \"signals\": [\n    {\n      \"partyId\": \"01a12240-1a2b-7c3d-8e4f-5061728394a5\",\n      \"signal\": \"shared_contact\",\n      \"contactType\": \"mobile\"\n    }\n  ],\n  \"status\": \"open\",\n  \"resolution\": null,\n  \"resolvedByUserId\": null,\n  \"resolvedAt\": null,\n  \"createdAt\": \"2026-10-10T13:00:00.000Z\",\n  \"parties\": [\n    {\n      \"id\": \"01a12240-2b3c-7d4e-9f50-61728394a5b6\",\n      \"kind\": \"person\",\n      \"displayName\": \"Suresh Patel\",\n      \"status\": \"active\",\n      \"mergedIntoId\": null,\n      \"hasLogin\": false,\n      \"organization\": null,\n      \"contacts\": [\n        {\n          \"type\": \"mobile\",\n          \"masked\": \"+91 98•••••210\",\n          \"primary\": true,\n          \"verified\": false,\n          \"doNotContact\": false,\n          \"invalid\": false\n        }\n      ],\n      \"identifiers\": [],\n      \"createdAt\": \"2026-10-10T13:00:00.000Z\"\n    },\n    {\n      \"id\": \"01a12240-1a2b-7c3d-8e4f-5061728394a5\",\n      \"kind\": \"person\",\n      \"displayName\": \"Ramesh Kumar\",\n      \"status\": \"active\",\n      \"mergedIntoId\": null,\n      \"hasLogin\": false,\n      \"organization\": null,\n      \"contacts\": [\n        {\n          \"type\": \"mobile\",\n          \"masked\": \"+91 98•••••210\",\n          \"primary\": true,\n          \"verified\": false,\n          \"doNotContact\": false,\n          \"invalid\": false\n        }\n      ],\n      \"identifiers\": [],\n      \"createdAt\": \"2026-10-10T13:00:00.000Z\"\n    }\n  ]\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/ops/party-match-reviews/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "party-match-reviews",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{matchReviewId}}"
+            }
+          ]
+        },
+        "description": "One review with every party involved: name, masked contacts and identifiers, whether it has a login or organization. Staff only; reading needs party read access, deciding and merging need party update access (ops lead, ops reviewer). A merge moves everything attached to the merged party to the survivor in one transaction: contacts (duplicates stay behind, their verified and do-not-contact flags carry over), identifiers, relationships, the login and organization (refused when both parties have one), facts, answers, consent records and requests, and leads. The merged party is kept with status `merged`, and the merge can be reverted."
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

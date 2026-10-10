@@ -158,4 +158,12 @@ export class AccessRepository {
   createOrganization(data: { partyId: string; type: OrganizationType; name: string; status: OrganizationStatus }) {
     return this.txHost.tx.organization.create({ data });
   }
+
+  findOrganizationByParty(partyId: string) {
+    return this.txHost.tx.organization.findUnique({ where: { partyId }, select: { id: true } });
+  }
+
+  moveOrganizationParty(organizationId: string, partyId: string) {
+    return this.txHost.tx.organization.update({ where: { id: organizationId }, data: { partyId } });
+  }
 }

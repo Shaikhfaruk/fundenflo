@@ -6,6 +6,7 @@ import { CatalogModule } from '../catalog/catalog.module.js';
 import { ConfigPublishingModule } from '../config-publishing/config-publishing.module.js';
 import { createVersionedConfigController } from '../config-publishing/http/versioned-config.controller.js';
 import { PartiesModule } from '../parties/parties.module.js';
+import { AnswerMergeParticipant } from './application/answer-merge.participant.js';
 import { QuestionSetHandler } from './application/question-set.handler.js';
 import { QuestionService } from './application/question.service.js';
 import { QuestionnaireService } from './application/questionnaire.service.js';
@@ -25,7 +26,7 @@ const AdminQuestionSetsController = createVersionedConfigController({
 @Module({
   imports: [AttributesModule, CatalogModule, ConfigPublishingModule, PartiesModule],
   controllers: [AdminQuestionsController, AdminQuestionSetsController, AdminQuestionSetPreviewController, CatalogQuestionsController, OpsAnswersController],
-  providers: [QuestionRepository, AnswerRepository, QuestionService, QuestionSetHandler, QuestionnaireService],
+  providers: [AnswerMergeParticipant, QuestionRepository, AnswerRepository, QuestionService, QuestionSetHandler, QuestionnaireService],
   exports: [QuestionnaireService],
 })
 export class QuestionnairesModule {}

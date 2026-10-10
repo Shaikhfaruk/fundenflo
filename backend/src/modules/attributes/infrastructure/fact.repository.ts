@@ -26,4 +26,12 @@ export class FactRepository {
       take,
     });
   }
+
+  async factIdsOfParty(partyId: string) {
+    return (await this.txHost.tx.borrowerFact.findMany({ where: { partyId }, select: { id: true } })).map((row) => row.id);
+  }
+
+  moveFacts(ids: string[], partyId: string) {
+    return this.txHost.tx.borrowerFact.updateMany({ where: { id: { in: ids } }, data: { partyId } });
+  }
 }
