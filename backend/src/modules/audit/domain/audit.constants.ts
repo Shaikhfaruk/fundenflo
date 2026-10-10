@@ -74,6 +74,9 @@ export const AuditAction = {
   AssignmentReassigned: 'lead.assignment_reassigned',
   LeadSlaWarned: 'lead.sla_warned',
   LeadSlaBreached: 'lead.sla_breached',
+  LeadReferred: 'lead.referred',
+  OfflineConversionReported: 'lead.offline_conversion_reported',
+  OfflineConversionDecided: 'lead.offline_conversion_decided',
 } as const;
 
 export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction];
@@ -109,6 +112,7 @@ export const AuditEntity = {
   ConsentRequest: 'consent_request',
   ImportBatch: 'import_batch',
   LeadAssignment: 'lead_assignment',
+  OfflineConversion: 'offline_conversion',
 } as const;
 
 export type AuditEntity = (typeof AuditEntity)[keyof typeof AuditEntity];

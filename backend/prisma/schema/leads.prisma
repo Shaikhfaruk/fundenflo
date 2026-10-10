@@ -74,6 +74,9 @@ enum LeadEventType {
   sla_warned
   sla_breached
   activity_logged
+  referred
+  conversion_reported
+  conversion_decided
 }
 
 model LeadSource {
@@ -144,18 +147,20 @@ model Lead {
   createdAt              DateTime               @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt              DateTime               @updatedAt @map("updated_at") @db.Timestamptz(3)
 
-  party         Party            @relation("lead_person", fields: [partyId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  businessParty Party?           @relation("lead_business", fields: [businessPartyId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  source        LeadSource       @relation(fields: [sourceId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  apiClient     ApiClient?       @relation(fields: [apiClientId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  state         GeoState?        @relation(fields: [stateId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  city          GeoCity?         @relation(fields: [cityId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  duplicateOf   Lead?            @relation("lead_duplicate", fields: [duplicateOfLeadId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  duplicates    Lead[]           @relation("lead_duplicate")
-  mergedInto    Lead?            @relation("lead_merge", fields: [mergedIntoLeadId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  mergedLeads   Lead[]           @relation("lead_merge")
+  party         Party               @relation("lead_person", fields: [partyId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  businessParty Party?              @relation("lead_business", fields: [businessPartyId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  source        LeadSource          @relation(fields: [sourceId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  apiClient     ApiClient?          @relation(fields: [apiClientId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  state         GeoState?           @relation(fields: [stateId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  city          GeoCity?            @relation(fields: [cityId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  duplicateOf   Lead?               @relation("lead_duplicate", fields: [duplicateOfLeadId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  duplicates    Lead[]              @relation("lead_duplicate")
+  mergedInto    Lead?               @relation("lead_merge", fields: [mergedIntoLeadId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  mergedLeads   Lead[]              @relation("lead_merge")
   events        LeadEvent[]
   assignments   LeadAssignment[]
+  attribution   LeadAttribution?
+  conversions   OfflineConversion[]
 
   @@unique([sourceId, externalRef])
   @@index([status, createdAt])
@@ -219,12 +224,51 @@ model LeadAssignment {
   createdAt            DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt            DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
 
-  lead               Lead           @relation(fields: [leadId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  organization       Organization   @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  routingRuleVersion ConfigVersion? @relation(fields: [routingRuleVersionId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  lead               Lead                @relation(fields: [leadId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  organization       Organization        @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  routingRuleVersion ConfigVersion?      @relation(fields: [routingRuleVersionId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  conversions        OfflineConversion[]
 
   @@index([organizationId, status])
   @@index([leadId, status])
   @@index([status, respondBy])
   @@map("lead_assignments")
+}
+
+enum OfflineConversionStatus {
+  reported
+  verified
+  rejected
+}
+
+model OfflineConversion {
+  id                    String                  @id @default(uuid(7)) @db.Uuid
+  leadId                String                  @map("lead_id") @db.Uuid
+  assignmentId          String                  @map("assignment_id") @db.Uuid
+  organizationId        String                  @map("organization_id") @db.Uuid
+  lenderName            String                  @map("lender_name")
+  lenderOrganizationId  String?                 @map("lender_organization_id") @db.Uuid
+  categoryKey           String?                 @map("category_key")
+  sanctionedAmountPaise BigInt                  @map("sanctioned_amount_paise")
+  disbursedAmountPaise  BigInt?                 @map("disbursed_amount_paise")
+  sanctionedOn          DateTime                @map("sanctioned_on") @db.Date
+  disbursedOn           DateTime?               @map("disbursed_on") @db.Date
+  loanAccountRef        String?                 @map("loan_account_ref")
+  note                  String?
+  status                OfflineConversionStatus @default(reported)
+  reportedByUserId      String                  @map("reported_by_user_id") @db.Uuid
+  decidedByUserId       String?                 @map("decided_by_user_id") @db.Uuid
+  decidedAt             DateTime?               @map("decided_at") @db.Timestamptz(3)
+  decisionNote          String?                 @map("decision_note")
+  version               Int                     @default(1)
+  createdAt             DateTime                @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt             DateTime                @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  lead         Lead           @relation(fields: [leadId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  assignment   LeadAssignment @relation(fields: [assignmentId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  organization Organization   @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([status, createdAt])
+  @@index([leadId])
+  @@map("offline_conversions")
 }

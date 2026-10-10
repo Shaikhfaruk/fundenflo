@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { ActivityOutcome, ActivityType, CatalogStatus, ConsentBasis, FollowUpStatus, LeadConsentStatus, LeadFlag, LeadLostReason, LeadSourceKind, LeadStatus, LeadUnqualifiedReason, LeadUrgency } from '../../../common/enums/db.enums.js';
+import { ActivityOutcome, ActivityType, CatalogStatus, ConsentBasis, FollowUpStatus, OfflineConversionStatus, LeadConsentStatus, LeadFlag, LeadLostReason, LeadSourceKind, LeadStatus, LeadUnqualifiedReason, LeadUrgency } from '../../../common/enums/db.enums.js';
 import { SUPPORTED_LOCALES } from '../../../common/i18n/locale.js';
 import { MAX_PAGE_SIZE } from '../../../common/constants/listing.constants.js';
 import { pageQuerySchema } from '../../../common/listing/cursor-page.js';
@@ -210,3 +210,60 @@ export const updateFollowUpSchema = z
   .strict()
   .refine((value) => Object.keys(value).length > 0, 'change at least one field');
 export type UpdateFollowUpDto = z.output<typeof updateFollowUpSchema>;
+
+const { campaign: _campaign, utm: _utm, externalRef: _externalRef, consent: _consent, ...referralShape } = leadCaptureShape;
+
+export const partnerReferralSchema = z
+  .object({
+    ...referralShape,
+    mobile: z.string().trim().min(6).max(20),
+    consent: z
+      .object({
+        templateVersionId: z.uuid(),
+        locale: z.enum(SUPPORTED_LOCALES).optional(),
+        items: z.array(z.object({ purpose: z.string().regex(/^[a-z][a-z0-9_]{1,49}$/), granted: z.boolean() }).strict()).min(1).max(20),
+      })
+      .strict()
+      .optional(),
+    requestConsent: z.boolean().default(true),
+  })
+  .strict();
+export type PartnerReferralDto = z.output<typeof partnerReferralSchema>;
+
+const { campaign: _patchCampaign, flags: _patchFlags, ...partnerPatchShape } = leadPatchSchema.shape;
+
+export const partnerLeadPatchSchema = z
+  .object(partnerPatchShape)
+  .strict()
+  .refine((patch) => Object.keys(patch).length > 0, 'send at least one field');
+export type PartnerLeadPatchDto = z.output<typeof partnerLeadPatchSchema>;
+
+const pastDate = z.iso.date().refine((value) => value <= new Date().toISOString().slice(0, 10), 'cannot be in the future');
+
+export const offlineConversionSchema = z
+  .object({
+    lenderName: z.string().trim().min(2).max(120),
+    lenderOrganizationId: z.uuid().optional(),
+    categoryKey: key.optional(),
+    sanctionedAmountPaise: paise.positive(),
+    disbursedAmountPaise: paise.positive().optional(),
+    sanctionedOn: pastDate,
+    disbursedOn: pastDate.optional(),
+    loanAccountRef: z.string().trim().min(2).max(60).optional(),
+    note: note.optional(),
+  })
+  .strict()
+  .refine((value) => !value.disbursedOn || value.disbursedOn >= value.sanctionedOn, { path: ['disbursedOn'], message: 'must be on or after sanctionedOn' })
+  .refine((value) => (value.disbursedOn === undefined) === (value.disbursedAmountPaise === undefined), { path: ['disbursedAmountPaise'], message: 'send disbursedOn and disbursedAmountPaise together' });
+export type OfflineConversionDto = z.output<typeof offlineConversionSchema>;
+
+export const conversionListSchema = pageQuerySchema.extend({ status: z.enum(Object.values(OfflineConversionStatus)).default(OfflineConversionStatus.reported) });
+export type ConversionListDto = z.output<typeof conversionListSchema>;
+
+export const ConversionDecision = { Verify: 'verify', Reject: 'reject' } as const;
+
+export const conversionDecisionSchema = z
+  .object({ decision: z.enum(Object.values(ConversionDecision)), note: note.optional() })
+  .strict()
+  .refine((value) => value.decision !== ConversionDecision.Reject || value.note !== undefined, { path: ['note'], message: 'explain why the conversion is rejected' });
+export type ConversionDecisionDto = z.output<typeof conversionDecisionSchema>;

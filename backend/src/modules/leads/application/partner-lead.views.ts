@@ -45,6 +45,7 @@ export const toPartnerLeadView = (assignment: PartnerAssignmentRow, contacts?: C
       urgency: lead.urgency,
       preferredLanguage: lead.preferredLanguage,
       preferredContactTime: lead.preferredContactTime,
+      version: lead.version,
       createdAt: lead.createdAt.toISOString(),
     },
     ...(contacts ? { contacts: contacts.map(({ type, masked, primary, doNotContact, invalid }) => ({ type, masked, primary, doNotContact, invalid })) } : {}),

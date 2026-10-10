@@ -1,0 +1,71 @@
+{
+  "name": "List Referrals",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/partner/referrals?limit=25",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "partner",
+        "referrals"
+      ],
+      "query": [
+        {
+          "key": "limit",
+          "value": "25"
+        }
+      ]
+    },
+    "description": "Leads the firm referred, newest first, with their status, consent status and protection end. Paginate with `cursor`. Partner context."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/partner/referrals?limit=25",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "referrals"
+          ],
+          "query": [
+            {
+              "key": "limit",
+              "value": "25"
+            }
+          ]
+        },
+        "description": "Leads the firm referred, newest first, with their status, consent status and protection end. Paginate with `cursor`. Partner context."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a12230-2b3c-7d4e-9f50-61728394a5b6\",\n      \"protectedUntil\": \"2027-01-08T12:00:00.000Z\",\n      \"createdAt\": \"2026-10-10T12:00:00.000Z\",\n      \"lead\": {\n        \"id\": \"01a121e0-1a2b-7c3d-8e4f-5061728394a5\",\n        \"ref\": \"LD-26-000140\",\n        \"status\": \"new\",\n        \"consentStatus\": \"pending\",\n        \"name\": \"Sunita Verma\"\n      }\n    }\n  ],\n  \"nextCursor\": null\n}"
+    }
+  ]
+}

@@ -11,3 +11,9 @@ export const ACTIVITY_BACKDATE_MAX_DAYS = 30;
 export const ACTIVITY_CLOCK_SKEW_MS = 5 * 60_000;
 
 export const FOLLOW_UP_MAX_DAYS_AHEAD = 180;
+
+export const FOLLOW_UP_DUE_SLA_KIND = 'follow_up.due';
+
+export const FOLLOW_UP_SLA_ENTITY = 'follow_up';
+
+export const FOLLOW_UP_REMINDER_MINUTES = 30;

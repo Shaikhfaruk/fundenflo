@@ -74,7 +74,7 @@ describe('CA lead inbox and actions', () => {
 
     const accepted = await partnerApi(ownerA).post(`/${created.id}/accept`).expect(200);
     expect(accepted.body).toMatchObject({ assignment: { status: 'accepted', assigneeMembershipId: ownerA.user.activeContext?.membershipId }, lead: { name: 'Gita Rao', businessName: 'Gita Rao Traders', status: 'in_progress' } });
-    expect(accepted.body.availableActions).toEqual(['reveal_contact', 'return', 'lost', 'sub_assign']);
+    expect(accepted.body.availableActions).toEqual(['reveal_contact', 'log_activity', 'follow_up', 'edit', 'offline_conversion', 'return', 'lost', 'sub_assign']);
 
     await partnerApi(ownerB).get(`/${created.id}`).expect(404);
     await partnerApi(ownerB).post(`/${created.id}/accept`).expect(404);
@@ -100,7 +100,7 @@ describe('CA lead inbox and actions', () => {
     const handed = await partnerApi(ownerA).post(`/${created.id}/sub-assign`, { membershipId: agentMembershipId }).expect(200);
     expect(handed.body.assignment.assigneeMembershipId).toBe(agentMembershipId);
 
-    expect((await partnerApi(agentA).get(`/${created.id}`).expect(200)).body.availableActions).toEqual(['reveal_contact', 'return', 'lost']);
+    expect((await partnerApi(agentA).get(`/${created.id}`).expect(200)).body.availableActions).toEqual(['reveal_contact', 'log_activity', 'follow_up', 'edit', 'offline_conversion', 'return', 'lost']);
     await partnerApi(agentA).post(`/${created.id}/sub-assign`, { membershipId: agentMembershipId }).expect(403);
     const lost = await partnerApi(agentA).post(`/${created.id}/lost`, { reason: 'went_elsewhere', note: 'Took a loan from their own bank' }).expect(200);
     expect(lost.body).toMatchObject({ assignment: { status: 'completed', reason: 'lead_lost' }, lead: { status: 'lost' }, availableActions: [] });

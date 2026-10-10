@@ -1,0 +1,79 @@
+{
+  "name": "List Offline Conversions",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/ops/offline-conversions?status=reported&limit=25",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "offline-conversions"
+      ],
+      "query": [
+        {
+          "key": "status",
+          "value": "reported"
+        },
+        {
+          "key": "limit",
+          "value": "25"
+        }
+      ]
+    },
+    "description": "Offline conversions reported by CAs, newest first, with the lead and firm. `status`: `reported` (default, the review queue), `verified`, `rejected`. Staff only; reading needs offline conversion read access."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/ops/offline-conversions?status=reported&limit=25",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "offline-conversions"
+          ],
+          "query": [
+            {
+              "key": "status",
+              "value": "reported"
+            },
+            {
+              "key": "limit",
+              "value": "25"
+            }
+          ]
+        },
+        "description": "Offline conversions reported by CAs, newest first, with the lead and firm. `status`: `reported` (default, the review queue), `verified`, `rejected`. Staff only; reading needs offline conversion read access."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a12230-1a2b-7c3d-8e4f-5061728394a5\",\n      \"leadId\": \"01a121e0-1a2b-7c3d-8e4f-5061728394a5\",\n      \"assignmentId\": \"01a121f9-3c4d-7e5f-8061-728394a5b6c7\",\n      \"organizationId\": \"01a121c0-6f70-7b82-a394-a5b6c7d8e9fa\",\n      \"lenderName\": \"Haryana State Co-operative Bank\",\n      \"lenderOrganizationId\": null,\n      \"categoryKey\": \"business\",\n      \"sanctionedAmountPaise\": 140000000,\n      \"disbursedAmountPaise\": 140000000,\n      \"sanctionedOn\": \"2026-10-01\",\n      \"disbursedOn\": \"2026-10-05\",\n      \"loanAccountRef\": \"HSCB-88123\",\n      \"note\": \"Borrower went to the bank directly with our file\",\n      \"status\": \"reported\",\n      \"reportedByUserId\": \"01a121c0-5e6f-7a71-9283-94a5b6c7d8e9\",\n      \"decidedByUserId\": null,\n      \"decidedAt\": null,\n      \"decisionNote\": null,\n      \"version\": 1,\n      \"createdAt\": \"2026-10-10T12:00:00.000Z\",\n      \"lead\": {\n        \"id\": \"01a121e0-1a2b-7c3d-8e4f-5061728394a5\",\n        \"ref\": \"LD-26-000123\",\n        \"status\": \"in_progress\"\n      },\n      \"organization\": {\n        \"id\": \"01a121c0-6f70-7b82-a394-a5b6c7d8e9fa\",\n        \"name\": \"Mehta & Associates\"\n      }\n    }\n  ],\n  \"nextCursor\": null\n}"
+    }
+  ]
+}

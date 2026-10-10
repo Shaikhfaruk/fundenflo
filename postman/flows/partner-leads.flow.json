@@ -1,5 +1,5 @@
 {
-  "name": "CA lead inbox: masked offer, accept, reveal, activities, follow-ups, hand-over, lost, decline and return",
+  "name": "CA lead inbox: offer, accept, reveal, activities, follow-ups, hand-over, edit, offline conversion, referral, lost, decline and return",
   "requires": [
     "staffInvitation",
     "checkerInvitation"
@@ -156,6 +156,45 @@
     },
     {
       "request": "10 Partner Portal - Onboarding, Team & Leads/17 Return Partner Lead.json",
+      "identity": "partner"
+    },
+    {
+      "request": "08 Leads & Imports/02 Create Lead.json",
+      "identity": "maker"
+    },
+    {
+      "request": "08 Leads & Imports/28 Route Lead.json"
+    },
+    {
+      "request": "10 Partner Portal - Onboarding, Team & Leads/12 Accept Partner Lead.json",
+      "identity": "partner"
+    },
+    {
+      "request": "10 Partner Portal - Onboarding, Team & Leads/11 Get Partner Lead.json",
+      "identity": "partner"
+    },
+    {
+      "request": "10 Partner Portal - Onboarding, Team & Leads/25 Update Partner Lead.json",
+      "identity": "partner"
+    },
+    {
+      "request": "10 Partner Portal - Onboarding, Team & Leads/26 Report Offline Conversion.json",
+      "identity": "partner"
+    },
+    {
+      "request": "08 Leads & Imports/38 List Offline Conversions.json",
+      "identity": "maker"
+    },
+    {
+      "request": "08 Leads & Imports/39 Decide Offline Conversion.json",
+      "identity": "maker"
+    },
+    {
+      "request": "10 Partner Portal - Onboarding, Team & Leads/23 Refer Lead.json",
+      "identity": "partner"
+    },
+    {
+      "request": "10 Partner Portal - Onboarding, Team & Leads/24 List Referrals.json",
       "identity": "partner"
     },
     {

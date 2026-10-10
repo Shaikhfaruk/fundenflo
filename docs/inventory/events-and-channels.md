@@ -26,10 +26,12 @@
 | `lead.captured` · `lead.updated` · `lead.status_changed` · `lead.merged` · `lead.contact_revealed` | leads (`lead-capture.service.ts`, `lead.service.ts`) | `leads.route` (captured; status_changed to `new`/`qualified`; updated with consent `ok`); M1.9: reports, sync | org room (when assigned, M1.9) | M1 | `useful` | §7.3; spec `leads` |
 | `consent.requested` | consents (`consent-request.service.ts`; on send and on completion) | none yet | — | M1 | `useful` | §7.2 |
 | `lead_source.changed` · `api_client.changed` | leads, access | none yet | — | M1 | `useful` | §7.1 |
-| `lead.assignment.offered` · `accepted` · `declined` · `expired` · `revoked` · `returned` · `completed` · `reassigned` | leads (`lead-assignment.service.ts`, via `ChangeRecorder`) | `leads.route` (`declined`, `expired`, `revoked` → route again; `returned` routes through the lead's `status_changed` to `new`); next: notifications to the CA and first-contact SLA (M1.8c), reports and realtime (M1.9) | partner org + assignee membership rooms (M1.9) | M1 | `useful` | specs `lead-routing`, `partner-leads`; flows `lead-routing`, `partner-leads` |
-| `follow_up.due` | activities | notifications (reminder) | assignee room | M1 | `planned` | §7.5; activities are lead timeline entries (`activity_logged`), not a separate domain event |
+| `lead.assignment.offered` · `accepted` · `declined` · `expired` · `revoked` · `returned` · `completed` · `reassigned` | leads (`lead-assignment.service.ts`, via `ChangeRecorder`) | `leads.route` (`declined`, `expired`, `revoked` → route again; `returned` routes through the lead's `status_changed` to `new`); `leads.notify` (`offered` → firm owners SMS + email; `reassigned` → the member); next: reports and realtime (M1.9) | partner org + assignee membership rooms (M1.9) | M1 | `useful` | specs `lead-routing`, `partner-leads`; flows `lead-routing`, `partner-leads` |
+| `follow_up.due` | activities (`follow-up-sla.handler.ts`, 30 min before `dueAt`, via outbox) | `leads.notify` (SMS reminder to the assignee) | assignee room (M1.9) | M1 | `useful` | spec `lead-referrals`; activities are lead timeline entries (`activity_logged`), not a separate domain event |
+| `lead.assignment.offer_expiring` | leads (`AssignmentAcceptSlaHandler.warn`, 75% into the accept window) | `leads.notify` (SMS to firm owners) | — | M1 | `useful` | `lead-notification.service.ts` |
+| `lead.referred` · `lead.offline_conversion.reported` · `.verified` · `.rejected` | leads (`partner-lead.service.ts`, `lead-conversion.service.ts`, via `ChangeRecorder`) | none yet (M1.9 reports; M7 commissions on verified disbursal) | — | M1 | `useful` | spec `lead-referrals` |
 | `lead.converted` · `lead.offline_conversion.recorded` | leads | commissions (lead terms), reports | org room | M1 / M3 | `planned` | §7.5 |
-| `lead.sla_warned` · `lead.sla_breached` | leads (`lead-sla.handlers.ts`, first-contact SLA, via `ChangeRecorder`) | none yet (M1.8d: CA warning, ops escalation notifications; M1.9 reports) | assignee room (M1.9) | M1 | `useful` | spec `lead-activities` |
+| `lead.sla_warned` · `lead.sla_breached` | leads (`lead-sla.handlers.ts`, first-contact SLA, via `ChangeRecorder`) | none yet `leads.notify` (warned: SMS to the assignee; breached: email to ops leads); M1.9 reports | assignee room (M1.9) | M1 | `useful` | spec `lead-activities` |
 | `config.changed` · `config.change_requested` · `config.change_decided` · `config.published` · `config.retired` | config-publishing (`config-publishing.service.ts`) | none yet (caches are invalidated directly after commit; M1: notify checkers on `config.change_requested`, catalog availability on `config.published` for lender products) | — | M1 | `useful` | §6.9; spec `config-publishing` asserts the `config.published` outbox row |
 | `question.changed` | questionnaires (`question.service.ts`) | none yet | — | M1 | `useful` | §6.2 |
 | `answers.recorded` | questionnaires (`questionnaire.service.ts`) | none yet (M1: lead quality re-score, routing re-evaluation) | — | M1 | `useful` | §6.2 |
@@ -58,8 +60,12 @@ Room joins are authorised on connect, using the same CASL abilities as HTTP.
 | `invitation.staff` | email | invited staff member | M0 | `useful` |
 | `invitation.member` | SMS, email | invited lender or partner member | M0 | `useful` |
 | `partner.membership.approved` | SMS, email | partner owner | M1 | `planned` |
-| `lead.offered` | push, SMS, email | CA assignee | M1 | `planned` |
-| `lead.sla_warning` · `lead.reassigned` | push, email | CA assignee, ops | M1 | `planned` |
+| `lead.offered` | SMS (`SMS_DLT_TEMPLATE_LEAD_OFFERED`), email; push in M1.9 | firm owners | M1 | `useful` |
+| `lead.offer_expiring` | SMS (`SMS_DLT_TEMPLATE_LEAD_OFFER_EXPIRING`) | firm owners | M1 | `useful` |
+| `lead.handed_over` | SMS (`SMS_DLT_TEMPLATE_LEAD_HANDED_OVER`), email | firm member the lead was handed to | M1 | `useful` |
+| `lead.first_contact_due` | SMS (`SMS_DLT_TEMPLATE_LEAD_FIRST_CONTACT_DUE`) | assignee (else firm owners) | M1 | `useful` |
+| `lead.first_contact_missed` | email | active ops leads | M1 | `useful` |
+| `follow_up.due` | SMS (`SMS_DLT_TEMPLATE_FOLLOW_UP_DUE`) | follow-up assignee | M1 | `useful` |
 | `consent.request` | SMS (later WhatsApp); DLT id `SMS_DLT_TEMPLATE_CONSENT_REQUEST`; link from `CONSENT_LINK_URL` | lead's person | M1 | `useful` |
 | `import.completed` | email | uploader | M1 | `planned` |
 | `analysis.completed` | push, WhatsApp (opt-in) | borrower | M5 | `planned` |

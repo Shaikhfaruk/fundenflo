@@ -43,6 +43,10 @@ export class CatalogQueryService {
     };
   }
 
+  async categoryLabel(key: string, locale: Locale): Promise<string> {
+    return (await this.categoryConfigs(locale, undefined)).find((config) => config.key === key)?.label ?? key;
+  }
+
   async resolveCategory(text: string): Promise<{ key: string; purposeKeys: string[] } | null> {
     const direct = await this.findActiveCategory(text.trim().toLowerCase());
     const category = direct ?? (await this.categoryByLabel(text)) ?? (await this.categoryByAlias(text));

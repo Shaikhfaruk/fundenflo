@@ -3,6 +3,12 @@ export const NotificationTemplateKey = {
   InvitationStaff: 'invitation.staff',
   InvitationMember: 'invitation.member',
   ConsentRequest: 'consent.request',
+  LeadOffered: 'lead.offered',
+  LeadOfferExpiring: 'lead.offer_expiring',
+  LeadHandedOver: 'lead.handed_over',
+  LeadFirstContactDue: 'lead.first_contact_due',
+  LeadFirstContactMissed: 'lead.first_contact_missed',
+  FollowUpDue: 'follow_up.due',
 } as const;
 
 export type NotificationTemplateKey = (typeof NotificationTemplateKey)[keyof typeof NotificationTemplateKey];

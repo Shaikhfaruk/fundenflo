@@ -14,4 +14,10 @@ export const EVENT_ROUTES: Partial<Record<EventName, QueueName[]>> = {
   [EventName.AssignmentDeclined]: [QueueName.LeadsRoute],
   [EventName.AssignmentExpired]: [QueueName.LeadsRoute],
   [EventName.AssignmentRevoked]: [QueueName.LeadsRoute],
+  [EventName.AssignmentOffered]: [QueueName.LeadsNotify],
+  [EventName.AssignmentOfferExpiring]: [QueueName.LeadsNotify],
+  [EventName.AssignmentReassigned]: [QueueName.LeadsNotify],
+  [EventName.LeadSlaWarned]: [QueueName.LeadsNotify],
+  [EventName.LeadSlaBreached]: [QueueName.LeadsNotify],
+  [EventName.FollowUpDue]: [QueueName.LeadsNotify],
 };

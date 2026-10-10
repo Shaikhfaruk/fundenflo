@@ -61,7 +61,7 @@ export type LeadPatch = {
 };
 
 export type LeadAction =
-  | { event: typeof LeadEvent.Qualify | typeof LeadEvent.Reopen | typeof LeadEvent.Recycle | typeof LeadEvent.Start; note?: string }
+  | { event: typeof LeadEvent.Qualify | typeof LeadEvent.Reopen | typeof LeadEvent.Recycle | typeof LeadEvent.Start | typeof LeadEvent.Convert | typeof LeadEvent.Win; note?: string }
   | { event: typeof LeadEvent.Hold; note?: string; holdUntil?: Date }
   | { event: typeof LeadEvent.Disqualify; reason: LeadUnqualifiedReason; note?: string }
   | { event: typeof LeadEvent.Lose; reason: LeadLostReason; note?: string };

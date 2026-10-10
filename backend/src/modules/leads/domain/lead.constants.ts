@@ -15,6 +15,7 @@ export const LeadSourceKey = {
   Manual: 'manual',
   Import: 'import',
   AppDropoff: 'app_dropoff',
+  PartnerReferral: 'partner_referral',
 } as const;
 
 export type LeadSourceKey = (typeof LeadSourceKey)[keyof typeof LeadSourceKey];
@@ -23,6 +24,7 @@ export const SYSTEM_LEAD_SOURCES: Array<{ key: LeadSourceKey; name: string; kind
   { key: LeadSourceKey.Manual, name: 'Ops manual entry', kind: LeadSourceKind.manual },
   { key: LeadSourceKey.Import, name: 'Backlog and file imports', kind: LeadSourceKind.import },
   { key: LeadSourceKey.AppDropoff, name: 'App users who stopped mid-journey', kind: LeadSourceKind.app_dropoff },
+  { key: LeadSourceKey.PartnerReferral, name: 'Referred by a partner firm', kind: LeadSourceKind.partner_referral },
 ];
 
 export const LEAD_SOURCE_KEY_PATTERN = /^[a-z][a-z0-9_]{1,49}$/;

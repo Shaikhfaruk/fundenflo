@@ -63,6 +63,20 @@ export class MembershipService {
     return membership;
   }
 
+  async activeUserIds(organizationId: string, roles: readonly Role[]): Promise<string[]> {
+    return (await this.repository.listMembers({ organizationId, status: MembershipStatus.active, role: { in: [...roles] } })).map((member) => member.userId);
+  }
+
+  async activeUserIdOf(membershipId: string): Promise<string | null> {
+    const membership = await this.repository.findMembership(membershipId);
+    return membership?.status === MembershipStatus.active ? membership.userId : null;
+  }
+
+  async activeStaffUserIds(roles: readonly Role[]): Promise<string[]> {
+    const organization = await this.repository.findFundenfloOrganization();
+    return organization ? this.activeUserIds(organization.id, roles) : [];
+  }
+
   latestForContext(userId: string, context: SessionContext) {
     return this.repository.findLatestMembership(userId, context);
   }

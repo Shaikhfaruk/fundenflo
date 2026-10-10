@@ -1,0 +1,139 @@
+{
+  "name": "Refer Lead",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/partner/leads",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "partner",
+        "leads"
+      ]
+    },
+    "description": "A CA refers a borrower they already know. The lead is created from source `partner_referral` and protected for the firm for `PARTNER_REFERRAL_PROTECTION_DAYS` (default 90): routing offers it to this firm ahead of every rule, and another firm referring the same person gets 409 `LEAD_PROTECTED`. With `consent` (`templateVersionId` of a published consent template and the person's choices, channel `partner_assisted`; `partner_sharing` is limited to this firm) the lead is assigned to the firm straight away and the first-contact deadline starts. Without it, `requestConsent` (default true) sends the person the SMS consent link, and the lead reaches the firm once they agree. Partner context.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"mobile\": \"{{referralMobile}}\",\n  \"name\": \"Sunita Verma\",\n  \"businessName\": \"Verma Garments\",\n  \"segment\": \"msme\",\n  \"category\": \"working-capital\",\n  \"city\": \"Gurgaon\",\n  \"amountText\": \"10 lakh\",\n  \"requestConsent\": false\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.collectionVariables.set('referralMobile', '97' + String(Math.floor(Math.random() * 1e8)).padStart(8, '0'));"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "pm.collectionVariables.set('referralLeadId', String(pm.response.json().lead.id));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/partner/leads",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "leads"
+          ]
+        },
+        "description": "A CA refers a borrower they already know. The lead is created from source `partner_referral` and protected for the firm for `PARTNER_REFERRAL_PROTECTION_DAYS` (default 90): routing offers it to this firm ahead of every rule, and another firm referring the same person gets 409 `LEAD_PROTECTED`. With `consent` (`templateVersionId` of a published consent template and the person's choices, channel `partner_assisted`; `partner_sharing` is limited to this firm) the lead is assigned to the firm straight away and the first-contact deadline starts. Without it, `requestConsent` (default true) sends the person the SMS consent link, and the lead reaches the firm once they agree. Partner context.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"mobile\": \"{{referralMobile}}\",\n  \"name\": \"Sunita Verma\",\n  \"businessName\": \"Verma Garments\",\n  \"segment\": \"msme\",\n  \"category\": \"working-capital\",\n  \"city\": \"Gurgaon\",\n  \"amountText\": \"10 lakh\",\n  \"requestConsent\": false\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"lead\": {\n    \"id\": \"01a121e0-1a2b-7c3d-8e4f-5061728394a5\",\n    \"ref\": \"LD-26-000140\",\n    \"status\": \"new\",\n    \"consentStatus\": \"pending\"\n  },\n  \"attribution\": {\n    \"protectedUntil\": \"2027-01-08T12:00:00.000Z\"\n  },\n  \"assigned\": false,\n  \"consentRequested\": false\n}"
+    },
+    {
+      "name": "409 LEAD_PROTECTED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/partner/leads",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "leads"
+          ]
+        },
+        "description": "A CA refers a borrower they already know. The lead is created from source `partner_referral` and protected for the firm for `PARTNER_REFERRAL_PROTECTION_DAYS` (default 90): routing offers it to this firm ahead of every rule, and another firm referring the same person gets 409 `LEAD_PROTECTED`. With `consent` (`templateVersionId` of a published consent template and the person's choices, channel `partner_assisted`; `partner_sharing` is limited to this firm) the lead is assigned to the firm straight away and the first-contact deadline starts. Without it, `requestConsent` (default true) sends the person the SMS consent link, and the lead reaches the firm once they agree. Partner context.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"mobile\": \"{{referralMobile}}\",\n  \"name\": \"Sunita Verma\",\n  \"businessName\": \"Verma Garments\",\n  \"segment\": \"msme\",\n  \"category\": \"working-capital\",\n  \"city\": \"Gurgaon\",\n  \"amountText\": \"10 lakh\",\n  \"requestConsent\": false\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"LEAD_PROTECTED\",\n  \"message\": \"This person was already referred by another partner.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

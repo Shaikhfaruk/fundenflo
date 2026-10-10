@@ -31,7 +31,7 @@ These are the places where a second copy is most tempting. Use the one listed.
 | Database transactions | `@Transactional()` + `TransactionHost<PrismaTx>` | Passing Prisma clients between services, or `prisma.$transaction` inside services |
 | Row-level scoping of lists | `accessibleBy(ability, action).ofType('Model')` from `@casl/prisma/runtime` | Hand-written `where` filters that copy permission rules |
 | Periodic cleanup | `@MaintenanceTask(name)` methods run by `maintenance.cleanup` | New cron queues per module for purges |
-| Notifications | `NotificationService.send()` | Calling SMS/email adapters directly from modules |
+| Notifications | `NotificationService.send()` for a known address; `UserNotifier.notify()` for users by id; triggered from outbox events (after commit), e.g. `leads.notify` | Calling SMS/email adapters directly from modules, or sending inside a transaction that can roll back |
 | Request IDs, actor, IP in logs, audit and outbox | `RequestContext` | Reading headers or `req.user` in services |
 | Matching free text (city names, aliases) to master data | `GeoService.resolveCity()` + `lookup_aliases` + `normaliseLookupText()` | Per-feature city lists or string maps |
 | Caching reference data | `CacheService.wrap()` with tags, invalidated after commit | In-process maps or ad-hoc Redis keys |
@@ -60,6 +60,8 @@ These are the places where a second copy is most tempting. Use the one listed.
 | Finding providers by a key decorator (handlers per resource or kind) | `collectKeyedProviders()` | Hand-written `DiscoveryService` loops |
 | Reading CSV or XLSX uploads | `readTable()` in `modules/imports/infrastructure/table-reader.ts` | Per-feature spreadsheet parsing |
 | Locale handling | `common/i18n/locale.ts` (`localise`, `resolveLocale`, `@RequestLocale()`) | Per-module locale constants |
+| Referral protection and lead attribution to a partner firm | `LeadAttributionService` (partners) | Protection flags or referrer columns on leads |
+| Reporting and verifying a loan closed outside the platform | `LeadConversionService` | Marking leads won by hand |
 | Which CAs may receive a lead (verified, active, unpaused, service area, capabilities) | `PartnerService.routingPool()` | Partner queries in leads, applications or reports that repeat the eligibility filters |
 | Which organizations a person's consent covers for a purpose | `ConsentService.allowedOrganizations()` | Looping `hasConsent` per organization or reading `consent_records` |
 | Choosing who gets a lead (rules, pool, strategy) | `LeadRoutingService` (`route`, `assign`) | Picking CAs in controllers, processors or partner code |

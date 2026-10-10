@@ -1,7 +1,7 @@
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
 
-import type { AssignmentStatus, LeadFlag, LeadStatus, Prisma } from '../../../generated/prisma/client.js';
+import type { AssignmentStatus, LeadFlag, LeadStatus, OfflineConversionStatus, Prisma } from '../../../generated/prisma/client.js';
 import type { PrismaTx } from '../../../infrastructure/database/database.types.js';
 import { LEAD_EVENTS_IN_DETAIL } from '../domain/lead.constants.js';
 
@@ -64,7 +64,27 @@ export class LeadRepository {
   }
 
   findSummaries(ids: string[]) {
-    return this.txHost.tx.lead.findMany({ where: { id: { in: ids } }, select: { id: true, ref: true, status: true, party: { select: { displayName: true } } } });
+    return this.txHost.tx.lead.findMany({ where: { id: { in: ids } }, select: { id: true, ref: true, status: true, consentStatus: true, party: { select: { displayName: true } } } });
+  }
+
+  createConversion(data: Prisma.OfflineConversionUncheckedCreateInput) {
+    return this.txHost.tx.offlineConversion.create({ data });
+  }
+
+  findConversion(where: Prisma.OfflineConversionWhereInput) {
+    return this.txHost.tx.offlineConversion.findFirst({ where, include: { lead: { select: { id: true, ref: true, status: true } }, organization: { select: { id: true, name: true } } } });
+  }
+
+  listConversions(where: Prisma.OfflineConversionWhereInput, take: number) {
+    return this.txHost.tx.offlineConversion.findMany({ where, orderBy: { id: 'desc' }, take, include: { lead: { select: { id: true, ref: true, status: true } }, organization: { select: { id: true, name: true } } } });
+  }
+
+  conversionsForAssignment(assignmentId: string) {
+    return this.txHost.tx.offlineConversion.findMany({ where: { assignmentId }, orderBy: { createdAt: 'desc' } });
+  }
+
+  updateConversionFromStatus(id: string, status: OfflineConversionStatus, data: Prisma.OfflineConversionUncheckedUpdateManyInput) {
+    return this.txHost.tx.offlineConversion.updateMany({ where: { id, status }, data: { ...data, version: { increment: 1 } } });
   }
 
   addFlag(id: string, flag: LeadFlag) {

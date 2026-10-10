@@ -188,6 +188,13 @@ Built in M1.8c (Postman `08 Leads & Imports/` 33–37). Controllers: `backend/sr
 | `GET` | `/ops/follow-ups` | leads → activities | staff | M1 | `useful` |
 | `PATCH` | `/ops/follow-ups/:id` | leads → activities | staff | M1 | `useful` |
 
+Built in M1.8d (Postman `08 Leads & Imports/` 38–39). Controller: `backend/src/modules/leads/http/ops-offline-conversions.controller.ts` → `LeadConversionService` (CASL `OfflineConversion`; deciding needs approve).
+
+| Method | Path | Module | Context | Milestone | Status |
+|---|---|---|---|---|---|
+| `GET` | `/ops/offline-conversions` | leads | staff | M1 | `useful` |
+| `POST` | `/ops/offline-conversions/:id/decide` | leads | staff | M1 | `useful` |
+
 Built in M1.8a (Postman `08 Leads & Imports/` 28–32). Controller: `backend/src/modules/leads/http/ops-leads.controller.ts` → `LeadRoutingService`; lead update access. Automatic routing runs in the worker (`leads.route`).
 
 | Method | Path | Module | Context | Milestone | Status |
@@ -249,15 +256,21 @@ Built in M1.8c (Postman `10 Partner Portal - Onboarding, Team & Leads/` 18–22)
 | `GET` | `/partner/follow-ups` | leads → activities | partner | M1 | `useful` |
 | `PATCH` | `/partner/follow-ups/:id` | leads → activities | partner | M1 | `useful` |
 
+Built in M1.8d (Postman `10 Partner Portal - Onboarding, Team & Leads/` 23–26). Controllers: `partner-leads.controller.ts` (refer, edit, offline conversion), `partner-referrals.controller.ts` → `PartnerLeadService`. Referral protection lives in `partners` (`LeadAttributionService`).
+
+| Method | Path | Module | Context | Milestone | Status |
+|---|---|---|---|---|---|
+| `POST` | `/partner/leads` | leads → partners (attribution) | partner | M1 | `useful` |
+| `PATCH` | `/partner/leads/:id` | leads | partner | M1 | `useful` |
+| `POST` | `/partner/leads/:id/offline-conversion` | leads | partner | M1 | `useful` |
+| `GET` | `/partner/referrals` | leads → partners | partner | M1 | `useful` |
+
 Planned:
 
 | Method | Path | Module | Context | Milestone | Status |
 |---|---|---|---|---|---|
 | `PATCH` | `/partner/profile` | partners | partner_owner | M7 | `planned` |
 | `GET` | `/partner/dashboard` | partners | partner | M1 | `planned` |
-| `POST` | `/partner/leads` | leads | partner | M1 | `planned` |
-| `PATCH` | `/partner/leads/:id` | leads | partner | M1 | `planned` |
-| `POST` | `/partner/leads/:id/offline-conversion` | leads | partner | M1 | `planned` |
 | `POST` | `/partner/leads/:id/convert` | leads | partner | M3 | `planned` |
 
 ## 11 Partner Portal - Applications & Commissions

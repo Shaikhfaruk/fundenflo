@@ -3,20 +3,32 @@ import { Transactional } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
 
 import type { UserActor } from '../../../common/context/actor.js';
-import { AssignmentStatus, type LeadLostReason, LeadConsentStatus, LeadStatus, SessionContext } from '../../../common/enums/db.enums.js';
+import { AnswerChannel, AssignmentStatus, AttributionKind, ConsentChannel, type LeadLostReason, LeadConsentStatus, LeadEventType, LeadStatus, SessionContext } from '../../../common/enums/db.enums.js';
 import { AppError } from '../../../common/errors/app-error.js';
 import { ErrorCode } from '../../../common/errors/error-codes.js';
 import { type PageQuery, pageWindow, toPage } from '../../../common/listing/cursor-page.js';
-import { LeadEvent } from '../../../engines/state-machines/machines/lead.machine.js';
+import { EventName } from '../../../common/events/event-names.js';
+import type { Locale } from '../../../common/i18n/locale.js';
+import { LeadEvent, OPEN_LEAD_STATES } from '../../../engines/state-machines/machines/lead.machine.js';
 import { MembershipService } from '../../access/application/membership.service.js';
 import { AppAction, type AppAbility } from '../../access/domain/ability.types.js';
+import { ChangeRecorder } from '../../audit/application/change-recorder.service.js';
+import { AuditAction, AuditEntity } from '../../audit/domain/audit.constants.js';
 import { ConsentService } from '../../consents/application/consent.service.js';
 import { ConsentPurposeKey } from '../../consents/domain/consent.constants.js';
 import type { ActivityInput } from '../../activities/domain/activity.types.js';
 import { PartyService } from '../../parties/application/party.service.js';
+import { LeadAttributionService } from '../../partners/application/lead-attribution.service.js';
+import { LeadSourceKey } from '../domain/lead.constants.js';
 import { AssignmentCloseReason, PartnerInboxView } from '../domain/lead-routing.constants.js';
+import type { PartnerLeadPatchDto, PartnerReferralDto } from '../http/leads.dto.js';
 import { LeadRepository, type PartnerAssignmentRow } from '../infrastructure/lead.repository.js';
 import { type FollowUpRequest, LeadActivityService } from './lead-activity.service.js';
+import { LeadCaptureService } from './lead-capture.service.js';
+import { type ConversionReport, LeadConversionService } from './lead-conversion.service.js';
+import { LeadRoutingService } from './lead-routing.service.js';
+import { LeadSourceService } from './lead-source.service.js';
+import { LeadTimeline } from './lead-timeline.service.js';
 import { LeadAssignmentService } from './lead-assignment.service.js';
 import { LeadService } from './lead.service.js';
 import { toPartnerLeadView } from './partner-lead.views.js';
@@ -47,7 +59,70 @@ export class PartnerLeadService {
     private readonly parties: PartyService,
     private readonly memberships: MembershipService,
     private readonly leadActivities: LeadActivityService,
+    private readonly capture: LeadCaptureService,
+    private readonly sources: LeadSourceService,
+    private readonly attributions: LeadAttributionService,
+    private readonly routing: LeadRoutingService,
+    private readonly conversions: LeadConversionService,
+    private readonly timeline: LeadTimeline,
+    private readonly changes: ChangeRecorder,
   ) {}
+
+  @Transactional()
+  async refer(input: PartnerReferralDto, actor: UserActor, locale: Locale) {
+    const organizationId = this.organizationOf(actor);
+    const { requestConsent, consent, ...lead } = input;
+    const scoped = consent ? { ...consent, items: consent.items.map((item) => (item.purpose === ConsentPurposeKey.PartnerSharing ? { ...item, organizationIds: [organizationId] } : item)) } : undefined;
+    const captured = await this.capture.capture(
+      { ...lead, consent: scoped },
+      { source: await this.sources.activeByKey(LeadSourceKey.PartnerReferral), consentChannel: ConsentChannel.partner_assisted, answerChannel: AnswerChannel.partner, capturedByUserId: actor.userId, locale },
+    );
+    const leadId = captured.lead.id;
+    const partyId = captured.lead.party.id;
+    const others = (await this.leads.listOpenForParty(partyId, OPEN_LEAD_STATES)).map((row) => row.id).filter((id) => id !== leadId);
+    if ((await this.attributions.activeFor(others)).some((attribution) => attribution.organizationId !== organizationId)) throw new AppError(ErrorCode.LEAD_PROTECTED);
+    const attribution = await this.attributions.create({ leadId, organizationId, kind: AttributionKind.referral, createdByUserId: actor.userId });
+    const details = { leadId, organizationId, protectedUntil: attribution.protectedUntil.toISOString() };
+    await this.timeline.record(leadId, LeadEventType.referred, { data: details });
+    await this.changes.record({ action: AuditAction.LeadReferred, entityType: AuditEntity.Lead, entityId: leadId, event: EventName.LeadReferred, metadata: { ref: captured.lead.ref, ...details }, payload: details });
+
+    const routed = await this.routing.route(leadId, { record: true });
+    const offer = routed.referral ? routed.assignments[0] : undefined;
+    if (offer) {
+      const assignment = await this.leads.findLatestAssignment({ id: offer.id });
+      if (assignment) {
+        await this.assignments.accept(assignment, actor.membershipId);
+        await this.leadService.act(leadId, { event: LeadEvent.Start });
+      }
+    } else if (requestConsent && captured.lead.consentStatus !== LeadConsentStatus.ok) {
+      await this.leadService.requestConsent(leadId, undefined, actor.userId);
+    }
+    const summary = { id: leadId, ref: captured.lead.ref, status: offer ? LeadStatus.in_progress : captured.lead.status, consentStatus: captured.lead.consentStatus };
+    return { lead: summary, attribution: { protectedUntil: attribution.protectedUntil.toISOString() }, assigned: Boolean(offer), consentRequested: !offer && requestConsent && captured.lead.consentStatus !== LeadConsentStatus.ok };
+  }
+
+  async referrals(actor: UserActor, query: PageQuery) {
+    const page = await this.attributions.listForOrganization(this.organizationOf(actor), query);
+    const summaries = new Map((await this.leads.findSummaries(page.rows.map((row) => row.leadId))).map((lead) => [lead.id, lead]));
+    return toPage(page.rows, page.limit, (row) => {
+      const lead = summaries.get(row.leadId);
+      return { id: row.id, protectedUntil: row.protectedUntil.toISOString(), createdAt: row.createdAt.toISOString(), lead: lead ? { id: lead.id, ref: lead.ref, status: lead.status, consentStatus: lead.consentStatus, name: lead.party.displayName } : null };
+    });
+  }
+
+  @Transactional()
+  async update(leadId: string, patch: PartnerLeadPatchDto, expectedVersion: number | undefined, ability: AppAbility) {
+    await this.workable(leadId, ability, 'edit');
+    await this.leadService.update(leadId, patch, expectedVersion);
+    return this.detail(leadId, ability);
+  }
+
+  @Transactional()
+  async reportConversion(leadId: string, input: ConversionReport, actor: UserActor, ability: AppAbility) {
+    await this.leads.lockLead(leadId);
+    const assignment = await this.workable(leadId, ability, 'offline_conversion');
+    return this.conversions.report(assignment, input, actor.userId);
+  }
 
   async inbox(ability: AppAbility, query: { view?: PartnerInboxView; cursor?: string; limit: number }) {
     const window = pageWindow(query);
@@ -134,14 +209,19 @@ export class PartnerLeadService {
   }
 
   private async view(assignment: PartnerAssignmentRow, ability: AppAbility) {
-    const contacts = await this.parties.listContacts(assignment.lead.partyId, false);
-    return { ...toPartnerLeadView(assignment, contacts), availableActions: this.actionsFor(assignment, ability) };
+    const [contacts, conversions] = await Promise.all([this.parties.listContacts(assignment.lead.partyId, false), this.conversions.forAssignment(assignment.id)]);
+    return { ...toPartnerLeadView(assignment, contacts), conversions, availableActions: this.actionsFor(assignment, ability) };
+  }
+
+  private organizationOf(actor: UserActor) {
+    if (!actor.organizationId) throw new AppError(ErrorCode.CONTEXT_NOT_ALLOWED);
+    return actor.organizationId;
   }
 
   private actionsFor(assignment: PartnerAssignmentRow, ability: AppAbility): string[] {
     if (assignment.status === offered) return ['accept', 'decline'];
     if (!WORKABLE.includes(assignment.status)) return [];
-    const actions = ['reveal_contact', 'return', 'lost'];
+    const actions = ['reveal_contact', 'log_activity', 'follow_up', 'edit', 'offline_conversion', 'return', 'lost'];
     return ability.can(AppAction.Assign, 'LeadAssignment') ? [...actions, 'sub_assign'] : actions;
   }
 

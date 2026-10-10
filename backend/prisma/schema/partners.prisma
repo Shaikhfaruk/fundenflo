@@ -75,3 +75,23 @@ model PartnerServiceArea {
   @@index([pincode])
   @@map("partner_service_areas")
 }
+
+enum AttributionKind {
+  referral
+}
+
+model LeadAttribution {
+  id              String          @id @default(uuid(7)) @db.Uuid
+  leadId          String          @unique @map("lead_id") @db.Uuid
+  organizationId  String          @map("organization_id") @db.Uuid
+  kind            AttributionKind
+  protectedUntil  DateTime        @map("protected_until") @db.Timestamptz(3)
+  createdByUserId String          @map("created_by_user_id") @db.Uuid
+  createdAt       DateTime        @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  lead         Lead         @relation(fields: [leadId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([organizationId, createdAt])
+  @@map("lead_attributions")
+}

@@ -15,8 +15,9 @@ import { ConfigPublishingService } from '../../config-publishing/application/con
 import type { PublishedConfig } from '../../config-publishing/domain/config.types.js';
 import { ConsentService } from '../../consents/application/consent.service.js';
 import { ConsentPurposeKey } from '../../consents/domain/consent.constants.js';
+import { LeadAttributionService } from '../../partners/application/lead-attribution.service.js';
 import { PartnerService } from '../../partners/application/partner.service.js';
-import { DEFAULT_LEVEL_WEIGHTS, ROUTING_DEFAULTS, RoutingOutcome } from '../domain/lead-routing.constants.js';
+import { DEFAULT_LEVEL_WEIGHTS, REFERRAL_STRATEGY, ROUTING_DEFAULTS, RoutingOutcome } from '../domain/lead-routing.constants.js';
 import type { CompiledRoutingRule } from '../domain/routing-rule.schema.js';
 import { type LeadDetailRow, LeadRepository } from '../infrastructure/lead.repository.js';
 import { LeadRoutingQueue } from '../infrastructure/lead-routing.queue.js';
@@ -35,6 +36,7 @@ export type RoutingResult = {
   outcome: RoutingOutcome;
   rule: { key: string; versionId: string } | null;
   candidates?: string[];
+  referral?: boolean;
   assignments: Array<{ id: string; organizationId: string; respondBy: string | null }>;
 };
 
@@ -48,6 +50,7 @@ export class LeadRoutingService {
     private readonly facts: FactService,
     private readonly consents: ConsentService,
     private readonly partners: PartnerService,
+    private readonly attributions: LeadAttributionService,
     private readonly assignments: LeadAssignmentService,
     private readonly queue: LeadRoutingQueue,
     private readonly timeline: LeadTimeline,
@@ -67,6 +70,14 @@ export class LeadRoutingService {
     const history = await this.leads.assignmentsForLead(lead.id);
     if (history.some((assignment) => ACTIVE_ASSIGNMENT_STATES.includes(assignment.status))) return none(RoutingOutcome.AlreadyAssigned);
     if (lead.consentStatus !== LeadConsentStatus.ok) return this.finish(lead, none(RoutingOutcome.ConsentPending), options);
+    const excluded = new Set(history.filter((assignment) => CLOSED_FOR_LEAD.includes(assignment.status)).map((assignment) => assignment.organizationId));
+
+    const referrer = await this.protectedReferrer(lead, excluded);
+    if (referrer) {
+      if (options.dryRun) return { outcome: RoutingOutcome.Offered, rule: null, referral: true, candidates: [referrer], assignments: [] };
+      const offer = await this.assignments.offer(lead, referrer, { strategy: REFERRAL_STRATEGY, routingRuleVersionId: null, acceptHours: ROUTING_DEFAULTS.acceptHours, firstContactHours: ROUTING_DEFAULTS.firstContactHours });
+      return this.finish(lead, { outcome: RoutingOutcome.Offered, rule: null, referral: true, candidates: [referrer], assignments: [offer] }, options);
+    }
 
     const rule = await this.matchingRule(lead);
     if (!rule) return this.finish(lead, none(RoutingOutcome.NoRule), options);
@@ -89,7 +100,6 @@ export class LeadRoutingService {
     const organizationIds = partners.map((partner) => partner.organizationId);
     const consented = await this.consents.allowedOrganizations(lead.partyId, ConsentPurposeKey.PartnerSharing, organizationIds);
     const candidates = await this.candidates(lead, partners.filter((partner) => consented.has(partner.organizationId)), rule.compiled);
-    const excluded = new Set(history.filter((assignment) => CLOSED_FOR_LEAD.includes(assignment.status)).map((assignment) => assignment.organizationId));
     const picked = pickAssignees({ strategy: rule.compiled.strategy, candidates, excluded, offers: rule.compiled.offers });
     if (picked.length === 0) return this.finish(lead, { ...none(RoutingOutcome.NoCandidate, rule), candidates: [] }, options);
     if (options.dryRun) return { outcome: RoutingOutcome.Offered, rule: { key: rule.key, versionId: rule.versionId }, candidates: picked, assignments: [] };
@@ -117,6 +127,15 @@ export class LeadRoutingService {
     const assignment = await this.assignments.offer(lead, organizationId, { strategy: AssignmentStrategy.Manual, routingRuleVersionId: null, acceptHours: ROUTING_DEFAULTS.acceptHours, firstContactHours: ROUTING_DEFAULTS.firstContactHours, assignedByUserId, note });
     await this.timeline.record(lead.id, LeadEventType.routed, { note: note ?? null, data: { outcome: RoutingOutcome.Offered, manual: true, organizationId } });
     return assignment;
+  }
+
+  private async protectedReferrer(lead: LeadDetailRow, excluded: ReadonlySet<string>): Promise<string | null> {
+    const [protection] = await this.attributions.activeFor([lead.id]);
+    if (!protection || excluded.has(protection.organizationId)) return null;
+    const [partner] = await this.partners.routingPool({ organizationIds: [protection.organizationId], location: { stateId: null, cityId: null, pincode: null }, segment: null, category: null, language: null, requireServiceArea: false, requireCapabilities: false, requireLanguage: false });
+    if (!partner) return null;
+    const allowed = await this.consents.allowedOrganizations(lead.partyId, ConsentPurposeKey.PartnerSharing, [protection.organizationId]);
+    return allowed.has(protection.organizationId) ? protection.organizationId : null;
   }
 
   private async matchingRule(lead: LeadDetailRow): Promise<Rule | null> {

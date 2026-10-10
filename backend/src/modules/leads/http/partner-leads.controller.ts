@@ -1,8 +1,11 @@
-import { Controller, Get, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus, Patch, Post } from '@nestjs/common';
 
 import { AllowContexts, CurrentActor } from '../../../common/auth/auth.decorators.js';
 import type { UserActor } from '../../../common/context/actor.js';
 import { SessionContext } from '../../../common/enums/db.enums.js';
+import { IfMatchVersion } from '../../../common/http/versioning.js';
+import type { Locale } from '../../../common/i18n/locale.js';
+import { RequestLocale } from '../../../common/i18n/locale.decorator.js';
 import { uuidSchema } from '../../../common/validation/common.schemas.js';
 import { ValidBody, ValidParam, ValidQuery } from '../../../common/validation/zod-validation.pipe.js';
 import { AppAction, type AppAbility } from '../../access/domain/ability.types.js';
@@ -13,6 +16,12 @@ import {
   declineAssignmentSchema,
   type LeadLoseDto,
   leadLoseSchema,
+  type OfflineConversionDto,
+  offlineConversionSchema,
+  type PartnerLeadPatchDto,
+  partnerLeadPatchSchema,
+  type PartnerReferralDto,
+  partnerReferralSchema,
   type PartnerInboxQuery,
   partnerInboxQuerySchema,
   type ReturnAssignmentDto,
@@ -36,6 +45,26 @@ export class PartnerLeadsController {
   @canRead
   inbox(@ValidQuery(partnerInboxQuerySchema) query: PartnerInboxQuery, @CurrentAbility() ability: AppAbility) {
     return this.leads.inbox(ability, query);
+  }
+
+  @Post()
+  @HttpCode(HttpStatus.CREATED)
+  @CheckPolicies((ability) => ability.can(AppAction.Create, 'Lead'))
+  refer(@ValidBody(partnerReferralSchema) body: PartnerReferralDto, @CurrentActor() actor: UserActor, @RequestLocale() locale: Locale) {
+    return this.leads.refer(body, actor, locale);
+  }
+
+  @Patch(':id')
+  @canUpdate
+  update(@ValidParam('id', uuidSchema) id: string, @ValidBody(partnerLeadPatchSchema) body: PartnerLeadPatchDto, @IfMatchVersion() version: number | undefined, @CurrentAbility() ability: AppAbility) {
+    return this.leads.update(id, body, version, ability);
+  }
+
+  @Post(':id/offline-conversion')
+  @HttpCode(HttpStatus.CREATED)
+  @canUpdate
+  offlineConversion(@ValidParam('id', uuidSchema) id: string, @ValidBody(offlineConversionSchema) body: OfflineConversionDto, @CurrentActor() actor: UserActor, @CurrentAbility() ability: AppAbility) {
+    return this.leads.reportConversion(id, body, actor, ability);
   }
 
   @Get(':id')

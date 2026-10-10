@@ -1,0 +1,162 @@
+{
+  "name": "Update Partner Lead",
+  "request": {
+    "method": "PATCH",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "If-Match",
+        "value": "\"{{partnerLeadVersion}}\""
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/partner/leads/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "partner",
+        "leads",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{leadId}}"
+        }
+      ]
+    },
+    "description": "Corrects requirement details on an accepted lead: segment, sub-segment, category, purpose and note, amount range, tenure, city, pincode, urgency, language, contact time (not campaign or flags). Send the lead `version` from Get Partner Lead in `If-Match`. Changes are on the lead timeline with the CA as actor. Partner context.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"amountMinPaise\": 150000000,\n  \"tenureMonths\": 36,\n  \"purpose\": \"expansion\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{partnerLeadVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/partner/leads/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "leads",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{leadId}}"
+            }
+          ]
+        },
+        "description": "Corrects requirement details on an accepted lead: segment, sub-segment, category, purpose and note, amount range, tenure, city, pincode, urgency, language, contact time (not campaign or flags). Send the lead `version` from Get Partner Lead in `If-Match`. Changes are on the lead timeline with the CA as actor. Partner context.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"amountMinPaise\": 150000000,\n  \"tenureMonths\": 36,\n  \"purpose\": \"expansion\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"assignment\": {\n    \"id\": \"01a121f9-3c4d-7e5f-8061-728394a5b6c7\",\n    \"status\": \"working\"\n  },\n  \"lead\": {\n    \"id\": \"01a121e0-1a2b-7c3d-8e4f-5061728394a5\",\n    \"tenureMonths\": 36,\n    \"version\": 4\n  }\n}"
+    },
+    {
+      "name": "409 VERSION_CONFLICT",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{partnerLeadVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/partner/leads/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "leads",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{leadId}}"
+            }
+          ]
+        },
+        "description": "Corrects requirement details on an accepted lead: segment, sub-segment, category, purpose and note, amount range, tenure, city, pincode, urgency, language, contact time (not campaign or flags). Send the lead `version` from Get Partner Lead in `If-Match`. Changes are on the lead timeline with the CA as actor. Partner context.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"amountMinPaise\": 150000000,\n  \"tenureMonths\": 36,\n  \"purpose\": \"expansion\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VERSION_CONFLICT\",\n  \"message\": \"This record was changed by someone else. Reload it and try again.\",\n  \"details\": {\n    \"currentVersion\": 4\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

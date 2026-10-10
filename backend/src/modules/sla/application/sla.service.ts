@@ -24,8 +24,10 @@ export class SlaService {
     return (await this.timers.closePending({ kind, entityId }, { status: SlaTimerStatus.satisfied, satisfiedAt: at })).count;
   }
 
-  async cancel(entityId: string, kinds?: string[]) {
-    return (await this.timers.closePending({ entityId, ...(kinds ? { kind: { in: kinds } } : {}) }, { status: SlaTimerStatus.cancelled, cancelledAt: new Date() })).count;
+  async cancel(entityIds: string | string[], kinds?: string[]) {
+    const ids = typeof entityIds === 'string' ? [entityIds] : entityIds;
+    if (ids.length === 0) return 0;
+    return (await this.timers.closePending({ entityId: { in: ids }, ...(kinds ? { kind: { in: kinds } } : {}) }, { status: SlaTimerStatus.cancelled, cancelledAt: new Date() })).count;
   }
 
   timersFor(entityType: string, entityIds: string[]) {
@@ -46,7 +48,7 @@ export class SlaService {
     const handler = this.handlers.get(timer.kind);
     if (timer.dueAt <= now) {
       const breached = await this.timers.update(timer.id, { status: SlaTimerStatus.breached, breachedAt: now });
-      await handler.breach(breached);
+      await handler.breach?.(breached);
       return 'breached';
     }
     if (!timer.warnAt || timer.warnAt > now || timer.warnedAt) return 'skipped';

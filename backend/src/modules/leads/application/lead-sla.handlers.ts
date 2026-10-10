@@ -1,6 +1,7 @@
 import { LeadEventType, LeadFlag } from '../../../common/enums/db.enums.js';
 import { EventName } from '../../../common/events/event-names.js';
 import type { SlaTimer } from '../../../generated/prisma/client.js';
+import { OutboxService } from '../../../infrastructure/outbox/outbox.service.js';
 import { ChangeRecorder } from '../../audit/application/change-recorder.service.js';
 import { AuditAction, AuditEntity } from '../../audit/domain/audit.constants.js';
 import { SlaHandlerFor } from '../../sla/application/sla-handler.registry.js';
@@ -12,7 +13,14 @@ import { LeadTimeline } from './lead-timeline.service.js';
 
 @SlaHandlerFor(LeadSlaKind.AssignmentAccept)
 export class AssignmentAcceptSlaHandler implements SlaHandler {
-  constructor(private readonly assignments: LeadAssignmentService) {}
+  constructor(
+    private readonly assignments: LeadAssignmentService,
+    private readonly outbox: OutboxService,
+  ) {}
+
+  async warn(timer: SlaTimer) {
+    await this.outbox.publish({ name: EventName.AssignmentOfferExpiring, aggregateType: AuditEntity.LeadAssignment, aggregateId: timer.entityId, payload: { assignmentId: timer.entityId, respondBy: timer.dueAt.toISOString() } });
+  }
 
   async breach(timer: SlaTimer) {
     await this.assignments.expire(timer.entityId, timer.breachedAt ?? timer.dueAt);

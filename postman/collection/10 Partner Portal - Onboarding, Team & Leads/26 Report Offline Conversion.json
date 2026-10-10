@@ -1,0 +1,204 @@
+{
+  "name": "Report Offline Conversion",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/partner/leads/:id/offline-conversion",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "partner",
+        "leads",
+        ":id",
+        "offline-conversion"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{leadId}}"
+        }
+      ]
+    },
+    "description": "Reports a loan the CA arranged directly with a lender, so the outcome is captured even off-platform. Dates are `YYYY-MM-DD` and not in the future; `disbursedOn` and `disbursedAmountPaise` go together. One report can wait for ops at a time (409 otherwise). Ops verifies it before the lead counts as won. Partner context.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"lenderName\": \"Haryana State Co-operative Bank\",\n  \"categoryKey\": \"business\",\n  \"sanctionedAmountPaise\": 140000000,\n  \"disbursedAmountPaise\": 140000000,\n  \"sanctionedOn\": \"2026-10-01\",\n  \"disbursedOn\": \"2026-10-05\",\n  \"loanAccountRef\": \"HSCB-88123\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "pm.collectionVariables.set('conversionId', String(pm.response.json().id));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/partner/leads/:id/offline-conversion",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "leads",
+            ":id",
+            "offline-conversion"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{leadId}}"
+            }
+          ]
+        },
+        "description": "Reports a loan the CA arranged directly with a lender, so the outcome is captured even off-platform. Dates are `YYYY-MM-DD` and not in the future; `disbursedOn` and `disbursedAmountPaise` go together. One report can wait for ops at a time (409 otherwise). Ops verifies it before the lead counts as won. Partner context.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"lenderName\": \"Haryana State Co-operative Bank\",\n  \"categoryKey\": \"business\",\n  \"sanctionedAmountPaise\": 140000000,\n  \"disbursedAmountPaise\": 140000000,\n  \"sanctionedOn\": \"2026-10-01\",\n  \"disbursedOn\": \"2026-10-05\",\n  \"loanAccountRef\": \"HSCB-88123\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12230-1a2b-7c3d-8e4f-5061728394a5\",\n  \"leadId\": \"01a121e0-1a2b-7c3d-8e4f-5061728394a5\",\n  \"assignmentId\": \"01a121f9-3c4d-7e5f-8061-728394a5b6c7\",\n  \"organizationId\": \"01a121c0-6f70-7b82-a394-a5b6c7d8e9fa\",\n  \"lenderName\": \"Haryana State Co-operative Bank\",\n  \"lenderOrganizationId\": null,\n  \"categoryKey\": \"business\",\n  \"sanctionedAmountPaise\": 140000000,\n  \"disbursedAmountPaise\": 140000000,\n  \"sanctionedOn\": \"2026-10-01\",\n  \"disbursedOn\": \"2026-10-05\",\n  \"loanAccountRef\": \"HSCB-88123\",\n  \"note\": \"Borrower went to the bank directly with our file\",\n  \"status\": \"reported\",\n  \"reportedByUserId\": \"01a121c0-5e6f-7a71-9283-94a5b6c7d8e9\",\n  \"decidedByUserId\": null,\n  \"decidedAt\": null,\n  \"decisionNote\": null,\n  \"version\": 1,\n  \"createdAt\": \"2026-10-10T12:00:00.000Z\"\n}"
+    },
+    {
+      "name": "409 CONFLICT",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/partner/leads/:id/offline-conversion",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "leads",
+            ":id",
+            "offline-conversion"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{leadId}}"
+            }
+          ]
+        },
+        "description": "Reports a loan the CA arranged directly with a lender, so the outcome is captured even off-platform. Dates are `YYYY-MM-DD` and not in the future; `disbursedOn` and `disbursedAmountPaise` go together. One report can wait for ops at a time (409 otherwise). Ops verifies it before the lead counts as won. Partner context.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"lenderName\": \"Haryana State Co-operative Bank\",\n  \"categoryKey\": \"business\",\n  \"sanctionedAmountPaise\": 140000000,\n  \"disbursedAmountPaise\": 140000000,\n  \"sanctionedOn\": \"2026-10-01\",\n  \"disbursedOn\": \"2026-10-05\",\n  \"loanAccountRef\": \"HSCB-88123\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"CONFLICT\",\n  \"message\": \"This record already exists.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/partner/leads/:id/offline-conversion",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "leads",
+            ":id",
+            "offline-conversion"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{leadId}}"
+            }
+          ]
+        },
+        "description": "Reports a loan the CA arranged directly with a lender, so the outcome is captured even off-platform. Dates are `YYYY-MM-DD` and not in the future; `disbursedOn` and `disbursedAmountPaise` go together. One report can wait for ops at a time (409 otherwise). Ops verifies it before the lead counts as won. Partner context.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"lenderName\": \"Haryana State Co-operative Bank\",\n  \"categoryKey\": \"business\",\n  \"sanctionedAmountPaise\": 140000000,\n  \"disbursedAmountPaise\": 140000000,\n  \"sanctionedOn\": \"2026-10-01\",\n  \"disbursedOn\": \"2026-10-05\",\n  \"loanAccountRef\": \"HSCB-88123\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"disbursedOn\",\n      \"code\": \"custom\",\n      \"message\": \"must be on or after sanctionedOn\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

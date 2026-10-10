@@ -13,6 +13,11 @@ export const DLT_TEMPLATE_ENV: Partial<Record<NotificationTemplateKey, string>> 
   [NotificationTemplateKey.AuthOtp]: 'SMS_DLT_TEMPLATE_AUTH_OTP',
   [NotificationTemplateKey.InvitationMember]: 'SMS_DLT_TEMPLATE_INVITATION_MEMBER',
   [NotificationTemplateKey.ConsentRequest]: 'SMS_DLT_TEMPLATE_CONSENT_REQUEST',
+  [NotificationTemplateKey.LeadOffered]: 'SMS_DLT_TEMPLATE_LEAD_OFFERED',
+  [NotificationTemplateKey.LeadOfferExpiring]: 'SMS_DLT_TEMPLATE_LEAD_OFFER_EXPIRING',
+  [NotificationTemplateKey.LeadHandedOver]: 'SMS_DLT_TEMPLATE_LEAD_HANDED_OVER',
+  [NotificationTemplateKey.LeadFirstContactDue]: 'SMS_DLT_TEMPLATE_LEAD_FIRST_CONTACT_DUE',
+  [NotificationTemplateKey.FollowUpDue]: 'SMS_DLT_TEMPLATE_FOLLOW_UP_DUE',
 };
 
 export const NOTIFICATION_TEMPLATE_SEEDS: TemplateSeed[] = [
@@ -57,5 +62,61 @@ export const NOTIFICATION_TEMPLATE_SEEDS: TemplateSeed[] = [
     locale: 'en',
     subject: null,
     body: 'FundenFlo: please confirm how we may help with your loan enquiry {{ref}}: {{link}} The link expires on {{expiresOn}}.',
+  },
+  {
+    key: NotificationTemplateKey.LeadOffered,
+    channel: NotificationChannel.sms,
+    locale: 'en',
+    subject: null,
+    body: 'FundenFlo: new {{category}} lead {{ref}} in {{city}} for your firm. Accept or decline in the partner app before {{respondBy}}.',
+  },
+  {
+    key: NotificationTemplateKey.LeadOffered,
+    channel: NotificationChannel.email,
+    locale: 'en',
+    subject: 'New lead {{ref}} for your firm',
+    body: 'A new {{category}} lead ({{ref}}) in {{city}} has been offered to your firm on FundenFlo.\n\nAccept or decline it in the partner app before {{respondBy}}. After that it moves to another partner.',
+  },
+  {
+    key: NotificationTemplateKey.LeadOfferExpiring,
+    channel: NotificationChannel.sms,
+    locale: 'en',
+    subject: null,
+    body: 'FundenFlo: lead {{ref}} offered to your firm expires at {{respondBy}}. Accept or decline it in the partner app.',
+  },
+  {
+    key: NotificationTemplateKey.LeadHandedOver,
+    channel: NotificationChannel.sms,
+    locale: 'en',
+    subject: null,
+    body: 'FundenFlo: lead {{ref}} has been assigned to you by your firm. Please contact the borrower before {{firstContactBy}}.',
+  },
+  {
+    key: NotificationTemplateKey.LeadHandedOver,
+    channel: NotificationChannel.email,
+    locale: 'en',
+    subject: 'Lead {{ref}} assigned to you',
+    body: 'Your firm has assigned lead {{ref}} to you on FundenFlo.\n\nPlease contact the borrower before {{firstContactBy}} and log the call in the partner app.',
+  },
+  {
+    key: NotificationTemplateKey.LeadFirstContactDue,
+    channel: NotificationChannel.sms,
+    locale: 'en',
+    subject: null,
+    body: 'FundenFlo: please contact the borrower for lead {{ref}} before {{firstContactBy}} and log the call in the partner app.',
+  },
+  {
+    key: NotificationTemplateKey.LeadFirstContactMissed,
+    channel: NotificationChannel.email,
+    locale: 'en',
+    subject: 'First contact missed on lead {{ref}}',
+    body: '{{firm}} accepted lead {{ref}} but did not log a first contact by {{firstContactBy}}.\n\nThe lead is flagged first_contact_missed in the ops queue.',
+  },
+  {
+    key: NotificationTemplateKey.FollowUpDue,
+    channel: NotificationChannel.sms,
+    locale: 'en',
+    subject: null,
+    body: 'FundenFlo reminder: follow-up on lead {{ref}} is due at {{dueAt}}.',
   },
 ];

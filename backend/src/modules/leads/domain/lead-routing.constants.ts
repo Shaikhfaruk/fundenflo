@@ -71,6 +71,7 @@ export const AssignmentCloseReason = {
   LeadStatusChanged: 'lead_status_changed',
   LeadLost: 'lead_lost',
   RevokedByOps: 'revoked_by_ops',
+  OfflineConversionVerified: 'offline_conversion_verified',
 } as const;
 
 export type AssignmentCloseReason = (typeof AssignmentCloseReason)[keyof typeof AssignmentCloseReason];
@@ -82,6 +83,8 @@ export const PartnerInboxView = {
 } as const;
 
 export type PartnerInboxView = (typeof PartnerInboxView)[keyof typeof PartnerInboxView];
+
+export const REFERRAL_STRATEGY = 'referral';
 
 export const ROUTE_JOB = 'route';
 

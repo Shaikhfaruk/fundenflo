@@ -3,7 +3,7 @@
 > The map of everything in the system. **Search here before creating any function, class, route, worker, queue, channel or file, and reuse or extend what is listed.**
 > Any change that adds, renames, moves, removes or changes the behaviour or callers of an item updates this inventory and the matching diagram in [`ARCHITECTURE.md`](ARCHITECTURE.md) in the same change.
 > Known duplicates: [`DUPLICATES.md`](DUPLICATES.md). Design: [`BACKEND_ARCHITECTURE_PLAN.md`](BACKEND_ARCHITECTURE_PLAN.md).
-> Last updated: 2026-10-10 · Backend: **M0 foundation + M1.1 catalog + M1.2 attributes, facts and conditions + M1.3 config publishing and questionnaires + M1.4 consents + M1.5 partners light + M1.6a/b leads core, consent links and drop-offs + M1.7 imports + M1.8a routing rules and lead assignments + M1.8b CA lead inbox + M1.8c SLA timers, activities and follow-ups built** (189 routes, 9 queues, 183 tests). Remaining M1+ items are `planned`.
+> Last updated: 2026-10-10 · Backend: **M0 foundation + M1.1 catalog + M1.2 attributes, facts and conditions + M1.3 config publishing and questionnaires + M1.4 consents + M1.5 partners light + M1.6a/b leads core, consent links and drop-offs + M1.7 imports + M1.8a routing rules and lead assignments + M1.8b CA lead inbox + M1.8c SLA timers, activities and follow-ups + M1.8d lead notifications, referrals, CA edits and offline conversions built** (195 routes, 10 queues, 188 tests). Remaining M1+ items are `planned`.
 > Automated checks: `pnpm inventory:check` (routes ↔ `inventory/api-routes.md`), `pnpm postman:coverage` (routes ↔ Postman), `pnpm lint:boundaries` (module rules).
 
 ## Status legend
@@ -23,8 +23,8 @@ Items marked `dead` or `duplicate` are never deleted without the owner's review.
 | Service | Table | Items |
 |---|---|---|
 | API — modules | [`inventory/api-modules.md`](inventory/api-modules.md) | 26 modules (16 built) |
-| API — routes | [`inventory/api-routes.md`](inventory/api-routes.md) | Every HTTP and WebSocket route, grouped by Postman folder (189 built) |
-| Worker — queues, jobs, cron | [`inventory/worker-queues-jobs.md`](inventory/worker-queues-jobs.md) | 9 built, 9 planned |
+| API — routes | [`inventory/api-routes.md`](inventory/api-routes.md) | Every HTTP and WebSocket route, grouped by Postman folder (195 built) |
+| Worker — queues, jobs, cron | [`inventory/worker-queues-jobs.md`](inventory/worker-queues-jobs.md) | 10 built, 9 planned |
 | Events, real-time channels, notifications | [`inventory/events-and-channels.md`](inventory/events-and-channels.md) | Domain events, rooms, notification templates |
 | Shared building blocks (engines, infrastructure, common) | [`inventory/shared-building-blocks.md`](inventory/shared-building-blocks.md) | Reusable components and where enums/constants live |
 | Frontend app (reference, not edited) | [`inventory/frontend-api-calls.md`](inventory/frontend-api-calls.md) | 19 service functions calling 17 endpoints |
@@ -39,7 +39,7 @@ Items marked `dead` or `duplicate` are never deleted without the owner's review.
 | `docs/ARCHITECTURE.md` | Living diagrams | `useful` | Linked from every inventory table |
 | `docs/inventory.md`, `docs/inventory/*.md` | This system map | `useful` | — |
 | `docs/DUPLICATES.md` | Known duplicates register and single-implementation rules | `useful` | No open duplicates as of 2026-10-09 |
-| `postman/` | Postman collection source, environments, flows and scripts (plan §12) | `useful` | 189 request files + 1 external upload request, 14 flows (step variables may reference other variables) (the runner supports several staff identities per flow via `requires: checkerInvitation` and step `identity`); `pnpm postman:coverage` and `pnpm postman:flows` pass |
+| `postman/` | Postman collection source, environments, flows and scripts (plan §12) | `useful` | 195 request files + 1 external upload request, 14 flows (the runner clears local loopback rate-limit counters before each flow, never in production or against a non-local Redis) (step variables may reference other variables) (the runner supports several staff identities per flow via `requires: checkerInvitation` and step `identity`); `pnpm postman:coverage` and `pnpm postman:flows` pass |
 | `backend/` | NestJS 12 API + worker (`package.json`, `nest-cli.json`, `tsconfig*.json`, `prisma.config.ts`, `prisma/`, `src/`, `test/`, `docker-compose.yml`, `.env.example`, `.oxlintrc.json`, `.dependency-cruiser.cjs`, `vitest.config*.ts`, `pnpm-workspace.yaml`) | `useful` | `pnpm build`, `pnpm test`, `pnpm test:integration` pass |
 | `backend/prisma/migrations/20261009154711_init` | Generated schema for M0 tables | `useful` | Applied locally and in every integration run |
 | `backend/prisma/migrations/20261009163422_catalog_geography` | Catalog and geography tables | `useful` | Applied locally and in every integration run |
@@ -50,6 +50,7 @@ Items marked `dead` or `duplicate` are never deleted without the owner's review.
 | `backend/prisma/migrations/20261009175506_leads` | Lead sources, leads, lead events, API clients; hand-added `lead_ref_seq`, `lead_events` append-only, amount/pincode/quality/self-link checks | `useful` | Spec `leads` |
 | `backend/prisma/migrations/20261009181219_consent_requests`, `20261009181303_lead_event_consent_requested` | Consent request links; `consent_requested` lead event type | `useful` | Spec `lead-consent` |
 | `backend/prisma/migrations/20261009182432_imports`, `20261009182710_import_sample_encrypted` | Import batches and rows (raw rows and samples encrypted), `import_undone` lead reason | `useful` | Spec `imports` |
+| `backend/prisma/migrations/20261010090517_referrals_offline_conversions`, `20261010090651_lead_referral_conversion_events` | `lead_attributions`, `offline_conversions` (partial unique: one `reported` per lead; amount, date and reporter ≠ decider checks), lead events `referred`, `conversion_reported`, `conversion_decided` | `useful` | Spec `lead-referrals` |
 | `backend/prisma/migrations/20261009191503_activities_sla`, `20261009191643_sla_timer_sweep_indexes`, `20261009191728_lead_sla_events` | SLA timers (partial unique: one pending per kind + entity; warn ≤ due; partial sweep indexes), activities (no-update trigger, outcome only on calls, duration ≥ 0), follow-ups, assignment `first_contact_minutes` / `first_contacted_at`, lead flag `first_contact_missed`, lead events `sla_warned`, `sla_breached`, `activity_logged` | `useful` | Spec `lead-activities` |
 | `backend/prisma/migrations/20261009183811_lead_assignments` | Lead assignments (offer, accept and first-contact deadlines, rule version, strategy); hand-added partial unique index `lead_assignments_one_working_per_lead` (one accepted/working assignment per lead) | `useful` | Spec `lead-routing` |
 | `backend/prisma/migrations/20261009154712_audit_integrity` | Hand-written: `forbid_mutation()`, `audit_event_hash()`, audit chain + append-only triggers, `NULLS NOT DISTINCT` membership index | `useful` | Spec `platform` (append-only), `staff-admin` (chain verify); `prisma migrate diff` empty |

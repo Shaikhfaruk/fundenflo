@@ -1,23 +1,29 @@
 import { Transactional } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
 
-import { DAY_MS } from '../../../common/constants/time.constants.js';
+import { DAY_MS, MINUTE_MS } from '../../../common/constants/time.constants.js';
 import { ActivityType, FollowUpStatus } from '../../../common/enums/db.enums.js';
 import { AppError } from '../../../common/errors/app-error.js';
 import { ErrorCode } from '../../../common/errors/error-codes.js';
 import { assertVersion } from '../../../common/http/versioning.js';
 import { type PageQuery, pageWindow, toPage } from '../../../common/listing/cursor-page.js';
 import type { Prisma } from '../../../generated/prisma/client.js';
-import { ACTIVITY_BACKDATE_MAX_DAYS, ACTIVITY_CLOCK_SKEW_MS, FOLLOW_UP_MAX_DAYS_AHEAD } from '../domain/activity.constants.js';
+import { ACTIVITY_BACKDATE_MAX_DAYS, ACTIVITY_CLOCK_SKEW_MS, FOLLOW_UP_DUE_SLA_KIND, FOLLOW_UP_MAX_DAYS_AHEAD, FOLLOW_UP_REMINDER_MINUTES, FOLLOW_UP_SLA_ENTITY } from '../domain/activity.constants.js';
 import type { ActivityActor, ActivityEntity, ActivityInput, FollowUpInput, FollowUpPatch } from '../domain/activity.types.js';
+import { SlaService } from '../../sla/application/sla.service.js';
 import { ActivityRepository } from '../infrastructure/activity.repository.js';
 import { toActivityView, toFollowUpView } from './activity.views.js';
 
 type Issue = { path: string; code: string; message: string };
 
+const FOLLOW_UP_CANCEL_BATCH = 500;
+
 @Injectable()
 export class ActivityService {
-  constructor(private readonly activities: ActivityRepository) {}
+  constructor(
+    private readonly activities: ActivityRepository,
+    private readonly sla: SlaService,
+  ) {}
 
   async log(entity: ActivityEntity, input: ActivityInput, actor: ActivityActor) {
     const now = Date.now();
@@ -52,6 +58,7 @@ export class ActivityService {
   async createFollowUp(entity: ActivityEntity, input: FollowUpInput, createdByUserId: string) {
     this.assertDueAt(input.dueAt);
     const followUp = await this.activities.createFollowUp({ entityType: entity.type, entityId: entity.id, ...input, createdByUserId });
+    await this.scheduleReminder(followUp.id, followUp.dueAt);
     return toFollowUpView(followUp);
   }
 
@@ -62,7 +69,11 @@ export class ActivityService {
   }
 
   async cancelOpenFollowUps(entity: ActivityEntity, organizationId: string, outcomeNote: string) {
-    return (await this.activities.updateFollowUps({ entityType: entity.type, entityId: entity.id, organizationId, status: FollowUpStatus.open }, { status: FollowUpStatus.cancelled, doneAt: new Date(), outcomeNote })).count;
+    const where = { entityType: entity.type, entityId: entity.id, organizationId, status: FollowUpStatus.open };
+    const open = await this.activities.listFollowUps(where, FOLLOW_UP_CANCEL_BATCH);
+    if (open.length === 0) return 0;
+    await this.sla.cancel(open.map((followUp) => followUp.id), [FOLLOW_UP_DUE_SLA_KIND]);
+    return (await this.activities.updateFollowUps({ ...where, id: { in: open.map((followUp) => followUp.id) } }, { status: FollowUpStatus.cancelled, doneAt: new Date(), outcomeNote })).count;
   }
 
   async findFollowUp(id: string, scope: Prisma.FollowUpWhereInput) {
@@ -81,7 +92,13 @@ export class ActivityService {
     if (patch.status) Object.assign(data, { status: patch.status, doneAt: new Date(), doneByUserId: actorUserId });
     const moved = await this.activities.updateFollowUpVersioned(id, followUp.version, data);
     if (moved.count === 0) throw new AppError(ErrorCode.VERSION_CONFLICT);
+    if (patch.status) await this.sla.cancel(id, [FOLLOW_UP_DUE_SLA_KIND]);
+    else if (patch.dueAt) await this.scheduleReminder(id, patch.dueAt);
     return toFollowUpView(await this.findFollowUp(id, scope));
+  }
+
+  private async scheduleReminder(followUpId: string, dueAt: Date) {
+    await this.sla.start(FOLLOW_UP_DUE_SLA_KIND, { type: FOLLOW_UP_SLA_ENTITY, id: followUpId }, dueAt, new Date(dueAt.getTime() - FOLLOW_UP_REMINDER_MINUTES * MINUTE_MS));
   }
 
   private assertDueAt(dueAt: Date) {

@@ -35,24 +35,25 @@ export const ROLE_GRANTS: Partial<Record<Role, Grant>> = {
     can([AppAction.Read, AppAction.Update], 'PartnerProfile');
     can([AppAction.Read, AppAction.Approve], 'ConfigDocument');
     can(CONFIG_MAKER, 'ConfigDocument', { resource: { in: OPS_CONFIG_RESOURCES } });
-    can(AppAction.Manage, ['ApiClient', 'Lead', 'LeadAssignment', 'LeadSource', 'ImportBatch', 'Activity', 'FollowUp']);
+    can(AppAction.Manage, ['ApiClient', 'Lead', 'LeadAssignment', 'LeadSource', 'ImportBatch', 'Activity', 'FollowUp', 'OfflineConversion']);
   },
   [Role.ops_reviewer]: ({ can }) => {
     can([AppAction.Read, AppAction.Update], ['Lead', 'Party']);
     can([AppAction.Read, AppAction.Update, AppAction.Assign], 'LeadAssignment');
     can([AppAction.Create, AppAction.Read], 'Activity');
     can([AppAction.Create, AppAction.Read, AppAction.Update], 'FollowUp');
+    can(AppAction.Read, 'OfflineConversion');
     can(AppAction.Read, ['LeadSource', 'AttributeDefinition', 'Question', 'ConsentPurpose', 'PartnerProfile', NonModelSubject.Catalog]);
   },
   [Role.compliance_officer]: ({ can }) => {
     can(AppAction.Read, ['User', 'Membership', 'Invitation', 'Organization', 'AuditEvent', 'AttributeDefinition', 'Party', 'Question', NonModelSubject.Catalog]);
     can(AppAction.Manage, 'ConsentPurpose');
-    can(AppAction.Read, ['PartnerProfile', 'ApiClient', 'Lead', 'LeadAssignment', 'LeadSource', 'ImportBatch', 'Activity', 'FollowUp']);
+    can(AppAction.Read, ['PartnerProfile', 'ApiClient', 'Lead', 'LeadAssignment', 'LeadSource', 'ImportBatch', 'Activity', 'FollowUp', 'OfflineConversion']);
     can([AppAction.Read, AppAction.Approve], 'ConfigDocument');
     can(CONFIG_MAKER, 'ConfigDocument', { resource: { in: COMPLIANCE_CONFIG_RESOURCES } });
   },
   [Role.support]: ({ can }) => {
-    can(AppAction.Read, ['User', 'Membership', 'AttributeDefinition', 'Party', 'Question', 'ConfigDocument', 'ConsentPurpose', 'PartnerProfile', 'Lead', 'LeadAssignment', 'LeadSource', 'Activity', 'FollowUp', NonModelSubject.Catalog]);
+    can(AppAction.Read, ['User', 'Membership', 'AttributeDefinition', 'Party', 'Question', 'ConfigDocument', 'ConsentPurpose', 'PartnerProfile', 'Lead', 'LeadAssignment', 'LeadSource', 'Activity', 'FollowUp', 'OfflineConversion', NonModelSubject.Catalog]);
   },
   [Role.partner_manager]: (builder, actor) => {
     manageOrganizationMembers(OrganizationType.partner)(builder, actor);
@@ -64,6 +65,7 @@ export const ROLE_GRANTS: Partial<Record<Role, Grant>> = {
     can(AppAction.Read, ['Membership', 'Invitation'], { organizationId });
     can([AppAction.Create, AppAction.Update], ['Membership', 'Invitation'], { organizationId, role: Role.partner_agent });
     can([AppAction.Read, AppAction.Update, AppAction.Assign], 'LeadAssignment', { organizationId });
+    can(AppAction.Create, 'Lead');
     can([AppAction.Create, AppAction.Read], 'Activity', { organizationId });
     can([AppAction.Create, AppAction.Read, AppAction.Update], 'FollowUp', { organizationId });
   },
@@ -71,6 +73,7 @@ export const ROLE_GRANTS: Partial<Record<Role, Grant>> = {
     if (!organizationId || !membershipId) return;
     can(AppAction.Read, 'PartnerProfile', { organizationId });
     can([AppAction.Read, AppAction.Update], 'LeadAssignment', { organizationId, assigneeMembershipId: membershipId });
+    can(AppAction.Create, 'Lead');
     can([AppAction.Create, AppAction.Read], 'Activity', { organizationId });
     can([AppAction.Create, AppAction.Read, AppAction.Update], 'FollowUp', { organizationId, assigneeMembershipId: membershipId });
   },

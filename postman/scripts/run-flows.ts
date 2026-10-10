@@ -1,6 +1,7 @@
 import { execFileSync, spawnSync } from 'node:child_process';
 import { randomBytes, randomInt } from 'node:crypto';
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { join } from 'node:path';
 
 import { buildCollection, COLLECTION_DIR, DIST_DIR, POSTMAN_ROOT } from './build.ts';
@@ -17,6 +18,10 @@ const CHECKER_FULL_NAME = 'Postman Flow Checker';
 const DEFAULT_IDENTITY = 'maker';
 const IDENTITY_SESSION_VARIABLES = ['accessToken', 'refreshToken', 'totpSecret'];
 const IDENTITY_CREDENTIALS = ['Email', 'InviteToken', 'Password', 'FullName'];
+const LOOPBACK_IPS = ['::1', '127.0.0.1', '::ffff:127.0.0.1'];
+const LOCAL_REDIS_HOSTS = new Set(['localhost', '127.0.0.1', '::1', '[::1]']);
+
+type RedisClient = { scan(cursor: string, ...args: Array<string | number>): Promise<[string, string[]]>; del(...keys: string[]): Promise<number>; quit(): Promise<string> };
 
 function readBackendEnv(): Map<string, string> {
   const file = join(BACKEND_DIR, '.env');
@@ -72,6 +77,27 @@ function stepItem(step: FlowStep, index: number): Record<string, unknown> {
   return { ...item, name: `${String(index + 1).padStart(2, '0')} ${String(item.name)}`, event: [...prerequest, ...events] };
 }
 
+async function resetLocalRateLimits(env: Map<string, string>): Promise<number> {
+  const url = env.get('REDIS_URL');
+  if (!url || env.get('NODE_ENV') === 'production' || !LOCAL_REDIS_HOSTS.has(new URL(url).hostname)) return 0;
+  const Redis = createRequire(join(BACKEND_DIR, 'package.json'))('ioredis') as new (url: string) => RedisClient;
+  const redis = new Redis(url);
+  let removed = 0;
+  try {
+    for (const ip of LOOPBACK_IPS) {
+      let cursor = '0';
+      do {
+        const [next, keys] = await redis.scan(cursor, 'MATCH', `ratelimit:*:ip:${ip}`, 'COUNT', 500);
+        if (keys.length > 0) removed += await redis.del(...keys);
+        cursor = next;
+      } while (cursor !== '0');
+    }
+  } finally {
+    await redis.quit();
+  }
+  return removed;
+}
+
 function runFlow(file: string, env: Map<string, string>): boolean {
   const flow = JSON.parse(readFileSync(join(FLOWS_DIR, file), 'utf8')) as Flow;
   const base = buildCollection();
@@ -101,7 +127,11 @@ const files = readdirSync(FLOWS_DIR)
   .filter((file) => file.endsWith('.flow.json'))
   .filter((file) => requested.length === 0 || requested.includes(file.replace('.flow.json', '')))
   .sort();
-const failed = files.filter((file) => !runFlow(file, env));
+const failed: string[] = [];
+for (const file of files) {
+  await resetLocalRateLimits(env);
+  if (!runFlow(file, env)) failed.push(file);
+}
 if (failed.length > 0) {
   process.stderr.write(`\nFailed flows: ${failed.join(', ')}\n`);
   process.exit(1);

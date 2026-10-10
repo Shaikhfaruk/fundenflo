@@ -15,6 +15,7 @@ import type {
   LeadAssignment,
   LeadSource,
   Membership,
+  OfflineConversion,
   Organization,
   PartnerProfile,
   Party,
@@ -64,6 +65,7 @@ export type AppSubjects =
       ImportBatch: ImportBatch;
       Activity: Activity;
       FollowUp: FollowUp;
+      OfflineConversion: OfflineConversion;
     }>;
 
 export type AppAbility = Ability<[AppAction, AppSubjects], PrismaQueryOf<Prisma.TypeMap>>;

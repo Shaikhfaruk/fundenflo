@@ -60,6 +60,12 @@ export const EventName = {
   AssignmentReassigned: 'lead.assignment.reassigned',
   LeadSlaWarned: 'lead.sla_warned',
   LeadSlaBreached: 'lead.sla_breached',
+  AssignmentOfferExpiring: 'lead.assignment.offer_expiring',
+  FollowUpDue: 'follow_up.due',
+  LeadReferred: 'lead.referred',
+  OfflineConversionReported: 'lead.offline_conversion.reported',
+  OfflineConversionVerified: 'lead.offline_conversion.verified',
+  OfflineConversionRejected: 'lead.offline_conversion.rejected',
 } as const;
 
 export type EventName = (typeof EventName)[keyof typeof EventName];
