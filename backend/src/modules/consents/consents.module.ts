@@ -18,6 +18,7 @@ import { MeConsentsController } from './http/me-consents.controller.js';
 import { OpsConsentsController } from './http/ops-consents.controller.js';
 import { PublicConsentRequestsController } from './http/public-consent-requests.controller.js';
 import { ConsentRepository } from './infrastructure/consent.repository.js';
+import { ConsentPrivacyParticipant } from './application/consent-privacy.participant.js';
 
 const AdminConsentTemplatesController = createVersionedConfigController({
   resource: ConfigResource.consent_template,
@@ -28,7 +29,7 @@ const AdminConsentTemplatesController = createVersionedConfigController({
 @Module({
   imports: [AccessModule, AuthModule, ConfigPublishingModule, PartiesModule],
   controllers: [AdminConsentPurposesController, AdminConsentTemplatesController, CatalogConsentTemplatesController, MeConsentsController, OpsConsentsController, PublicConsentRequestsController],
-  providers: [ConsentMergeParticipant, ConsentRepository, ConsentPurposeService, ConsentTemplateHandler, ConsentService, ConsentRequestService, ConsentOtpService],
+  providers: [ConsentPrivacyParticipant, ConsentMergeParticipant, ConsentRepository, ConsentPurposeService, ConsentTemplateHandler, ConsentService, ConsentRequestService, ConsentOtpService],
   exports: [ConsentService, ConsentRequestService, ConsentOtpService],
 })
 export class ConsentsModule {}

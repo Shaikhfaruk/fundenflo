@@ -1,0 +1,153 @@
+{
+  "name": "Reject Data Request",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/ops/data-requests/:id/reject",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "data-requests",
+        ":id",
+        "reject"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{dataRequestId}}"
+        }
+      ]
+    },
+    "description": "Rejects a request with the reason given to the person (for example a legal retention duty). DPDP data principal rights: `access` (a JSON export of the profile, contacts, account, consents, answers, facts, documents, leads, applications and lenders the file went to; built by the `privacy.requests` worker and kept 7 days), `correction` (`details` required; compliance applies it and replies), `erasure` (compliance completes it once no legal hold applies: open applications, loans disbursed in the last 5 years, active partner, lender or staff roles). One open request per kind; due within 30 days.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"reason\": \"The name already matches the verified PAN; it can be changed from the profile screen\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/data-requests/:id/reject",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "data-requests",
+            ":id",
+            "reject"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{dataRequestId}}"
+            }
+          ]
+        },
+        "description": "Rejects a request with the reason given to the person (for example a legal retention duty). DPDP data principal rights: `access` (a JSON export of the profile, contacts, account, consents, answers, facts, documents, leads, applications and lenders the file went to; built by the `privacy.requests` worker and kept 7 days), `correction` (`details` required; compliance applies it and replies), `erasure` (compliance completes it once no legal hold applies: open applications, loans disbursed in the last 5 years, active partner, lender or staff roles). One open request per kind; due within 30 days.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reason\": \"The name already matches the verified PAN; it can be changed from the profile screen\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12700-1a2b-7c3d-8e4f-5061728394a5\",\n  \"ref\": \"DR-26-000003\",\n  \"kind\": \"correction\",\n  \"status\": \"rejected\",\n  \"details\": null,\n  \"dueAt\": \"2026-11-10T12:00:00.000Z\",\n  \"response\": null,\n  \"rejectedReason\": \"The name already matches the verified PAN\",\n  \"exportReady\": false,\n  \"exportExpiresAt\": null,\n  \"completedAt\": null,\n  \"version\": 1,\n  \"createdAt\": \"2026-10-11T12:00:00.000Z\",\n  \"userId\": \"01a1215a-4ce1-7c0e-8a37-1b2f8e0d9a11\",\n  \"partyId\": \"01a12260-4d5e-7f60-8172-8394a5b6c7d8\",\n  \"outcome\": null,\n  \"handledByUserId\": null\n}"
+    },
+    {
+      "name": "409 INVALID_TRANSITION",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/data-requests/:id/reject",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "data-requests",
+            ":id",
+            "reject"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{dataRequestId}}"
+            }
+          ]
+        },
+        "description": "Rejects a request with the reason given to the person (for example a legal retention duty). DPDP data principal rights: `access` (a JSON export of the profile, contacts, account, consents, answers, facts, documents, leads, applications and lenders the file went to; built by the `privacy.requests` worker and kept 7 days), `correction` (`details` required; compliance applies it and replies), `erasure` (compliance completes it once no legal hold applies: open applications, loans disbursed in the last 5 years, active partner, lender or staff roles). One open request per kind; due within 30 days.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reason\": \"The name already matches the verified PAN; it can be changed from the profile screen\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"INVALID_TRANSITION\",\n  \"message\": \"This action is not allowed in the current state.\",\n  \"details\": {\n    \"from\": \"completed\",\n    \"event\": \"reject\",\n    \"allowed\": []\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

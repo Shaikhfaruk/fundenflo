@@ -1,0 +1,153 @@
+{
+  "name": "Complete Data Request",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/ops/data-requests/:id/complete",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "data-requests",
+        ":id",
+        "complete"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{dataRequestId}}"
+        }
+      ]
+    },
+    "description": "Completes a request with the reply to the person. Erasure runs every module's eraser in order (answers, facts, documents and files, leads, consent withdrawals, account and sessions, contacts, identifiers and names) and records the counts; it is refused while a legal hold applies. Access rebuilds the export. DPDP data principal rights: `access` (a JSON export of the profile, contacts, account, consents, answers, facts, documents, leads, applications and lenders the file went to; built by the `privacy.requests` worker and kept 7 days), `correction` (`details` required; compliance applies it and replies), `erasure` (compliance completes it once no legal hold applies: open applications, loans disbursed in the last 5 years, active partner, lender or staff roles). One open request per kind; due within 30 days.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"response\": \"Your personal data was erased; consent records are kept as proof of what you agreed to.\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/data-requests/:id/complete",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "data-requests",
+            ":id",
+            "complete"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{dataRequestId}}"
+            }
+          ]
+        },
+        "description": "Completes a request with the reply to the person. Erasure runs every module's eraser in order (answers, facts, documents and files, leads, consent withdrawals, account and sessions, contacts, identifiers and names) and records the counts; it is refused while a legal hold applies. Access rebuilds the export. DPDP data principal rights: `access` (a JSON export of the profile, contacts, account, consents, answers, facts, documents, leads, applications and lenders the file went to; built by the `privacy.requests` worker and kept 7 days), `correction` (`details` required; compliance applies it and replies), `erasure` (compliance completes it once no legal hold applies: open applications, loans disbursed in the last 5 years, active partner, lender or staff roles). One open request per kind; due within 30 days.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"response\": \"Your personal data was erased; consent records are kept as proof of what you agreed to.\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12700-1a2b-7c3d-8e4f-5061728394a5\",\n  \"ref\": \"DR-26-000003\",\n  \"kind\": \"erasure\",\n  \"status\": \"completed\",\n  \"details\": null,\n  \"dueAt\": \"2026-11-10T12:00:00.000Z\",\n  \"response\": \"Your personal data was erased.\",\n  \"rejectedReason\": null,\n  \"exportReady\": false,\n  \"exportExpiresAt\": null,\n  \"completedAt\": \"2026-10-11T12:00:00.000Z\",\n  \"version\": 1,\n  \"createdAt\": \"2026-10-11T12:00:00.000Z\",\n  \"userId\": \"01a1215a-4ce1-7c0e-8a37-1b2f8e0d9a11\",\n  \"partyId\": \"01a12260-4d5e-7f60-8172-8394a5b6c7d8\",\n  \"outcome\": {\n    \"answers\": {\n      \"answers\": 4\n    },\n    \"facts\": {\n      \"facts\": 6\n    },\n    \"documents\": {\n      \"documents\": 1,\n      \"files\": 1\n    },\n    \"leads\": {\n      \"leadsClosed\": 0\n    },\n    \"consents\": {\n      \"withdrawn\": 2\n    },\n    \"account\": {\n      \"sessions\": 1,\n      \"logins\": 1,\n      \"users\": 1\n    },\n    \"profile\": {\n      \"contacts\": 1,\n      \"identifiers\": 1,\n      \"parties\": 2\n    }\n  },\n  \"handledByUserId\": null,\n  \"holds\": []\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/ops/data-requests/:id/complete",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "data-requests",
+            ":id",
+            "complete"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{dataRequestId}}"
+            }
+          ]
+        },
+        "description": "Completes a request with the reply to the person. Erasure runs every module's eraser in order (answers, facts, documents and files, leads, consent withdrawals, account and sessions, contacts, identifiers and names) and records the counts; it is refused while a legal hold applies. Access rebuilds the export. DPDP data principal rights: `access` (a JSON export of the profile, contacts, account, consents, answers, facts, documents, leads, applications and lenders the file went to; built by the `privacy.requests` worker and kept 7 days), `correction` (`details` required; compliance applies it and replies), `erasure` (compliance completes it once no legal hold applies: open applications, loans disbursed in the last 5 years, active partner, lender or staff roles). One open request per kind; due within 30 days.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"response\": \"Your personal data was erased; consent records are kept as proof of what you agreed to.\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"holds\",\n      \"code\": \"legal_hold\",\n      \"message\": \"application AP-26-000041 is still open; withdraw or close it first\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

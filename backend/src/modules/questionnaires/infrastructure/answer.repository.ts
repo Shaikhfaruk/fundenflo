@@ -20,6 +20,14 @@ export class AnswerRepository {
     return (await this.txHost.tx.answer.findMany({ where: { partyId }, select: { id: true } })).map((row) => row.id);
   }
 
+  listForParties(partyIds: string[], take: number) {
+    return this.txHost.tx.answer.findMany({ where: { partyId: { in: partyIds } }, orderBy: { createdAt: 'asc' }, take, select: { questionKey: true, value: true, channel: true, createdAt: true } });
+  }
+
+  deleteForParties(partyIds: string[]) {
+    return this.txHost.tx.answer.deleteMany({ where: { partyId: { in: partyIds } } });
+  }
+
   moveAnswers(ids: string[], partyId: string) {
     return this.txHost.tx.answer.updateMany({ where: { id: { in: ids } }, data: { partyId } });
   }

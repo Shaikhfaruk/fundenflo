@@ -29,6 +29,7 @@ import type {
   LedgerEntry,
   RiskSignal,
   FraudReview,
+  DataSubjectRequest,
   LoanApplication,
   Membership,
   OfflineConversion,
@@ -99,6 +100,7 @@ export type AppSubjects =
       LedgerEntry: LedgerEntry;
       RiskSignal: RiskSignal;
       FraudReview: FraudReview;
+      DataSubjectRequest: DataSubjectRequest;
     }>;
 
 export type AppAbility = Ability<[AppAction, AppSubjects], PrismaQueryOf<Prisma.TypeMap>>;

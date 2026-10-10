@@ -131,6 +131,11 @@ export const AuditAction = {
   ReconciliationCompleted: 'reconciliation.completed',
   RiskSignalRaised: 'risk.signal_raised',
   FraudReviewDecided: 'fraud_review.decided',
+  DataRequestReceived: 'data_request.received',
+  DataRequestCompleted: 'data_request.completed',
+  DataRequestRejected: 'data_request.rejected',
+  DataExportDownloaded: 'data_request.export_downloaded',
+  PersonalDataErased: 'privacy.personal_data_erased',
 } as const;
 
 export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction];
@@ -189,6 +194,7 @@ export const AuditEntity = {
   ReconciliationRun: 'reconciliation_run',
   RiskSignal: 'risk_signal',
   FraudReview: 'fraud_review',
+  DataSubjectRequest: 'data_subject_request',
   LenderAgreement: 'lender_agreement',
   LenderContact: 'lender_contact',
 } as const;

@@ -1,0 +1,111 @@
+{
+  "name": "Get Data Export URL",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/me/data-requests/:id/export-url",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "me",
+        "data-requests",
+        ":id",
+        "export-url"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{dataRequestId}}"
+        }
+      ]
+    },
+    "description": "A 5-minute download link for a completed access export (audited). 404 while it is being built or after it expires."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/me/data-requests/:id/export-url",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "me",
+            "data-requests",
+            ":id",
+            "export-url"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{dataRequestId}}"
+            }
+          ]
+        },
+        "description": "A 5-minute download link for a completed access export (audited). 404 while it is being built or after it expires."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"url\": \"https://storage.example/privacy-exports/01a12700.json?sig=redacted\",\n  \"expiresAt\": \"2026-10-11T12:05:00.000Z\"\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/me/data-requests/:id/export-url",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "me",
+            "data-requests",
+            ":id",
+            "export-url"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{dataRequestId}}"
+            }
+          ]
+        },
+        "description": "A 5-minute download link for a completed access export (audited). 404 while it is being built or after it expires."
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"details\": {\n    \"reason\": \"no_export\"\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

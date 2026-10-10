@@ -1,0 +1,71 @@
+{
+  "name": "List Data Requests (Ops)",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/ops/data-requests?status=received",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "data-requests"
+      ],
+      "query": [
+        {
+          "key": "status",
+          "value": "received"
+        }
+      ]
+    },
+    "description": "The data request queue, filterable by `status` and `kind`. Staff context (compliance and ops leads act; support reads). DPDP data principal rights: `access` (a JSON export of the profile, contacts, account, consents, answers, facts, documents, leads, applications and lenders the file went to; built by the `privacy.requests` worker and kept 7 days), `correction` (`details` required; compliance applies it and replies), `erasure` (compliance completes it once no legal hold applies: open applications, loans disbursed in the last 5 years, active partner, lender or staff roles). One open request per kind; due within 30 days."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/ops/data-requests?status=received",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "data-requests"
+          ],
+          "query": [
+            {
+              "key": "status",
+              "value": "received"
+            }
+          ]
+        },
+        "description": "The data request queue, filterable by `status` and `kind`. Staff context (compliance and ops leads act; support reads). DPDP data principal rights: `access` (a JSON export of the profile, contacts, account, consents, answers, facts, documents, leads, applications and lenders the file went to; built by the `privacy.requests` worker and kept 7 days), `correction` (`details` required; compliance applies it and replies), `erasure` (compliance completes it once no legal hold applies: open applications, loans disbursed in the last 5 years, active partner, lender or staff roles). One open request per kind; due within 30 days."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a12700-1a2b-7c3d-8e4f-5061728394a5\",\n      \"ref\": \"DR-26-000003\",\n      \"kind\": \"access\",\n      \"status\": \"received\",\n      \"details\": null,\n      \"dueAt\": \"2026-11-10T12:00:00.000Z\",\n      \"response\": null,\n      \"rejectedReason\": null,\n      \"exportReady\": false,\n      \"exportExpiresAt\": null,\n      \"completedAt\": null,\n      \"version\": 1,\n      \"createdAt\": \"2026-10-11T12:00:00.000Z\",\n      \"userId\": \"01a1215a-4ce1-7c0e-8a37-1b2f8e0d9a11\",\n      \"partyId\": \"01a12260-4d5e-7f60-8172-8394a5b6c7d8\",\n      \"outcome\": null,\n      \"handledByUserId\": null\n    }\n  ],\n  \"nextCursor\": null\n}"
+    }
+  ]
+}

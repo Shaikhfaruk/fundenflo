@@ -57,3 +57,5 @@ export const SignupChannel = {
   EmailOtp: 'email_otp',
   StaffInvitation: 'staff_invitation',
 } as const;
+
+export const ERASURE_SESSION_REASON = 'data_erasure';

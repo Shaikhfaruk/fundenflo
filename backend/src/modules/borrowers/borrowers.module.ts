@@ -13,11 +13,12 @@ import { PartnerBorrowerService } from './application/partner-borrower.service.j
 import { BorrowerProfilesController } from './http/borrower-profiles.controller.js';
 import { PartnerBorrowersController } from './http/partner-borrowers.controller.js';
 import { BorrowerProfileRepository } from './infrastructure/borrower-profile.repository.js';
+import { BorrowerPrivacyParticipant } from './application/borrower-privacy.participant.js';
 
 @Module({
   imports: [AuthModule, CatalogModule, KycModule, LeadsModule, PartiesModule],
   controllers: [BorrowerProfilesController, PartnerBorrowersController],
-  providers: [BorrowerProfileRepository, BorrowerProfileService, BorrowerKycService, PartnerBorrowerService, BorrowerProfileDocumentOwner, BorrowerMergeParticipant],
+  providers: [BorrowerPrivacyParticipant, BorrowerProfileRepository, BorrowerProfileService, BorrowerKycService, PartnerBorrowerService, BorrowerProfileDocumentOwner, BorrowerMergeParticipant],
   exports: [BorrowerProfileService, BorrowerKycService],
 })
 export class BorrowersModule {}

@@ -60,6 +60,7 @@
 | `payout.accrued` · `payout.approved` · `payout.paid` · `payout.reversed` | commissions (`CommissionService`, `PayoutService`) | `commissions.notify` (paid) | — | M7 | `useful` | spec `commissions` |
 | `reconciliation.completed` | commissions (`ReconciliationService.run`) | none yet | — | M7 | `useful` | spec `commissions` |
 | `risk.signal.raised` · `fraud_review.decided` | risk (`RiskService.raise` / `decide`) | none yet (the ops queue reads the tables) | — | M8 | `useful` | spec `risk` |
+| `data_request.received` · `data_request.completed` · `data_request.rejected` | privacy (`DataRequestService`) | `privacy.requests` (received) | — | M8 | `useful` | spec `privacy` |
 
 ## Real-time channels (WebSocket namespace `/v1/realtime`)
 

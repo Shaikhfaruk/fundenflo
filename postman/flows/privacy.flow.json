@@ -1,0 +1,81 @@
+{
+  "name": "Data principal rights: access export, rejected correction and erasure of a new borrower",
+  "requires": [
+    "staffInvitation"
+  ],
+  "steps": [
+    {
+      "request": "01 Auth/06 Accept Staff Invitation.json",
+      "identity": "maker"
+    },
+    {
+      "request": "01 Auth/07 Staff Login.json",
+      "identity": "maker"
+    },
+    {
+      "request": "01 Auth/08 Verify Staff MFA.json",
+      "identity": "maker"
+    },
+    {
+      "request": "01 Auth/01 Request OTP.json",
+      "identity": "borrower",
+      "variables": {
+        "loginAs": "borrower"
+      }
+    },
+    {
+      "request": "01 Auth/02 Verify OTP.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "02 Me/20 Create Data Request.json",
+      "identity": "borrower",
+      "variables": {
+        "dataRequestKind": "access"
+      }
+    },
+    {
+      "request": "02 Me/21 List Data Requests.json",
+      "identity": "borrower",
+      "waitSeconds": 3
+    },
+    {
+      "request": "02 Me/22 Get Data Export URL.json",
+      "identity": "borrower"
+    },
+    {
+      "request": "02 Me/20 Create Data Request.json",
+      "identity": "borrower",
+      "variables": {
+        "dataRequestKind": "correction"
+      }
+    },
+    {
+      "request": "65 Ops - Data Requests/01 List Data Requests.json",
+      "identity": "maker"
+    },
+    {
+      "request": "65 Ops - Data Requests/02 Get Data Request.json",
+      "identity": "maker"
+    },
+    {
+      "request": "65 Ops - Data Requests/04 Reject Data Request.json",
+      "identity": "maker"
+    },
+    {
+      "request": "02 Me/20 Create Data Request.json",
+      "identity": "borrower",
+      "variables": {
+        "dataRequestKind": "erasure"
+      }
+    },
+    {
+      "request": "65 Ops - Data Requests/02 Get Data Request.json",
+      "identity": "maker"
+    },
+    {
+      "request": "65 Ops - Data Requests/03 Complete Data Request.json",
+      "identity": "maker"
+    }
+  ]
+}

@@ -51,6 +51,7 @@ import { LeadRoutingQueue } from './infrastructure/lead-routing.queue.js';
 import { LeadRepository } from './infrastructure/lead.repository.js';
 import { ReferralSignupService } from './application/referral-signup.service.js';
 import { LeadReferralProcessor } from './infrastructure/lead-referral.processor.js';
+import { LeadPrivacyParticipant } from './application/lead-privacy.participant.js';
 
 const AdminRoutingRulesController = createVersionedConfigController({ resource: ConfigResource.routing_rule, path: 'routing-rules', name: 'AdminRoutingRulesController' });
 
@@ -72,7 +73,7 @@ const AdminRoutingRulesController = createVersionedConfigController({ resource: 
     PartnerReferralsController,
     PublicLeadsController,
   ],
-  providers: [
+  providers: [LeadPrivacyParticipant, 
     LeadMergeParticipant,
     LeadRepository,
     LeadRoutingQueue,

@@ -23,6 +23,7 @@ export const QueueName = {
   CommissionsAccrue: 'commissions.accrue',
   CommissionsNotify: 'commissions.notify',
   RiskDetect: 'risk.detect',
+  PrivacyRequests: 'privacy.requests',
 } as const;
 
 export type QueueName = (typeof QueueName)[keyof typeof QueueName];

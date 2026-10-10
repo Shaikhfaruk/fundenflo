@@ -23,6 +23,7 @@ import { SubmissionsModule } from './modules/submissions/submissions.module.js';
 import { CompatModule } from './modules/compat/compat.module.js';
 import { CommissionsModule } from './modules/commissions/commissions.module.js';
 import { RiskModule } from './modules/risk/risk.module.js';
+import { PrivacyModule } from './modules/privacy/privacy.module.js';
 import { SubscriptionsModule } from './modules/subscriptions/subscriptions.module.js';
 import { LendersModule } from './modules/lenders/lenders.module.js';
 import { BorrowersModule } from './modules/borrowers/borrowers.module.js';
@@ -61,6 +62,7 @@ import { QuestionnairesModule } from './modules/questionnaires/questionnaires.mo
     CompatModule,
     CommissionsModule,
     RiskModule,
+    PrivacyModule,
     ActivitiesModule,
     SlaModule,
     RealtimeModule.forRoot({ worker: false }),

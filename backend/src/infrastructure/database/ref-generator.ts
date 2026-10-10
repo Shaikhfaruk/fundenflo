@@ -9,6 +9,7 @@ export const RefKind = {
   Submission: { prefix: 'SB', sequence: 'submission_ref_seq' },
   Receivable: { prefix: 'RC', sequence: 'receivable_ref_seq' },
   Payout: { prefix: 'PO', sequence: 'payout_ref_seq' },
+  DataRequest: { prefix: 'DR', sequence: 'data_request_ref_seq' },
 } as const;
 
 export type RefKind = (typeof RefKind)[keyof typeof RefKind];

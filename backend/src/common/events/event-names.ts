@@ -111,6 +111,9 @@ export const EventName = {
   ReconciliationCompleted: 'reconciliation.completed',
   RiskSignalRaised: 'risk.signal.raised',
   FraudReviewDecided: 'fraud_review.decided',
+  DataRequestReceived: 'data_request.received',
+  DataRequestCompleted: 'data_request.completed',
+  DataRequestRejected: 'data_request.rejected',
 } as const;
 
 export type EventName = (typeof EventName)[keyof typeof EventName];

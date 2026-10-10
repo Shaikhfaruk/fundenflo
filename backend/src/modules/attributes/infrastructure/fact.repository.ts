@@ -31,6 +31,10 @@ export class FactRepository {
     return (await this.txHost.tx.borrowerFact.findMany({ where: { partyId }, select: { id: true } })).map((row) => row.id);
   }
 
+  deleteForParties(partyIds: string[]) {
+    return this.txHost.tx.borrowerFact.deleteMany({ where: { partyId: { in: partyIds } } });
+  }
+
   moveFacts(ids: string[], partyId: string) {
     return this.txHost.tx.borrowerFact.updateMany({ where: { id: { in: ids } }, data: { partyId } });
   }

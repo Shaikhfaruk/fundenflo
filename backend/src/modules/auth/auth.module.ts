@@ -22,11 +22,12 @@ import { StaffAuthController } from './http/staff-auth.controller.js';
 import { IdentityRepository } from './infrastructure/identity.repository.js';
 import { OtpChallengeRepository } from './infrastructure/otp-challenge.repository.js';
 import { SessionsModule } from './sessions.module.js';
+import { AuthPrivacyParticipant } from './application/auth-privacy.participant.js';
 
 @Module({
   imports: [SessionsModule, PartiesModule, AccessModule],
   controllers: [AuthController, StaffAuthController, MeController, AdminUsersController],
-  providers: [
+  providers: [AuthPrivacyParticipant, 
     UserMergeParticipant,
     IdentityRepository,
     OtpChallengeRepository,

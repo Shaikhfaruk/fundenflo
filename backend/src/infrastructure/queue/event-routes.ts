@@ -35,6 +35,7 @@ const ROUTES: Partial<Record<EventName, QueueName[]>> = {
   [EventName.SubmissionStatusChanged]: [QueueName.SubmissionsNotify, QueueName.NotificationsSubscriptions],
   [EventName.SubmissionDisbursed]: [QueueName.NotificationsSubscriptions, QueueName.CommissionsAccrue],
   [EventName.PayoutPaid]: [QueueName.CommissionsNotify],
+  [EventName.DataRequestReceived]: [QueueName.PrivacyRequests],
   [EventName.LeadReferred]: [QueueName.RiskDetect],
   [EventName.PartnerKycUpdated]: [QueueName.RiskDetect],
   [EventName.ConsistencySignalRaised]: [QueueName.RiskDetect],

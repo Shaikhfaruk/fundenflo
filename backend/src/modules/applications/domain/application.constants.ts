@@ -13,3 +13,5 @@ export const APPLICATION_PARTY_RELATIONSHIPS = ['spouse', 'parent', 'child', 'si
 export const OPS_CASE_DOCUMENTS_LIMIT = 100;
 
 export const CASE_ASSIGNEE_ROLES: readonly Role[] = [Role.ops_lead, Role.ops_reviewer, Role.credit_analyst];
+
+export const LOAN_RECORD_RETENTION_YEARS = 5;

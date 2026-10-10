@@ -29,6 +29,7 @@ import { DocumentScanProcessor } from './infrastructure/document-scan.processor.
 import { DocumentTypeRepository } from './infrastructure/document-type.repository.js';
 import { DocumentUploadMulterModule } from './infrastructure/document-upload.multer.js';
 import { DocumentRepository } from './infrastructure/document.repository.js';
+import { DocumentPrivacyParticipant } from './application/document-privacy.participant.js';
 
 const AdminDocumentRequirementsController = createVersionedConfigController({ resource: ConfigResource.document_requirement, path: 'document-requirements', name: 'AdminDocumentRequirementsController' });
 
@@ -48,7 +49,7 @@ export const DOCUMENT_PROCESSORS = [DocumentScanProcessor, DocumentExtractProces
     DocumentUploadMulterModule,
   ],
   controllers: [AdminDocumentTypesController, AdminDocumentRequirementsController, CatalogDocumentChecklistController, DocumentsController, OpsDocumentsController],
-  providers: [
+  providers: [DocumentPrivacyParticipant, 
     DocumentTypeRepository,
     DocumentRepository,
     DocumentTypeService,

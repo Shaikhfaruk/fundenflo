@@ -1,0 +1,172 @@
+{
+  "name": "Create Data Request",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/me/data-requests",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "me",
+        "data-requests"
+      ]
+    },
+    "description": "Files a request about the signed-in person. DPDP data principal rights: `access` (a JSON export of the profile, contacts, account, consents, answers, facts, documents, leads, applications and lenders the file went to; built by the `privacy.requests` worker and kept 7 days), `correction` (`details` required; compliance applies it and replies), `erasure` (compliance completes it once no legal hold applies: open applications, loans disbursed in the last 5 years, active partner, lender or staff roles). One open request per kind; due within 30 days. Any context.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"kind\": \"{{dataRequestKind}}\",\n  \"details\": \"Requested from the Postman flow\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "pm.collectionVariables.set('dataRequestId', pm.response.json().id);"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/me/data-requests",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "me",
+            "data-requests"
+          ]
+        },
+        "description": "Files a request about the signed-in person. DPDP data principal rights: `access` (a JSON export of the profile, contacts, account, consents, answers, facts, documents, leads, applications and lenders the file went to; built by the `privacy.requests` worker and kept 7 days), `correction` (`details` required; compliance applies it and replies), `erasure` (compliance completes it once no legal hold applies: open applications, loans disbursed in the last 5 years, active partner, lender or staff roles). One open request per kind; due within 30 days. Any context.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"kind\": \"{{dataRequestKind}}\",\n  \"details\": \"Requested from the Postman flow\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12700-1a2b-7c3d-8e4f-5061728394a5\",\n  \"ref\": \"DR-26-000003\",\n  \"kind\": \"access\",\n  \"status\": \"received\",\n  \"details\": null,\n  \"dueAt\": \"2026-11-10T12:00:00.000Z\",\n  \"response\": null,\n  \"rejectedReason\": null,\n  \"exportReady\": false,\n  \"exportExpiresAt\": null,\n  \"completedAt\": null,\n  \"version\": 1,\n  \"createdAt\": \"2026-10-11T12:00:00.000Z\"\n}"
+    },
+    {
+      "name": "409 CONFLICT",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/me/data-requests",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "me",
+            "data-requests"
+          ]
+        },
+        "description": "Files a request about the signed-in person. DPDP data principal rights: `access` (a JSON export of the profile, contacts, account, consents, answers, facts, documents, leads, applications and lenders the file went to; built by the `privacy.requests` worker and kept 7 days), `correction` (`details` required; compliance applies it and replies), `erasure` (compliance completes it once no legal hold applies: open applications, loans disbursed in the last 5 years, active partner, lender or staff roles). One open request per kind; due within 30 days. Any context.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"kind\": \"{{dataRequestKind}}\",\n  \"details\": \"Requested from the Postman flow\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"CONFLICT\",\n  \"message\": \"This record already exists.\",\n  \"details\": {\n    \"kind\": \"access\"\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/me/data-requests",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "me",
+            "data-requests"
+          ]
+        },
+        "description": "Files a request about the signed-in person. DPDP data principal rights: `access` (a JSON export of the profile, contacts, account, consents, answers, facts, documents, leads, applications and lenders the file went to; built by the `privacy.requests` worker and kept 7 days), `correction` (`details` required; compliance applies it and replies), `erasure` (compliance completes it once no legal hold applies: open applications, loans disbursed in the last 5 years, active partner, lender or staff roles). One open request per kind; due within 30 days. Any context.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"kind\": \"{{dataRequestKind}}\",\n  \"details\": \"Requested from the Postman flow\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"details\",\n      \"code\": \"required\",\n      \"message\": \"say what should be corrected\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

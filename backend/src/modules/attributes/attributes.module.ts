@@ -11,11 +11,12 @@ import { OpsFactsController } from './http/ops-facts.controller.js';
 import { AttributeRepository } from './infrastructure/attribute.repository.js';
 import { ConsistencyRepository } from './infrastructure/consistency.repository.js';
 import { FactRepository } from './infrastructure/fact.repository.js';
+import { FactPrivacyParticipant } from './application/fact-privacy.participant.js';
 
 @Module({
   imports: [PartiesModule],
   controllers: [AdminAttributesController, OpsFactsController, OpsConsistencySignalsController],
-  providers: [FactMergeParticipant, AttributeRepository, FactRepository, ConsistencyRepository, ConsistencyService, AttributeDictionary, FactService],
+  providers: [FactPrivacyParticipant, FactMergeParticipant, AttributeRepository, FactRepository, ConsistencyRepository, ConsistencyService, AttributeDictionary, FactService],
   exports: [AttributeDictionary, FactService, ConsistencyService],
 })
 export class AttributesModule {}

@@ -18,6 +18,7 @@ import { CatalogQuestionsController } from './http/catalog-questions.controller.
 import { OpsAnswersController } from './http/ops-answers.controller.js';
 import { AnswerRepository } from './infrastructure/answer.repository.js';
 import { QuestionRepository } from './infrastructure/question.repository.js';
+import { AnswerPrivacyParticipant } from './application/answer-privacy.participant.js';
 
 const AdminQuestionSetsController = createVersionedConfigController({
   resource: ConfigResource.question_set,
@@ -28,7 +29,7 @@ const AdminQuestionSetsController = createVersionedConfigController({
 @Module({
   imports: [AttributesModule, CatalogModule, ConfigPublishingModule, DiscoveryModule, PartiesModule],
   controllers: [AdminQuestionsController, AdminQuestionSetsController, AdminQuestionSetPreviewController, CatalogQuestionsController, OpsAnswersController],
-  providers: [AnswerMergeParticipant, AttributeNeedRegistry, QuestionRepository, AnswerRepository, QuestionService, QuestionSetHandler, QuestionnaireService],
+  providers: [AnswerPrivacyParticipant, AnswerMergeParticipant, AttributeNeedRegistry, QuestionRepository, AnswerRepository, QuestionService, QuestionSetHandler, QuestionnaireService],
   exports: [QuestionnaireService],
 })
 export class QuestionnairesModule {}

@@ -76,7 +76,8 @@ Controller: `backend/src/modules/auth/http/me.controller.ts` · Postman: `02 Me/
 | `GET` `POST` | `/me/consents` | consents (`me-consents.controller.ts`) | any (incl. none) | M1 | `useful` |
 | `POST` | `/me/consents/:purpose/withdraw` | consents | any (incl. none) | M1 | `useful` |
 | `PUT` | `/me/notification-preferences` | notifications | any | M1 | `planned` |
-| `POST` | `/me/data-requests` | audit | any | M8 | `planned` |
+| `POST` `GET` | `/me/data-requests` | privacy (`me-data-requests.controller.ts` → `DataRequestService.create` / `mine`; module `privacy` instead of `audit` so erasure can reach every module through participants) | any | M8 | `useful` |
+| `GET` | `/me/data-requests/:id/export-url` | privacy (`DataRequestService.exportUrl`: 5-minute link to a completed access export, audited) | any | M8 | `useful` |
 
 ## 03 Catalog
 
@@ -333,6 +334,10 @@ Planned:
 
 | Method | Path | Module | Context | Milestone | Status |
 |---|---|---|---|---|---|
+| `GET` | `/ops/data-requests` | privacy (`ops-data-requests.controller.ts` → `DataRequestService.list`) | staff | M8 | `useful` |
+| `GET` | `/ops/data-requests/:id` | privacy (`DataRequestService.get` with live legal holds for erasure) | staff | M8 | `useful` |
+| `POST` | `/ops/data-requests/:id/complete` | privacy (`DataRequestService.complete`: correction reply, access export rebuild, erasure through participants when no hold applies) | staff | M8 | `useful` |
+| `POST` | `/ops/data-requests/:id/reject` | privacy (`DataRequestService.reject`) | staff | M8 | `useful` |
 | `GET` | `/ops/cases` | applications (`ops-cases.controller.ts` → `ApplicationService.list` with status, category, channel, firm and reference filters) | staff | M3 | `useful` |
 | `GET` | `/ops/cases/:id` | applications (`ops-cases.controller.ts` → `OpsCaseService.detail`) | staff | M3 | `useful` |
 | `POST` | `/ops/cases/:id/facts/:attribute/verify` | applications (`ops-cases.controller.ts` → `ApplicationService.verifyFact` → `FactService.record` as `ops_verified`) | staff | M5 | `useful` |

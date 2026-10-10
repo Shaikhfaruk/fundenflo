@@ -29,6 +29,7 @@ These are the places where a second copy is most tempting. Use the one listed.
 | Which firm a borrower belongs to | `lead_attributions` through `LeadAttributionService` (referral, referral code, transfers by `AttributionDisputeService`) | Partner columns on leads, users or applications for commission decisions |
 | Money owed or paid (lender fees, partner commissions, TDS, GST) | `LedgerService.post` balanced journals from `commissions`, amounts from `engines/commissions` | Balances stored as columns, or commission maths outside the engine |
 | Fraud or anomaly flags | `RiskService.raise` (signals into one fraud review per subject) and `RiskService.assertClear` for holds | Per-module fraud flags, or holds checked by reading signals directly |
+| Exporting or erasing a person's data | `@PrivacyParticipantFor(section)` in the module that owns the data, run by `DataRequestService` | Cross-module deletes or exports written inside `privacy` |
 | Status after a lead converts | Derived from application events | A second status that is edited by hand |
 | Draft → review → publish for any config | `config-publishing` + `createVersionedConfigController` | Per-resource version tables or approval flows |
 | Eligibility, visibility, routing and trigger conditions | `engines/conditions` | Inline `if` trees or a second rule format |

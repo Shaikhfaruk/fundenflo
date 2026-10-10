@@ -27,6 +27,8 @@ export {
   ConsentRequestStatus,
   ConsentScopeKind,
   ContactType,
+  DataRequestKind,
+  DataRequestStatus,
   DataSensitivity,
   DeliveryStatus,
   DisputeOutcome,

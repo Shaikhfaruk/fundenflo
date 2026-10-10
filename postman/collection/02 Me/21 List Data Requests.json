@@ -1,0 +1,59 @@
+{
+  "name": "List Data Requests",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/me/data-requests",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "me",
+        "data-requests"
+      ]
+    },
+    "description": "The person's requests, newest first. DPDP data principal rights: `access` (a JSON export of the profile, contacts, account, consents, answers, facts, documents, leads, applications and lenders the file went to; built by the `privacy.requests` worker and kept 7 days), `correction` (`details` required; compliance applies it and replies), `erasure` (compliance completes it once no legal hold applies: open applications, loans disbursed in the last 5 years, active partner, lender or staff roles). One open request per kind; due within 30 days."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/me/data-requests",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "me",
+            "data-requests"
+          ]
+        },
+        "description": "The person's requests, newest first. DPDP data principal rights: `access` (a JSON export of the profile, contacts, account, consents, answers, facts, documents, leads, applications and lenders the file went to; built by the `privacy.requests` worker and kept 7 days), `correction` (`details` required; compliance applies it and replies), `erasure` (compliance completes it once no legal hold applies: open applications, loans disbursed in the last 5 years, active partner, lender or staff roles). One open request per kind; due within 30 days."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"id\": \"01a12700-1a2b-7c3d-8e4f-5061728394a5\",\n      \"ref\": \"DR-26-000003\",\n      \"kind\": \"access\",\n      \"status\": \"completed\",\n      \"details\": null,\n      \"dueAt\": \"2026-11-10T12:00:00.000Z\",\n      \"response\": \"Your data export DR-26-000003 is ready to download for 7 days.\",\n      \"rejectedReason\": null,\n      \"exportReady\": true,\n      \"exportExpiresAt\": \"2026-10-18T12:00:00.000Z\",\n      \"completedAt\": \"2026-10-11T12:00:00.000Z\",\n      \"version\": 1,\n      \"createdAt\": \"2026-10-11T12:00:00.000Z\"\n    }\n  ]\n}"
+    }
+  ]
+}

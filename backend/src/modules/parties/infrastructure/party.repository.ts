@@ -63,6 +63,18 @@ export class PartyRepository {
     for (const id of ids.toSorted()) await this.txHost.tx.$queryRaw`SELECT id FROM parties WHERE id = ${id}::uuid FOR UPDATE`;
   }
 
+  deleteContactsOf(partyIds: string[]) {
+    return this.txHost.tx.partyContact.deleteMany({ where: { partyId: { in: partyIds } } });
+  }
+
+  deleteIdentifiersOf(partyIds: string[]) {
+    return this.txHost.tx.partyIdentifier.deleteMany({ where: { partyId: { in: partyIds } } });
+  }
+
+  anonymise(partyIds: string[]) {
+    return this.txHost.tx.party.updateMany({ where: { id: { in: partyIds } }, data: { displayName: null, preferredLanguage: null, status: PartyStatus.archived, version: { increment: 1 } } });
+  }
+
   findWithLinks(ids: string[]) {
     return this.txHost.tx.party.findMany({
       where: { id: { in: ids } },

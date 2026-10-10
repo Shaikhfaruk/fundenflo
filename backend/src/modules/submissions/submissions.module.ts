@@ -24,13 +24,14 @@ import { SubmissionDeliverProcessor } from './infrastructure/submission-deliver.
 import { SubmissionNotifyProcessor } from './infrastructure/submission-notify.processor.js';
 import { SubmissionSyncProcessor } from './infrastructure/submission-sync.processor.js';
 import { SubmissionRepository } from './infrastructure/submission.repository.js';
+import { SubmissionPrivacyParticipant } from './application/submission-privacy.participant.js';
 
 export const SUBMISSION_PROCESSORS = [SubmissionDeliverProcessor, SubmissionNotifyProcessor, SubmissionSyncProcessor];
 
 @Module({
   imports: [AccessModule, ApplicationsModule, AssessmentsModule, AttributesModule, AuthModule, ConfigPublishingModule, ConsentsModule, DocumentsModule, LendersModule, MatchingModule, RiskModule],
   controllers: [ApplicationSubmissionsController, LenderSubmissionsController, OpsSubmissionsController],
-  providers: [SubmissionRepository, SubmissionPacketBuilder, DocumentRequestService, SubmissionService, SubmissionNotificationService, SubmissionDocumentOwner, SubmissionStatusSubscriptionTarget],
+  providers: [SubmissionPrivacyParticipant, SubmissionRepository, SubmissionPacketBuilder, DocumentRequestService, SubmissionService, SubmissionNotificationService, SubmissionDocumentOwner, SubmissionStatusSubscriptionTarget],
   exports: [SubmissionService, DocumentRequestService, SubmissionNotificationService],
 })
 export class SubmissionsModule {}

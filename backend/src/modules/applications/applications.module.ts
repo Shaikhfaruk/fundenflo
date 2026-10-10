@@ -22,13 +22,14 @@ import { OpsCasesController } from './http/ops-cases.controller.js';
 import { PartnerApplicationsController } from './http/partner-applications.controller.js';
 import { ApplicationRefreshProcessor } from './infrastructure/application-refresh.processor.js';
 import { ApplicationRepository } from './infrastructure/application.repository.js';
+import { ApplicationPrivacyParticipant } from './application/application-privacy.participant.js';
 
 export const APPLICATION_PROCESSORS = [ApplicationRefreshProcessor];
 
 @Module({
   imports: [AccessModule, AttributesModule, AuthModule, BorrowersModule, CatalogModule, ConsentsModule, DocumentsModule, LeadsModule, PartiesModule, QuestionnairesModule],
   controllers: [ApplicationsController, PartnerApplicationsController, OpsCasesController],
-  providers: [ApplicationRepository, ApplicationTimeline, ApplicationService, ApplicationPartyService, OpsCaseService, ApplicationStatusSubscriptionTarget, ApplicationDocumentOwner, ApplicationMergeParticipant],
+  providers: [ApplicationPrivacyParticipant, ApplicationRepository, ApplicationTimeline, ApplicationService, ApplicationPartyService, OpsCaseService, ApplicationStatusSubscriptionTarget, ApplicationDocumentOwner, ApplicationMergeParticipant],
   exports: [ApplicationService, ApplicationPartyService],
 })
 export class ApplicationsModule {}

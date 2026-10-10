@@ -198,6 +198,10 @@ export class LeadRepository {
     });
   }
 
+  listForParties(partyIds: string[]) {
+    return this.txHost.tx.lead.findMany({ where: { partyId: { in: partyIds } }, select: { id: true, ref: true, status: true, categoryKey: true, createdAt: true }, orderBy: { createdAt: 'asc' } });
+  }
+
   listOpenForParty(partyId: string, openStatuses: readonly LeadStatus[]) {
     return this.txHost.tx.lead.findMany({ where: { partyId, status: { in: [...openStatuses] } }, include: leadListInclude });
   }

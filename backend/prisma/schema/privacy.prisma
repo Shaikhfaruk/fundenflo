@@ -1,0 +1,37 @@
+enum DataRequestKind {
+  access
+  correction
+  erasure
+}
+
+enum DataRequestStatus {
+  received
+  in_progress
+  completed
+  rejected
+}
+
+model DataSubjectRequest {
+  id               String            @id @default(uuid(7)) @db.Uuid
+  ref              String            @unique
+  userId           String            @map("user_id") @db.Uuid
+  partyId          String            @map("party_id") @db.Uuid
+  kind             DataRequestKind
+  status           DataRequestStatus @default(received)
+  details          String?
+  dueAt            DateTime          @map("due_at") @db.Timestamptz(3)
+  response         String?
+  outcome          Json?
+  exportStorageKey String?           @map("export_storage_key")
+  exportExpiresAt  DateTime?         @map("export_expires_at") @db.Timestamptz(3)
+  handledByUserId  String?           @map("handled_by_user_id") @db.Uuid
+  completedAt      DateTime?         @map("completed_at") @db.Timestamptz(3)
+  rejectedReason   String?           @map("rejected_reason")
+  version          Int               @default(1)
+  createdAt        DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt        DateTime          @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([status, dueAt])
+  @@index([userId, createdAt])
+  @@map("data_subject_requests")
+}
