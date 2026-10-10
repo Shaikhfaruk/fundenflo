@@ -3129,7 +3129,7 @@
       "keyHint": "Lowercase words separated by dots, such as score.msme",
       "descriptionLabel": "Description (optional)",
       "content": "Content (JSON)",
-      "contentHint": "Start with {} if you are not sure; issues are listed after saving.",
+      "contentHint": "Start with an empty object ('{}') if you are not sure; issues are listed after saving.",
       "jsonInvalid": "This is not valid JSON.",
       "createTitle": "New Document",
       "createBody": "Creates version 1 as a draft. Nothing changes for borrowers until a checker approves it and it is published.",

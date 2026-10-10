@@ -39,7 +39,7 @@ export default async function LocaleLayout({ children }: LayoutProps<'/[locale]'
   if (!hasLocale(routing.locales, locale)) notFound();
   const messages = await getMessages();
   return (
-    <html lang={locale} className={fontVariables}>
+    <html lang={locale} className={fontVariables} data-scroll-behavior="smooth">
       <body className="min-h-dvh">
         <NextIntlClientProvider messages={messages}>
           <AppProviders>{children}</AppProviders>
