@@ -110,7 +110,7 @@ describe('consents', () => {
     await t.api().post('/v1/admin/consent-purposes').set(bearer(compliance.accessToken)).send({ key: 'sms_offers', label: { en: 'Offers By SMS' }, allowedBases: ['consent'], validityDays: 365 }).expect(201);
 
     const created = await t.api().post('/v1/admin/consent-templates').set(bearer(compliance.accessToken)).send({
-      key: 'lead_capture',
+      key: 'lead_capture.web_form',
       name: { en: 'Lead Capture Consent' },
       content: {
         items: [
@@ -123,7 +123,7 @@ describe('consents', () => {
     await t.api().post(`/v1/admin/change-requests/${submitted.body.changeRequest.id}/approve`).set(bearer(ops.accessToken)).send({}).expect(200);
     await t.api().post(`/v1/admin/consent-templates/${created.body.id}/versions/1/publish`).set(bearer(compliance.accessToken)).send({}).expect(200);
 
-    const leadTemplate = await t.api().get('/v1/catalog/consent-templates').query({ context: 'lead_capture' }).expect(200);
+    const leadTemplate = await t.api().get('/v1/catalog/consent-templates').query({ context: 'lead_capture.web_form' }).expect(200);
     const recorded = await opsRecord({ channel: 'web_form', templateVersionId: leadTemplate.body.versionId, items: [{ purpose: 'sms_offers', granted: true }] }).expect(201);
     const expiresAt = Date.parse(recorded.body.records[0].expiresAt);
     expect(expiresAt - Date.now()).toBeGreaterThan(364 * 24 * 3_600_000);

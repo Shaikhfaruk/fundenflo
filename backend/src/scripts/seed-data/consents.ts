@@ -1,6 +1,7 @@
 import { ConsentBasis, ConsentScopeKind, OrganizationType } from '../../common/enums/db.enums.js';
 import type { ConsentTemplateContent } from '../../modules/consents/domain/consent-template.schema.js';
 import { ConsentPurposeKey } from '../../modules/consents/domain/consent.constants.js';
+import { DEFAULT_LEAD_CONSENT_CONTEXT } from '../../modules/leads/domain/lead.constants.js';
 
 export type ConsentPurposeSeed = {
   key: string;
@@ -83,4 +84,35 @@ export const COMMUNICATIONS_CONSENT_TEMPLATE: { key: string; name: string; notes
   },
 };
 
-export const CONSENT_TEMPLATE_SEEDS = [JOURNEY_CONSENT_TEMPLATE, COMMUNICATIONS_CONSENT_TEMPLATE];
+export const LEAD_CAPTURE_CONSENT_TEMPLATE: { key: string; name: string; notes: string; content: ConsentTemplateContent } = {
+  key: DEFAULT_LEAD_CONSENT_CONTEXT,
+  name: 'Lead Enquiry Consent',
+  notes: 'Default consent for lead forms and the consent links ops send by SMS',
+  content: {
+    items: [
+      {
+        purpose: ConsentPurposeKey.Contact,
+        required: true,
+        title: { en: 'Contact Me About My Loan Enquiry' },
+        summary: { en: 'Required · So an advisor can help you' },
+        details: { en: 'FundenFlo or the advisor handling your enquiry may call or message you about this loan enquiry.' },
+      },
+      {
+        purpose: ConsentPurposeKey.PartnerSharing,
+        required: false,
+        title: { en: 'Share My Enquiry With A FundenFlo Partner' },
+        summary: { en: 'Optional · A verified CA or advisor can take it up' },
+        details: { en: 'Your name, mobile and loan need are shared with a verified FundenFlo partner who can help you apply. You can withdraw this any time.' },
+      },
+      {
+        purpose: ConsentPurposeKey.Whatsapp,
+        required: false,
+        title: { en: 'Message Me On WhatsApp' },
+        summary: { en: 'Optional · Updates on WhatsApp' },
+        details: { en: 'We send updates about your enquiry on WhatsApp. You can turn this off any time.' },
+      },
+    ],
+  },
+};
+
+export const CONSENT_TEMPLATE_SEEDS = [JOURNEY_CONSENT_TEMPLATE, COMMUNICATIONS_CONSENT_TEMPLATE, LEAD_CAPTURE_CONSENT_TEMPLATE];
