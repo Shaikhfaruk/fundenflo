@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 
 import { generateSync } from 'otplib';
 
-import { acceptStaffInvitation, randomEmail, staffApi } from './backend';
+import { acceptStaffInvitation, randomEmail, type SessionTokens, staffApi } from './backend';
 
 type StaffAccount = { email: string; password: string; secret: string; role: string };
 
@@ -32,7 +32,7 @@ async function login(account: StaffAccount) {
   for (let attempt = 1; ; attempt += 1) {
     const first = await staffApi<{ mfaToken: string }>('POST', '/auth/staff/login', { email: account.email, password: account.password });
     try {
-      return await staffApi<{ accessToken: string }>('POST', '/auth/staff/mfa/verify', { mfaToken: first.mfaToken, code: freshCode(account.secret) });
+      return await staffApi<SessionTokens>('POST', '/auth/staff/mfa/verify', { mfaToken: first.mfaToken, code: freshCode(account.secret) });
     } catch (error) {
       if (!reused(error) || attempt >= MFA_ATTEMPTS) throw error;
       await nextWindow();
@@ -48,6 +48,8 @@ export const STAFF_POOL: Record<string, { role: string; name: string }> = Object
     [`approver-${project}`, { role: 'ops_lead', name: 'Submission Approver' }],
     [`desk-${project}`, { role: 'ops_lead', name: 'Desk Viewer' }],
     [`risk-${project}`, { role: 'ops_lead', name: 'Risk Reviewer' }],
+    [`admin-${project}`, { role: 'super_admin', name: 'Catalog Admin' }],
+    [`auditor-${project}`, { role: 'super_admin', name: 'Records Admin' }],
   ]),
 );
 
@@ -75,17 +77,37 @@ async function create(key: string, role: string, name: string): Promise<StaffAcc
   return account;
 }
 
-const TOKEN_REUSE_MS = 10 * 60 * 1000;
+const SESSION_FILE = resolve(CACHE_DIR, 'staff-sessions.json');
 
-const TOKEN_FILE = resolve(CACHE_DIR, 'staff-tokens.json');
+const readSessions = (): Record<string, SessionTokens> => (existsSync(SESSION_FILE) ? (JSON.parse(readFileSync(SESSION_FILE, 'utf8')) as Record<string, SessionTokens>) : {});
 
-const readTokens = (): Record<string, { token: string; at: number }> => (existsSync(TOKEN_FILE) ? (JSON.parse(readFileSync(TOKEN_FILE, 'utf8')) as Record<string, { token: string; at: number }>) : {});
-
-export async function pooledStaffToken(key: string): Promise<string> {
-  const held = readTokens()[key];
-  if (held && Date.now() - held.at < TOKEN_REUSE_MS) return held.token;
-  const token = (await login(staffAccount(key))).accessToken;
+const writeSession = (key: string, session: SessionTokens) => {
   mkdirSync(CACHE_DIR, { recursive: true });
-  writeFileSync(TOKEN_FILE, JSON.stringify({ ...readTokens(), [key]: { token, at: Date.now() } }, null, 2));
-  return token;
+  writeFileSync(SESSION_FILE, JSON.stringify({ ...readSessions(), [key]: session }, null, 2));
+};
+
+async function freshSession(key: string): Promise<SessionTokens> {
+  const held = readSessions()[key];
+  if (held) {
+    try {
+      return await staffApi<SessionTokens>('POST', '/auth/token/refresh', { refreshToken: held.refreshToken });
+    } catch {
+      return login(staffAccount(key));
+    }
+  }
+  return login(staffAccount(key));
 }
+
+export async function prepareStaffSessions() {
+  for (const key of Object.keys(STAFF_POOL)) writeSession(key, await freshSession(key));
+}
+
+export async function staffSession(key: string): Promise<SessionTokens> {
+  const held = readSessions()[key];
+  if (held) return held;
+  const session = await freshSession(key);
+  writeSession(key, session);
+  return session;
+}
+
+export const pooledStaffToken = async (key: string) => (await staffSession(key)).accessToken;

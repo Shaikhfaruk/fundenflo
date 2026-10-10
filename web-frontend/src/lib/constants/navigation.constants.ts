@@ -1,6 +1,7 @@
 import type { IconName } from '@/components/ui/icon';
 
 import { Role, SessionContext } from './auth.constants';
+import { CONFIG_RESOURCE_META, ConfigResource } from './admin.constants';
 import { AppPath } from './routes.constants';
 
 export const ShellArea = {
@@ -37,6 +38,12 @@ export type NavGroup = { key: string; items: NavItem[] };
 const LEAD_DESK: readonly string[] = [Role.SuperAdmin, Role.OpsLead, Role.OpsReviewer, Role.ComplianceOfficer, Role.Support];
 
 const CASE_DESK: readonly string[] = [Role.SuperAdmin, Role.OpsLead, Role.OpsReviewer, Role.CreditAnalyst, Role.ComplianceOfficer, Role.Support];
+
+const ADMIN_DESK: readonly string[] = [Role.SuperAdmin, Role.OpsLead, Role.ComplianceOfficer];
+
+const CATALOG_READERS: readonly string[] = [Role.SuperAdmin, Role.OpsLead, Role.OpsReviewer, Role.CreditAnalyst, Role.ComplianceOfficer, Role.Support, Role.LenderManager];
+
+const configItem = (resource: ConfigResource): NavItem => ({ key: CONFIG_RESOURCE_META[resource].nav, href: CONFIG_RESOURCE_META[resource].path, icon: CONFIG_RESOURCE_META[resource].icon, roles: CONFIG_RESOURCE_META[resource].roles });
 
 const ALL_STAFF: readonly string[] = [Role.SuperAdmin, Role.OpsLead, Role.OpsReviewer, Role.CreditAnalyst, Role.Finance, Role.ComplianceOfficer, Role.Support, Role.LenderManager, Role.PartnerManager];
 
@@ -124,6 +131,47 @@ export const NAVIGATION: Record<NavArea, NavGroup[]> = {
         { key: 'merges', href: AppPath.OpsMerges, icon: 'history', roles: [Role.SuperAdmin, Role.OpsLead, Role.OpsReviewer] },
         { key: 'dataRequests', href: AppPath.OpsDataRequests, icon: 'privacy', roles: [Role.SuperAdmin, Role.OpsLead, Role.ComplianceOfficer, Role.Support] },
       ],
+    },
+    {
+      key: 'admin',
+      items: [
+        { key: 'users', href: AppPath.AdminHome, icon: 'manage-accounts', roles: [...ADMIN_DESK, Role.Support, Role.PartnerManager, Role.LenderManager] },
+        { key: 'invitations', href: AppPath.AdminInvitations, icon: 'person-add', roles: [...ADMIN_DESK, Role.PartnerManager, Role.LenderManager] },
+        { key: 'changeRequests', href: AppPath.AdminChangeRequests, icon: 'fact-check', roles: [...ADMIN_DESK, Role.CreditAnalyst, Role.LenderManager] },
+        { key: 'audit', href: AppPath.AdminAudit, icon: 'policy', roles: ADMIN_DESK },
+      ],
+    },
+    {
+      key: 'configuration',
+      items: [
+        { key: 'catalog', href: AppPath.AdminSegments, icon: 'category', roles: CATALOG_READERS },
+        { key: 'attributes', href: AppPath.AdminAttributes, icon: 'label', roles: CATALOG_READERS },
+        { key: 'questions', href: AppPath.AdminQuestions, icon: 'quiz', roles: CATALOG_READERS },
+        configItem(ConfigResource.QuestionSet),
+        { key: 'consents', href: AppPath.AdminConsentPurposes, icon: 'shield', roles: [Role.SuperAdmin, Role.OpsLead, Role.ComplianceOfficer, Role.Support] },
+        { key: 'notificationTemplates', href: AppPath.AdminNotificationTemplates, icon: 'sms', roles: [Role.SuperAdmin, Role.OpsLead, Role.ComplianceOfficer, Role.Support] },
+        { key: 'documentTypes', href: AppPath.AdminDocumentTypes, icon: 'document', roles: CATALOG_READERS },
+      ],
+    },
+    {
+      key: 'leadSetup',
+      items: [
+        { key: 'imports', href: AppPath.AdminImports, icon: 'upload-file', roles: ADMIN_DESK },
+        { key: 'leadSources', href: AppPath.AdminLeadSources, icon: 'api', roles: [...ADMIN_DESK, Role.OpsReviewer, Role.Support] },
+        configItem(ConfigResource.RoutingRule),
+      ],
+    },
+    {
+      key: 'network',
+      items: [
+        { key: 'partners', href: AppPath.AdminPartners, icon: 'handshake', roles: [...ADMIN_DESK, Role.OpsReviewer, Role.Support, Role.PartnerManager, Role.Finance] },
+        { key: 'lenders', href: AppPath.AdminLenders, icon: 'bank', roles: [...ADMIN_DESK, Role.OpsReviewer, Role.CreditAnalyst, Role.Finance, Role.Support, Role.LenderManager] },
+        configItem(ConfigResource.LenderProduct),
+      ],
+    },
+    {
+      key: 'credit',
+      items: [configItem(ConfigResource.ScoringModel), configItem(ConfigResource.ImprovementRule), configItem(ConfigResource.CommissionScheme)],
     },
     {
       key: 'you',

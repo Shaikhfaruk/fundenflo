@@ -11,7 +11,7 @@ import { Injectable, type OnModuleInit } from '@nestjs/common';
 
 import { InjectConfig } from '../../config/config.constants.js';
 import type { AppConfig } from '../../config/env.schema.js';
-import { STORAGE_UPLOAD_BUFFER_BYTES, STORAGE_UPLOAD_CONCURRENCY } from './storage.constants.js';
+import { STORAGE_BROWSER_CORS, STORAGE_UPLOAD_BUFFER_BYTES, STORAGE_UPLOAD_CONCURRENCY } from './storage.constants.js';
 import type { ObjectStat, ObjectStorage, PutObjectInput, ReadUrlOptions, UploadUrlOptions } from './storage.port.js';
 import { MINUTE_MS } from '../../common/constants/time.constants.js';
 
@@ -28,7 +28,9 @@ export class AzureBlobStorage implements ObjectStorage, OnModuleInit {
   }
 
   async onModuleInit() {
-    if (this.config.NODE_ENV !== 'production') await this.container.createIfNotExists();
+    if (this.config.NODE_ENV === 'production') return;
+    await this.container.createIfNotExists();
+    if (this.config.CORS_ORIGINS.length > 0) await this.service.setProperties({ cors: [{ ...STORAGE_BROWSER_CORS, allowedOrigins: this.config.CORS_ORIGINS.join(',') }] });
   }
 
   async put(input: PutObjectInput): Promise<void> {

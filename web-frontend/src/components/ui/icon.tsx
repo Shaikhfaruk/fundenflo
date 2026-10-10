@@ -4,26 +4,34 @@ import accountBalanceWalletOutlineIcon from '@iconify-icons/material-symbols/acc
 import accountCircleOutlineIcon from '@iconify-icons/material-symbols/account-circle-outline';
 import addCircleOutlineIcon from '@iconify-icons/material-symbols/add-circle-outline';
 import alarmOutlineIcon from '@iconify-icons/material-symbols/alarm-outline';
+import altRouteIcon from '@iconify-icons/material-symbols/alt-route';
 import apartmentIcon from '@iconify-icons/material-symbols/apartment';
+import apiIcon from '@iconify-icons/material-symbols/api';
 import arrowBackIcon from '@iconify-icons/material-symbols/arrow-back';
 import arrowForwardIcon from '@iconify-icons/material-symbols/arrow-forward';
 import arrowOutwardIcon from '@iconify-icons/material-symbols/arrow-outward';
 import assignmentOutlineIcon from '@iconify-icons/material-symbols/assignment-outline';
 import autoAwesomeOutlineIcon from '@iconify-icons/material-symbols/auto-awesome-outline';
 import badgeOutlineIcon from '@iconify-icons/material-symbols/badge-outline';
+import balanceIcon from '@iconify-icons/material-symbols/balance';
 import calendarMonthOutlineIcon from '@iconify-icons/material-symbols/calendar-month-outline';
 import callOutlineIcon from '@iconify-icons/material-symbols/call-outline';
+import categoryOutlineIcon from '@iconify-icons/material-symbols/category-outline';
 import celebrationOutlineIcon from '@iconify-icons/material-symbols/celebration-outline';
 import chatOutlineIcon from '@iconify-icons/material-symbols/chat-outline';
 import checkIcon from '@iconify-icons/material-symbols/check';
 import checkCircleIcon from '@iconify-icons/material-symbols/check-circle';
+import checklistIcon from '@iconify-icons/material-symbols/checklist';
 import chevronLeftIcon from '@iconify-icons/material-symbols/chevron-left';
 import chevronRightIcon from '@iconify-icons/material-symbols/chevron-right';
 import closeIcon from '@iconify-icons/material-symbols/close';
 import cloudOffOutlineIcon from '@iconify-icons/material-symbols/cloud-off-outline';
 import contentCopyOutlineIcon from '@iconify-icons/material-symbols/content-copy-outline';
+import corporateFareIcon from '@iconify-icons/material-symbols/corporate-fare';
 import cottageOutlineIcon from '@iconify-icons/material-symbols/cottage-outline';
 import dashboardOutlineIcon from '@iconify-icons/material-symbols/dashboard-outline';
+import dataObjectIcon from '@iconify-icons/material-symbols/data-object';
+import databaseOutlineIcon from '@iconify-icons/material-symbols/database-outline';
 import deleteOutlineIcon from '@iconify-icons/material-symbols/delete-outline';
 import descriptionOutlineIcon from '@iconify-icons/material-symbols/description-outline';
 import devicesOutlineIcon from '@iconify-icons/material-symbols/devices-outline';
@@ -36,6 +44,7 @@ import errorOutlineIcon from '@iconify-icons/material-symbols/error-outline';
 import eventOutlineIcon from '@iconify-icons/material-symbols/event-outline';
 import expandLessIcon from '@iconify-icons/material-symbols/expand-less';
 import expandMoreIcon from '@iconify-icons/material-symbols/expand-more';
+import factCheckOutlineIcon from '@iconify-icons/material-symbols/fact-check-outline';
 import filterListIcon from '@iconify-icons/material-symbols/filter-list';
 import flagOutlineIcon from '@iconify-icons/material-symbols/flag-outline';
 import folderOpenOutlineIcon from '@iconify-icons/material-symbols/folder-open-outline';
@@ -51,27 +60,35 @@ import inboxOutlineIcon from '@iconify-icons/material-symbols/inbox-outline';
 import infoOutlineIcon from '@iconify-icons/material-symbols/info-outline';
 import installMobileOutlineIcon from '@iconify-icons/material-symbols/install-mobile-outline';
 import keyOutlineIcon from '@iconify-icons/material-symbols/key-outline';
+import labelOutlineIcon from '@iconify-icons/material-symbols/label-outline';
 import languageIcon from '@iconify-icons/material-symbols/language';
 import laptopMacOutlineIcon from '@iconify-icons/material-symbols/laptop-mac-outline';
 import linkIcon from '@iconify-icons/material-symbols/link';
+import listAltOutlineIcon from '@iconify-icons/material-symbols/list-alt-outline';
 import locationOnOutlineIcon from '@iconify-icons/material-symbols/location-on-outline';
 import lockIcon from '@iconify-icons/material-symbols/lock';
 import logoutIcon from '@iconify-icons/material-symbols/logout';
 import mailOutlineIcon from '@iconify-icons/material-symbols/mail-outline';
+import manageAccountsOutlineIcon from '@iconify-icons/material-symbols/manage-accounts-outline';
+import mapOutlineIcon from '@iconify-icons/material-symbols/map-outline';
 import menuIcon from '@iconify-icons/material-symbols/menu';
 import monitoringIcon from '@iconify-icons/material-symbols/monitoring';
 import moreHorizIcon from '@iconify-icons/material-symbols/more-horiz';
 import notificationsOutlineIcon from '@iconify-icons/material-symbols/notifications-outline';
 import paymentsOutlineIcon from '@iconify-icons/material-symbols/payments-outline';
 import pendingActionsOutlineIcon from '@iconify-icons/material-symbols/pending-actions-outline';
+import personAddOutlineIcon from '@iconify-icons/material-symbols/person-add-outline';
 import personOutlineIcon from '@iconify-icons/material-symbols/person-outline';
+import policyOutlineIcon from '@iconify-icons/material-symbols/policy-outline';
 import precisionManufacturingOutlineIcon from '@iconify-icons/material-symbols/precision-manufacturing-outline';
 import privacyTipOutlineIcon from '@iconify-icons/material-symbols/privacy-tip-outline';
 import qrCode2Icon from '@iconify-icons/material-symbols/qr-code-2';
+import quizOutlineIcon from '@iconify-icons/material-symbols/quiz-outline';
 import receiptLongOutlineIcon from '@iconify-icons/material-symbols/receipt-long-outline';
 import redeemIcon from '@iconify-icons/material-symbols/redeem';
 import refreshIcon from '@iconify-icons/material-symbols/refresh';
 import requestQuoteOutlineIcon from '@iconify-icons/material-symbols/request-quote-outline';
+import ruleIcon from '@iconify-icons/material-symbols/rule';
 import scheduleOutlineIcon from '@iconify-icons/material-symbols/schedule-outline';
 import searchIcon from '@iconify-icons/material-symbols/search';
 import settingsOutlineIcon from '@iconify-icons/material-symbols/settings-outline';
@@ -194,6 +211,25 @@ const ICONS = {
   'trophy': trophyOutlineIcon,
   'celebration': celebrationOutlineIcon,
   'cloud-off': cloudOffOutlineIcon,
+  'quiz': quizOutlineIcon,
+  'list': listAltOutlineIcon,
+  'person-add': personAddOutlineIcon,
+  'upload-file': uploadFileOutlineIcon,
+  'policy': policyOutlineIcon,
+  'map': mapOutlineIcon,
+  'label': labelOutlineIcon,
+  'receipt-long': receiptLongOutlineIcon,
+  'category': categoryOutlineIcon,
+  'database': databaseOutlineIcon,
+  'fact-check': factCheckOutlineIcon,
+  'route': altRouteIcon,
+  'balance': balanceIcon,
+  'code': dataObjectIcon,
+  'rule': ruleIcon,
+  'manage-accounts': manageAccountsOutlineIcon,
+  'api': apiIcon,
+  'corporate': corporateFareIcon,
+  'checklist': checklistIcon,
 } satisfies Record<string, IconData>;
 
 export type IconName = keyof typeof ICONS;

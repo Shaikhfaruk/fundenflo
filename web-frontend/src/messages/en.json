@@ -372,7 +372,12 @@
     "work": "Your Work",
     "growth": "Growth",
     "firm": "Your Firm",
-    "firmProfile": "Firm Profile"
+    "firmProfile": "Firm Profile",
+    "configuration": "Configuration",
+    "leadSetup": "Lead Setup",
+    "network": "Lenders & Partners",
+    "credit": "Credit & Commission",
+    "consentTemplates": "Consent Templates"
   },
   "status": {
     "draft": "Draft",
@@ -2514,6 +2519,206 @@
     "referralScope": {
       "firm": "Firm Code",
       "member": "Your Code"
+    },
+    "catalogStatus": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "aliasKind": {
+      "city": "City",
+      "state": "State",
+      "category": "Loan category"
+    },
+    "dataType": {
+      "integer": "Whole number",
+      "decimal": "Decimal",
+      "money": "Money",
+      "boolean": "Yes / No",
+      "enum": "Choice",
+      "string": "Text",
+      "date": "Date",
+      "percentage": "Percentage"
+    },
+    "attributeSubject": {
+      "person": "Person",
+      "business": "Business",
+      "any": "Person or business"
+    },
+    "sensitivity": {
+      "public": "Public",
+      "personal": "Personal",
+      "financial": "Financial",
+      "special": "Special category"
+    },
+    "questionType": {
+      "single_select": "Single choice",
+      "multi_select": "Multiple choice",
+      "number": "Number",
+      "money": "Money",
+      "date": "Date",
+      "text": "Text",
+      "boolean": "Yes / No",
+      "city": "City",
+      "pincode": "Pincode"
+    },
+    "scopeKind": {
+      "none": "Not scoped",
+      "organizations": "Named organisations"
+    },
+    "organizationType": {
+      "fundenflo": "FundenFlo",
+      "lender": "Lender",
+      "partner": "Partner",
+      "business": "Business"
+    },
+    "consentBasis": {
+      "consent": "Consent",
+      "legitimate_use": "Legitimate use"
+    },
+    "notificationChannel": {
+      "sms": "SMS",
+      "email": "Email",
+      "push": "Push",
+      "whatsapp": "WhatsApp"
+    },
+    "periodRule": {
+      "last_3_months": "Last 3 months",
+      "last_6_months": "Last 6 months",
+      "last_12_months": "Last 12 months",
+      "latest_financial_year": "Latest financial year",
+      "latest_assessment_year": "Latest assessment year",
+      "current": "Current"
+    },
+    "leadSourceKind": {
+      "manual": "Manual",
+      "import": "Import",
+      "web_form": "Web form",
+      "app_dropoff": "App drop-off",
+      "partner_referral": "Partner referral",
+      "webhook": "Webhook",
+      "api": "API"
+    },
+    "lenderKind": {
+      "bank": "Bank",
+      "nbfc": "NBFC",
+      "hfc": "Housing finance",
+      "small_finance_bank": "Small finance bank",
+      "cooperative_bank": "Co-operative bank",
+      "fintech": "Fintech"
+    },
+    "lenderStatus": {
+      "onboarding": "Onboarding",
+      "active": "Active",
+      "paused": "Paused",
+      "offboarded": "Offboarded"
+    },
+    "agreementStatus": {
+      "draft": "Draft",
+      "active": "Active",
+      "expired": "Expired",
+      "terminated": "Terminated"
+    },
+    "contactRole": {
+      "relationship": "Relationship",
+      "credit": "Credit",
+      "operations": "Operations",
+      "escalation": "Escalation"
+    },
+    "configStatus": {
+      "draft": "Draft",
+      "in_review": "In Review",
+      "approved": "Approved",
+      "published": "Published",
+      "retired": "Retired"
+    },
+    "changeRequestStatus": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "withdrawn": "Withdrawn"
+    },
+    "configResource": {
+      "question_set": "Question set",
+      "routing_rule": "Routing rule",
+      "consent_template": "Consent template",
+      "document_requirement": "Document requirement",
+      "lender_product": "Lender product",
+      "scoring_model": "Scoring model",
+      "improvement_rule": "Improvement rule",
+      "commission_scheme": "Commission scheme"
+    },
+    "diffKind": {
+      "added": "Added",
+      "removed": "Removed",
+      "changed": "Changed"
+    },
+    "userStatus": {
+      "active": "Active",
+      "suspended": "Suspended",
+      "deleted": "Deleted"
+    },
+    "signupChannel": {
+      "mobile_otp": "Mobile code",
+      "email_otp": "Email code",
+      "staff_invitation": "Staff invitation",
+      "partner_invitation": "Partner invitation",
+      "lender_invitation": "Lender invitation",
+      "referral": "Referral"
+    },
+    "loginMethod": {
+      "mobile_otp": "Mobile code",
+      "email_otp": "Email code",
+      "password": "Password"
+    },
+    "context": {
+      "borrower": "Borrower",
+      "partner": "Partner",
+      "lender": "Lender",
+      "staff": "Staff"
+    },
+    "invitationStatus": {
+      "pending": "Pending",
+      "accepted": "Accepted",
+      "revoked": "Revoked",
+      "expired": "Expired"
+    },
+    "verificationDecision": {
+      "approve": "Approve",
+      "reject": "Reject"
+    },
+    "partnerLevel": {
+      "new": "New",
+      "active": "Active",
+      "strategic": "Strategic"
+    },
+    "kycStatus": {
+      "not_started": "Not started",
+      "pending": "Pending",
+      "verified": "Verified",
+      "rejected": "Rejected"
+    },
+    "partnerKind": {
+      "ca": "CA firm",
+      "dsa": "DSA / loan agency",
+      "connector": "Connector"
+    },
+    "verificationStatus": {
+      "pending": "Pending",
+      "in_review": "In review",
+      "verified": "Verified",
+      "rejected": "Rejected"
+    },
+    "importStatus": {
+      "awaiting_upload": "Awaiting upload",
+      "uploaded": "Uploaded",
+      "mapped": "Mapped",
+      "validating": "Validating",
+      "validated": "Validated",
+      "committing": "Committing",
+      "committed": "Committed",
+      "undoing": "Undoing",
+      "undone": "Undone",
+      "failed": "Failed"
     }
   },
   "documentRequest": {
@@ -2566,6 +2771,672 @@
       "emptyTitle": "All Caught Up",
       "emptyBody": "No follow-ups in this view.",
       "openNamed": "{name} · {ref}"
+    }
+  },
+  "admin": {
+    "common": {
+      "choose": "Choose…",
+      "none": "None",
+      "jsonInvalid": "This is not valid JSON.",
+      "required": "Required.",
+      "invalid": "Check this value.",
+      "create": "Create",
+      "save": "Save",
+      "cancel": "Cancel",
+      "saved": "Saved",
+      "removed": "Removed",
+      "set": "Set",
+      "search": "Search",
+      "any": "Any",
+      "secretTitle": "Copy This Key Now",
+      "secretBody": "It is shown only once. Store it in the system that calls FundenFlo.",
+      "secretDone": "I Have Copied It"
+    },
+    "fields": {
+      "label": "Label",
+      "key": "Key",
+      "subSegments": "Sub-segments",
+      "sortOrder": "Order",
+      "status": "Status",
+      "description": "Description",
+      "icon": "Icon",
+      "minAmountPaise": "Minimum (₹)",
+      "maxAmountPaise": "Maximum (₹)",
+      "stepPaise": "Step (₹)",
+      "defaultAmountPaise": "Default (₹)",
+      "tenureOptionsMonths": "Tenures (months, comma separated)",
+      "illustrativeRateBps": "Illustrative rate (basis points)",
+      "segmentKeys": "Segments",
+      "purposes": "Purposes",
+      "requiresNote": "Needs a note",
+      "name": "Name",
+      "state": "State",
+      "stateGstCode": "State",
+      "pincode": "Pincode",
+      "district": "District",
+      "city": "City",
+      "cityId": "City",
+      "alias": "Alias",
+      "kind": "Kind",
+      "createdAt": "Created",
+      "targetId": "Target id",
+      "dataType": "Data type",
+      "appliesTo": "Applies to",
+      "sensitivity": "Sensitivity",
+      "allowedProvenance": "Allowed sources",
+      "unit": "Unit",
+      "freshnessDays": "Fresh for (days)",
+      "enumValues": "Choices (JSON)",
+      "attributeKey": "Attribute",
+      "type": "Type",
+      "help": "Help text",
+      "options": "Options (JSON)",
+      "validation": "Validation (JSON)",
+      "ui": "Display (JSON)",
+      "scopeKind": "Scope",
+      "scopeOrganizationType": "Scoped to",
+      "allowedBases": "Lawful bases",
+      "validityDays": "Valid for (days)",
+      "channel": "Channel",
+      "locale": "Language",
+      "placeholders": "Placeholders",
+      "active": "Active",
+      "subject": "Subject",
+      "body": "Message",
+      "providerTemplateId": "Provider template id (DLT)",
+      "acceptedMimeTypes": "Accepted file types",
+      "maxSizeBytes": "Largest file (bytes)",
+      "periodRule": "Period",
+      "extractorKey": "Reader",
+      "producesAttributes": "Produces attributes (comma separated)",
+      "retentionDays": "Keep for (days)",
+      "consentContext": "Consent template",
+      "questionSetStage": "Question set stage",
+      "defaultLawfulBasis": "Default lawful basis",
+      "keyPrefix": "Key prefix",
+      "scopes": "Scopes",
+      "lastUsedAt": "Last used",
+      "leadSourceId": "Lead source",
+      "expiresAt": "Expires",
+      "rbiRegistrationNo": "RBI registration",
+      "website": "Website",
+      "responseSlaHours": "Response time (hours)",
+      "notes": "Notes",
+      "reference": "Reference",
+      "validFrom": "Valid from",
+      "validTo": "Valid to",
+      "commissionSchemeKey": "Commission scheme",
+      "commissionNote": "Commission note",
+      "terminationReason": "Termination reason",
+      "designation": "Designation",
+      "role": "Role",
+      "email": "Email",
+      "mobile": "Mobile",
+      "escalationLevel": "Escalation level"
+    },
+    "resources": {
+      "segments": {
+        "eyebrow": "Catalog",
+        "title": "Segments",
+        "description": "Who borrows: business and individual segments with their sub-segments.",
+        "add": "Add Segment",
+        "created": "Segment created",
+        "emptyTitle": "No Segments Yet",
+        "emptyBody": "Create the first one with Add Segment.",
+        "remove": "Remove",
+        "removeTitle": "Remove {name}?",
+        "removeBody": "This cannot be undone."
+      },
+      "categories": {
+        "eyebrow": "Catalog",
+        "title": "Loan Categories",
+        "description": "Loan types, amounts, tenures and purposes borrowers can pick.",
+        "add": "Add Category",
+        "created": "Category created",
+        "emptyTitle": "No Loan Categories Yet",
+        "emptyBody": "Create the first one with Add Category.",
+        "remove": "Remove",
+        "removeTitle": "Remove {name}?",
+        "removeBody": "This cannot be undone."
+      },
+      "cities": {
+        "eyebrow": "Catalog",
+        "title": "Cities",
+        "description": "Cities borrowers and partners can choose.",
+        "add": "Add City",
+        "created": "City created",
+        "emptyTitle": "No Cities Yet",
+        "emptyBody": "Create the first one with Add City.",
+        "remove": "Remove",
+        "removeTitle": "Remove {name}?",
+        "removeBody": "This cannot be undone."
+      },
+      "pincodes": {
+        "eyebrow": "Catalog",
+        "title": "Pincodes",
+        "description": "Pincode to city and state look-up.",
+        "add": "Add Pincode",
+        "created": "Pincode created",
+        "emptyTitle": "No Pincodes Yet",
+        "emptyBody": "Create the first one with Add Pincode.",
+        "remove": "Remove",
+        "removeTitle": "Remove {name}?",
+        "removeBody": "This cannot be undone."
+      },
+      "aliases": {
+        "eyebrow": "Catalog",
+        "title": "Look-Up Aliases",
+        "description": "Other spellings that map to a city, state or loan category during imports.",
+        "add": "Add Alias",
+        "created": "Alias created",
+        "emptyTitle": "No Look-Up Aliases Yet",
+        "emptyBody": "Create the first one with Add Alias.",
+        "remove": "Remove",
+        "removeTitle": "Remove {name}?",
+        "removeBody": "This cannot be undone."
+      },
+      "attributes": {
+        "eyebrow": "Configuration",
+        "title": "Attributes",
+        "description": "The facts FundenFlo knows about borrowers, with their type, sensitivity and allowed sources.",
+        "add": "Add Attribute",
+        "created": "Attribute created",
+        "emptyTitle": "No Attributes Yet",
+        "emptyBody": "Create the first one with Add Attribute.",
+        "remove": "Remove",
+        "removeTitle": "Remove {name}?",
+        "removeBody": "This cannot be undone."
+      },
+      "questions": {
+        "eyebrow": "Configuration",
+        "title": "Questions",
+        "description": "The question bank used by question sets.",
+        "add": "Add Question",
+        "created": "Question created",
+        "emptyTitle": "No Questions Yet",
+        "emptyBody": "Create the first one with Add Question.",
+        "remove": "Remove",
+        "removeTitle": "Remove {name}?",
+        "removeBody": "This cannot be undone."
+      },
+      "consentPurposes": {
+        "eyebrow": "Consents",
+        "title": "Consent Purposes",
+        "description": "What borrowers can agree to, and on which lawful basis.",
+        "add": "Add Purpose",
+        "created": "Purpose created",
+        "emptyTitle": "No Consent Purposes Yet",
+        "emptyBody": "Create the first one with Add Purpose.",
+        "remove": "Remove",
+        "removeTitle": "Remove {name}?",
+        "removeBody": "This cannot be undone."
+      },
+      "notificationTemplates": {
+        "eyebrow": "Configuration",
+        "title": "Message Templates",
+        "description": "SMS, email and WhatsApp texts with placeholders and DLT ids.",
+        "add": "Add Template",
+        "created": "Template created",
+        "emptyTitle": "No Message Templates Yet",
+        "emptyBody": "Create the first one with Add Template.",
+        "remove": "Remove",
+        "removeTitle": "Remove {name}?",
+        "removeBody": "This cannot be undone."
+      },
+      "documentTypes": {
+        "eyebrow": "Documents",
+        "title": "Document Types",
+        "description": "Documents borrowers upload: accepted files, period, freshness and what they prove.",
+        "add": "Add Document Type",
+        "created": "Document type created",
+        "emptyTitle": "No Document Types Yet",
+        "emptyBody": "Create the first one with Add Document Type.",
+        "remove": "Remove",
+        "removeTitle": "Remove {name}?",
+        "removeBody": "This cannot be undone."
+      },
+      "leadSources": {
+        "eyebrow": "Lead Setup",
+        "title": "Lead Sources",
+        "description": "Where leads come from and which consent they carry.",
+        "add": "Add Lead Source",
+        "created": "Lead source created",
+        "emptyTitle": "No Lead Sources Yet",
+        "emptyBody": "Create the first one with Add Lead Source.",
+        "remove": "Remove",
+        "removeTitle": "Remove {name}?",
+        "removeBody": "This cannot be undone."
+      },
+      "apiClients": {
+        "eyebrow": "Lead Setup",
+        "title": "API Keys",
+        "description": "Keys that let websites and partners send leads to FundenFlo.",
+        "add": "Create API Key",
+        "created": "API key created",
+        "emptyTitle": "No API Keys Yet",
+        "emptyBody": "Create the first one with Create API Key.",
+        "remove": "Revoke Key",
+        "removeTitle": "Revoke {name}?",
+        "removeBody": "Calls with this key stop working at once."
+      },
+      "lenders": {
+        "eyebrow": "Lenders & Partners",
+        "title": "Lenders",
+        "description": "Lenders on FundenFlo with their agreements and contacts.",
+        "add": "Add Lender",
+        "created": "Lender created",
+        "emptyTitle": "No Lenders Yet",
+        "emptyBody": "Create the first one with Add Lender.",
+        "remove": "Remove",
+        "removeTitle": "Remove {name}?",
+        "removeBody": "This cannot be undone."
+      }
+    },
+    "children": {
+      "subSegments": {
+        "title": "Sub-Segments",
+        "add": "Add Sub-Segment",
+        "edit": "Edit Sub-Segment",
+        "saved": "Sub-segment saved",
+        "empty": "No sub-segments yet."
+      },
+      "purposes": {
+        "title": "Purposes",
+        "add": "Add Purpose",
+        "edit": "Edit Purpose",
+        "saved": "Purpose saved",
+        "empty": "No purposes yet."
+      },
+      "agreements": {
+        "title": "Agreements",
+        "add": "Add Agreement",
+        "edit": "Edit Agreement",
+        "saved": "Agreement saved",
+        "empty": "No agreements yet. A lender needs an active agreement before its products can match."
+      },
+      "contacts": {
+        "title": "Contacts",
+        "add": "Add Contact",
+        "edit": "Edit Contact",
+        "saved": "Contact saved",
+        "empty": "No contacts yet."
+      }
+    },
+    "tabs": {
+      "catalog": {
+        "label": "Catalog sections",
+        "segments": "Segments",
+        "categories": "Loan Categories",
+        "cities": "Cities",
+        "pincodes": "Pincodes",
+        "aliases": "Aliases"
+      },
+      "consents": {
+        "label": "Consent sections",
+        "purposes": "Purposes",
+        "templates": "Templates"
+      },
+      "leadSources": {
+        "label": "Lead source sections",
+        "sources": "Lead Sources",
+        "apiClients": "API Keys"
+      },
+      "documents": {
+        "label": "Document sections",
+        "types": "Document Types",
+        "requirements": "Requirements"
+      },
+      "attributes": {
+        "label": "Attribute sections",
+        "attributes": "Attributes",
+        "playground": "Condition Playground"
+      }
+    },
+    "config": {
+      "eyebrow": "Versioned Configuration",
+      "new": "New Document",
+      "name": "Name",
+      "key": "Key",
+      "keyHint": "Lowercase words separated by dots, such as score.msme",
+      "descriptionLabel": "Description (optional)",
+      "content": "Content (JSON)",
+      "contentHint": "Start with {} if you are not sure; issues are listed after saving.",
+      "jsonInvalid": "This is not valid JSON.",
+      "createTitle": "New Document",
+      "createBody": "Creates version 1 as a draft. Nothing changes for borrowers until a checker approves it and it is published.",
+      "create": "Create Draft",
+      "created": "Created",
+      "live": "Live",
+      "open": "In Progress",
+      "versions": "Versions",
+      "status": "Status",
+      "updated": "Updated",
+      "anyStatus": "Any status",
+      "emptyTitle": "No Documents Yet",
+      "emptyBody": "Create the first document with New Document.",
+      "versionNumber": "Version {number}",
+      "back": "All Documents",
+      "unavailable": "This document is not available.",
+      "liveVersion": "Version {number} is live",
+      "noLive": "Nothing is live yet",
+      "versionTitle": "Version {number}",
+      "saveDraft": "Save Draft",
+      "submit": "Submit For Approval",
+      "review": "Review Change",
+      "publish": "Publish",
+      "branch": "New Version From This",
+      "retire": "Retire",
+      "issues": "Issues to fix",
+      "editHint": "Edit the JSON, save the draft, then submit it for approval.",
+      "readOnly": "{status} versions cannot be edited. Start a new version to change it.",
+      "notes": "Notes",
+      "effectiveFrom": "Effective from",
+      "publishedAt": "Published",
+      "changeRequest": "Change request",
+      "hash": "Content hash",
+      "retiredAt": "Retired",
+      "saved": "Draft saved",
+      "savedWithIssues": "Draft saved with {count, plural, one {# issue} other {# issues}} to fix",
+      "submitted": "Submitted for approval",
+      "published": "Published",
+      "retired": "Version retired",
+      "branched": "Version {number} created",
+      "submitTitle": "Submit For Approval",
+      "submitBody": "A different team member reviews the change before it can be published.",
+      "reason": "Reason",
+      "retireTitle": "Retire This Version",
+      "retireBody": "A retired version is no longer used anywhere.",
+      "publishTitle": "Publish This Version",
+      "publishBody": "The version goes live at once, or at the time you choose.",
+      "effectiveFromOptional": "Go live at (optional)",
+      "document": "Document",
+      "saveName": "Save Name",
+      "deactivate": "Deactivate",
+      "activate": "Activate",
+      "documentSaved": "Document updated",
+      "tryInput": "Input (JSON)",
+      "run": "Run",
+      "tryTitle": {
+        "lender_product": "Simulate Borrowers",
+        "question_set": "Preview Questions",
+        "routing_rule": "Simulate Routing For A Lead"
+      }
+    },
+    "configResources": {
+      "question_set": {
+        "title": "Question Sets",
+        "description": "Which questions borrowers see at each stage, by segment and category."
+      },
+      "routing_rule": {
+        "title": "Routing Rules",
+        "description": "How leads are offered to partner firms."
+      },
+      "consent_template": {
+        "title": "Consent Templates",
+        "description": "The consent texts borrowers agree to, per context and language."
+      },
+      "document_requirement": {
+        "title": "Document Requirements",
+        "description": "Which documents each case needs at each stage."
+      },
+      "lender_product": {
+        "title": "Lender Products",
+        "description": "Lender criteria, amounts, coverage and pricing used for matching."
+      },
+      "scoring_model": {
+        "title": "Scoring Models",
+        "description": "How the Financial Health Score is calculated."
+      },
+      "improvement_rule": {
+        "title": "Improvement Rules",
+        "description": "Tips borrowers see to improve their score."
+      },
+      "commission_scheme": {
+        "title": "Commission Schemes",
+        "description": "Lender fees and partner payouts for disbursed loans."
+      }
+    },
+    "changeRequests": {
+      "eyebrow": "Maker-Checker",
+      "title": "Change Requests",
+      "description": "Configuration changes waiting for a second person to approve.",
+      "status": "Status",
+      "anyStatus": "Any status",
+      "change": "Change",
+      "resource": "Configuration",
+      "changes": "Changes",
+      "raised": "Raised",
+      "emptyTitle": "Nothing To Review",
+      "emptyBody": "No change requests in this view.",
+      "emptyAll": "No change requests yet.",
+      "versionOf": "{key} · version {number}",
+      "back": "All Change Requests",
+      "approve": "Approve",
+      "reject": "Reject",
+      "approved": "Change approved. The maker can publish it now.",
+      "rejected": "Change rejected and sent back as a draft",
+      "diff": "What Changes",
+      "comparedWith": "Compared with version {number}",
+      "firstVersion": "First version of this document",
+      "noChanges": "No differences found.",
+      "truncated": "Only the first changes are shown.",
+      "details": "Details",
+      "decided": "Decided",
+      "decisionNote": "Decision note",
+      "versionStatus": "Version status",
+      "openVersion": "Open The Version",
+      "makerChecker": "You cannot approve a change you submitted.",
+      "rejectTitle": "Reject This Change",
+      "approveTitle": "Approve This Change",
+      "note": "Note",
+      "unavailable": "This change request is not available."
+    },
+    "users": {
+      "eyebrow": "Administration",
+      "title": "Users",
+      "description": "Everyone who can sign in to FundenFlo, with their roles.",
+      "search": "Search by name, mobile or email",
+      "status": "Status",
+      "anyStatus": "Any status",
+      "name": "Name",
+      "unnamed": "No name yet",
+      "memberships": "Roles",
+      "signup": "Signed up with",
+      "lastLogin": "Last sign-in",
+      "emptyTitle": "No Users Found",
+      "emptyBody": "Try another search.",
+      "back": "All Users",
+      "suspend": "Suspend",
+      "reactivate": "Reactivate",
+      "suspended": "User suspended",
+      "reactivated": "User reactivated",
+      "suspendTitle": "Suspend This User?",
+      "suspendBody": "They are signed out everywhere and cannot sign in until you reactivate them.",
+      "reactivateTitle": "Reactivate This User?",
+      "reactivateBody": "They can sign in again.",
+      "addMembership": "Add Role",
+      "addMembershipBody": "Give this user a role in an organisation.",
+      "add": "Add",
+      "membershipAdded": "Role added",
+      "membershipUpdated": "Role updated",
+      "noMemberships": "No roles yet.",
+      "details": "Details",
+      "referralCode": "Referral code",
+      "created": "Joined",
+      "sessions": "Active sessions",
+      "logins": "Sign-in Methods",
+      "unavailable": "This user is not available.",
+      "setStatus": {
+        "active": "Activate",
+        "suspended": "Suspend",
+        "revoked": "Revoke"
+      }
+    },
+    "organizations": {
+      "organization": "Organisation",
+      "chooseOrganization": "Choose an organisation",
+      "role": "Role",
+      "chooseRole": "Choose a role"
+    },
+    "invitations": {
+      "eyebrow": "Administration",
+      "title": "Invitations",
+      "description": "Invite team members, lender users and partner staff.",
+      "invite": "Invite",
+      "status": "Status",
+      "anyStatus": "Any status",
+      "recipient": "Sent to",
+      "organization": "Organisation",
+      "role": "Role",
+      "expires": "Expires",
+      "revoke": "Revoke",
+      "revoked": "Invitation revoked",
+      "emptyTitle": "No Pending Invitations",
+      "emptyBody": "Invitations waiting to be accepted appear here.",
+      "emptyAll": "No invitations yet.",
+      "inviteTitle": "Send An Invitation",
+      "inviteBody": "Staff and lender users get an email; partner staff get an SMS.",
+      "send": "Send Invitation",
+      "sent": "Invitation sent to {recipient}",
+      "mobile": "Mobile Number",
+      "email": "Work Email",
+      "revokeTitle": "Revoke the invitation to {recipient}?",
+      "revokeBody": "The link stops working."
+    },
+    "audit": {
+      "eyebrow": "Administration",
+      "title": "Audit Trail",
+      "description": "Every change, who made it and when. The trail is hash-chained so tampering shows.",
+      "verify": "Verify The Chain",
+      "chainValid": "Chain intact: {checked} events checked (sequence {from} to {to}).",
+      "chainBroken": "Chain broken at sequence {at}. Escalate to compliance.",
+      "action": "Action",
+      "entity": "Entity",
+      "actor": "By",
+      "seq": "Sequence",
+      "when": "When",
+      "request": "Request",
+      "ip": "IP",
+      "hash": "Hash",
+      "actionFilter": "Action, such as lead.created",
+      "entityFilter": "Entity type",
+      "entityIdFilter": "Entity id",
+      "emptyTitle": "No Events Found",
+      "emptyBody": "Try other filters."
+    },
+    "partners": {
+      "eyebrow": "Lenders & Partners",
+      "title": "Partner Firms",
+      "description": "Verify new firms, set their level and suspend or reinstate them.",
+      "search": "Search firms",
+      "verification": "Verification",
+      "anyStatus": "Any status",
+      "name": "Firm",
+      "kind": "Kind",
+      "levelLabel": "Level",
+      "organization": "Firm status",
+      "emptyTitle": "No Firms Found",
+      "emptyBody": "Try other filters.",
+      "recommendApprove": "Recommend Approval",
+      "decideApprove": "Approve",
+      "reject": "Reject",
+      "level": "Change Level",
+      "suspend": "Suspend",
+      "reinstate": "Reinstate",
+      "recommendation": "Recommendation",
+      "membership": "Membership number",
+      "kyc": "KYC",
+      "areas": "Service areas",
+      "capacity": "Capacity",
+      "paused": "Paused",
+      "noLimit": "No limit",
+      "maxOpen": "Up to {count} open leads",
+      "joined": "Registered",
+      "makerChecker": "Two different team members must approve a firm: the first recommends, the second decides.",
+      "note": "Note",
+      "titles": {
+        "approve": "Approve This Firm",
+        "reject": "Reject This Firm",
+        "level": "Change The Level",
+        "suspend": "Suspend This Firm",
+        "reinstate": "Reinstate This Firm"
+      },
+      "confirm": {
+        "approve": "Approve",
+        "reject": "Reject",
+        "level": "Save Level",
+        "suspend": "Suspend",
+        "reinstate": "Reinstate"
+      },
+      "done": {
+        "approve": "Decision recorded",
+        "reject": "Firm rejected",
+        "level": "Level changed",
+        "suspend": "Firm suspended",
+        "reinstate": "Firm reinstated"
+      }
+    },
+    "imports": {
+      "eyebrow": "Lead Setup",
+      "title": "Lead Imports",
+      "description": "Upload a CSV or Excel file of leads, map its columns, check it and add the good rows.",
+      "new": "Upload File",
+      "choose": "Choose a file to import",
+      "uploadFailed": "The file could not be uploaded. Try again.",
+      "uploaded": "{name} uploaded",
+      "status": "Status",
+      "anyStatus": "Any status",
+      "file": "File",
+      "rows": "Rows",
+      "rowCounts": "{valid} good · {invalid} with issues · {total} total",
+      "committed": "Added",
+      "created": "Uploaded",
+      "emptyTitle": "No Imports Yet",
+      "emptyBody": "Upload a CSV or Excel file to start.",
+      "back": "All Imports",
+      "mapping": "Map Columns",
+      "mappingBody": "Pick which column of the file holds each field. Unmapped fields stay empty.",
+      "notMapped": "Not mapped",
+      "defaults": "Defaults For Every Row (JSON)",
+      "defaultsHint": "Source, segment, campaign and the consent the rows were collected with.",
+      "jsonInvalid": "This is not valid JSON.",
+      "saveAndValidate": "Save And Check Rows",
+      "validating": "Checking the rows…",
+      "issues": "Rows With Issues",
+      "noIssues": "No issues.",
+      "rowNumber": "Row {number}",
+      "more": "Show More",
+      "summary": "Rows",
+      "total": "Total",
+      "valid": "Good",
+      "invalid": "With issues",
+      "failed": "Failed",
+      "undone": "Undone",
+      "sample": "First Rows",
+      "working": "Working on it. This page refreshes by itself.",
+      "commit": "Add {count} Leads",
+      "commitShort": "Add Leads",
+      "commitTitle": "Add These Leads?",
+      "commitBody": "Good rows become leads and are routed like any new lead. Rows with issues are skipped.",
+      "committing": "Adding the leads…",
+      "undo": "Undo Import",
+      "undoTitle": "Undo This Import?",
+      "undoBody": "Leads from this file that nobody has worked yet are removed.",
+      "undoing": "Undoing the import…",
+      "unavailable": "This import is not available."
+    },
+    "conditions": {
+      "title": "Condition Playground",
+      "description": "Check a rule before you use it in a question set, lender product or scoring model.",
+      "condition": "Condition (JSON)",
+      "conditionHint": "For example all, any, not, or a single attribute test.",
+      "facts": "Facts To Test With (JSON)",
+      "factsHint": "Attribute keys and values, as a borrower would have them.",
+      "jsonInvalid": "This is not valid JSON.",
+      "validate": "Validate",
+      "evaluate": "Evaluate",
+      "eyebrow": "Configuration",
+      "try": "Try A Condition"
     }
   }
 }

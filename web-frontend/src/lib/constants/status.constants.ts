@@ -129,6 +129,15 @@ export const REVIEW_STATUS_TONE: Record<string, StatusTone> = {
   reversed: StatusTone.Danger,
   not_started: StatusTone.Neutral,
   in_review: StatusTone.Info,
+  draft: StatusTone.Neutral,
+  published: StatusTone.Success,
+  retired: StatusTone.Neutral,
+  withdrawn: StatusTone.Neutral,
+  added: StatusTone.Success,
+  removed: StatusTone.Danger,
+  changed: StatusTone.Info,
+  inactive: StatusTone.Neutral,
+  deleted: StatusTone.Danger,
 };
 
 export const DOCUMENT_STATUS_TONE: Record<string, StatusTone> = {
