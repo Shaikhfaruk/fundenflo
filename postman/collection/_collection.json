@@ -494,6 +494,30 @@
     {
       "key": "documentId",
       "value": ""
+    },
+    {
+      "key": "pan",
+      "value": ""
+    },
+    {
+      "key": "coApplicantMobile",
+      "value": ""
+    },
+    {
+      "key": "applicationPartyId",
+      "value": ""
+    },
+    {
+      "key": "partyChallengeId",
+      "value": ""
+    },
+    {
+      "key": "partnerBorrowerMobile",
+      "value": ""
+    },
+    {
+      "key": "borrowerChallengeId",
+      "value": ""
     }
   ]
 }

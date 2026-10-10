@@ -90,8 +90,8 @@ export class ConsentRequestService {
   @Transactional()
   private async prepare(partyId: string, input: ConsentRequestInput) {
     const template = await this.consents.template(input.contextKey);
-    const mobile = (await this.parties.listContacts(partyId, true)).find((contact) => contact.type === ContactType.mobile && !contact.doNotContact && !contact.invalid && contact.value);
-    if (!mobile?.value) {
+    const mobile = await this.parties.reachableContact(partyId, ContactType.mobile);
+    if (!mobile) {
       throw new AppError(ErrorCode.VALIDATION_FAILED, { details: [{ path: 'party', code: 'no_reachable_mobile', message: 'this person has no mobile that may be contacted' }] });
     }
     await this.repo.cancelPendingRequests(partyId, template.versionId);

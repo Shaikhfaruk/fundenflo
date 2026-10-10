@@ -1,7 +1,7 @@
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
 
-import { type ContactType, MatchReviewStatus, PartyKind, PartyStatus, type RelationshipType } from '../../../common/enums/db.enums.js';
+import { type ContactType, type IdentifierType, MatchReviewStatus, PartyKind, PartyStatus, type RelationshipType } from '../../../common/enums/db.enums.js';
 import type { Prisma } from '../../../generated/prisma/client.js';
 import type { PrismaTx } from '../../../infrastructure/database/database.types.js';
 
@@ -68,6 +68,18 @@ export class PartyRepository {
       where: { id: { in: ids } },
       include: { contacts: { orderBy: { createdAt: 'asc' } }, identifiers: true, user: { select: { id: true } }, organization: { select: { id: true, name: true, type: true } } },
     });
+  }
+
+  findIdentifierOwners(type: IdentifierType, valueHash: string) {
+    return this.txHost.tx.partyIdentifier.findMany({ where: { type, valueHash } });
+  }
+
+  findIdentifier(partyId: string, type: IdentifierType) {
+    return this.txHost.tx.partyIdentifier.findUnique({ where: { partyId_type: { partyId, type } } });
+  }
+
+  upsertIdentifier(partyId: string, type: IdentifierType, data: { valueEnc: string; valueHash: string; valueMasked: string; verifiedAt: Date | null; source: string }) {
+    return this.txHost.tx.partyIdentifier.upsert({ where: { partyId_type: { partyId, type } }, create: { partyId, type, ...data }, update: data });
   }
 
   listIdentifiers(partyId: string) {

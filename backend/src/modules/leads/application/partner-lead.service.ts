@@ -147,6 +147,13 @@ export class PartnerLeadService {
     return this.conversions.report(assignment, input, actor.userId);
   }
 
+  async conversionSource(leadId: string, ability: AppAbility) {
+    const assignment = await this.workable(leadId, ability, 'convert');
+    await this.assertShareable(assignment);
+    const { lead } = assignment;
+    return { leadId: lead.id, partyId: lead.partyId, segmentKey: lead.segmentKey, subSegmentKey: lead.subSegmentKey, categoryKey: lead.categoryKey, businessName: lead.businessParty?.displayName ?? null };
+  }
+
   async inbox(ability: AppAbility, query: { view?: PartnerInboxView; cursor?: string; limit: number }) {
     const window = pageWindow(query);
     const where = { AND: [accessibleBy(ability, AppAction.Read).ofType('LeadAssignment'), { id: window.idFilter, status: { in: query.view ? INBOX[query.view] : DEFAULT_INBOX } }] };

@@ -2,7 +2,7 @@ import { accessibleBy } from '@casl/prisma/runtime';
 import { Transactional } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
 
-import { AnswerChannel, ApplicationChannel, ApplicationEventType, ApplicationStatus } from '../../../common/enums/db.enums.js';
+import { AnswerChannel, ApplicationChannel, ApplicationEventType, ApplicationPartyConsent, ApplicationPartyRole, ApplicationPartyStatus, ApplicationStatus, ConsentChannel } from '../../../common/enums/db.enums.js';
 import { AppError } from '../../../common/errors/app-error.js';
 import { ErrorCode } from '../../../common/errors/error-codes.js';
 import { transitionOrThrow } from '../../../common/errors/transition.js';
@@ -19,19 +19,21 @@ import type { Prisma } from '../../../generated/prisma/client.js';
 import { AppAction, type AppAbility } from '../../access/domain/ability.types.js';
 import { ChangeRecorder } from '../../audit/application/change-recorder.service.js';
 import { AuditAction, AuditEntity } from '../../audit/domain/audit.constants.js';
+import { BorrowerKycService } from '../../borrowers/application/borrower-kyc.service.js';
 import { BorrowerProfileService } from '../../borrowers/application/borrower-profile.service.js';
 import { CatalogQueryService } from '../../catalog/application/catalog-query.service.js';
 import { PlaceLocator } from '../../catalog/application/place-locator.service.js';
-import { ConsentService } from '../../consents/application/consent.service.js';
+import { type ConsentItemInput, ConsentService } from '../../consents/application/consent.service.js';
 import { JOURNEY_CONSENT_CONTEXT } from '../../consents/domain/consent.constants.js';
 import { DocumentChecklistService } from '../../documents/application/document-checklist.service.js';
 import { DocumentStage } from '../../documents/domain/document.constants.js';
 import type { DocumentOwnerScope } from '../../documents/domain/document-owner.types.js';
 import { LeadService } from '../../leads/application/lead.service.js';
+import { PartnerLeadService } from '../../leads/application/partner-lead.service.js';
 import { type AnswerInput, QuestionnaireService } from '../../questionnaires/application/questionnaire.service.js';
 import { QuestionnaireStage } from '../../questionnaires/domain/questionnaire.constants.js';
-import { APPLICATION_REFRESH_BATCH, APPLICATION_TIMELINE_LIMIT } from '../domain/application.constants.js';
-import { computeJourney, JourneyStage } from '../domain/journey.js';
+import { APPLICATION_REFRESH_BATCH, APPLICATION_TIMELINE_LIMIT, CO_PARTY_ROLES } from '../domain/application.constants.js';
+import { computeJourney, type JourneyFacts, JourneyStage } from '../domain/journey.js';
 import { type ApplicationRow, ApplicationRepository } from '../infrastructure/application.repository.js';
 import { ApplicationTimeline } from './application-timeline.service.js';
 import { toApplicationEventView, toApplicationView } from './application.views.js';
@@ -39,6 +41,16 @@ import { toApplicationEventView, toApplicationView } from './application.views.j
 export type CreateApplicationInput = { segment: string; subSegment?: string; businessName?: string; category?: string };
 
 export type RequirementPatch = { category?: string; purpose?: string | null; purposeNote?: string | null; amountPaise?: number; tenureMonths?: number; cityId?: string; city?: string; pincode?: string };
+
+export type ApplicationConsentInput = { templateVersionId: string; items: ConsentItemInput[] };
+
+export type ApplicationFilters = { status?: ApplicationStatus; category?: string; partnerOrganizationId?: string; channel?: ApplicationChannel; q?: string };
+
+export type LeadStartInput = { segment?: string; subSegment?: string; businessName?: string; category?: string };
+
+type CaseProfile = { id: string; partyId: string; actingPartyId: string; segmentKey: string; subSegmentKey: string | null };
+
+const PRIMARY_ROLES = [ApplicationPartyRole.borrower, ApplicationPartyRole.applicant];
 
 export type ApplicationActor = { userId: string; actingPartyId: string; channel: ApplicationChannel; partnerOrganizationId: string | null; answerChannel: AnswerChannel };
 
@@ -48,12 +60,14 @@ export class ApplicationService {
     private readonly applications: ApplicationRepository,
     private readonly timeline: ApplicationTimeline,
     private readonly borrowers: BorrowerProfileService,
+    private readonly kyc: BorrowerKycService,
     private readonly catalog: CatalogQueryService,
     private readonly places: PlaceLocator,
     private readonly questionnaires: QuestionnaireService,
     private readonly consents: ConsentService,
     private readonly checklists: DocumentChecklistService,
     private readonly leads: LeadService,
+    private readonly partnerLeads: PartnerLeadService,
     private readonly refs: RefGenerator,
     private readonly changes: ChangeRecorder,
   ) {}
@@ -61,22 +75,43 @@ export class ApplicationService {
   @Transactional()
   async create(input: CreateApplicationInput, actor: ApplicationActor) {
     const profile = await this.borrowers.ensure(actor.actingPartyId, { segment: input.segment, subSegment: input.subSegment, businessName: input.businessName }, actor.userId, actor.partnerOrganizationId);
-    const category = input.category ? await this.checkedCategory(input.category, input.segment) : null;
+    return this.openCase({ id: profile.id, partyId: profile.party.id, actingPartyId: profile.actingParty.id, segmentKey: profile.segmentKey, subSegmentKey: input.subSegment ?? profile.subSegmentKey }, input.category, actor);
+  }
+
+  @Transactional()
+  async createForProfile(borrowerProfileId: string, category: string | undefined, actor: ApplicationActor, ability: AppAbility) {
+    const profile = await this.borrowers.get(borrowerProfileId, ability, AppAction.Update);
+    return this.openCase(profile, category, actor);
+  }
+
+  @Transactional()
+  async startFromLead(leadId: string, input: LeadStartInput, actor: ApplicationActor, ability: AppAbility) {
+    const source = await this.partnerLeads.conversionSource(leadId, ability);
+    const segment = input.segment ?? source.segmentKey;
+    if (!segment) throw new AppError(ErrorCode.VALIDATION_FAILED, { details: [{ path: 'segment', code: 'required', message: 'the lead has no segment; choose one' }] });
+    const profile = await this.borrowers.ensure(source.partyId, { segment, subSegment: input.subSegment ?? source.subSegmentKey ?? undefined, businessName: input.businessName ?? source.businessName ?? undefined }, actor.userId, actor.partnerOrganizationId);
+    return this.openCase({ id: profile.id, partyId: profile.party.id, actingPartyId: profile.actingParty.id, segmentKey: profile.segmentKey, subSegmentKey: profile.subSegmentKey }, input.category ?? source.categoryKey ?? undefined, actor, source.leadId);
+  }
+
+  private async openCase(profile: CaseProfile, categoryInput: string | undefined, actor: ApplicationActor, preferredLeadId?: string) {
+    const category = categoryInput ? await this.checkedCategory(categoryInput, profile.segmentKey) : null;
     const application = await this.applications.create({
       ref: await this.refs.next(RefKind.Application),
       borrowerProfileId: profile.id,
-      partyId: profile.party.id,
-      actingPartyId: actor.actingPartyId,
+      partyId: profile.partyId,
+      actingPartyId: profile.actingPartyId,
       channel: actor.channel,
       partnerOrganizationId: actor.partnerOrganizationId,
-      segmentKey: input.segment,
-      subSegmentKey: input.subSegment ?? profile.subSegmentKey,
+      segmentKey: profile.segmentKey,
+      subSegmentKey: profile.subSegmentKey,
       categoryKey: category?.key ?? null,
       journeyStage: category ? JourneyStage.Requirement : JourneyStage.Category,
       createdByUserId: actor.userId,
     });
-    await this.timeline.record(application.id, ApplicationEventType.created, { toStatus: ApplicationStatus.draft, data: { channel: actor.channel, segment: input.segment, category: category?.key ?? null } });
-    const leadId = await this.leads.convertToApplication([...new Set([actor.actingPartyId, profile.party.id])], application.id);
+    await this.applications.createParty({ applicationId: application.id, partyId: application.partyId, role: ApplicationPartyRole.borrower, addedByUserId: actor.userId });
+    if (application.actingPartyId !== application.partyId) await this.applications.createParty({ applicationId: application.id, partyId: application.actingPartyId, role: ApplicationPartyRole.applicant, addedByUserId: actor.userId });
+    await this.timeline.record(application.id, ApplicationEventType.created, { toStatus: ApplicationStatus.draft, data: { channel: actor.channel, segment: profile.segmentKey, category: category?.key ?? null } });
+    const leadId = await this.leads.convertToApplication([...new Set([profile.actingPartyId, profile.partyId])], application.id, preferredLeadId);
     if (leadId) {
       await this.applications.update(application.id, { leadId });
       await this.timeline.record(application.id, ApplicationEventType.lead_linked, { data: { leadId } });
@@ -85,9 +120,17 @@ export class ApplicationService {
     return toApplicationView(await this.require(application.id));
   }
 
-  async list(ability: AppAbility, query: PageQuery & { status?: ApplicationStatus }) {
+  async list(ability: AppAbility, query: PageQuery & ApplicationFilters) {
     const window = pageWindow(query);
-    const rows = await this.applications.list({ AND: [accessibleBy(ability, AppAction.Read).ofType('LoanApplication'), { id: window.idFilter, status: query.status }] }, window.take);
+    const filters: Prisma.LoanApplicationWhereInput = {
+      id: window.idFilter,
+      status: query.status,
+      categoryKey: query.category,
+      partnerOrganizationId: query.partnerOrganizationId,
+      channel: query.channel,
+      ...(query.q ? { ref: { startsWith: query.q.toUpperCase() } } : {}),
+    };
+    const rows = await this.applications.list({ AND: [accessibleBy(ability, AppAction.Read).ofType('LoanApplication'), filters] }, window.take);
     return toPage(rows, query.limit, toApplicationView);
   }
 
@@ -176,6 +219,30 @@ export class ApplicationService {
     return { partyId: application.partyId, borrowerProfileId: application.borrowerProfileId, applicationId: application.id, partnerOrganizationId: application.partnerOrganizationId };
   }
 
+  @Transactional()
+  async recordConsent(id: string, input: ApplicationConsentInput, userId: string, ability: AppAbility, locale: Locale) {
+    const application = await this.lockedForChange(id, ability);
+    const result = await this.consents.record(application.actingPartyId, input.items, { channel: ConsentChannel.app, templateVersionId: input.templateVersionId, locale, capturedByUserId: userId, applicationId: id }, locale);
+    await this.timeline.record(id, ApplicationEventType.consent_recorded, { data: { purposes: input.items.map((item) => item.purpose), missingRequired: result.missingRequired } });
+    await this.refreshStage(id);
+    return { consents: result.consents, missingRequired: result.missingRequired, application: toApplicationView(await this.require(id)) };
+  }
+
+  async openForChange(id: string, ability: AppAbility) {
+    const application = await this.visible(id, ability, AppAction.Update);
+    if (!PRE_SUBMISSION_APPLICATION_STATES.includes(application.status)) throw new AppError(ErrorCode.INVALID_TRANSITION, { details: { from: application.status, event: 'edit', allowed: [] } });
+    return application;
+  }
+
+  async lockedForChange(id: string, ability: AppAbility) {
+    await this.applications.lock(id);
+    return this.openForChange(id, ability);
+  }
+
+  async refresh(id: string) {
+    await this.refreshStage(id);
+  }
+
   async refreshForParties(partyIds: string[]) {
     const open = await this.applications.openForParties(partyIds, [...PRE_SUBMISSION_APPLICATION_STATES], APPLICATION_REFRESH_BATCH);
     for (const { id } of open) await this.refreshLocked(id);
@@ -215,14 +282,26 @@ export class ApplicationService {
 
   private async refreshStage(id: string) {
     const application = await this.require(id);
-    const journey = await this.journeyOf(application, DEFAULT_LOCALE);
+    const facts = await this.journeyFacts(application, DEFAULT_LOCALE);
+    const journey = computeJourney(facts);
+    await this.syncPrimaryConsent(application.id, facts.consentMissing.length === 0);
     if (application.status === ApplicationStatus.pre_screened && journey.completed.includes(JourneyStage.Consent)) await this.transition(application, ApplicationEvent.RequestDocuments);
     if (journey.stage === application.journeyStage) return;
     await this.applications.update(id, { journeyStage: journey.stage });
     await this.timeline.record(id, ApplicationEventType.stage_changed, { data: { from: application.journeyStage, to: journey.stage } });
   }
 
+  private async syncPrimaryConsent(applicationId: string, granted: boolean) {
+    const primary = { applicationId, role: { in: PRIMARY_ROLES }, status: ApplicationPartyStatus.active };
+    if (granted) await this.applications.updatePartiesWhere({ ...primary, consentStatus: { not: ApplicationPartyConsent.granted } }, { consentStatus: ApplicationPartyConsent.granted, consentedAt: new Date() });
+    else await this.applications.updatePartiesWhere({ ...primary, consentStatus: ApplicationPartyConsent.granted }, { consentStatus: ApplicationPartyConsent.pending, consentedAt: null });
+  }
+
   private async journeyOf(application: ApplicationRow, locale: Locale) {
+    return computeJourney(await this.journeyFacts(application, locale));
+  }
+
+  private async journeyFacts(application: ApplicationRow, locale: Locale): Promise<JourneyFacts> {
     const requirementMissing = [
       ...(application.amountPaise === null ? ['amountPaise'] : []),
       ...(application.tenureMonths === null ? ['tenureMonths'] : []),
@@ -234,18 +313,21 @@ export class ApplicationService {
     const answers = await this.questionnaires.listAnswers(application.partyId, { limit: 100 });
     const consentMissing = await this.consents.missingRequired(application.actingPartyId, JOURNEY_CONSENT_CONTEXT);
     const checklist = await this.checklists.heldChecklist({ stage: DocumentStage.Assessment, segment: application.segmentKey, subSegment: application.subSegmentKey ?? undefined, category: application.categoryKey ?? undefined }, locale, { partyId: application.partyId, applicationId: application.id });
+    const coParties = await this.applications.parties(application.id, ApplicationPartyStatus.active);
+    const detailsVerified = await this.kyc.panVerifiedFor(application.borrowerProfileId);
     const answered = new Set(answers.items.map((answer) => answer.questionKey));
-    return computeJourney({
+    return {
       categoryChosen: application.categoryKey !== null,
       requirementMissing,
       preCheckRemaining: remainingRequired(questionnaire, answered),
       consentMissing,
+      partiesPendingConsent: coParties.filter((row) => (CO_PARTY_ROLES as readonly string[]).includes(row.role) && row.consentStatus !== ApplicationPartyConsent.granted).map((row) => row.id),
       documentsMissing: checklist.items.filter((item) => item.required && !item.conditional && !item.satisfied).map((item) => item.key),
-      detailsVerified: false,
+      detailsVerified,
       scored: false,
       matched: false,
       applied: false,
-    });
+    };
   }
 
   private contextOf(application: ApplicationRow, stage: string): QuestionnaireContext {

@@ -36,7 +36,7 @@
 | `config.changed` · `config.change_requested` · `config.change_decided` · `config.published` · `config.retired` | config-publishing (`config-publishing.service.ts`) | none yet (caches are invalidated directly after commit; M1: notify checkers on `config.change_requested`, catalog availability on `config.published` for lender products) | — | M1 | `useful` | §6.9; spec `config-publishing` asserts the `config.published` outbox row |
 | `question.changed` | questionnaires (`question.service.ts`) | none yet | — | M1 | `useful` | §6.2 |
 | `answers.recorded` | questionnaires (`questionnaire.service.ts`) | none yet (M1: lead quality re-score, routing re-evaluation) | — | M1 | `useful` | §6.2 |
-| `borrower_profile.changed` | borrowers (`borrower-profile.service.ts`, via `ChangeRecorder`) | none yet | — | M3 | `useful` | spec `applications` |
+| `borrower_profile.changed` | borrowers (`borrower-profile.service.ts`, `BorrowerKycService` after a PAN check, via `ChangeRecorder`) | `applications.refresh` | — | M3 | `useful` | specs `applications`, `application-parties-kyc` |
 | `application.created` · `application.updated` · `application.status.changed` | applications (`application.service.ts`, via `ChangeRecorder`) | none yet (M3d sync source and user/partner org rooms; M6 notifications) | user + partner org rooms (planned) | M3 | `useful` | spec `applications`; flow `borrower-journey` |
 | `document.uploaded` | documents (`DocumentService.upload`, via `ChangeRecorder`; payload ids, type, party, application, uploader) | `documents.scan`, `applications.refresh` | — | M3 | `useful` | spec `documents-upload`; flow `documents` |
 | `document.scanned` · `document.rejected` · `document.deleted` | documents (`DocumentScanService`, `DocumentService.remove`) | `applications.refresh` (rejected, deleted); `realtime.publish` (`document.changed`); M5 `documents.extract` on scanned | uploader's user room + partner org room | M3 | `useful` | spec `documents-upload` |
@@ -76,6 +76,7 @@ Room joins are authorised on connect, using the same CASL abilities as HTTP.
 | `lead.first_contact_due` | SMS (`SMS_DLT_TEMPLATE_LEAD_FIRST_CONTACT_DUE`) | assignee (else firm owners) | M1 | `useful` |
 | `lead.first_contact_missed` | email | active ops leads | M1 | `useful` |
 | `follow_up.due` | SMS (`SMS_DLT_TEMPLATE_FOLLOW_UP_DUE`) | follow-up assignee | M1 | `useful` |
+| `consent.otp` | SMS (`SMS_DLT_TEMPLATE_CONSENT_OTP`) | co-applicant or partner-assisted borrower (`ConsentOtpService.send`) | M3 | `useful` |
 | `consent.request` | SMS (later WhatsApp); DLT id `SMS_DLT_TEMPLATE_CONSENT_REQUEST`; link from `CONSENT_LINK_URL` | lead's person | M1 | `useful` |
 | `import.completed` | email | uploader | M1 | `planned` |
 | `analysis.completed` | push, WhatsApp (opt-in) | borrower | M5 | `planned` |

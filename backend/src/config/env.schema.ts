@@ -74,6 +74,7 @@ export const envSchema = z
     SMS_DLT_TEMPLATE_AUTH_OTP: optional(z.string().regex(/^\d{10,30}$/, 'must be a numeric DLT template ID')),
     SMS_DLT_TEMPLATE_INVITATION_MEMBER: optional(z.string().regex(/^\d{10,30}$/, 'must be a numeric DLT template ID')),
     SMS_DLT_TEMPLATE_CONSENT_REQUEST: optional(z.string().regex(/^\d{10,30}$/, 'must be a numeric DLT template ID')),
+    SMS_DLT_TEMPLATE_CONSENT_OTP: optional(z.string().regex(/^\d{10,30}$/, 'must be a numeric DLT template ID')),
     SMS_DLT_TEMPLATE_LEAD_OFFERED: optional(z.string().regex(/^\d{10,30}$/, 'must be a numeric DLT template ID')),
     SMS_DLT_TEMPLATE_LEAD_OFFER_EXPIRING: optional(z.string().regex(/^\d{10,30}$/, 'must be a numeric DLT template ID')),
     SMS_DLT_TEMPLATE_LEAD_HANDED_OVER: optional(z.string().regex(/^\d{10,30}$/, 'must be a numeric DLT template ID')),
@@ -93,6 +94,8 @@ export const envSchema = z
     STORAGE_CONNECTION_STRING: optional(z.string().min(1)),
     STORAGE_ACCOUNT_URL: optional(z.url()),
     STORAGE_CONTAINER: z.string().regex(/^[a-z0-9](?:[a-z0-9-]{1,61}[a-z0-9])$/, 'must be a valid blob container name'),
+
+    KYC_DRIVER: z.enum(['stub']).default('stub'),
 
     ANTIVIRUS_DRIVER: z.enum(['clamav', 'eicar']).default('eicar'),
     CLAMAV_HOST: optional(z.string().min(1)),
@@ -132,6 +135,7 @@ export const envSchema = z
       if (env.EMAIL_DRIVER === 'log') issue('EMAIL_DRIVER', 'a real email provider is required in production');
       if (env.PUSH_DRIVER === 'log') issue('PUSH_DRIVER', 'expo is required in production');
       if (env.ANTIVIRUS_DRIVER !== 'clamav') issue('ANTIVIRUS_DRIVER', 'clamav is required in production');
+      if (env.KYC_DRIVER === 'stub') issue('KYC_DRIVER', 'a real PAN verification provider is required in production');
       if (env.CRYPTO_DRIVER === 'local') issue('CRYPTO_DRIVER', 'azure_key_vault is required in production');
       if (env.AUTH_OTP_STATIC_CODE) issue('AUTH_OTP_STATIC_CODE', 'must be empty in production');
     }

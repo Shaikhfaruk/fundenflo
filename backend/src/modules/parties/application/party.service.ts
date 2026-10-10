@@ -1,13 +1,16 @@
 import { Injectable } from '@nestjs/common';
 
 import { EventName } from '../../../common/events/event-names.js';
-import { type ContactType, PartyKind, type RelationshipType } from '../../../common/enums/db.enums.js';
+import { ContactType, type IdentifierType, PartyKind, type RelationshipType } from '../../../common/enums/db.enums.js';
 import { AppError } from '../../../common/errors/app-error.js';
 import { ErrorCode } from '../../../common/errors/error-codes.js';
 import { assertVersion } from '../../../common/http/versioning.js';
+import { maskIdentifier } from '../../../engines/party-matching/mask.js';
+import { BlindIndex } from '../../../infrastructure/crypto/blind-index.service.js';
 import { CipherPurpose } from '../../../infrastructure/crypto/crypto.constants.js';
+import { FieldCipher } from '../../../infrastructure/crypto/field-cipher.service.js';
 import { OutboxService } from '../../../infrastructure/outbox/outbox.service.js';
-import type { ContactSource } from '../domain/party.constants.js';
+import { type ContactSource, IDENTIFIER_INDEX_DOMAIN } from '../domain/party.constants.js';
 import { PartyRepository } from '../infrastructure/party.repository.js';
 import { ContactCodec } from './contact-codec.service.js';
 
@@ -29,6 +32,8 @@ export class PartyService {
   constructor(
     private readonly parties: PartyRepository,
     private readonly codec: ContactCodec,
+    private readonly blindIndex: BlindIndex,
+    private readonly cipher: FieldCipher,
     private readonly outbox: OutboxService,
   ) {}
 
@@ -121,6 +126,33 @@ export class PartyService {
       doNotContact: contact.doNotContact,
       invalid: contact.invalidAt !== null,
     }));
+  }
+
+  async reachableContact(partyId: string, type: ContactType = ContactType.mobile) {
+    const contact = (await this.listContacts(partyId, true)).find((candidate) => candidate.type === type && !candidate.doNotContact && !candidate.invalid && candidate.value);
+    return contact?.value ? { value: contact.value, masked: contact.masked, hash: this.codec.hash(type, contact.value) } : null;
+  }
+
+  async setIdentifier(partyId: string, input: { type: IdentifierType; value: string; verified: boolean; source: string }) {
+    const hash = this.blindIndex.hash(IDENTIFIER_INDEX_DOMAIN[input.type], input.value);
+    const owners = await this.parties.findIdentifierOwners(input.type, hash);
+    if (owners.some((owner) => owner.partyId !== partyId)) throw new AppError(ErrorCode.IDENTIFIER_IN_USE, { details: { type: input.type } });
+    const existing = await this.parties.findIdentifier(partyId, input.type);
+    if (existing?.verifiedAt && existing.valueHash !== hash) throw new AppError(ErrorCode.IDENTIFIER_IN_USE, { details: { type: input.type, reason: 'a different verified value is already recorded' } });
+    const keepVerified = existing?.valueHash === hash ? existing.verifiedAt : null;
+    const saved = await this.parties.upsertIdentifier(partyId, input.type, {
+      valueEnc: this.cipher.encrypt(input.value, CipherPurpose.PartyIdentifier),
+      valueHash: hash,
+      valueMasked: maskIdentifier(input.value),
+      verifiedAt: input.verified ? (keepVerified ?? new Date()) : keepVerified,
+      source: input.source,
+    });
+    return { type: saved.type, masked: saved.valueMasked, verified: saved.verifiedAt !== null, verifiedAt: saved.verifiedAt };
+  }
+
+  async identifier(partyId: string, type: IdentifierType) {
+    const found = await this.parties.findIdentifier(partyId, type);
+    return found ? { type: found.type, masked: found.valueMasked, verified: found.verifiedAt !== null, verifiedAt: found.verifiedAt } : null;
   }
 
   async getPrimaryContactValue(partyId: string, type: ContactType): Promise<string | null> {

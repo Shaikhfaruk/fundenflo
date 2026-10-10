@@ -10,22 +10,25 @@ import { ValidBody, ValidParam, ValidQuery } from '../../../common/validation/zo
 import { AppAction, type AppAbility } from '../../access/domain/ability.types.js';
 import { CheckPolicies, CurrentAbility } from '../../access/http/policies.guard.js';
 import { MeService } from '../../auth/application/me.service.js';
+import { BorrowerKycService } from '../application/borrower-kyc.service.js';
 import { BorrowerProfileService } from '../application/borrower-profile.service.js';
 import { toBorrowerProfileView } from '../application/borrower.views.js';
-import { type CreateBorrowerProfileDto, createBorrowerProfileSchema, type UpdateBorrowerProfileDto, updateBorrowerProfileSchema } from './borrowers.dto.js';
+import { type CreateBorrowerProfileDto, createBorrowerProfileSchema, type UpdateBorrowerProfileDto, updateBorrowerProfileSchema, type VerifyPanDto, verifyPanSchema } from './borrowers.dto.js';
 
 const canRead = CheckPolicies((ability) => ability.can(AppAction.Read, 'BorrowerProfile'));
 
 @Controller('borrower-profiles')
-@AllowContexts(SessionContext.borrower)
+@AllowContexts(SessionContext.borrower, SessionContext.partner)
 export class BorrowerProfilesController {
   constructor(
     private readonly profiles: BorrowerProfileService,
+    private readonly kyc: BorrowerKycService,
     private readonly me: MeService,
   ) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @AllowContexts(SessionContext.borrower)
   @CheckPolicies((ability) => ability.can(AppAction.Create, 'BorrowerProfile'))
   async create(@ValidBody(createBorrowerProfileSchema) body: CreateBorrowerProfileDto, @CurrentActor() actor: UserActor) {
     return this.profiles.ensure(await this.me.partyIdOf(actor.userId), body, actor.userId);
@@ -47,5 +50,12 @@ export class BorrowerProfilesController {
   @CheckPolicies((ability) => ability.can(AppAction.Update, 'BorrowerProfile'))
   update(@ValidParam('id', uuidSchema) id: string, @ValidBody(updateBorrowerProfileSchema) body: UpdateBorrowerProfileDto, @IfMatchVersion() version: number | undefined, @CurrentAbility() ability: AppAbility) {
     return this.profiles.update(id, body, version, ability);
+  }
+
+  @Post(':id/kyc/pan')
+  @HttpCode(HttpStatus.OK)
+  @CheckPolicies((ability) => ability.can(AppAction.Update, 'BorrowerProfile'))
+  verifyPan(@ValidParam('id', uuidSchema) id: string, @ValidBody(verifyPanSchema) body: VerifyPanDto, @CurrentAbility() ability: AppAbility) {
+    return this.kyc.verifyPan(id, body, ability);
   }
 }

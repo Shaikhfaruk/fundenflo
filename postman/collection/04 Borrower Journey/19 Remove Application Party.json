@@ -1,0 +1,118 @@
+{
+  "name": "Remove Application Party",
+  "request": {
+    "method": "DELETE",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/applications/:id/parties/:pid",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "applications",
+        ":id",
+        "parties",
+        ":pid"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{applicationId}}"
+        },
+        {
+          "key": "pid",
+          "value": "{{applicationPartyId}}"
+        }
+      ]
+    },
+    "description": "Takes a co-applicant, guarantor or director off the case (kept in history as `removed`). The borrower and applicant cannot be removed. Borrower context for the applicant's own records; partner context for applications the firm filed (agents: the ones they filed). Others get 404."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 204', () => pm.response.to.have.status(204));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "204 No Content",
+      "originalRequest": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/applications/:id/parties/:pid",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "applications",
+            ":id",
+            "parties",
+            ":pid"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            },
+            {
+              "key": "pid",
+              "value": "{{applicationPartyId}}"
+            }
+          ]
+        },
+        "description": "Takes a co-applicant, guarantor or director off the case (kept in history as `removed`). The borrower and applicant cannot be removed. Borrower context for the applicant's own records; partner context for applications the firm filed (agents: the ones they filed). Others get 404."
+      },
+      "status": "No Content",
+      "code": 204,
+      "_postman_previewlanguage": "text",
+      "header": [],
+      "body": ""
+    },
+    {
+      "name": "409 INVALID_TRANSITION",
+      "originalRequest": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/applications/:id/parties/:pid",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "applications",
+            ":id",
+            "parties",
+            ":pid"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            },
+            {
+              "key": "pid",
+              "value": "{{applicationPartyId}}"
+            }
+          ]
+        },
+        "description": "Takes a co-applicant, guarantor or director off the case (kept in history as `removed`). The borrower and applicant cannot be removed. Borrower context for the applicant's own records; partner context for applications the firm filed (agents: the ones they filed). Others get 404."
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"INVALID_TRANSITION\",\n  \"message\": \"This action is not allowed in the current state.\",\n  \"details\": {\n    \"from\": \"removed\",\n    \"event\": \"remove\",\n    \"allowed\": []\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

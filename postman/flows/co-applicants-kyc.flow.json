@@ -1,0 +1,50 @@
+{
+  "name": "Co-applicants and KYC: application consent, co-applicant OTP consent, PAN verification",
+  "steps": [
+    {
+      "request": "01 Auth/01 Request OTP.json",
+      "variables": {
+        "loginAs": "borrower"
+      }
+    },
+    {
+      "request": "01 Auth/02 Verify OTP.json"
+    },
+    {
+      "request": "04 Borrower Journey/05 Create Application.json"
+    },
+    {
+      "request": "04 Borrower Journey/08 Update Requirement.json"
+    },
+    {
+      "request": "04 Borrower Journey/11 Submit Application Answers.json"
+    },
+    {
+      "request": "03 Catalog/07 Get Consent Template.json"
+    },
+    {
+      "request": "04 Borrower Journey/16 Give Application Consents.json"
+    },
+    {
+      "request": "04 Borrower Journey/18 Add Application Party.json"
+    },
+    {
+      "request": "04 Borrower Journey/17 List Application Parties.json"
+    },
+    {
+      "request": "04 Borrower Journey/20 Send Party Consent OTP.json"
+    },
+    {
+      "request": "04 Borrower Journey/21 Verify Party Consent OTP.json"
+    },
+    {
+      "request": "04 Borrower Journey/15 Verify PAN.json"
+    },
+    {
+      "request": "04 Borrower Journey/09 Get Next Step.json"
+    },
+    {
+      "request": "04 Borrower Journey/19 Remove Application Party.json"
+    }
+  ]
+}

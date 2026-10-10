@@ -17,6 +17,7 @@ import { AuditAction, AuditEntity } from '../../audit/domain/audit.constants.js'
 import { CatalogQueryService } from '../../catalog/application/catalog-query.service.js';
 import { PlaceLocator } from '../../catalog/application/place-locator.service.js';
 import { ConsentRequestService } from '../../consents/application/consent-request.service.js';
+import { LeadAttributionService } from '../../partners/application/lead-attribution.service.js';
 import { PartyService } from '../../parties/application/party.service.js';
 import { DEFAULT_LEAD_CONSENT_CONTEXT } from '../domain/lead.constants.js';
 import { AssignmentCloseReason } from '../domain/lead-routing.constants.js';
@@ -84,6 +85,7 @@ export class LeadService {
     private readonly changes: ChangeRecorder,
     private readonly consentRequests: ConsentRequestService,
     private readonly assignments: LeadAssignmentService,
+    private readonly attributions: LeadAttributionService,
   ) {}
 
   async list(filters: LeadFilters) {
@@ -171,8 +173,9 @@ export class LeadService {
   }
 
   @Transactional()
-  async convertToApplication(partyIds: string[], applicationId: string): Promise<string | null> {
-    const [lead] = await this.leads.findOpenForParties(partyIds, CONVERTIBLE);
+  async convertToApplication(partyIds: string[], applicationId: string, preferredLeadId?: string): Promise<string | null> {
+    const open = await this.leads.findOpenForParties(partyIds, CONVERTIBLE);
+    const lead = open.find((candidate) => candidate.id === preferredLeadId) ?? open[0];
     if (!lead) return null;
     await this.leads.lockLead(lead.id);
     for (const assignment of (await this.leads.assignmentsForLead(lead.id)).filter((row) => ACTIVE_ASSIGNMENT_STATES.includes(row.status))) {
@@ -183,6 +186,11 @@ export class LeadService {
     await this.act(lead.id, { event: LeadEvent.Convert, note: 'Application started' });
     await this.changes.record({ action: AuditAction.LeadConverted, entityType: AuditEntity.Lead, entityId: lead.id, event: EventName.LeadConverted, metadata: { ref: lead.ref, applicationId }, payload: { leadId: lead.id, applicationId } });
     return lead.id;
+  }
+
+  async protectingOrganizations(partyIds: string[]) {
+    const leadIds = await this.leads.leadIdsForParties(partyIds);
+    return new Set((await this.attributions.activeFor(leadIds)).map((attribution) => attribution.organizationId));
   }
 
   @Transactional()

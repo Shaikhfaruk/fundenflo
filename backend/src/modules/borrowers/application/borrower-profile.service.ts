@@ -38,7 +38,10 @@ export class BorrowerProfileService {
     await this.assertSegment(input.segment, input.subSegment);
     const partyId = input.segment === BorrowerSegment.Individual ? actingPartyId : await this.businessFor(actingPartyId, input);
     const existing = await this.profiles.findByParty(partyId);
-    if (existing) return toBorrowerProfileView(existing);
+    if (existing) {
+      if (partnerOrganizationId && existing.partnerOrganizationId !== partnerOrganizationId) throw new AppError(ErrorCode.BORROWER_ALREADY_REGISTERED);
+      return toBorrowerProfileView(existing);
+    }
     const profile = await this.profiles.create({
       partyId,
       actingPartyId,

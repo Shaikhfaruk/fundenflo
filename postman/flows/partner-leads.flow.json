@@ -1,5 +1,5 @@
 {
-  "name": "CA lead inbox: offer, accept, reveal, activities, follow-ups, hand-over, edit, offline conversion, referral, lost, decline and return",
+  "name": "CA lead inbox: offer, accept, reveal, activities, follow-ups, hand-over, edit, offline conversion, referral, lost, decline and return, partner-filed applications and the ops case view",
   "requires": [
     "staffInvitation",
     "checkerInvitation"
@@ -204,6 +204,53 @@
     {
       "request": "09 Sync & Sessions/01 Get Changes.json",
       "identity": "partner"
+    },
+    {
+      "request": "08 Leads & Imports/02 Create Lead.json",
+      "identity": "maker"
+    },
+    {
+      "request": "08 Leads & Imports/28 Route Lead.json"
+    },
+    {
+      "request": "10 Partner Portal - Onboarding, Team & Leads/12 Accept Partner Lead.json",
+      "identity": "partner"
+    },
+    {
+      "request": "10 Partner Portal - Onboarding, Team & Leads/28 Convert Lead To Application.json",
+      "identity": "partner"
+    },
+    {
+      "request": "11 Partner Portal - Applications & Commissions/01 Register Borrower.json",
+      "identity": "partner"
+    },
+    {
+      "request": "11 Partner Portal - Applications & Commissions/02 Create Partner Application.json",
+      "identity": "partner"
+    },
+    {
+      "request": "04 Borrower Journey/08 Update Requirement.json",
+      "identity": "partner"
+    },
+    {
+      "request": "04 Borrower Journey/11 Submit Application Answers.json",
+      "identity": "partner"
+    },
+    {
+      "request": "11 Partner Portal - Applications & Commissions/03 Send Borrower Consent OTP.json",
+      "identity": "partner"
+    },
+    {
+      "request": "11 Partner Portal - Applications & Commissions/04 Verify Borrower Consent OTP.json",
+      "identity": "partner"
+    },
+    {
+      "request": "57 Ops - Cases/01 List Cases.json",
+      "identity": "maker"
+    },
+    {
+      "request": "57 Ops - Cases/02 Get Case.json",
+      "identity": "maker"
     },
     {
       "request": "53 Admin - Routing Rules/10 Retire Routing Rule Version.json",

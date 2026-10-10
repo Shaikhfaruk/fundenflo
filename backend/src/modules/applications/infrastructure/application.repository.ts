@@ -1,7 +1,8 @@
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
 
-import type { ApplicationStatus, Prisma } from '../../../generated/prisma/client.js';
+import { ApplicationPartyStatus } from '../../../common/enums/db.enums.js';
+import type { ApplicationPartyRole, ApplicationStatus, Prisma } from '../../../generated/prisma/client.js';
 import type { PrismaTx } from '../../../infrastructure/database/database.types.js';
 
 export const applicationInclude = {
@@ -10,6 +11,12 @@ export const applicationInclude = {
 } as const satisfies Prisma.LoanApplicationInclude;
 
 export type ApplicationRow = Prisma.LoanApplicationGetPayload<{ include: typeof applicationInclude }>;
+
+export const applicationPartyInclude = {
+  party: { select: { id: true, kind: true, displayName: true } },
+} as const satisfies Prisma.ApplicationPartyInclude;
+
+export type ApplicationPartyRow = Prisma.ApplicationPartyGetPayload<{ include: typeof applicationPartyInclude }>;
 
 @Injectable()
 export class ApplicationRepository {
@@ -64,5 +71,43 @@ export class ApplicationRepository {
   async moveParty(ids: { party: string[]; acting: string[] }, partyId: string) {
     await this.txHost.tx.loanApplication.updateMany({ where: { id: { in: ids.party } }, data: { partyId, version: { increment: 1 } } });
     await this.txHost.tx.loanApplication.updateMany({ where: { id: { in: ids.acting } }, data: { actingPartyId: partyId, version: { increment: 1 } } });
+  }
+
+  createParty(data: Prisma.ApplicationPartyUncheckedCreateInput) {
+    return this.txHost.tx.applicationParty.create({ data, include: applicationPartyInclude });
+  }
+
+  parties(applicationId: string, status?: ApplicationPartyStatus) {
+    return this.txHost.tx.applicationParty.findMany({ where: { applicationId, status }, include: applicationPartyInclude, orderBy: { createdAt: 'asc' } });
+  }
+
+  findParty(where: Prisma.ApplicationPartyWhereInput) {
+    return this.txHost.tx.applicationParty.findFirst({ where, include: applicationPartyInclude });
+  }
+
+  countParties(applicationId: string, roles: ApplicationPartyRole[]) {
+    return this.txHost.tx.applicationParty.count({ where: { applicationId, role: { in: roles }, status: ApplicationPartyStatus.active } });
+  }
+
+  updateParty(id: string, data: Prisma.ApplicationPartyUncheckedUpdateManyInput) {
+    return this.txHost.tx.applicationParty.updateMany({ where: { id }, data: { ...data, version: { increment: 1 } } });
+  }
+
+  updatePartiesWhere(where: Prisma.ApplicationPartyWhereInput, data: Prisma.ApplicationPartyUncheckedUpdateManyInput) {
+    return this.txHost.tx.applicationParty.updateMany({ where, data: { ...data, version: { increment: 1 } } });
+  }
+
+  async sharedApplications(sourceId: string, targetId: string) {
+    const source = await this.txHost.tx.applicationParty.findMany({ where: { partyId: sourceId }, select: { applicationId: true } });
+    const shared = await this.txHost.tx.applicationParty.findMany({ where: { partyId: targetId, applicationId: { in: source.map((row) => row.applicationId) } }, select: { applicationId: true } });
+    return shared.map((row) => row.applicationId);
+  }
+
+  async partyRowIdsOfParty(partyId: string) {
+    return (await this.txHost.tx.applicationParty.findMany({ where: { partyId }, select: { id: true } })).map((row) => row.id);
+  }
+
+  async movePartyRows(ids: string[], partyId: string) {
+    await this.txHost.tx.applicationParty.updateMany({ where: { id: { in: ids } }, data: { partyId, version: { increment: 1 } } });
   }
 }

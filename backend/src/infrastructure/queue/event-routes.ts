@@ -27,6 +27,7 @@ const ROUTES: Partial<Record<EventName, QueueName[]>> = {
   [EventName.DocumentScanOverdue]: [QueueName.DocumentsScan],
   [EventName.DocumentRejected]: [QueueName.ApplicationsRefresh],
   [EventName.DocumentDeleted]: [QueueName.ApplicationsRefresh],
+  [EventName.BorrowerProfileChanged]: [QueueName.ApplicationsRefresh],
 };
 
 export const EVENT_ROUTES: Partial<Record<EventName, QueueName[]>> = { ...ROUTES };

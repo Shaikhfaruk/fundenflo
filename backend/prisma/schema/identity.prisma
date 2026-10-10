@@ -16,6 +16,7 @@ enum OtpPurpose {
   login
   link_login
   mobile_change
+  consent
 }
 
 enum LoginAs {

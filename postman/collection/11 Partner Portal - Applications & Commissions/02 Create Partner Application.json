@@ -1,0 +1,131 @@
+{
+  "name": "Create Partner Application",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/partner/applications",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "partner",
+        "applications"
+      ]
+    },
+    "description": "Opens an application for a borrower profile the firm owns (`channel: partner`). After this the shared `/applications/:id/*` endpoints work in partner context (requirement, answers recorded as partner-assisted, documents, parties, next step). Partner context.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"borrowerProfileId\": \"{{borrowerProfileId}}\",\n  \"category\": \"business\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "pm.collectionVariables.set('applicationId', String(pm.response.json().id));",
+          "pm.collectionVariables.set('applicationVersion', String(pm.response.json().version));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/partner/applications",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "applications"
+          ]
+        },
+        "description": "Opens an application for a borrower profile the firm owns (`channel: partner`). After this the shared `/applications/:id/*` endpoints work in partner context (requirement, answers recorded as partner-assisted, documents, parties, next step). Partner context.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"borrowerProfileId\": \"{{borrowerProfileId}}\",\n  \"category\": \"business\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12260-2b3c-7d4e-9f50-61728394a5b6\",\n  \"ref\": \"AP-26-000001\",\n  \"borrowerProfileId\": \"01a12260-1a2b-7c3d-8e4f-5061728394a5\",\n  \"party\": {\n    \"id\": \"01a12260-3c4d-7e5f-8061-728394a5b6c7\",\n    \"kind\": \"business\",\n    \"displayName\": \"Kapoor Electricals\"\n  },\n  \"actingParty\": {\n    \"id\": \"01a12260-4d5e-7f60-8172-8394a5b6c7d8\",\n    \"displayName\": \"Rohit Kapoor\"\n  },\n  \"channel\": \"partner\",\n  \"partnerOrganizationId\": \"01a12159-30fd-748b-905a-179c43e29aa9\",\n  \"leadId\": null,\n  \"segmentKey\": \"msme\",\n  \"subSegmentKey\": \"proprietorship\",\n  \"categoryKey\": \"business\",\n  \"purposeKey\": null,\n  \"purposeNote\": null,\n  \"amountPaise\": null,\n  \"tenureMonths\": null,\n  \"location\": {\n    \"stateId\": null,\n    \"cityId\": null,\n    \"pincode\": null\n  },\n  \"status\": \"draft\",\n  \"journeyStage\": \"requirement\",\n  \"pinnedVersions\": {},\n  \"closedAt\": null,\n  \"closeReason\": null,\n  \"version\": 1,\n  \"createdAt\": \"2026-10-10T17:00:00.000Z\",\n  \"updatedAt\": \"2026-10-10T17:00:00.000Z\"\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/partner/applications",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "applications"
+          ]
+        },
+        "description": "Opens an application for a borrower profile the firm owns (`channel: partner`). After this the shared `/applications/:id/*` endpoints work in partner context (requirement, answers recorded as partner-assisted, documents, parties, next step). Partner context.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"borrowerProfileId\": \"{{borrowerProfileId}}\",\n  \"category\": \"business\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

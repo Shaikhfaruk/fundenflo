@@ -51,6 +51,8 @@ export const ErrorCode = {
   FILE_TYPE_NOT_ALLOWED: 'FILE_TYPE_NOT_ALLOWED',
   DOCUMENT_NOT_READY: 'DOCUMENT_NOT_READY',
   DOCUMENT_LOCKED: 'DOCUMENT_LOCKED',
+  IDENTIFIER_IN_USE: 'IDENTIFIER_IN_USE',
+  BORROWER_ALREADY_REGISTERED: 'BORROWER_ALREADY_REGISTERED',
   SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE',
   INTERNAL_ERROR: 'INTERNAL_ERROR',
 } as const;
@@ -110,6 +112,8 @@ export const ERROR_CATALOG: Record<ErrorCode, { status: number; message: string 
   FILE_TYPE_NOT_ALLOWED: { status: 415, message: 'This file type is not accepted for this document.' },
   DOCUMENT_NOT_READY: { status: 409, message: 'This document is still being checked. Try again in a moment.' },
   DOCUMENT_LOCKED: { status: 409, message: 'This document was sent to a lender and cannot be removed.' },
+  BORROWER_ALREADY_REGISTERED: { status: 409, message: 'This borrower already has a profile managed by themselves or another partner.' },
+  IDENTIFIER_IN_USE: { status: 409, message: 'This number is already linked to another person or business. Contact support to merge the records.' },
   SERVICE_UNAVAILABLE: { status: 503, message: 'The service is temporarily unavailable. Please try again.' },
   INTERNAL_ERROR: { status: 500, message: 'Something went wrong. Please try again.' },
 };

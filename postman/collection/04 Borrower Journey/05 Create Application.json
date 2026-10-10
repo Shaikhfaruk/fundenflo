@@ -36,7 +36,8 @@
         "exec": [
           "pm.test('responds 201', () => pm.response.to.have.status(201));",
           "pm.collectionVariables.set('applicationId', String(pm.response.json().id));",
-          "pm.collectionVariables.set('applicationVersion', String(pm.response.json().version));"
+          "pm.collectionVariables.set('applicationVersion', String(pm.response.json().version));",
+          "pm.collectionVariables.set('borrowerProfileId', String(pm.response.json().borrowerProfileId));"
         ]
       }
     }

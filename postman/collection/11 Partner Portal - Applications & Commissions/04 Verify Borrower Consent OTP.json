@@ -1,0 +1,157 @@
+{
+  "name": "Verify Borrower Consent OTP",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/partner/applications/:id/borrower-consent/verify",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "partner",
+        "applications",
+        ":id",
+        "borrower-consent",
+        "verify"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{applicationId}}"
+        }
+      ]
+    },
+    "description": "Confirms the borrower's code and records their consent on the application (`channel: partner_assisted`). With all required purposes granted the case moves to `documents_pending`. Partner context.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"challengeId\": \"{{borrowerChallengeId}}\",\n  \"code\": \"{{otp}}\",\n  \"items\": [\n    {\n      \"purpose\": \"ai_documents\",\n      \"granted\": true\n    },\n    {\n      \"purpose\": \"credit_bureau\",\n      \"granted\": true\n    },\n    {\n      \"purpose\": \"lender_sharing\",\n      \"granted\": true\n    }\n  ]\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.collectionVariables.set('applicationVersion', String(pm.response.json().application.version));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/partner/applications/:id/borrower-consent/verify",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "applications",
+            ":id",
+            "borrower-consent",
+            "verify"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            }
+          ]
+        },
+        "description": "Confirms the borrower's code and records their consent on the application (`channel: partner_assisted`). With all required purposes granted the case moves to `documents_pending`. Partner context.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"challengeId\": \"{{borrowerChallengeId}}\",\n  \"code\": \"{{otp}}\",\n  \"items\": [\n    {\n      \"purpose\": \"ai_documents\",\n      \"granted\": true\n    },\n    {\n      \"purpose\": \"credit_bureau\",\n      \"granted\": true\n    },\n    {\n      \"purpose\": \"lender_sharing\",\n      \"granted\": true\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"missingRequired\": [],\n  \"application\": {\n    \"id\": \"01a12260-2b3c-7d4e-9f50-61728394a5b6\",\n    \"ref\": \"AP-26-000001\",\n    \"borrowerProfileId\": \"01a12260-1a2b-7c3d-8e4f-5061728394a5\",\n    \"party\": {\n      \"id\": \"01a12260-3c4d-7e5f-8061-728394a5b6c7\",\n      \"kind\": \"business\",\n      \"displayName\": \"Kapoor Electricals\"\n    },\n    \"actingParty\": {\n      \"id\": \"01a12260-4d5e-7f60-8172-8394a5b6c7d8\",\n      \"displayName\": \"Rohit Kapoor\"\n    },\n    \"channel\": \"partner\",\n    \"partnerOrganizationId\": \"01a12159-30fd-748b-905a-179c43e29aa9\",\n    \"leadId\": null,\n    \"segmentKey\": \"msme\",\n    \"subSegmentKey\": \"proprietorship\",\n    \"categoryKey\": \"business\",\n    \"purposeKey\": null,\n    \"purposeNote\": null,\n    \"amountPaise\": null,\n    \"tenureMonths\": null,\n    \"location\": {\n      \"stateId\": null,\n      \"cityId\": null,\n      \"pincode\": null\n    },\n    \"status\": \"documents_pending\",\n    \"journeyStage\": \"documents\",\n    \"pinnedVersions\": {},\n    \"closedAt\": null,\n    \"closeReason\": null,\n    \"version\": 5,\n    \"createdAt\": \"2026-10-10T17:00:00.000Z\",\n    \"updatedAt\": \"2026-10-10T17:00:00.000Z\"\n  }\n}"
+    },
+    {
+      "name": "401 OTP_INVALID",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/partner/applications/:id/borrower-consent/verify",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "applications",
+            ":id",
+            "borrower-consent",
+            "verify"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            }
+          ]
+        },
+        "description": "Confirms the borrower's code and records their consent on the application (`channel: partner_assisted`). With all required purposes granted the case moves to `documents_pending`. Partner context.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"challengeId\": \"{{borrowerChallengeId}}\",\n  \"code\": \"{{otp}}\",\n  \"items\": [\n    {\n      \"purpose\": \"ai_documents\",\n      \"granted\": true\n    },\n    {\n      \"purpose\": \"credit_bureau\",\n      \"granted\": true\n    },\n    {\n      \"purpose\": \"lender_sharing\",\n      \"granted\": true\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Unauthorized",
+      "code": 401,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"OTP_INVALID\",\n  \"message\": \"Incorrect code. Please check and try again.\",\n  \"details\": {\n    \"attemptsLeft\": 4\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

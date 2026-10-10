@@ -1,0 +1,227 @@
+{
+  "name": "Verify Party Consent OTP",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/applications/:id/parties/:pid/consent-otp/verify",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "applications",
+        ":id",
+        "parties",
+        ":pid",
+        "consent-otp",
+        "verify"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{applicationId}}"
+        },
+        {
+          "key": "pid",
+          "value": "{{applicationPartyId}}"
+        }
+      ]
+    },
+    "description": "Confirms the code and records the co-applicant's consent choices (evidence names the challenge and masked mobile). All required purposes granted → `granted`, otherwise `declined`. Borrower context for the applicant's own records; partner context for applications the firm filed (agents: the ones they filed). Others get 404.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"challengeId\": \"{{partyChallengeId}}\",\n  \"code\": \"{{otp}}\",\n  \"items\": [\n    {\n      \"purpose\": \"ai_documents\",\n      \"granted\": true\n    },\n    {\n      \"purpose\": \"credit_bureau\",\n      \"granted\": true\n    },\n    {\n      \"purpose\": \"lender_sharing\",\n      \"granted\": true\n    }\n  ]\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/applications/:id/parties/:pid/consent-otp/verify",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "applications",
+            ":id",
+            "parties",
+            ":pid",
+            "consent-otp",
+            "verify"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            },
+            {
+              "key": "pid",
+              "value": "{{applicationPartyId}}"
+            }
+          ]
+        },
+        "description": "Confirms the code and records the co-applicant's consent choices (evidence names the challenge and masked mobile). All required purposes granted → `granted`, otherwise `declined`. Borrower context for the applicant's own records; partner context for applications the firm filed (agents: the ones they filed). Others get 404.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"challengeId\": \"{{partyChallengeId}}\",\n  \"code\": \"{{otp}}\",\n  \"items\": [\n    {\n      \"purpose\": \"ai_documents\",\n      \"granted\": true\n    },\n    {\n      \"purpose\": \"credit_bureau\",\n      \"granted\": true\n    },\n    {\n      \"purpose\": \"lender_sharing\",\n      \"granted\": true\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"party\": {\n    \"id\": \"01a12290-1a2b-7c3d-8e4f-5061728394a5\",\n    \"party\": {\n      \"id\": \"01a12290-2b3c-7d4e-9f50-61728394a5b6\",\n      \"kind\": \"person\",\n      \"displayName\": \"Meena Kapoor\"\n    },\n    \"role\": \"co_applicant\",\n    \"relationship\": \"spouse\",\n    \"status\": \"active\",\n    \"consentStatus\": \"granted\",\n    \"consentedAt\": \"2026-10-10T17:00:00.000Z\",\n    \"mobile\": \"+91 98•••••210\",\n    \"createdAt\": \"2026-10-10T17:00:00.000Z\"\n  },\n  \"missingRequired\": []\n}"
+    },
+    {
+      "name": "401 OTP_INVALID",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/applications/:id/parties/:pid/consent-otp/verify",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "applications",
+            ":id",
+            "parties",
+            ":pid",
+            "consent-otp",
+            "verify"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            },
+            {
+              "key": "pid",
+              "value": "{{applicationPartyId}}"
+            }
+          ]
+        },
+        "description": "Confirms the code and records the co-applicant's consent choices (evidence names the challenge and masked mobile). All required purposes granted → `granted`, otherwise `declined`. Borrower context for the applicant's own records; partner context for applications the firm filed (agents: the ones they filed). Others get 404.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"challengeId\": \"{{partyChallengeId}}\",\n  \"code\": \"{{otp}}\",\n  \"items\": [\n    {\n      \"purpose\": \"ai_documents\",\n      \"granted\": true\n    },\n    {\n      \"purpose\": \"credit_bureau\",\n      \"granted\": true\n    },\n    {\n      \"purpose\": \"lender_sharing\",\n      \"granted\": true\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Unauthorized",
+      "code": 401,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"OTP_INVALID\",\n  \"message\": \"Incorrect code. Please check and try again.\",\n  \"details\": {\n    \"attemptsLeft\": 4\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "410 OTP_EXPIRED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/applications/:id/parties/:pid/consent-otp/verify",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "applications",
+            ":id",
+            "parties",
+            ":pid",
+            "consent-otp",
+            "verify"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            },
+            {
+              "key": "pid",
+              "value": "{{applicationPartyId}}"
+            }
+          ]
+        },
+        "description": "Confirms the code and records the co-applicant's consent choices (evidence names the challenge and masked mobile). All required purposes granted → `granted`, otherwise `declined`. Borrower context for the applicant's own records; partner context for applications the firm filed (agents: the ones they filed). Others get 404.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"challengeId\": \"{{partyChallengeId}}\",\n  \"code\": \"{{otp}}\",\n  \"items\": [\n    {\n      \"purpose\": \"ai_documents\",\n      \"granted\": true\n    },\n    {\n      \"purpose\": \"credit_bureau\",\n      \"granted\": true\n    },\n    {\n      \"purpose\": \"lender_sharing\",\n      \"granted\": true\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Gone",
+      "code": 410,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"OTP_EXPIRED\",\n  \"message\": \"This code has expired. Request a new one.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

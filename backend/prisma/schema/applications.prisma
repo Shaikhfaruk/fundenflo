@@ -25,6 +25,28 @@ enum ApplicationEventType {
   stage_changed
   lead_linked
   note
+  party_added
+  party_removed
+  consent_recorded
+}
+
+enum ApplicationPartyRole {
+  borrower
+  applicant
+  co_applicant
+  guarantor
+  director
+}
+
+enum ApplicationPartyStatus {
+  active
+  removed
+}
+
+enum ApplicationPartyConsent {
+  pending
+  granted
+  declined
 }
 
 model LoanApplication {
@@ -63,6 +85,7 @@ model LoanApplication {
   actingParty     Party              @relation("application_acting_party", fields: [actingPartyId], references: [id], onDelete: Restrict, onUpdate: Restrict)
   events          ApplicationEvent[]
   documents       Document[]
+  parties         ApplicationParty[]
 
   @@index([actingPartyId, status])
   @@index([partyId])
@@ -88,4 +111,27 @@ model ApplicationEvent {
 
   @@index([applicationId, createdAt])
   @@map("application_events")
+}
+
+model ApplicationParty {
+  id            String                  @id @default(uuid(7)) @db.Uuid
+  applicationId String                  @map("application_id") @db.Uuid
+  partyId       String                  @map("party_id") @db.Uuid
+  role          ApplicationPartyRole
+  relationship  String?
+  status        ApplicationPartyStatus  @default(active)
+  consentStatus ApplicationPartyConsent @default(pending) @map("consent_status")
+  consentedAt   DateTime?               @map("consented_at") @db.Timestamptz(3)
+  addedByUserId String                  @map("added_by_user_id") @db.Uuid
+  removedAt     DateTime?               @map("removed_at") @db.Timestamptz(3)
+  version       Int                     @default(1)
+  createdAt     DateTime                @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt     DateTime                @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  application LoanApplication @relation(fields: [applicationId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  party       Party           @relation("application_party_member", fields: [partyId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@unique([applicationId, partyId])
+  @@index([partyId])
+  @@map("application_parties")
 }

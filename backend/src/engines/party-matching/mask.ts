@@ -24,3 +24,8 @@ export function maskName(name: string): string {
   if (rest.length === 0) return `${first.slice(0, 1)}${MASK_CHARACTER.repeat(3)}`;
   return [first, ...rest.map((token) => `${token.slice(0, 1).toUpperCase()}.`)].join(' ');
 }
+
+export function maskIdentifier(value: string): string {
+  if (value.length <= 6) return MASK_CHARACTER.repeat(value.length);
+  return `${value.slice(0, 5)}${MASK_CHARACTER.repeat(value.length - 6)}${value.slice(-1)}`;
+}

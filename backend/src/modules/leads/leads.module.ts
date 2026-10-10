@@ -93,7 +93,7 @@ const AdminRoutingRulesController = createVersionedConfigController({ resource: 
     LeadRoutingService,
     PartnerLeadService,
   ],
-  exports: [LeadAssignmentService, LeadCaptureService, LeadNotificationService, LeadRoutingService, LeadService, LeadSourceService],
+  exports: [LeadAssignmentService, LeadCaptureService, LeadNotificationService, LeadRoutingService, LeadService, LeadSourceService, PartnerLeadService],
 })
 export class LeadsModule {}
 

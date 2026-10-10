@@ -1,0 +1,151 @@
+{
+  "name": "Give Application Consents",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/applications/:id/consents",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "applications",
+        ":id",
+        "consents"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{applicationId}}"
+        }
+      ]
+    },
+    "description": "Records the applicant's consents against this application (journey template version shown in the app). When every required purpose is granted, a `pre_screened` case moves to `documents_pending` and the borrower and applicant parties are marked consented. Borrower context only; partners use the OTP route.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"templateVersionId\": \"{{consentTemplateVersionId}}\",\n  \"items\": [\n    {\n      \"purpose\": \"ai_documents\",\n      \"granted\": true\n    },\n    {\n      \"purpose\": \"credit_bureau\",\n      \"granted\": true\n    },\n    {\n      \"purpose\": \"lender_sharing\",\n      \"granted\": true\n    }\n  ]\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.collectionVariables.set('applicationVersion', String(pm.response.json().application.version));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/applications/:id/consents",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "applications",
+            ":id",
+            "consents"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            }
+          ]
+        },
+        "description": "Records the applicant's consents against this application (journey template version shown in the app). When every required purpose is granted, a `pre_screened` case moves to `documents_pending` and the borrower and applicant parties are marked consented. Borrower context only; partners use the OTP route.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"templateVersionId\": \"{{consentTemplateVersionId}}\",\n  \"items\": [\n    {\n      \"purpose\": \"ai_documents\",\n      \"granted\": true\n    },\n    {\n      \"purpose\": \"credit_bureau\",\n      \"granted\": true\n    },\n    {\n      \"purpose\": \"lender_sharing\",\n      \"granted\": true\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"consents\": [],\n  \"missingRequired\": [],\n  \"application\": {\n    \"id\": \"01a12260-2b3c-7d4e-9f50-61728394a5b6\",\n    \"ref\": \"AP-26-000001\",\n    \"borrowerProfileId\": \"01a12260-1a2b-7c3d-8e4f-5061728394a5\",\n    \"party\": {\n      \"id\": \"01a12260-3c4d-7e5f-8061-728394a5b6c7\",\n      \"kind\": \"business\",\n      \"displayName\": \"Kapoor Electricals\"\n    },\n    \"actingParty\": {\n      \"id\": \"01a12260-4d5e-7f60-8172-8394a5b6c7d8\",\n      \"displayName\": \"Rohit Kapoor\"\n    },\n    \"channel\": \"direct\",\n    \"partnerOrganizationId\": null,\n    \"leadId\": null,\n    \"segmentKey\": \"msme\",\n    \"subSegmentKey\": \"proprietorship\",\n    \"categoryKey\": \"business\",\n    \"purposeKey\": \"expansion\",\n    \"purposeNote\": null,\n    \"amountPaise\": 250000000,\n    \"tenureMonths\": 36,\n    \"location\": {\n      \"stateId\": \"01a12184-0bb1-773e-ba9c-a22c64991340\",\n      \"cityId\": \"01a12184-0bb1-773e-ba9c-a22c64991341\",\n      \"pincode\": null\n    },\n    \"status\": \"documents_pending\",\n    \"journeyStage\": \"documents\",\n    \"pinnedVersions\": {\n      \"preCheck\": [\n        \"01a121bb-0c1d-7e2f-8a3b-4c5d6e7f8091\"\n      ]\n    },\n    \"closedAt\": null,\n    \"closeReason\": null,\n    \"version\": 6,\n    \"createdAt\": \"2026-10-10T17:00:00.000Z\",\n    \"updatedAt\": \"2026-10-10T17:00:00.000Z\"\n  }\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/applications/:id/consents",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "applications",
+            ":id",
+            "consents"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            }
+          ]
+        },
+        "description": "Records the applicant's consents against this application (journey template version shown in the app). When every required purpose is granted, a `pre_screened` case moves to `documents_pending` and the borrower and applicant parties are marked consented. Borrower context only; partners use the OTP route.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"templateVersionId\": \"{{consentTemplateVersionId}}\",\n  \"items\": [\n    {\n      \"purpose\": \"ai_documents\",\n      \"granted\": true\n    },\n    {\n      \"purpose\": \"credit_bureau\",\n      \"granted\": true\n    },\n    {\n      \"purpose\": \"lender_sharing\",\n      \"granted\": true\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"items.0.purpose\",\n      \"code\": \"not_in_template\",\n      \"message\": \"marketing is not part of template version 1\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

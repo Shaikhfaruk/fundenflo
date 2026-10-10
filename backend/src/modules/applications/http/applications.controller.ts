@@ -1,4 +1,4 @@
-import { Controller, Get, HttpCode, HttpStatus, Patch, Post, Put } from '@nestjs/common';
+import { Controller, Delete, Get, HttpCode, HttpStatus, Patch, Post, Put } from '@nestjs/common';
 
 import { AllowContexts, CurrentActor } from '../../../common/auth/auth.decorators.js';
 import type { UserActor } from '../../../common/context/actor.js';
@@ -11,16 +11,23 @@ import { ValidBody, ValidParam, ValidQuery } from '../../../common/validation/zo
 import { AppAction, type AppAbility } from '../../access/domain/ability.types.js';
 import { CheckPolicies, CurrentAbility } from '../../access/http/policies.guard.js';
 import { MeService } from '../../auth/application/me.service.js';
+import { ApplicationPartyService } from '../application/application-party.service.js';
 import { type ApplicationActor, ApplicationService } from '../application/application.service.js';
 import {
+  type AddPartyDto,
+  addPartySchema,
   type AnswersDto,
   answersSchema,
+  type ApplicationConsentDto,
+  applicationConsentSchema,
   type ChecklistStageQuery,
   checklistStageSchema,
   type CreateApplicationDto,
   createApplicationSchema,
   type ListApplicationsDto,
   listApplicationsSchema,
+  type PartyConsentConfirmDto,
+  partyConsentConfirmSchema,
   type QuestionsQuery,
   questionsQuerySchema,
   type RequirementDto,
@@ -37,6 +44,7 @@ const canUpdate = CheckPolicies((ability) => ability.can(AppAction.Update, 'Loan
 export class ApplicationsController {
   constructor(
     private readonly applications: ApplicationService,
+    private readonly parties: ApplicationPartyService,
     private readonly me: MeService,
   ) {}
 
@@ -101,6 +109,55 @@ export class ApplicationsController {
   @canUpdate
   withdraw(@ValidParam('id', uuidSchema) id: string, @ValidBody(withdrawSchema) body: WithdrawDto, @CurrentAbility() ability: AppAbility) {
     return this.applications.withdraw(id, body.reason, ability);
+  }
+
+  @Post(':id/consents')
+  @HttpCode(HttpStatus.OK)
+  @AllowContexts(SessionContext.borrower)
+  @canUpdate
+  consents(@ValidParam('id', uuidSchema) id: string, @ValidBody(applicationConsentSchema) body: ApplicationConsentDto, @CurrentActor() actor: UserActor, @CurrentAbility() ability: AppAbility, @RequestLocale() locale: Locale) {
+    return this.applications.recordConsent(id, body, actor.userId, ability, locale);
+  }
+
+  @Get(':id/parties')
+  @canRead
+  listParties(@ValidParam('id', uuidSchema) id: string, @CurrentAbility() ability: AppAbility) {
+    return this.parties.list(id, ability);
+  }
+
+  @Post(':id/parties')
+  @HttpCode(HttpStatus.CREATED)
+  @canUpdate
+  addParty(@ValidParam('id', uuidSchema) id: string, @ValidBody(addPartySchema) body: AddPartyDto, @CurrentActor() actor: UserActor, @CurrentAbility() ability: AppAbility) {
+    return this.parties.add(id, body, actor, ability);
+  }
+
+  @Delete(':id/parties/:pid')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @canUpdate
+  async removeParty(@ValidParam('id', uuidSchema) id: string, @ValidParam('pid', uuidSchema) pid: string, @CurrentAbility() ability: AppAbility) {
+    await this.parties.remove(id, pid, ability);
+  }
+
+  @Post(':id/parties/:pid/consent-otp')
+  @HttpCode(HttpStatus.OK)
+  @canUpdate
+  sendPartyConsent(@ValidParam('id', uuidSchema) id: string, @ValidParam('pid', uuidSchema) pid: string, @CurrentActor() actor: UserActor, @CurrentAbility() ability: AppAbility, @RequestLocale() locale: Locale) {
+    return this.parties.sendConsentOtp(id, pid, actor, ability, locale);
+  }
+
+  @Post(':id/parties/:pid/consent-otp/verify')
+  @HttpCode(HttpStatus.OK)
+  @canUpdate
+  confirmPartyConsent(
+    @ValidParam('id', uuidSchema) id: string,
+    @ValidParam('pid', uuidSchema) pid: string,
+    @ValidBody(partyConsentConfirmSchema) body: PartyConsentConfirmDto,
+    @CurrentActor() actor: UserActor,
+    @CurrentAbility() ability: AppAbility,
+    @RequestLocale() locale: Locale,
+  ) {
+    return this.parties.confirmConsentOtp(id, pid, body, actor, ability, locale);
   }
 
   private async borrowerActor(actor: UserActor): Promise<ApplicationActor> {

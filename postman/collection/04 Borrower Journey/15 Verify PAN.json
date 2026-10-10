@@ -1,0 +1,215 @@
+{
+  "name": "Verify PAN",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/borrower-profiles/:id/kyc/pan",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "borrower-profiles",
+        ":id",
+        "kyc",
+        "pan"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{borrowerProfileId}}"
+        }
+      ]
+    },
+    "description": "Verifies a PAN with the KYC provider (`KYC_DRIVER`; `stub` outside production: PANs ending in Z are \"not found\"). The fourth character must fit the profile: P for individuals and proprietorships (stored on the person), F partnership, E LLP, C private limited (stored on the business). Stored encrypted with a blind index; verified only when the name on record matches the party. A PAN already on another party returns 409 `IDENTIFIER_IN_USE` (ops can merge). At most 5 checks per profile per day. A verified PAN completes the `verify_details` journey step. Borrower context for the applicant's own records; partner context for applications the firm filed (agents: the ones they filed). Others get 404.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"pan\": \"{{pan}}\",\n  \"name\": \"Rohit Kapoor\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const letters = 'ABCDEFGHJKLMNPQRSTUVWXY';",
+          "const pick = () => letters[Math.floor(Math.random() * letters.length)];",
+          "const digits = String(Math.floor(1000 + Math.random() * 9000));",
+          "pm.collectionVariables.set('pan', `${pick()}${pick()}${pick()}P${pick()}${digits}${pick()}`);"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/borrower-profiles/:id/kyc/pan",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "borrower-profiles",
+            ":id",
+            "kyc",
+            "pan"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{borrowerProfileId}}"
+            }
+          ]
+        },
+        "description": "Verifies a PAN with the KYC provider (`KYC_DRIVER`; `stub` outside production: PANs ending in Z are \"not found\"). The fourth character must fit the profile: P for individuals and proprietorships (stored on the person), F partnership, E LLP, C private limited (stored on the business). Stored encrypted with a blind index; verified only when the name on record matches the party. A PAN already on another party returns 409 `IDENTIFIER_IN_USE` (ops can merge). At most 5 checks per profile per day. A verified PAN completes the `verify_details` journey step. Borrower context for the applicant's own records; partner context for applications the firm filed (agents: the ones they filed). Others get 404.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"pan\": \"{{pan}}\",\n  \"name\": \"Rohit Kapoor\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"pan\": \"ABCPK••••F\",\n  \"verified\": true,\n  \"nameMatch\": true,\n  \"nameOnRecord\": \"ROHIT KAPOOR\",\n  \"partyId\": \"01a12260-4d5e-7f60-8172-8394a5b6c7d8\",\n  \"provider\": \"stub\"\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/borrower-profiles/:id/kyc/pan",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "borrower-profiles",
+            ":id",
+            "kyc",
+            "pan"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{borrowerProfileId}}"
+            }
+          ]
+        },
+        "description": "Verifies a PAN with the KYC provider (`KYC_DRIVER`; `stub` outside production: PANs ending in Z are \"not found\"). The fourth character must fit the profile: P for individuals and proprietorships (stored on the person), F partnership, E LLP, C private limited (stored on the business). Stored encrypted with a blind index; verified only when the name on record matches the party. A PAN already on another party returns 409 `IDENTIFIER_IN_USE` (ops can merge). At most 5 checks per profile per day. A verified PAN completes the `verify_details` journey step. Borrower context for the applicant's own records; partner context for applications the firm filed (agents: the ones they filed). Others get 404.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"pan\": \"{{pan}}\",\n  \"name\": \"Rohit Kapoor\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"pan\",\n      \"code\": \"holder_mismatch\",\n      \"message\": \"a proprietorship PAN has P as its fourth character\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "409 IDENTIFIER_IN_USE",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/borrower-profiles/:id/kyc/pan",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "borrower-profiles",
+            ":id",
+            "kyc",
+            "pan"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{borrowerProfileId}}"
+            }
+          ]
+        },
+        "description": "Verifies a PAN with the KYC provider (`KYC_DRIVER`; `stub` outside production: PANs ending in Z are \"not found\"). The fourth character must fit the profile: P for individuals and proprietorships (stored on the person), F partnership, E LLP, C private limited (stored on the business). Stored encrypted with a blind index; verified only when the name on record matches the party. A PAN already on another party returns 409 `IDENTIFIER_IN_USE` (ops can merge). At most 5 checks per profile per day. A verified PAN completes the `verify_details` journey step. Borrower context for the applicant's own records; partner context for applications the firm filed (agents: the ones they filed). Others get 404.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"pan\": \"{{pan}}\",\n  \"name\": \"Rohit Kapoor\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"IDENTIFIER_IN_USE\",\n  \"message\": \"This number is already linked to another person or business. Contact support to merge the records.\",\n  \"details\": {\n    \"type\": \"pan\"\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

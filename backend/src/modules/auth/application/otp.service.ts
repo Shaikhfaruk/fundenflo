@@ -28,6 +28,7 @@ export type OtpIssueInput = {
   userId?: string;
   payload?: Record<string, unknown>;
   deliver: boolean;
+  message?: { templateKey: NotificationTemplateKey; params: Record<string, string> };
 };
 
 export type OtpVerifyInput = {
@@ -94,10 +95,10 @@ export class OtpService {
 
     if (input.deliver) {
       await this.notifications.send({
-        templateKey: NotificationTemplateKey.AuthOtp,
+        templateKey: input.message?.templateKey ?? NotificationTemplateKey.AuthOtp,
         channel: input.channel === ContactType.mobile ? NotificationChannel.sms : NotificationChannel.email,
         recipient: input.identifier,
-        params: { code, minutes: Math.round(OTP_TTL_SECONDS / 60) },
+        params: { ...input.message?.params, code, minutes: Math.round(OTP_TTL_SECONDS / 60) },
         priority: JobPriority.Critical,
       });
     }

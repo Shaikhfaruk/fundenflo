@@ -78,14 +78,19 @@ export const ROLE_GRANTS: Partial<Record<Role, Grant>> = {
     can(AppAction.Create, 'Lead');
     can([AppAction.Create, AppAction.Read], 'Activity', { organizationId });
     can([AppAction.Create, AppAction.Read, AppAction.Update], 'FollowUp', { organizationId });
+    can([AppAction.Create, AppAction.Read, AppAction.Update], ['BorrowerProfile', 'LoanApplication'], { partnerOrganizationId: organizationId });
+    can([AppAction.Create, AppAction.Read, AppAction.Delete, AppAction.Download], 'Document', { partnerOrganizationId: organizationId });
   },
-  [Role.partner_agent]: ({ can }, { organizationId, membershipId }) => {
+  [Role.partner_agent]: ({ can }, { organizationId, membershipId, userId }) => {
     if (!organizationId || !membershipId) return;
     can(AppAction.Read, 'PartnerProfile', { organizationId });
     can([AppAction.Read, AppAction.Update], 'LeadAssignment', { organizationId, assigneeMembershipId: membershipId });
     can(AppAction.Create, 'Lead');
     can([AppAction.Create, AppAction.Read], 'Activity', { organizationId });
     can([AppAction.Create, AppAction.Read, AppAction.Update], 'FollowUp', { organizationId, assigneeMembershipId: membershipId });
+    can([AppAction.Create, AppAction.Read, AppAction.Update], ['BorrowerProfile', 'LoanApplication'], { partnerOrganizationId: organizationId, createdByUserId: userId });
+    can([AppAction.Create, AppAction.Read, AppAction.Delete, AppAction.Download], 'Document', { partnerOrganizationId: organizationId, borrowerProfile: { is: { createdByUserId: userId } } });
+    can([AppAction.Create, AppAction.Read, AppAction.Delete, AppAction.Download], 'Document', { partnerOrganizationId: organizationId, application: { is: { createdByUserId: userId } } });
   },
   [Role.lender_manager]: manageOrganizationMembers(OrganizationType.lender),
   [Role.borrower]: ownBorrowing,

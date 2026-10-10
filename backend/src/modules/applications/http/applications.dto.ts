@@ -1,9 +1,11 @@
 import { z } from 'zod';
 
-import { ApplicationStatus } from '../../../common/enums/db.enums.js';
+import { ApplicationChannel, ApplicationStatus } from '../../../common/enums/db.enums.js';
 import { pageQuerySchema } from '../../../common/listing/cursor-page.js';
+import { consentItemsSchema } from '../../consents/http/consents.dto.js';
 import { DocumentStage } from '../../documents/domain/document.constants.js';
 import { QuestionnaireStage } from '../../questionnaires/domain/questionnaire.constants.js';
+import { APPLICATION_PARTY_RELATIONSHIPS, CO_PARTY_ROLES } from '../domain/application.constants.js';
 
 const key = z.string().trim().regex(/^[a-z0-9][a-z0-9_-]{0,63}$/);
 const paise = z.number().int().positive().max(Number.MAX_SAFE_INTEGER);
@@ -44,3 +46,29 @@ export type ChecklistStageQuery = z.output<typeof checklistStageSchema>;
 
 export const withdrawSchema = z.object({ reason: z.string().trim().min(3).max(500) }).strict();
 export type WithdrawDto = z.output<typeof withdrawSchema>;
+
+export const applicationConsentSchema = z.object({ templateVersionId: z.uuid(), items: consentItemsSchema }).strict();
+export type ApplicationConsentDto = z.output<typeof applicationConsentSchema>;
+
+export const addPartySchema = z
+  .object({
+    role: z.enum(CO_PARTY_ROLES),
+    name: z.string().trim().min(2).max(120),
+    mobile: z.string().trim().min(6).max(20),
+    countryCode: z.string().trim().regex(/^\+?\d{1,4}$/).optional(),
+    relationship: z.enum(APPLICATION_PARTY_RELATIONSHIPS).optional(),
+  })
+  .strict();
+export type AddPartyDto = z.output<typeof addPartySchema>;
+
+export const partyConsentConfirmSchema = z.object({ challengeId: z.uuid(), code: z.string().regex(/^\d{6}$/, 'must be 6 digits'), items: consentItemsSchema }).strict();
+export type PartyConsentConfirmDto = z.output<typeof partyConsentConfirmSchema>;
+
+export const partnerApplicationSchema = z.object({ borrowerProfileId: z.uuid(), category: key.optional() }).strict();
+export type PartnerApplicationDto = z.output<typeof partnerApplicationSchema>;
+
+export const leadStartSchema = z.object({ segment: key.optional(), subSegment: key.optional(), businessName: z.string().trim().min(2).max(160).optional(), category: key.optional() }).strict();
+export type LeadStartDto = z.output<typeof leadStartSchema>;
+
+export const opsCasesSchema = listApplicationsSchema.extend({ category: key.optional(), partnerOrganizationId: z.uuid().optional(), channel: z.enum(Object.values(ApplicationChannel)).optional(), q: z.string().trim().min(2).max(40).optional() });
+export type OpsCasesDto = z.output<typeof opsCasesSchema>;

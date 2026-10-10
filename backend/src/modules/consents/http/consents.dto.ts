@@ -48,14 +48,14 @@ const itemSchema = z
   })
   .strict();
 
-const itemsSchema = z.array(itemSchema).min(1).max(MAX_CONSENT_ITEMS);
+export const consentItemsSchema = z.array(itemSchema).min(1).max(MAX_CONSENT_ITEMS);
 
 export const myConsentsSchema = z
   .object({
     templateVersionId: z.uuid(),
     locale: z.enum(SUPPORTED_LOCALES).optional(),
     clientRecordedAt: z.coerce.date().optional(),
-    items: itemsSchema,
+    items: consentItemsSchema,
   })
   .strict();
 export type MyConsentsDto = z.output<typeof myConsentsSchema>;
@@ -71,7 +71,7 @@ export const opsConsentsSchema = z
     locale: z.enum(SUPPORTED_LOCALES).optional(),
     evidence: z.string().trim().min(5).max(CONSENT_EVIDENCE_MAX_LENGTH).optional(),
     clientRecordedAt: z.coerce.date().optional(),
-    items: itemsSchema,
+    items: consentItemsSchema,
   })
   .strict();
 export type OpsConsentsDto = z.output<typeof opsConsentsSchema>;

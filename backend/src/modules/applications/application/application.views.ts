@@ -1,6 +1,6 @@
 import { paiseToNumber } from '../../../common/money/paise.js';
 import type { ApplicationEvent } from '../../../generated/prisma/client.js';
-import type { ApplicationRow } from '../infrastructure/application.repository.js';
+import type { ApplicationPartyRow, ApplicationRow } from '../infrastructure/application.repository.js';
 
 export const toApplicationView = (application: ApplicationRow) => ({
   id: application.id,
@@ -40,4 +40,16 @@ export const toApplicationEventView = (event: ApplicationEvent) => ({
   actorType: event.actorType,
   actorUserId: event.actorUserId,
   createdAt: event.createdAt.toISOString(),
+});
+
+export const toApplicationPartyView = (row: ApplicationPartyRow, mobile: string | null) => ({
+  id: row.id,
+  party: row.party,
+  role: row.role,
+  relationship: row.relationship,
+  status: row.status,
+  consentStatus: row.consentStatus,
+  consentedAt: row.consentedAt?.toISOString() ?? null,
+  mobile,
+  createdAt: row.createdAt.toISOString(),
 });

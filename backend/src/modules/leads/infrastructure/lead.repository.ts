@@ -175,6 +175,10 @@ export class LeadRepository {
     return this.txHost.tx.offlineConversion.count({ where });
   }
 
+  async leadIdsForParties(partyIds: string[]) {
+    return (await this.txHost.tx.lead.findMany({ where: { OR: [{ partyId: { in: partyIds } }, { businessPartyId: { in: partyIds } }] }, select: { id: true } })).map((row) => row.id);
+  }
+
   findOpenForParties(partyIds: string[], openStatuses: readonly LeadStatus[]) {
     return this.txHost.tx.lead.findMany({ where: { OR: [{ partyId: { in: partyIds } }, { businessPartyId: { in: partyIds } }], status: { in: [...openStatuses] }, convertedApplicationId: null }, orderBy: { createdAt: 'desc' } });
   }

@@ -13,6 +13,7 @@ export const DLT_TEMPLATE_ENV: Partial<Record<NotificationTemplateKey, string>> 
   [NotificationTemplateKey.AuthOtp]: 'SMS_DLT_TEMPLATE_AUTH_OTP',
   [NotificationTemplateKey.InvitationMember]: 'SMS_DLT_TEMPLATE_INVITATION_MEMBER',
   [NotificationTemplateKey.ConsentRequest]: 'SMS_DLT_TEMPLATE_CONSENT_REQUEST',
+  [NotificationTemplateKey.ConsentOtp]: 'SMS_DLT_TEMPLATE_CONSENT_OTP',
   [NotificationTemplateKey.LeadOffered]: 'SMS_DLT_TEMPLATE_LEAD_OFFERED',
   [NotificationTemplateKey.LeadOfferExpiring]: 'SMS_DLT_TEMPLATE_LEAD_OFFER_EXPIRING',
   [NotificationTemplateKey.LeadHandedOver]: 'SMS_DLT_TEMPLATE_LEAD_HANDED_OVER',
@@ -62,6 +63,13 @@ export const NOTIFICATION_TEMPLATE_SEEDS: TemplateSeed[] = [
     locale: 'en',
     subject: null,
     body: 'FundenFlo: please confirm how we may help with your loan enquiry {{ref}}: {{link}} The link expires on {{expiresOn}}.',
+  },
+  {
+    key: NotificationTemplateKey.ConsentOtp,
+    channel: NotificationChannel.sms,
+    locale: 'en',
+    subject: null,
+    body: '{{code}} is your FundenFlo consent code. {{requester}} added you to loan application {{ref}}. Share it only if you agree. It expires in {{minutes}} minutes.',
   },
   {
     key: NotificationTemplateKey.LeadOffered,

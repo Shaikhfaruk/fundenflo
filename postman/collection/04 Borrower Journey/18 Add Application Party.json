@@ -1,0 +1,209 @@
+{
+  "name": "Add Application Party",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/applications/:id/parties",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "applications",
+        ":id",
+        "parties"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{applicationId}}"
+        }
+      ]
+    },
+    "description": "Adds a co-applicant, guarantor or director by name and mobile (matched to an existing person or created, like lead capture). Their consent starts `pending` and holds the journey at the consent step (`parties_consent_pending`) until they confirm by OTP. At most 10 per application; only before submission. Borrower context for the applicant's own records; partner context for applications the firm filed (agents: the ones they filed). Others get 404.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"role\": \"co_applicant\",\n  \"name\": \"Meena Kapoor\",\n  \"mobile\": \"{{coApplicantMobile}}\",\n  \"relationship\": \"spouse\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.collectionVariables.set('coApplicantMobile', `9${Math.floor(100000000 + Math.random() * 899999999)}`);"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "pm.collectionVariables.set('applicationPartyId', String(pm.response.json().id));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/applications/:id/parties",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "applications",
+            ":id",
+            "parties"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            }
+          ]
+        },
+        "description": "Adds a co-applicant, guarantor or director by name and mobile (matched to an existing person or created, like lead capture). Their consent starts `pending` and holds the journey at the consent step (`parties_consent_pending`) until they confirm by OTP. At most 10 per application; only before submission. Borrower context for the applicant's own records; partner context for applications the firm filed (agents: the ones they filed). Others get 404.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"role\": \"co_applicant\",\n  \"name\": \"Meena Kapoor\",\n  \"mobile\": \"{{coApplicantMobile}}\",\n  \"relationship\": \"spouse\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12290-1a2b-7c3d-8e4f-5061728394a5\",\n  \"party\": {\n    \"id\": \"01a12290-2b3c-7d4e-9f50-61728394a5b6\",\n    \"kind\": \"person\",\n    \"displayName\": \"Meena Kapoor\"\n  },\n  \"role\": \"co_applicant\",\n  \"relationship\": \"spouse\",\n  \"status\": \"active\",\n  \"consentStatus\": \"pending\",\n  \"consentedAt\": null,\n  \"mobile\": \"+91 98•••••210\",\n  \"createdAt\": \"2026-10-10T17:00:00.000Z\"\n}"
+    },
+    {
+      "name": "409 CONFLICT",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/applications/:id/parties",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "applications",
+            ":id",
+            "parties"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            }
+          ]
+        },
+        "description": "Adds a co-applicant, guarantor or director by name and mobile (matched to an existing person or created, like lead capture). Their consent starts `pending` and holds the journey at the consent step (`parties_consent_pending`) until they confirm by OTP. At most 10 per application; only before submission. Borrower context for the applicant's own records; partner context for applications the firm filed (agents: the ones they filed). Others get 404.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"role\": \"co_applicant\",\n  \"name\": \"Meena Kapoor\",\n  \"mobile\": \"{{coApplicantMobile}}\",\n  \"relationship\": \"spouse\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"CONFLICT\",\n  \"message\": \"This record already exists.\",\n  \"details\": {\n    \"reason\": \"already_on_application\",\n    \"role\": \"co_applicant\"\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "400 MOBILE_INVALID",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/applications/:id/parties",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "applications",
+            ":id",
+            "parties"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            }
+          ]
+        },
+        "description": "Adds a co-applicant, guarantor or director by name and mobile (matched to an existing person or created, like lead capture). Their consent starts `pending` and holds the journey at the consent step (`parties_consent_pending`) until they confirm by OTP. At most 10 per application; only before submission. Borrower context for the applicant's own records; partner context for applications the firm filed (agents: the ones they filed). Others get 404.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"role\": \"co_applicant\",\n  \"name\": \"Meena Kapoor\",\n  \"mobile\": \"{{coApplicantMobile}}\",\n  \"relationship\": \"spouse\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"MOBILE_INVALID\",\n  \"message\": \"Enter a valid mobile number.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

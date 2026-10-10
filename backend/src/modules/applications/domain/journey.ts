@@ -21,6 +21,7 @@ export type JourneyFacts = {
   requirementMissing: string[];
   preCheckRemaining: string[];
   consentMissing: string[];
+  partiesPendingConsent: string[];
   documentsMissing: string[];
   detailsVerified: boolean;
   scored: boolean;
@@ -36,7 +37,7 @@ const BLOCKERS: Record<JourneyStage, (facts: JourneyFacts) => JourneyBlocker | n
   [JourneyStage.Category]: (facts) => flag(JourneyStage.Category, 'category_missing', facts.categoryChosen),
   [JourneyStage.Requirement]: (facts) => list(JourneyStage.Requirement, 'requirement_incomplete', facts.requirementMissing),
   [JourneyStage.PreCheck]: (facts) => list(JourneyStage.PreCheck, 'questions_unanswered', facts.preCheckRemaining),
-  [JourneyStage.Consent]: (facts) => list(JourneyStage.Consent, 'consent_missing', facts.consentMissing),
+  [JourneyStage.Consent]: (facts) => list(JourneyStage.Consent, 'consent_missing', facts.consentMissing) ?? list(JourneyStage.Consent, 'parties_consent_pending', facts.partiesPendingConsent),
   [JourneyStage.Documents]: (facts) => list(JourneyStage.Documents, 'documents_missing', facts.documentsMissing),
   [JourneyStage.VerifyDetails]: (facts) => flag(JourneyStage.VerifyDetails, 'details_unverified', facts.detailsVerified),
   [JourneyStage.Score]: (facts) => flag(JourneyStage.Score, 'not_scored', facts.scored),

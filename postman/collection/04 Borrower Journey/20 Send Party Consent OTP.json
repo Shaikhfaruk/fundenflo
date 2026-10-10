@@ -1,0 +1,127 @@
+{
+  "name": "Send Party Consent OTP",
+  "request": {
+    "method": "POST",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/applications/:id/parties/:pid/consent-otp",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "applications",
+        ":id",
+        "parties",
+        ":pid",
+        "consent-otp"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{applicationId}}"
+        },
+        {
+          "key": "pid",
+          "value": "{{applicationPartyId}}"
+        }
+      ]
+    },
+    "description": "Texts the co-applicant a one-time consent code (`consent.otp` template, DLT key `SMS_DLT_TEMPLATE_CONSENT_OTP`) and returns the consent template to show them. Resend cooldown and limits match sign-in OTPs. Borrower context for the applicant's own records; partner context for applications the firm filed (agents: the ones they filed). Others get 404."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.collectionVariables.set('partyChallengeId', String(pm.response.json().challengeId));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/applications/:id/parties/:pid/consent-otp",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "applications",
+            ":id",
+            "parties",
+            ":pid",
+            "consent-otp"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            },
+            {
+              "key": "pid",
+              "value": "{{applicationPartyId}}"
+            }
+          ]
+        },
+        "description": "Texts the co-applicant a one-time consent code (`consent.otp` template, DLT key `SMS_DLT_TEMPLATE_CONSENT_OTP`) and returns the consent template to show them. Resend cooldown and limits match sign-in OTPs. Borrower context for the applicant's own records; partner context for applications the firm filed (agents: the ones they filed). Others get 404."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"challengeId\": \"01a12280-1a2b-7c3d-8e4f-5061728394a5\",\n  \"resendIn\": 30,\n  \"expiresIn\": 300,\n  \"recipient\": \"+91 98•••••210\",\n  \"template\": {\n    \"context\": \"journey\",\n    \"versionId\": \"01a121c0-1a2b-7c3d-8e4f-5061728394a5\",\n    \"number\": 1,\n    \"locale\": \"en\",\n    \"policyUrl\": null,\n    \"items\": [\n      {\n        \"purpose\": \"ai_documents\",\n        \"required\": true,\n        \"title\": \"Read My Documents With AI\",\n        \"details\": \"FundenFlo may read the documents I upload to fill in my application.\"\n      }\n    ]\n  }\n}"
+    },
+    {
+      "name": "429 OTP_COOLDOWN",
+      "originalRequest": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/applications/:id/parties/:pid/consent-otp",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "applications",
+            ":id",
+            "parties",
+            ":pid",
+            "consent-otp"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{applicationId}}"
+            },
+            {
+              "key": "pid",
+              "value": "{{applicationPartyId}}"
+            }
+          ]
+        },
+        "description": "Texts the co-applicant a one-time consent code (`consent.otp` template, DLT key `SMS_DLT_TEMPLATE_CONSENT_OTP`) and returns the consent template to show them. Resend cooldown and limits match sign-in OTPs. Borrower context for the applicant's own records; partner context for applications the firm filed (agents: the ones they filed). Others get 404."
+      },
+      "status": "Too Many Requests",
+      "code": 429,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"OTP_COOLDOWN\",\n  \"message\": \"Please wait before requesting another code.\",\n  \"details\": {\n    \"retryAfterSeconds\": 22\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

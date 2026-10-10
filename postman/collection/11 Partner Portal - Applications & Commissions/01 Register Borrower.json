@@ -1,0 +1,181 @@
+{
+  "name": "Register Borrower",
+  "request": {
+    "method": "POST",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/partner/borrowers",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "partner",
+        "borrowers"
+      ]
+    },
+    "description": "Registers a client of the firm as a borrower: the person is matched or created by mobile, the business created for MSMEs, and the profile is owned by the firm. Refused when another firm holds referral protection (`LEAD_PROTECTED`) or the borrower already has a profile of their own or another firm's (`BORROWER_ALREADY_REGISTERED`). When the borrower later signs in with that mobile they see the same profile and applications. Partner context.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"name\": \"Gaurav Arora\",\n  \"mobile\": \"{{partnerBorrowerMobile}}\",\n  \"segment\": \"msme\",\n  \"subSegment\": \"proprietorship\",\n  \"businessName\": \"Arora Garments\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.collectionVariables.set('partnerBorrowerMobile', `9${Math.floor(100000000 + Math.random() * 899999999)}`);"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "pm.collectionVariables.set('borrowerProfileId', String(pm.response.json().id));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/partner/borrowers",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "borrowers"
+          ]
+        },
+        "description": "Registers a client of the firm as a borrower: the person is matched or created by mobile, the business created for MSMEs, and the profile is owned by the firm. Refused when another firm holds referral protection (`LEAD_PROTECTED`) or the borrower already has a profile of their own or another firm's (`BORROWER_ALREADY_REGISTERED`). When the borrower later signs in with that mobile they see the same profile and applications. Partner context.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Gaurav Arora\",\n  \"mobile\": \"{{partnerBorrowerMobile}}\",\n  \"segment\": \"msme\",\n  \"subSegment\": \"proprietorship\",\n  \"businessName\": \"Arora Garments\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12260-1a2b-7c3d-8e4f-5061728394a5\",\n  \"party\": {\n    \"id\": \"01a12260-3c4d-7e5f-8061-728394a5b6c7\",\n    \"kind\": \"business\",\n    \"displayName\": \"Arora Garments\"\n  },\n  \"actingParty\": {\n    \"id\": \"01a12260-4d5e-7f60-8172-8394a5b6c7d8\",\n    \"displayName\": \"Gaurav Arora\"\n  },\n  \"segmentKey\": \"msme\",\n  \"subSegmentKey\": \"proprietorship\",\n  \"incorporatedOn\": null,\n  \"status\": \"active\",\n  \"channel\": \"partner\",\n  \"partnerOrganizationId\": \"01a12159-30fd-748b-905a-179c43e29aa9\",\n  \"version\": 1,\n  \"createdAt\": \"2026-10-10T17:00:00.000Z\",\n  \"updatedAt\": \"2026-10-10T17:00:00.000Z\",\n  \"personOutcome\": \"created\"\n}"
+    },
+    {
+      "name": "409 LEAD_PROTECTED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/partner/borrowers",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "borrowers"
+          ]
+        },
+        "description": "Registers a client of the firm as a borrower: the person is matched or created by mobile, the business created for MSMEs, and the profile is owned by the firm. Refused when another firm holds referral protection (`LEAD_PROTECTED`) or the borrower already has a profile of their own or another firm's (`BORROWER_ALREADY_REGISTERED`). When the borrower later signs in with that mobile they see the same profile and applications. Partner context.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Gaurav Arora\",\n  \"mobile\": \"{{partnerBorrowerMobile}}\",\n  \"segment\": \"msme\",\n  \"subSegment\": \"proprietorship\",\n  \"businessName\": \"Arora Garments\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"LEAD_PROTECTED\",\n  \"message\": \"This person was already referred by another partner.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "409 BORROWER_ALREADY_REGISTERED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/partner/borrowers",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "borrowers"
+          ]
+        },
+        "description": "Registers a client of the firm as a borrower: the person is matched or created by mobile, the business created for MSMEs, and the profile is owned by the firm. Refused when another firm holds referral protection (`LEAD_PROTECTED`) or the borrower already has a profile of their own or another firm's (`BORROWER_ALREADY_REGISTERED`). When the borrower later signs in with that mobile they see the same profile and applications. Partner context.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Gaurav Arora\",\n  \"mobile\": \"{{partnerBorrowerMobile}}\",\n  \"segment\": \"msme\",\n  \"subSegment\": \"proprietorship\",\n  \"businessName\": \"Arora Garments\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"BORROWER_ALREADY_REGISTERED\",\n  \"message\": \"This borrower already has a profile managed by themselves or another partner.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

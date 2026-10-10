@@ -1,4 +1,4 @@
-import { ContactType } from '../../../common/enums/db.enums.js';
+import { ContactType, IdentifierType } from '../../../common/enums/db.enums.js';
 import { BlindIndexDomain } from '../../../infrastructure/crypto/crypto.constants.js';
 
 export const ContactSource = {
@@ -8,6 +8,8 @@ export const ContactSource = {
   StaffInvitation: 'staff_invitation',
   Seed: 'seed',
   Lead: 'lead',
+  ApplicationParty: 'application_party',
+  PartnerFiled: 'partner_filed',
 } as const;
 
 export type ContactSource = (typeof ContactSource)[keyof typeof ContactSource];
@@ -16,6 +18,14 @@ export const CONTACT_INDEX_DOMAIN: Record<ContactType, (typeof BlindIndexDomain)
   [ContactType.mobile]: BlindIndexDomain.Mobile,
   [ContactType.email]: BlindIndexDomain.Email,
   [ContactType.landline]: BlindIndexDomain.Landline,
+};
+
+export const IDENTIFIER_INDEX_DOMAIN: Record<IdentifierType, (typeof BlindIndexDomain)[keyof typeof BlindIndexDomain]> = {
+  [IdentifierType.pan]: BlindIndexDomain.Pan,
+  [IdentifierType.gstin]: BlindIndexDomain.Gstin,
+  [IdentifierType.cin]: BlindIndexDomain.Cin,
+  [IdentifierType.udyam]: BlindIndexDomain.Udyam,
+  [IdentifierType.din]: BlindIndexDomain.Din,
 };
 
 export const MatchSignal = {

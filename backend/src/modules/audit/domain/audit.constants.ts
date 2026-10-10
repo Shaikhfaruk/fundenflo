@@ -82,6 +82,7 @@ export const AuditAction = {
   OfflineConversionDecided: 'lead.offline_conversion_decided',
   BorrowerProfileCreated: 'borrower_profile.created',
   BorrowerProfileChanged: 'borrower_profile.changed',
+  PanVerified: 'borrower_profile.pan_verified',
   ApplicationCreated: 'application.created',
   ApplicationChanged: 'application.changed',
   ApplicationStatusChanged: 'application.status_changed',

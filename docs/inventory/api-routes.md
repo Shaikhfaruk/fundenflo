@@ -97,18 +97,20 @@ Controller: `backend/src/modules/catalog/http/catalog.controller.ts` · Postman:
 
 | Method | Path | Module | Context | Milestone | Status |
 |---|---|---|---|---|---|
-| `POST` `GET` | `/borrower-profiles` | borrowers (`borrower-profiles.controller.ts` → `BorrowerProfileService`; borrower context in M3a, partner in M3c) | borrower, partner | M3 | `useful` |
+| `POST` `GET` | `/borrower-profiles` | borrowers (`borrower-profiles.controller.ts` → `BorrowerProfileService`; POST borrower only, partners register clients with `/partner/borrowers`) | borrower, partner | M3 | `useful` |
 | `GET` `PATCH` | `/borrower-profiles/:id` | borrowers (`borrower-profiles.controller.ts`) | borrower, partner | M3 | `useful` |
-| `POST` | `/borrower-profiles/:id/kyc/pan` | borrowers | borrower, partner | M3 | `planned` |
+| `POST` | `/borrower-profiles/:id/kyc/pan` | borrowers (`borrower-profiles.controller.ts` → `BorrowerKycService.verifyPan`; `PanVerifier` port) | borrower, partner | M3 | `useful` |
 | `POST` `GET` | `/applications` | applications (`applications.controller.ts` → `ApplicationService`; create is borrower-only until M3c adds `/partner/applications`) | borrower, partner | M3 | `useful` |
 | `GET` | `/applications/:id` | applications (`applications.controller.ts`) | borrower, partner | M3 | `useful` |
 | `PATCH` | `/applications/:id/requirement` | applications (`applications.controller.ts`; If-Match) | borrower, partner | M3 | `useful` |
 | `GET` | `/applications/:id/next-step` | applications (`applications.controller.ts` → `computeJourney`) | borrower, partner | M3 | `useful` |
 | `GET` | `/applications/:id/questions` | applications (`applications.controller.ts` → `QuestionnaireService.resolve`) | borrower, partner | M3 | `useful` |
 | `PUT` | `/applications/:id/answers` | applications (`applications.controller.ts` → `QuestionnaireService.submitAnswers`) | borrower, partner | M3 | `useful` |
-| `POST` | `/applications/:id/parties` | applications | borrower, partner | M3 | `planned` |
-| `POST` | `/applications/:id/parties/:pid/consent-otp` | consents | borrower, partner | M3 | `planned` |
-| `POST` | `/applications/:id/consents` | consents | borrower | M3 | `planned` |
+| `POST` `GET` | `/applications/:id/parties` | applications (`applications.controller.ts` → `ApplicationPartyService`; GET added to show everyone on the case) | borrower, partner | M3 | `useful` |
+| `DELETE` | `/applications/:id/parties/:pid` | applications (`ApplicationPartyService.remove`; added for co-applicants who drop out) | borrower, partner | M3 | `useful` |
+| `POST` | `/applications/:id/parties/:pid/consent-otp` | applications (`ApplicationPartyService.sendConsentOtp` → `ConsentOtpService`) | borrower, partner | M3 | `useful` |
+| `POST` | `/applications/:id/parties/:pid/consent-otp/verify` | applications (`ApplicationPartyService.confirmConsentOtp` → `ConsentOtpService.confirm`; split from send) | borrower, partner | M3 | `useful` |
+| `POST` | `/applications/:id/consents` | applications (`ApplicationService.recordConsent` → `ConsentService.record`) | borrower | M3 | `useful` |
 | `GET` | `/applications/:id/document-checklist` | applications (`applications.controller.ts` → `DocumentChecklistService`) | borrower, partner | M3 | `useful` |
 | `GET` | `/applications/:id/timeline` | applications (`applications.controller.ts` → `ApplicationTimeline`) | borrower, partner | M3 | `useful` |
 | `POST` | `/applications/:id/withdraw` | applications (`applications.controller.ts` → `ApplicationService.withdraw`) | borrower, partner | M3 | `useful` |
@@ -275,16 +277,16 @@ Planned:
 | Method | Path | Module | Context | Milestone | Status |
 |---|---|---|---|---|---|
 | `PATCH` | `/partner/profile` | partners | partner_owner | M7 | `planned` |
-| `POST` | `/partner/leads/:id/convert` | leads | partner | M3 | `planned` |
+| `POST` | `/partner/leads/:id/convert` | applications (`partner-applications.controller.ts` → `ApplicationService.startFromLead`, lead checks in `PartnerLeadService.conversionSource`; lives in applications to avoid a leads → applications cycle) | partner | M3 | `useful` |
 
 ## 11 Partner Portal - Applications & Commissions
 
 | Method | Path | Module | Context | Milestone | Status |
 |---|---|---|---|---|---|
-| `POST` | `/partner/borrowers` | borrowers | partner | M3 | `planned` |
-| `POST` | `/partner/applications` | applications | partner | M3 | `planned` |
-| `POST` | `/partner/applications/:id/borrower-consent/send` | consents | partner | M3 | `planned` |
-| `POST` | `/partner/applications/:id/borrower-consent/verify` | consents | partner | M3 | `planned` |
+| `POST` | `/partner/borrowers` | borrowers (`partner-borrowers.controller.ts` → `PartnerBorrowerService.register`) | partner | M3 | `useful` |
+| `POST` | `/partner/applications` | applications (`partner-applications.controller.ts` → `ApplicationService.createForProfile`) | partner | M3 | `useful` |
+| `POST` | `/partner/applications/:id/borrower-consent/send` | applications (`ApplicationPartyService.sendBorrowerConsent` → `ConsentOtpService`) | partner | M3 | `useful` |
+| `POST` | `/partner/applications/:id/borrower-consent/verify` | applications (`ApplicationPartyService.confirmBorrowerConsent`) | partner | M3 | `useful` |
 | `GET` | `/partner/referral-codes` | partners | partner | M7 | `planned` |
 | `GET` | `/partner/commissions/summary` | commissions | partner | M7 | `planned` |
 | `GET` | `/partner/commissions/ledger` | commissions | partner | M7 | `planned` |
@@ -328,8 +330,8 @@ Planned:
 
 | Method | Path | Module | Context | Milestone | Status |
 |---|---|---|---|---|---|
-| `GET` | `/ops/cases` | applications | staff | M3 | `planned` |
-| `GET` | `/ops/cases/:id` | applications | staff | M3 | `planned` |
+| `GET` | `/ops/cases` | applications (`ops-cases.controller.ts` → `ApplicationService.list` with status, category, channel, firm and reference filters) | staff | M3 | `useful` |
+| `GET` | `/ops/cases/:id` | applications (`ops-cases.controller.ts` → `OpsCaseService.detail`) | staff | M3 | `useful` |
 | `POST` | `/ops/cases/:id/facts/:attribute/verify` | attributes | staff | M5 | `planned` |
 | `POST` | `/ops/assessments/:id/recompute` | assessments | staff | M5 | `planned` |
 | `POST` | `/ops/cases/:id/assign` | applications | staff | M6 | `planned` |

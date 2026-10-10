@@ -13,3 +13,21 @@ export const updateBorrowerProfileSchema = z
   .strict()
   .refine((patch) => Object.keys(patch).length > 0, 'send at least one field');
 export type UpdateBorrowerProfileDto = z.output<typeof updateBorrowerProfileSchema>;
+
+export const verifyPanSchema = z
+  .object({ pan: z.string().trim().toUpperCase().regex(/^[A-Z]{5}[0-9]{4}[A-Z]$/, 'must be a 10-character PAN'), name: z.string().trim().min(2).max(120).optional(), dateOfBirth: pastDate.optional() })
+  .strict();
+export type VerifyPanDto = z.output<typeof verifyPanSchema>;
+
+export const partnerBorrowerSchema = z
+  .object({
+    name: z.string().trim().min(2).max(120),
+    mobile: z.string().trim().min(6).max(20),
+    countryCode: z.string().trim().regex(/^\+?\d{1,4}$/).optional(),
+    segment: key,
+    subSegment: key.optional(),
+    businessName: z.string().trim().min(2).max(160).optional(),
+    incorporatedOn: pastDate.optional(),
+  })
+  .strict();
+export type PartnerBorrowerDto = z.output<typeof partnerBorrowerSchema>;

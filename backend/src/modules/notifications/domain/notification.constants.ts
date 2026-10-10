@@ -3,6 +3,7 @@ export const NotificationTemplateKey = {
   InvitationStaff: 'invitation.staff',
   InvitationMember: 'invitation.member',
   ConsentRequest: 'consent.request',
+  ConsentOtp: 'consent.otp',
   LeadOffered: 'lead.offered',
   LeadOfferExpiring: 'lead.offer_expiring',
   LeadHandedOver: 'lead.handed_over',

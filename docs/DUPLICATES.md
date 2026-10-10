@@ -90,3 +90,10 @@ These are the places where a second copy is most tempting. Use the one listed.
 | Logging who read or downloaded a document | Audit events with `AuditEntity.Document` (`document.download_url_issued`) | A separate `document_access_logs` table (planned in §9, replaced by the audit log) |
 | Re-checking an application after documents or consents change | queue `applications.refresh` → `ApplicationService.refreshForParties()` | Updating `journey_stage` or status from documents or consents code |
 | Sanitising a file name | `common/utils/file-name.ts` (`safeFileName`, `displayFileName`) | Local regex helpers in services |
+| Taking consent by a one-time code (co-applicants, partner-assisted borrowers) | `ConsentOtpService` (consents) | Calling `OtpService` or `ConsentService.record` with OTP evidence from other modules |
+| Finding a mobile that may be contacted | `PartyService.reachableContact()` | Filtering `listContacts` for do-not-contact and invalid flags in each module |
+| Storing PAN, GSTIN or other identifiers | `PartyService.setIdentifier()` (encrypted, blind index, conflict check) | Writing `party_identifiers` from other modules |
+| Verifying a PAN | `BorrowerKycService.verifyPan()` through the `PanVerifier` port | Calling a KYC provider from controllers or other services |
+| Registering a borrower on behalf of a partner firm | `PartnerBorrowerService.register()` | Creating parties or borrower profiles in partner code |
+| Adding or removing co-applicants, guarantors and directors | `ApplicationPartyService` | Writing `application_parties` from other services |
+| Ops view of an application | `OpsCaseService.detail()` | Assembling case data in ops controllers |
