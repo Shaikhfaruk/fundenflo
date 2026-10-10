@@ -11,8 +11,11 @@ export function ServiceWorkerRegister() {
   useEffect(() => {
     if (process.env.NODE_ENV !== 'production' || !('serviceWorker' in navigator)) return undefined;
     let reloading = false;
+    let controller = navigator.serviceWorker.controller;
     const onControllerChange = () => {
-      if (reloading) return;
+      const replaced = controller !== null;
+      controller = navigator.serviceWorker.controller;
+      if (reloading || !replaced) return;
       reloading = true;
       window.location.reload();
     };

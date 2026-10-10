@@ -103,7 +103,7 @@ web-frontend/
 
 - Mobile-first layouts, 44 px touch targets, `env(safe-area-inset-*)` padding for notches and the WebView, no hover-only actions.
 - Manifest: name, icons cropped from the real logo (192, 512, maskable), navy theme colour, `display: standalone`, start URL `/` (the intro sends returning visitors to sign-in or home).
-- Service worker: precaches the app shell, fonts and icons; pages are network-first with the offline page as fallback; **API responses are never cached** (personal and financial data). An "update available" toast reloads into the new version.
+- Service worker: precaches the app shell, fonts and icons; pages are network-first with the offline page as fallback; **API responses are never cached** (personal and financial data). An "update available" toast reloads into the new version; the first worker taking control of a page never reloads it (a mid-flow reload would drop the OTP step).
 - Native wrapper bridge (for later): if `window.ReactNativeWebView` exists, the app asks the wrapper for its Expo push token and registers it with `PUT /me/sessions/current/push-token`; file inputs and downloads use standard browser behaviour that WebViews support.
 
 ## 4. Design system

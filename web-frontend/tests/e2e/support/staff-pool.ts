@@ -80,6 +80,10 @@ async function create(key: string, role: string, name: string): Promise<StaffAcc
 }
 
 const SESSION_FILE = resolve(CACHE_DIR, 'staff-sessions.json');
+const SESSION_REUSE_MARGIN_MS = 10 * 60_000;
+const MS_PER_SECOND = 1000;
+
+const expiresAt = (token: string) => (JSON.parse(Buffer.from(token.split('.')[1] ?? '', 'base64url').toString('utf8')) as { exp: number }).exp * MS_PER_SECOND;
 
 const readSessions = (): Record<string, SessionTokens> => (existsSync(SESSION_FILE) ? (JSON.parse(readFileSync(SESSION_FILE, 'utf8')) as Record<string, SessionTokens>) : {});
 
@@ -90,6 +94,7 @@ const writeSession = (key: string, session: SessionTokens) => {
 
 async function freshSession(key: string): Promise<SessionTokens> {
   const held = readSessions()[key];
+  if (held && expiresAt(held.accessToken) - Date.now() > SESSION_REUSE_MARGIN_MS) return held;
   if (held) {
     try {
       return await staffApi<SessionTokens>('POST', '/auth/token/refresh', { refreshToken: held.refreshToken });
