@@ -19,8 +19,8 @@ It covers all seven areas: public pages, borrower, partner (CA/DSA), lender, ops
 |---|---|---|
 | Framework | Next.js App Router, React Server Components, Turbopack | `next` 16.4.0, `react` 19.3.0 |
 | Language | TypeScript, strict | 5.x |
-| Styling | Tailwind CSS with design tokens in CSS variables; light and dark themes (`next-themes`) | `tailwindcss` 4.3.3 |
-| Components | shadcn/ui source copied into `src/components/ui` (Base UI primitives, `base-nova` style), restyled to the FundenFlo system with 44 px touch targets on phones; icons `lucide-react` | shadcn 4.21.4, `@base-ui/react` 1.9.0 |
+| Styling | Tailwind CSS with design tokens in CSS variables; light theme only, matching the native app (owner, 2026-10-10) | `tailwindcss` 4.3.3 |
+| Components | shadcn/ui source copied into `src/components/ui` (Base UI primitives, `base-nova` style), restyled to the native app's Sovereign Advisory system with 44 px touch targets on phones; Material Symbols icons through `@iconify-icons/material-symbols` (offline modules, same names as the native app); motion with `motion` | shadcn 4.21.4, `@base-ui/react` 1.9.0 |
 | Data | TanStack Query on the client; server components for first paint | 5.104.1 |
 | Forms | React Hook Form + Zod (same Zod major as the backend) | 7.89.0 / `zod` 4.6.5 |
 | Text | `next-intl`; English catalogue is the source; other languages generated (section 6) | 4.14.9 |
@@ -102,14 +102,16 @@ web-frontend/
 ### 3.5 Responsive, PWA and native wrapper
 
 - Mobile-first layouts, 44 px touch targets, `env(safe-area-inset-*)` padding for notches and the WebView, no hover-only actions.
-- Manifest: name, icons (192, 512, maskable), theme colours for light and dark, `display: standalone`, start URL per last context.
+- Manifest: name, icons cropped from the real logo (192, 512, maskable), navy theme colour, `display: standalone`, start URL `/` (the intro sends returning visitors to sign-in or home).
 - Service worker: precaches the app shell, fonts and icons; pages are network-first with the offline page as fallback; **API responses are never cached** (personal and financial data). An "update available" toast reloads into the new version.
 - Native wrapper bridge (for later): if `window.ReactNativeWebView` exists, the app asks the wrapper for its Expo push token and registers it with `PUT /me/sessions/current/push-token`; file inputs and downloads use standard browser behaviour that WebViews support.
 
 ## 4. Design system
 
-- FundenFlo green as the primary colour, neutral greys, semantic colours for success, warning, danger and info; every colour is a token with a dark-mode value.
-- Inter for text (Devanagari and other Indian scripts fall back to Noto Sans), tabular numbers for money.
+- Same theme and UI as the native app in `frontend/` (read-only reference; owner, 2026-10-10): navy `#0A192F`, gold `#FDB901`, canvas `#F8FBFF`, semantic success, warning (gold), danger and info; light theme only. Full spec: `.claude/context/web/2026-10-10_native-app-design-system-reference.md`.
+- Poppins for headings and Inter for text (Devanagari and other Indian scripts fall back to Noto Sans), tabular numbers for money. Title Case for headings, buttons and labels; sentence case for longer text, hints and errors.
+- Layouts: sign-in is a navy hero with a white sheet (split screen on desktop); borrower screens use the native header ("Namaste"), bottom tabs on phones and a 560 px column (two columns on desktop); partner, lender and staff use the Stitch portal layout (navy sidebar with a gold active marker, white top bar).
+- Motion: entrance fades and staggers, zoom-in checks, sliding tab and nav markers, animated counters and progress bars; `MotionConfig reducedMotion="user"` respects the device setting.
 - Components: button, input, OTP input, select, combobox, date picker, checkbox, radio, switch, textarea, file drop zone, card, table, data list, tabs, dialog, sheet, drawer, toast, badge, status pill, progress steps, empty state, skeleton, avatar, breadcrumb, pagination, money and date formatters (₹ with Indian digit grouping, IST).
 - Building blocks reused across roles: journey stepper, document checklist, status timeline, versioned config editor (draft → submit → approve → publish → retire), conditions builder, JSON diff viewer, audit trail, assignment card.
 - The first screens (sign-in, borrower home, application start, partner dashboard, ops leads) are reviewed by the owner before the rest are built.
@@ -149,7 +151,8 @@ Full table: [`inventory/web-frontend.md`](inventory/web-frontend.md). Summary:
 
 | # | Slice | Done when |
 |---|---|---|
-| W0 | Foundation: app, tokens and components, dark mode, BFF sessions, proxy and errors, endpoint registry and coverage check, PWA (manifest, service worker, offline, install and update prompts), text catalogue and translate script, shells per role, OTP and staff sign-in with MFA, invitation, context switch, account screens | Sign-in for every role works on phone and desktop; Lighthouse PWA installable; owner reviews the look |
+| W0 | Foundation: app, tokens and components, BFF sessions, proxy and errors, endpoint registry and coverage check, PWA (manifest, service worker, offline, install and update prompts), text catalogue and translate script, shells per role, OTP and staff sign-in with MFA, invitation, context switch, account screens | Sign-in for every role works on phone and desktop; Lighthouse PWA installable; owner reviews the look |
+| W0.5 | Native design rework (owner, 2026-10-10): native theme, logo and icons, motion layer, intro splash and slides, sign-in with Login As, borrower, portal and auth shells, every W0 screen rebuilt | Owner signs off the side-by-side review against the native and Stitch screens |
 | W1 | Borrower journey I: home, application start, requirement, pre-check questions, people and co-applicant OTP, consents, borrower profile and PAN | A borrower reaches "documents" from a fresh sign-up |
 | W2 | Borrower journey II: documents (upload, checklist, requests), analysis and assessment, matches, submissions, timeline, withdraw, subscriptions, public consent link | A borrower submits to a lender end to end |
 | W3 | Partner I: sign-up, dashboard, leads inbox and detail, activities, follow-ups, own leads, offline conversion, convert to application | A CA accepts a lead and converts it |

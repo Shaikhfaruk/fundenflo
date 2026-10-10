@@ -1,23 +1,23 @@
-import { cn } from '@/lib/utils';
-import { APP_NAME } from '@/lib/constants/pwa.constants';
+import Image from 'next/image';
 
-function LogoMark({ className }: { className?: string }) {
+import { APP_NAME, APP_TAGLINE, BRAND_ASSET, LOGO_ASPECT } from '@/lib/constants/pwa.constants';
+import { cn } from '@/lib/utils';
+
+export function Logo({ inverse = false, height = 32, priority = false, className }: { inverse?: boolean; height?: number; priority?: boolean; className?: string }) {
   return (
-    <svg viewBox="0 0 512 512" aria-hidden="true" className={cn('size-8 shrink-0', className)}>
-      <rect width="512" height="512" rx="120" className="fill-primary" />
-      <g fill="none" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M168 380V148h168M168 260h112" className="stroke-primary-foreground" strokeWidth="52" />
-        <path d="M262 372c48-8 88-44 104-104M332 262l36-14 14 36" stroke="#8ee6bf" strokeWidth="32" />
-      </g>
-    </svg>
+    <Image
+      src={inverse ? BRAND_ASSET.logoWhite : BRAND_ASSET.logo}
+      alt={`${APP_NAME} — ${APP_TAGLINE}`}
+      width={Math.round(height * LOGO_ASPECT)}
+      height={height}
+      priority={priority}
+      draggable={false}
+      className={cn('w-auto max-w-full shrink-0 select-none', className)}
+      style={{ height, width: 'auto' }}
+    />
   );
 }
 
-export function Logo({ className }: { className?: string }) {
-  return (
-    <span className={cn('inline-flex items-center gap-2 font-semibold tracking-tight', className)}>
-      <LogoMark />
-      <span className="text-lg">{APP_NAME}</span>
-    </span>
-  );
+export function LogoMark({ size = 32, className }: { size?: number; className?: string }) {
+  return <Image src={BRAND_ASSET.mark} alt="" width={size} height={size} draggable={false} className={cn('shrink-0 select-none', className)} style={{ width: size, height: size }} />;
 }

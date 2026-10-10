@@ -1,15 +1,15 @@
 'use client';
 
-import { RotateCw } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 import { Button } from '@/components/ui/button';
+import { Icon } from '@/components/ui/icon';
 
 export function ReloadButton() {
   const t = useTranslations('common');
   return (
-    <Button onClick={() => window.location.reload()}>
-      <RotateCw />
+    <Button variant="gold" onClick={() => window.location.reload()}>
+      <Icon name="refresh" size={18} />
       {t('retry')}
     </Button>
   );

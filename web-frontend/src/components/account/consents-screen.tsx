@@ -1,22 +1,22 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { ShieldCheck } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { ConfirmDialog } from '@/components/data/confirm-dialog';
-import { StatusBadge, StatusTone } from '@/components/data/status-badge';
+import { EmptyState } from '@/components/data/empty-state';
+import { StatusBadge } from '@/components/data/status-badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Empty, EmptyDescription, EmptyHeader, EmptyMedia } from '@/components/ui/empty';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Switch } from '@/components/ui/switch';
 import { consentKeys, consentTemplateQuery, giveConsents, myConsentsQuery, withdrawConsent } from '@/lib/api/consents';
 import type { ConsentState } from '@/lib/api/types/consent.types';
 import { ACCOUNT_CONSENT_CONTEXT } from '@/lib/constants/consent.constants';
 import { formatRelative } from '@/lib/format/date';
+import { StatusTone } from '@/lib/constants/status.constants';
 
 function OptIns({ current }: { current: ConsentState[] }) {
   const t = useTranslations('account.consents');
@@ -86,14 +86,7 @@ export function ConsentsScreen() {
         </CardHeader>
         <CardContent>
           {items.length === 0 ? (
-            <Empty>
-              <EmptyHeader>
-                <EmptyMedia variant="icon">
-                  <ShieldCheck />
-                </EmptyMedia>
-                <EmptyDescription>{t('empty')}</EmptyDescription>
-              </EmptyHeader>
-            </Empty>
+            <EmptyState icon="shield" body={t('empty')} className="border-none" />
           ) : (
             <ul className="flex flex-col divide-y">
               {items.map((item) => (

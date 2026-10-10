@@ -2,8 +2,8 @@ const VERSION = new URL(self.location.href).searchParams.get('v') || 'dev';
 const STATIC_CACHE = `ff-static-${VERSION}`;
 const SHELL_CACHE = `ff-shell-${VERSION}`;
 const OFFLINE_URL = '/offline';
-const SHELL_ASSETS = [OFFLINE_URL, '/icons/icon-192.png', '/icons/favicon.svg'];
-const IMMUTABLE_PREFIXES = ['/_next/static/', '/icons/'];
+const SHELL_ASSETS = [OFFLINE_URL, '/icons/icon-192.png', '/brand/logo.webp', '/brand/mark.png'];
+const IMMUTABLE_PREFIXES = ['/_next/static/', '/icons/', '/brand/'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(SHELL_CACHE).then((cache) => cache.addAll(SHELL_ASSETS)));

@@ -2,10 +2,8 @@ import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import { Suspense } from 'react';
 
-import { AuthCard, AuthCardSkeleton } from '@/components/auth/auth-card';
 import { StaffSignIn } from '@/components/auth/staff-sign-in';
-import { Link } from '@/i18n/navigation';
-import { AppPath } from '@/lib/constants/routes.constants';
+import { AuthFormSkeleton, AuthShell } from '@/components/shell/auth-shell';
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('auth.staff');
@@ -15,21 +13,14 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function StaffLoginPage() {
   const t = await getTranslations('auth.staff');
   return (
-    <Suspense fallback={<AuthCardSkeleton />}>
-      <AuthCard
-        title={t('title')}
-        description={t('subtitle')}
-        footer={
-          <>
-            {t('borrowerLink')}{' '}
-            <Link className="font-medium text-primary underline-offset-4 hover:underline" href={AppPath.Login}>
-              {t('borrowerCta')}
-            </Link>
-          </>
-        }
-      >
-        <StaffSignIn />
-      </AuthCard>
+    <Suspense
+      fallback={
+        <AuthShell headline={t('headline')} subline={t('subline')}>
+          <AuthFormSkeleton />
+        </AuthShell>
+      }
+    >
+      <StaffSignIn />
     </Suspense>
   );
 }

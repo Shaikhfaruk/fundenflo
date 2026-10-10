@@ -14,4 +14,4 @@ export const applicationsQuery = (filter: { status?: string } = {}) => queryOpti
 
 export const createApplication = (body: CreateApplicationInput) => apiRequest<Application>('POST /applications', { body, idempotent: true });
 
-export const applicationTitle = (application: Pick<Application, 'party' | 'actingParty' | 'ref'>) => application.party.displayName || application.actingParty.displayName || application.ref;
+export const partyName = (application: Pick<Application, 'party' | 'actingParty'>) => application.party.displayName || application.actingParty.displayName || null;

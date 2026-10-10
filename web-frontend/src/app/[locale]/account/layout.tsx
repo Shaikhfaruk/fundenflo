@@ -1,4 +1,5 @@
 import { getTranslations } from 'next-intl/server';
+import { Suspense } from 'react';
 
 import { AccountTabs } from '@/components/account/account-tabs';
 import { AppShell } from '@/components/shell/app-shell';
@@ -9,9 +10,13 @@ export default async function AccountLayout({ children }: LayoutProps<'/[locale]
   const t = await getTranslations('account');
   return (
     <AppShell area={ShellArea.Account}>
-      <PageHeader title={t('title')} />
-      <AccountTabs />
-      {children}
+      <div className="flex w-full max-w-4xl flex-col gap-4">
+        <PageHeader eyebrow={t('eyebrow')} title={t('title')} />
+        <Suspense fallback={<div className="h-11 rounded-xl bg-subtle" />}>
+          <AccountTabs />
+        </Suspense>
+        {children}
+      </div>
     </AppShell>
   );
 }

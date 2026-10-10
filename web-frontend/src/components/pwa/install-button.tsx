@@ -1,14 +1,14 @@
 'use client';
 
-import { Download } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
+import { Icon } from '@/components/ui/icon';
 
 type InstallPromptEvent = Event & { prompt: () => Promise<void>; userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }> };
 
-export function InstallButton({ variant = 'outline' }: { variant?: 'outline' | 'ghost' | 'default' }) {
+export function InstallButton({ variant = 'outline', className }: { variant?: 'outline' | 'ghost' | 'default' | 'gold'; className?: string }) {
   const t = useTranslations('pwa');
   const [promptEvent, setPromptEvent] = useState<InstallPromptEvent | null>(null);
   useEffect(() => {
@@ -28,13 +28,14 @@ export function InstallButton({ variant = 'outline' }: { variant?: 'outline' | '
   return (
     <Button
       variant={variant}
+      className={className}
       onClick={async () => {
         await promptEvent.prompt();
         await promptEvent.userChoice;
         setPromptEvent(null);
       }}
     >
-      <Download />
+      <Icon name="install" size={18} />
       {t('install')}
     </Button>
   );

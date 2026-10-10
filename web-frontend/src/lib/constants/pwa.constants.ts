@@ -4,6 +4,16 @@ export const SwMessage = {
   SkipWaiting: 'SKIP_WAITING',
 } as const;
 
-export const THEME_COLOR = { light: '#f7faf8', dark: '#0f1613' } as const;
+export const BRAND_COLOR = { navy: '#0a192f', canvas: '#f8fbff' } as const;
 
 export const APP_NAME = 'FundenFlo';
+
+export const APP_TAGLINE = 'The Right Funding, At The Right Time';
+
+export const BRAND_ASSET = {
+  logo: '/brand/logo.webp',
+  logoWhite: '/brand/logo-white.webp',
+  mark: '/brand/mark.png',
+} as const;
+
+export const LOGO_ASPECT = 1200 / 263;

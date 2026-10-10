@@ -3,7 +3,7 @@ import { getTranslations } from 'next-intl/server';
 import { Suspense } from 'react';
 
 import { AcceptInvitation } from '@/components/auth/accept-invitation';
-import { AuthCard, AuthCardSkeleton } from '@/components/auth/auth-card';
+import { AuthFormSkeleton, AuthShell } from '@/components/shell/auth-shell';
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('auth.invite');
@@ -13,10 +13,10 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function StaffInvitePage() {
   const t = await getTranslations('auth.invite');
   return (
-    <Suspense fallback={<AuthCardSkeleton />}>
-      <AuthCard title={t('title')} description={t('subtitle')}>
+    <AuthShell headline={t('headline')} subline={t('subline')}>
+      <Suspense fallback={<AuthFormSkeleton />}>
         <AcceptInvitation />
-      </AuthCard>
-    </Suspense>
+      </Suspense>
+    </AuthShell>
   );
 }

@@ -1,13 +1,13 @@
-import { Search } from 'lucide-react';
 import type { ComponentProps } from 'react';
 
+import { Icon } from '@/components/ui/icon';
 import { cn } from '@/lib/utils';
 
 export function SearchInput({ className, ...props }: Omit<ComponentProps<'input'>, 'type'>) {
   return (
-    <div className={cn('flex h-10 items-center gap-2 rounded-lg border border-input px-3 transition-colors focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50 md:h-9 dark:bg-input/30', className)}>
-      <Search className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
-      <input type="search" className="h-full w-full min-w-0 bg-transparent text-base outline-none placeholder:text-muted-foreground md:text-sm" {...props} />
+    <div className={cn('flex h-11 items-center gap-2.5 rounded-lg border-2 border-transparent bg-field px-3 text-muted-foreground transition-colors focus-within:border-navy focus-within:bg-card focus-within:text-navy', className)}>
+      <Icon name="search" size={20} />
+      <input type="search" className="h-full w-full min-w-0 bg-transparent text-[15px] text-foreground outline-none placeholder:text-muted-foreground" {...props} />
     </div>
   );
 }

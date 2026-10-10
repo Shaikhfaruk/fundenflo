@@ -1,30 +1,21 @@
 import { useTranslations } from 'next-intl';
 
 import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
+import type { StatusTone } from '@/lib/constants/status.constants';
 
-export const StatusTone = {
-  Neutral: 'neutral',
-  Info: 'info',
-  Success: 'success',
-  Warning: 'warning',
-  Danger: 'danger',
-} as const;
-
-export type StatusTone = (typeof StatusTone)[keyof typeof StatusTone];
-
-const TONE_CLASS: Record<StatusTone, string> = {
-  neutral: 'bg-muted text-muted-foreground',
-  info: 'bg-info/15 text-info',
-  success: 'bg-success/15 text-success',
-  warning: 'bg-warning/20 text-warning-foreground dark:text-warning',
-  danger: 'bg-destructive/15 text-destructive',
-};
+const TONE_VARIANT = {
+  neutral: 'secondary',
+  info: 'info',
+  success: 'success',
+  warning: 'gold',
+  danger: 'destructive',
+  strong: 'default',
+} as const satisfies Record<StatusTone, string>;
 
 export function StatusBadge({ status, tone, namespace = 'status' }: { status: string; tone: StatusTone; namespace?: string }) {
   const t = useTranslations(namespace);
   return (
-    <Badge variant="secondary" className={cn('border-transparent font-medium', TONE_CLASS[tone])}>
+    <Badge variant={TONE_VARIANT[tone]} className="uppercase tracking-[0.06em] text-[10.5px]">
       {t.has(status) ? t(status) : status.replaceAll('_', ' ')}
     </Badge>
   );

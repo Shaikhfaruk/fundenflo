@@ -1,4 +1,13 @@
-import { StatusTone } from '@/components/data/status-badge';
+export const StatusTone = {
+  Neutral: 'neutral',
+  Info: 'info',
+  Success: 'success',
+  Warning: 'warning',
+  Danger: 'danger',
+  Strong: 'strong',
+} as const;
+
+export type StatusTone = (typeof StatusTone)[keyof typeof StatusTone];
 
 const ApplicationStatus = {
   Draft: 'draft',
@@ -32,12 +41,12 @@ export const JOURNEY_ORDER: readonly string[] = Object.values(JourneyStage);
 export const APPLICATION_STATUS_TONE: Record<string, StatusTone> = {
   draft: StatusTone.Neutral,
   pre_screened: StatusTone.Info,
-  documents_pending: StatusTone.Warning,
+  documents_pending: StatusTone.Danger,
   assessed: StatusTone.Info,
   ready_for_submission: StatusTone.Info,
-  submitted: StatusTone.Info,
-  closed_won: StatusTone.Success,
-  closed_lost: StatusTone.Danger,
+  submitted: StatusTone.Warning,
+  closed_won: StatusTone.Strong,
+  closed_lost: StatusTone.Neutral,
   withdrawn: StatusTone.Neutral,
   expired: StatusTone.Neutral,
 };
@@ -46,11 +55,11 @@ export const SUBMISSION_STATUS_TONE: Record<string, StatusTone> = {
   pending_approval: StatusTone.Warning,
   approved: StatusTone.Info,
   sent_to_lender: StatusTone.Info,
-  under_review: StatusTone.Info,
-  query_raised: StatusTone.Warning,
-  sanctioned: StatusTone.Success,
+  under_review: StatusTone.Warning,
+  query_raised: StatusTone.Danger,
+  sanctioned: StatusTone.Strong,
   disbursed: StatusTone.Success,
-  rejected: StatusTone.Danger,
+  rejected: StatusTone.Neutral,
   withdrawn: StatusTone.Neutral,
 };
 
@@ -59,7 +68,7 @@ export const LEAD_STATUS_TONE: Record<string, StatusTone> = {
   qualified: StatusTone.Success,
   in_progress: StatusTone.Info,
   on_hold: StatusTone.Warning,
-  converted: StatusTone.Success,
+  converted: StatusTone.Strong,
   won: StatusTone.Success,
   lost: StatusTone.Danger,
   unqualified: StatusTone.Neutral,

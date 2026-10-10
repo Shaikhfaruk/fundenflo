@@ -1,15 +1,15 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Download, FileText } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { EmptyState } from '@/components/data/empty-state';
 import { StatusBadge } from '@/components/data/status-badge';
 import { Button } from '@/components/ui/button';
+import { Icon } from '@/components/ui/icon';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Empty, EmptyDescription, EmptyHeader, EmptyMedia } from '@/components/ui/empty';
 import { Field, FieldDescription, FieldError, FieldLabel } from '@/components/ui/field';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -118,7 +118,7 @@ export function PrivacyScreen() {
                   {request.rejectedReason ? <p className="text-sm text-destructive">{request.rejectedReason}</p> : null}
                   {request.exportReady ? (
                     <Button variant="outline" size="sm" className="self-start" onClick={() => download.mutate(request.id)} disabled={download.isPending}>
-                      <Download />
+                      <Icon name="download" size={18} />
                       {t('download')}
                     </Button>
                   ) : null}
@@ -126,14 +126,7 @@ export function PrivacyScreen() {
               ))}
             </ul>
           ) : (
-            <Empty>
-              <EmptyHeader>
-                <EmptyMedia variant="icon">
-                  <FileText />
-                </EmptyMedia>
-                <EmptyDescription>{t('empty')}</EmptyDescription>
-              </EmptyHeader>
-            </Empty>
+            <EmptyState icon="document" body={t('empty')} className="border-none" />
           )}
         </CardContent>
       </Card>

@@ -13,6 +13,8 @@ export const sessionExpiresAt = (): number | null => {
 
 export const hasSession = () => sessionExpiresAt() !== null;
 
+export const sessionContext = (): string | null => readCookie(SessionCookie.Context);
+
 export const accessNeedsRefresh = () => {
   const expiresAt = sessionExpiresAt();
   return expiresAt !== null && expiresAt - Date.now() < ACCESS_REFRESH_LEEWAY_MS;

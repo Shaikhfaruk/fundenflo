@@ -1,3 +1,5 @@
+import type { IconName } from '@/components/ui/icon';
+
 import { Role, SessionContext } from './auth.constants';
 import { AppPath } from './routes.constants';
 
@@ -28,20 +30,7 @@ export const CONTEXT_AREA: Record<string, NavArea> = {
   [SessionContext.Staff]: ShellArea.Staff,
 };
 
-export const NavIcon = {
-  Home: 'home',
-  NewApplication: 'newApplication',
-  Profile: 'profile',
-  Dashboard: 'dashboard',
-  Leads: 'leads',
-  Submissions: 'submissions',
-  SwitchRole: 'switchRole',
-  Account: 'account',
-} as const;
-
-export type NavIcon = (typeof NavIcon)[keyof typeof NavIcon];
-
-export type NavItem = { key: string; href: string; icon: NavIcon; roles?: readonly string[]; primary?: boolean };
+export type NavItem = { key: string; href: string; icon: IconName; roles?: readonly string[]; primary?: boolean };
 
 export type NavGroup = { key: string; items: NavItem[] };
 
@@ -52,8 +41,8 @@ export const NAVIGATION: Record<NavArea, NavGroup[]> = {
     {
       key: 'main',
       items: [
-        { key: 'switchRole', href: AppPath.AccountSwitch, icon: NavIcon.SwitchRole, primary: true },
-        { key: 'account', href: AppPath.Account, icon: NavIcon.Account, primary: true },
+        { key: 'switchRole', href: AppPath.AccountSwitch, icon: 'swap', primary: true },
+        { key: 'account', href: AppPath.Account, icon: 'account', primary: true },
       ],
     },
   ],
@@ -61,9 +50,9 @@ export const NAVIGATION: Record<NavArea, NavGroup[]> = {
     {
       key: 'main',
       items: [
-        { key: 'home', href: AppPath.BorrowerHome, icon: NavIcon.Home, primary: true },
-        { key: 'newApplication', href: AppPath.BorrowerNewApplication, icon: NavIcon.NewApplication, primary: true },
-        { key: 'account', href: AppPath.Account, icon: NavIcon.Account, primary: true },
+        { key: 'home', href: AppPath.BorrowerHome, icon: 'tab-home', primary: true },
+        { key: 'newApplication', href: AppPath.BorrowerNewApplication, icon: 'add', primary: true },
+        { key: 'profile', href: AppPath.Account, icon: 'account', primary: true },
       ],
     },
   ],
@@ -71,8 +60,8 @@ export const NAVIGATION: Record<NavArea, NavGroup[]> = {
     {
       key: 'main',
       items: [
-        { key: 'dashboard', href: AppPath.PartnerHome, icon: NavIcon.Dashboard, primary: true },
-        { key: 'account', href: AppPath.Account, icon: NavIcon.Account, primary: true },
+        { key: 'dashboard', href: AppPath.PartnerHome, icon: 'dashboard', primary: true },
+        { key: 'account', href: AppPath.Account, icon: 'account', primary: true },
       ],
     },
   ],
@@ -80,21 +69,23 @@ export const NAVIGATION: Record<NavArea, NavGroup[]> = {
     {
       key: 'main',
       items: [
-        { key: 'submissions', href: AppPath.LenderHome, icon: NavIcon.Submissions, primary: true },
-        { key: 'account', href: AppPath.Account, icon: NavIcon.Account, primary: true },
+        { key: 'submissions', href: AppPath.LenderHome, icon: 'inbox', primary: true },
+        { key: 'account', href: AppPath.Account, icon: 'account', primary: true },
       ],
     },
   ],
   [ShellArea.Staff]: [
     {
       key: 'ops',
-      items: [{ key: 'leads', href: AppPath.OpsHome, icon: NavIcon.Leads, roles: [Role.SuperAdmin, Role.OpsLead, Role.OpsReviewer, Role.ComplianceOfficer, Role.Support], primary: true }],
+      items: [{ key: 'leads', href: AppPath.OpsHome, icon: 'group', roles: [Role.SuperAdmin, Role.OpsLead, Role.OpsReviewer, Role.ComplianceOfficer, Role.Support], primary: true }],
     },
     {
       key: 'you',
-      items: [{ key: 'account', href: AppPath.Account, icon: NavIcon.Account, roles: ALL_STAFF, primary: true }],
+      items: [{ key: 'account', href: AppPath.Account, icon: 'account', roles: ALL_STAFF, primary: true }],
     },
   ],
 };
 
 export const MAX_PRIMARY_TABS = 4;
+
+export const PORTAL_AREAS: readonly NavArea[] = [ShellArea.Partner, ShellArea.Lender, ShellArea.Staff];

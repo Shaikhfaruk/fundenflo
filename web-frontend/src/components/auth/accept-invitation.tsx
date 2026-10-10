@@ -10,7 +10,8 @@ import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
-import { Input } from '@/components/ui/input';
+import { Icon } from '@/components/ui/icon';
+import { IconInput } from '@/components/ui/icon-input';
 import { Spinner } from '@/components/ui/spinner';
 import { useErrorToast } from '@/hooks/use-error-toast';
 import { useRouter } from '@/i18n/navigation';
@@ -48,28 +49,32 @@ export function AcceptInvitation() {
     },
   });
   return (
-    <form className="flex flex-col gap-4" onSubmit={form.handleSubmit((values) => accept.mutate(values))} noValidate>
-      <FieldGroup>
+    <form className="flex flex-1 flex-col" onSubmit={form.handleSubmit((values) => accept.mutate(values))} noValidate>
+      <h2 className="font-heading text-2xl leading-8 font-semibold tracking-[-0.01em] text-foreground">{t('title')}</h2>
+      <p className="mt-1 text-sm text-muted-foreground">{t('subtitle')}</p>
+      <FieldGroup className="mt-4 gap-4">
         <Field data-invalid={Boolean(form.formState.errors.fullName)}>
           <FieldLabel htmlFor="fullName">{t('fullName')}</FieldLabel>
-          <Input id="fullName" autoComplete="name" aria-invalid={Boolean(form.formState.errors.fullName)} {...form.register('fullName')} />
+          <IconInput id="fullName" icon="person" autoComplete="name" aria-invalid={Boolean(form.formState.errors.fullName)} {...form.register('fullName')} />
           <FieldError errors={[form.formState.errors.fullName]} />
         </Field>
         <Field data-invalid={Boolean(form.formState.errors.password)}>
           <FieldLabel htmlFor="password">{t('password')}</FieldLabel>
-          <Input id="password" type="password" autoComplete="new-password" aria-invalid={Boolean(form.formState.errors.password)} {...form.register('password')} />
+          <IconInput id="password" icon="key" type="password" revealLabel={{ show: t('showPassword'), hide: t('hidePassword') }} autoComplete="new-password" aria-invalid={Boolean(form.formState.errors.password)} {...form.register('password')} />
           <FieldDescription>{t('passwordHint', { min: STAFF_PASSWORD_MIN_LENGTH })}</FieldDescription>
           <FieldError errors={[form.formState.errors.password]} />
         </Field>
         <Field data-invalid={Boolean(form.formState.errors.confirm)}>
           <FieldLabel htmlFor="confirm">{t('confirm')}</FieldLabel>
-          <Input id="confirm" type="password" autoComplete="new-password" aria-invalid={Boolean(form.formState.errors.confirm)} {...form.register('confirm')} />
+          <IconInput id="confirm" icon="key" type="password" autoComplete="new-password" aria-invalid={Boolean(form.formState.errors.confirm)} {...form.register('confirm')} />
           <FieldError errors={[form.formState.errors.confirm]} />
         </Field>
       </FieldGroup>
-      <Button type="submit" size="lg" disabled={accept.isPending}>
+      <div className="min-h-4 flex-1" />
+      <Button type="submit" className="mt-4 w-full" disabled={accept.isPending}>
         {accept.isPending ? <Spinner /> : null}
         {t('submit')}
+        {accept.isPending ? null : <Icon name="arrow-forward" size={18} />}
       </Button>
     </form>
   );

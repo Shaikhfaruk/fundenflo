@@ -1,7 +1,6 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Laptop, Mail, Smartphone, Trash2 } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -10,6 +9,8 @@ import { OtpDialog } from '@/components/account/otp-dialog';
 import { ConfirmDialog } from '@/components/data/confirm-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Icon } from '@/components/ui/icon';
+import { IconTile } from '@/components/ui/icon-tile';
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
@@ -17,16 +18,13 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useErrorText } from '@/hooks/use-error-toast';
 import { loginsQuery, meKeys, removeLogin, revokeOtherSessions, revokeSession, sessionsQuery, startLoginLink, startMobileChange, verifyLoginLink, verifyMobileChange } from '@/lib/api/me';
 import type { SessionView } from '@/lib/api/types/auth.types';
-import { DEFAULT_COUNTRY_CODE } from '@/lib/constants/auth.constants';
+import { DEFAULT_COUNTRY_CODE, INDIAN_MOBILE_PATTERN } from '@/lib/constants/auth.constants';
 import { formatRelative } from '@/lib/format/date';
 
 type Pending = { kind: 'email' | 'mobile'; challengeId: string; destination: string } | null;
 
-const INDIAN_MOBILE = /^[6-9]\d{9}$/;
-
 function DeviceIcon({ platform }: { platform: string | null }) {
-  if (platform === 'ios' || platform === 'android') return <Smartphone className="size-5 text-muted-foreground" />;
-  return <Laptop className="size-5 text-muted-foreground" />;
+  return <IconTile icon={platform === 'ios' || platform === 'android' ? 'smartphone' : 'laptop'} tone="subtle" />;
 }
 
 export function SecurityScreen() {
@@ -121,14 +119,14 @@ export function SecurityScreen() {
           <ul className="flex flex-col divide-y">
             {logins.data?.items.map((login) => (
               <li key={login.id} className="flex items-center gap-3 py-3">
-                {login.method === 'email_otp' ? <Mail className="size-5 text-muted-foreground" /> : <Smartphone className="size-5 text-muted-foreground" />}
+                <IconTile icon={login.method === 'email_otp' ? 'mail' : 'smartphone'} tone="subtle" />
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium tabular">{login.identifier}</p>
                   <p className="text-xs text-muted-foreground">{t.has(`method.${login.method}`) ? t(`method.${login.method}`) : login.method}</p>
                 </div>
                 {login.method === 'mobile_otp' ? null : (
                   <Button variant="ghost" size="icon-sm" aria-label={t('removeLogin')} onClick={() => remove.mutate(login.id)} disabled={remove.isPending}>
-                    <Trash2 />
+                    <Icon name="delete" size={18} />
                   </Button>
                 )}
               </li>
@@ -161,7 +159,7 @@ export function SecurityScreen() {
             className="flex flex-col gap-2"
             onSubmit={(event) => {
               event.preventDefault();
-              if (!INDIAN_MOBILE.test(mobile)) {
+              if (!INDIAN_MOBILE_PATTERN.test(mobile)) {
                 setMobileError(tErrors('MOBILE_INVALID'));
                 return;
               }

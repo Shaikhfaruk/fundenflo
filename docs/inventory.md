@@ -28,7 +28,7 @@ Items marked `dead` or `duplicate` are never deleted without the owner's review.
 | Events, real-time channels, notifications | [`inventory/events-and-channels.md`](inventory/events-and-channels.md) | Domain events, rooms, notification templates |
 | Shared building blocks (engines, infrastructure, common) | [`inventory/shared-building-blocks.md`](inventory/shared-building-blocks.md) | Reusable components and where enums/constants live |
 | Frontend app (reference, not edited) | [`inventory/frontend-api-calls.md`](inventory/frontend-api-calls.md) | 19 service functions calling 17 endpoints |
-| Web frontend (`web-frontend/`, Next.js) | [`inventory/web-frontend.md`](inventory/web-frontend.md) | 91 screens covering 367 backend routes (all except `/v0`, health and API-key lead intake); W0 built 19 screens and the building blocks, 40 routes connected |
+| Web frontend (`web-frontend/`, Next.js) | [`inventory/web-frontend.md`](inventory/web-frontend.md) | 91 screens covering 367 backend routes (all except `/v0`, health and API-key lead intake); W0 built 19 screens and the building blocks, 40 routes connected; W0.5 rebuilt them in the native app design |
 
 ## Repository files
 
@@ -38,7 +38,7 @@ Items marked `dead` or `duplicate` are never deleted without the owner's review.
 | `.claude/context/` | Machine-readable working context, by topic and date | `useful` | Local only (git-ignored) |
 | `docs/BACKEND_ARCHITECTURE_PLAN.md` | Architecture and build plan | `useful` | Source for every `planned` row |
 | `docs/FRONTEND_ARCHITECTURE_PLAN.md` | Web frontend architecture and build plan (Next.js PWA for every role) | `useful` | Source for the `planned` rows in `inventory/web-frontend.md` |
-| `web-frontend/` | Next.js web app, PWA and WebView target | `useful` | W0 2026-10-10: `pnpm verify` (typecheck, lint, spacing, knip, 13 unit tests, coverage, build) and 10 Playwright runs (5 flows × desktop and phone) pass |
+| `web-frontend/` | Next.js web app, PWA and WebView target | `useful` | W0.5 2026-10-10: `pnpm verify` (typecheck, lint, spacing, knip, 13 unit tests, coverage, build) and 12 Playwright runs (6 flows × desktop and phone) pass |
 | `docs/ARCHITECTURE.md` | Living diagrams | `useful` | Linked from every inventory table |
 | `docs/inventory.md`, `docs/inventory/*.md` | This system map | `useful` | — |
 | `docs/DUPLICATES.md` | Known duplicates register and single-implementation rules | `useful` | No open duplicates as of 2026-10-09 |

@@ -14,5 +14,5 @@ test('the app is installable and works offline-first for its shell', async ({ re
   expect(worker.headers()['cache-control']).toContain('no-cache');
 
   await page.goto('/offline');
-  await expect(page.getByText('You are offline')).toBeVisible();
+  await expect(page.getByText('You Are Offline')).toBeVisible();
 });

@@ -1,6 +1,6 @@
 # Inventory — Web frontend
 
-> App: `web-frontend/` (Next.js 16.4). Plan: [`../FRONTEND_ARCHITECTURE_PLAN.md`](../FRONTEND_ARCHITECTURE_PLAN.md). Last updated: 2026-10-10 (W0 built).
+> App: `web-frontend/` (Next.js 16.4). Plan: [`../FRONTEND_ARCHITECTURE_PLAN.md`](../FRONTEND_ARCHITECTURE_PLAN.md). Last updated: 2026-10-10 (W0 built, W0.5 native design rework).
 > Every backend route meant for people appears below at least once (367 of 387). Excluded: `/v0/*` (17, compat for the old app), `/health/*` (2, infrastructure), `POST /public/leads` (1, server-to-server with an API key). `pnpm api:coverage` in `web-frontend/` counts the routes the code calls (40 of 367 after W0).
 > Status: `useful` when the screen is built, calls every route listed and is covered by a Playwright flow (`web-frontend/tests/e2e/`); otherwise `planned`.
 
@@ -8,8 +8,8 @@
 
 | Path | Screen | Who | Backend routes | Milestone | Status |
 |---|---|---|---|---|---|
-| `/` | Landing: what FundenFlo does, loan categories, sign-in and install | everyone | `GET /catalog/segments` · `GET /catalog/loan-categories` | W0 | `useful` |
-| `/login` | OTP sign-in (mobile or email; borrower or partner), with optional referral code | borrower, partner | `POST /auth/otp/request` · `POST /auth/otp/verify` | W0 | `useful` |
+| `/` | Intro as in the native app: navy splash once per browser session, then three onboarding slides on the first visit; returning visitors go to sign-in, signed-in people to their home (W0.5 replaced the W0 landing page and `components/public/segment-list.tsx`) | everyone | — | W0.5 | `useful` |
+| `/login` | OTP sign-in in the native layout: navy hero, "Login As" picker (borrower, DSA, CA, lender → team sign-in), India mobile field or email, referral expander, 6-digit code step with shake and resend timer | borrower, partner | `POST /auth/otp/request` · `POST /auth/otp/verify` | W0 | `useful` |
 | `/staff/login` | Staff and lender sign-in (email + password) then authenticator code | staff, lender | `POST /auth/staff/login` · `POST /auth/staff/mfa/verify` | W0 | `useful` |
 | `/staff/invite/[token]` | Accept a staff or lender invitation: set password, enrol authenticator | staff, lender | `POST /auth/staff/invitations/accept` | W0 | `useful` |
 | `/c/[token]` | Consent link from SMS: read the purposes, confirm with OTP | lead (not signed in) | `GET /public/consent-requests/:token` · `POST /public/consent-requests/:token` · `GET /catalog/consent-templates` | W2 | `planned` |
@@ -144,9 +144,11 @@
 | Typed client | `src/lib/api/*.ts`, `src/lib/api/backend-routes.ts` (generated) | `apiRequest(route, options)`: proactive refresh, one retry after `TOKEN_EXPIRED`, `ApiError` with field issues; one module per backend area with TanStack `queryOptions` | `useful` |
 | Client session | `src/lib/session/*` | Web Locks single-flight refresh across tabs, BroadcastChannel session signals, destination after sign-in, `useMe` | `useful` |
 | Proxy (route guard) | `src/proxy.ts` | next-intl locale routing; protected areas redirect to `/login` or `/staff/login` with `next` | `useful` |
-| App shell | `src/components/shell/*` | Sidebar on desktop, top bar + bottom tabs + menu sheet on phones; menu per role (`src/lib/constants/navigation.constants.ts`); area guard with switch-role prompt; user menu with theme and sign out | `useful` |
-| Design system | `src/app/globals.css`, `src/components/ui/*`, `src/components/data/*` | FundenFlo tokens light and dark, shadcn (Base UI) components with 44 px touch targets, status badges, responsive list (table on desktop, cards on phones), stat card, search input, confirm dialog | `useful` |
+| App shell | `src/components/shell/*` | `app-shell.tsx` picks the layout per context: `borrower-shell.tsx` (native "Namaste" header, bottom tabs with a sliding gold dot on phones, nav pills on desktop) or `portal-shell.tsx` (Stitch navy sidebar with a gold marker, top bar, drawer on phones); `auth-shell.tsx` (navy hero + sheet, split screen on desktop) with `language-toggle.tsx`; menu per role (`src/lib/constants/navigation.constants.ts`, Material Symbols names); area guard; user menu (account, switch role, sign out). W0.5 removed `nav-icon.tsx` and the theme switch | `useful` |
+| Design system | `src/app/globals.css`, `src/components/ui/*`, `src/components/data/*`, `src/components/brand/logo.tsx` | Native app tokens (navy, gold, canvas, onboarding palette), Poppins + Inter, real logo and mark from `frontend/assets/brand`; shadcn (Base UI) components restyled to the native specs (52 px buttons, 54 px fields with navy focus, OTP boxes with shake, navy switches and checks); native building blocks `icon.tsx` (Material Symbols), `icon-tile.tsx`, `eyebrow.tsx`, `step-header.tsx` (segmented gold bar), `choice.tsx` (row, tile, chip), `mobile-input.tsx` (India flag and +91), `icon-input.tsx`, `secure-note.tsx`; status badges in the Stitch colour map (`StatusTone` now in `status.constants.ts`), responsive list (Stitch table on desktop, cards on phones), stat card with icon square and coloured underline, empty state, search input, confirm dialog | `useful` |
 | PWA | `src/app/manifest.ts`, `public/sw.js`, `src/components/pwa/*`, `public/icons/*` | Manifest with maskable icons, versioned service worker (static cache-first, pages network-first with `/offline`, never `/api`), update prompt, install button | `useful` |
 | Text and languages | `src/messages/en.json`, `src/i18n/*`, `scripts/translate-messages.mjs` | next-intl with `[locale]` root segment (`as-needed` prefix); Google Cloud Translation script for 10 Indian languages | `useful` (English only until translated) |
+| Motion | `src/components/motion/*`, `src/lib/constants/motion.constants.ts` | `MotionProvider` (respects reduced motion), `FadeIn`, `Stagger`, `ZoomIn`, `AnimatedNumber`; durations and easing as in the native app | `useful` |
+| Intro | `src/components/intro/*`, `src/lib/constants/intro.constants.ts` | Splash and onboarding slides with illustrations, swipe and arrow keys; seen flags in session and local storage | `useful` |
 | Checks | `scripts/api-coverage.mjs`, `scripts/check-spacing.mjs`, `knip.json`, `.oxlintrc.json`, `vitest.config.mts`, `playwright.config.ts` | Route coverage, spacing rule (≤ `*-4`), unused code, lint with React and a11y rules, unit tests, end-to-end on desktop and phone | `useful` |
 | Realtime | — | Socket.IO bridge that invalidates queries on backend events | `planned` (W1) |

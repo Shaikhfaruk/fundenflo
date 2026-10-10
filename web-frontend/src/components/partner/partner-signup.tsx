@@ -1,36 +1,49 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Hourglass } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import { toast } from 'sonner';
 
+import { EmptyState } from '@/components/data/empty-state';
+import { Stagger, StaggerItem } from '@/components/motion/stagger';
 import { PageHeader } from '@/components/shell/page-header';
 import { Button } from '@/components/ui/button';
 import { ButtonLink } from '@/components/ui/button-link';
-import { Card, CardContent } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
-import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet } from '@/components/ui/field';
+import { ChoiceChip, ChoiceRow } from '@/components/ui/choice';
+import { Field, FieldDescription, FieldError, FieldLabel } from '@/components/ui/field';
+import { Icon, type IconName } from '@/components/ui/icon';
 import { Input } from '@/components/ui/input';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { SecureNote } from '@/components/ui/secure-note';
 import { Spinner } from '@/components/ui/spinner';
 import { useErrorToast } from '@/hooks/use-error-toast';
 import { useRouter } from '@/i18n/navigation';
 import { ApiError } from '@/lib/api/api-error';
 import { segmentsQuery, statesQuery } from '@/lib/api/catalog';
 import { partnerSignup } from '@/lib/api/partners';
+import { MembershipStatus, SessionContext } from '@/lib/constants/auth.constants';
 import { PartnerKind, SERVICE_LANGUAGES } from '@/lib/constants/partner.constants';
 import { AppPath } from '@/lib/constants/routes.constants';
-import { MembershipStatus, SessionContext } from '@/lib/constants/auth.constants';
 import { switchContext } from '@/lib/session/client-session';
 import { useMe } from '@/lib/session/use-me';
 
 const PINCODE = /^\d{6}$/;
-const KINDS = Object.values(PartnerKind);
+const KINDS: readonly { id: string; icon: IconName }[] = [
+  { id: PartnerKind.Ca, icon: 'receipt' },
+  { id: PartnerKind.Dsa, icon: 'store' },
+  { id: PartnerKind.Connector, icon: 'link' },
+];
 
-const toggle = (values: string[], value: string, on: boolean) => (on ? [...new Set([...values, value])] : values.filter((item) => item !== value));
+const toggle = (values: string[], value: string) => (values.includes(value) ? values.filter((item) => item !== value) : [...values, value]);
+
+function Section({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <section className="flex flex-col gap-2">
+      <h2 className="text-[11px] font-semibold tracking-[0.08em] text-muted-foreground uppercase">{label}</h2>
+      {children}
+    </section>
+  );
+}
 
 export function PartnerSignup() {
   const t = useTranslations('partner.signup');
@@ -83,107 +96,83 @@ export function PartnerSignup() {
   });
   if (received) {
     return (
-      <Empty className="max-w-xl border">
-        <EmptyHeader>
-          <EmptyMedia variant="icon">
-            <Hourglass />
-          </EmptyMedia>
-          <EmptyTitle>{t('receivedTitle')}</EmptyTitle>
-          <EmptyDescription>{t('receivedBody')}</EmptyDescription>
-        </EmptyHeader>
-        <EmptyContent>
+      <EmptyState
+        icon="hourglass"
+        title={t('receivedTitle')}
+        body={t('receivedBody')}
+        action={
           <ButtonLink variant="outline" href={AppPath.AccountSwitch}>
             {t('receivedRoles')}
           </ButtonLink>
-        </EmptyContent>
-      </Empty>
+        }
+      />
     );
   }
   return (
-    <div className="flex max-w-3xl flex-col gap-4">
-      <PageHeader title={t('title')} description={t('description')} />
-      <Card>
-        <CardContent>
-          <form
-            className="flex flex-col gap-4"
-            onSubmit={(event) => {
-              event.preventDefault();
-              setErrors({});
-              submit.mutate();
-            }}
-          >
-            <FieldGroup>
-              <FieldSet>
-                <FieldLegend variant="label">{t('kind')}</FieldLegend>
-                <RadioGroup value={kind} onValueChange={(value) => setKind(String(value))} className="grid gap-2 sm:grid-cols-3">
-                  {KINDS.map((value) => (
-                    <label key={value} className="flex items-center gap-2 rounded-lg border p-3 text-sm has-data-checked:border-primary/40 has-data-checked:bg-primary/5">
-                      <RadioGroupItem value={value} />
-                      {t(`kinds.${value}`)}
-                    </label>
-                  ))}
-                </RadioGroup>
-              </FieldSet>
-              <Field data-invalid={Boolean(errors.firmName)}>
-                <FieldLabel htmlFor="firmName">{t('firmName')}</FieldLabel>
-                <Input id="firmName" autoComplete="organization" value={firmName} onChange={(event) => setFirmName(event.target.value)} required />
-                {errors.firmName ? <FieldError>{errors.firmName}</FieldError> : null}
-              </Field>
-              {kind === PartnerKind.Ca ? (
-                <Field data-invalid={Boolean(errors.membershipNumber)}>
-                  <FieldLabel htmlFor="membershipNumber">{t('membershipNumber')}</FieldLabel>
-                  <Input id="membershipNumber" inputMode="numeric" value={membershipNumber} onChange={(event) => setMembershipNumber(event.target.value)} />
-                  <FieldDescription>{t('membershipHint')}</FieldDescription>
-                  {errors.membershipNumber ? <FieldError>{errors.membershipNumber}</FieldError> : null}
-                </Field>
-              ) : null}
-              <FieldSet>
-                <FieldLegend variant="label">{t('segments')}</FieldLegend>
-                <div className="grid gap-2 sm:grid-cols-2">
-                  {segments.data?.items.map((segment) => (
-                    <label key={segment.key} className="flex items-center gap-2 text-sm">
-                      <Checkbox checked={chosenSegments.includes(segment.key)} onCheckedChange={(on) => setChosenSegments((values) => toggle(values, segment.key, on))} />
-                      {segment.label}
-                    </label>
-                  ))}
-                </div>
-              </FieldSet>
-              <FieldSet>
-                <FieldLegend variant="label">{t('languages')}</FieldLegend>
-                <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                  {SERVICE_LANGUAGES.map((code) => (
-                    <label key={code} className="flex items-center gap-2 text-sm">
-                      <Checkbox checked={languages.includes(code)} onCheckedChange={(on) => setLanguages((values) => toggle(values, code, on))} />
-                      {tLanguages(code)}
-                    </label>
-                  ))}
-                </div>
-              </FieldSet>
-              <FieldSet>
-                <FieldLegend variant="label">{t('states')}</FieldLegend>
-                <div className="grid max-h-56 grid-cols-1 gap-2 overflow-y-auto rounded-lg border p-3 sm:grid-cols-2">
-                  {states.data?.items.map((state) => (
-                    <label key={state.gstCode} className="flex items-center gap-2 text-sm">
-                      <Checkbox checked={stateCodes.includes(state.gstCode)} onCheckedChange={(on) => setStateCodes((values) => toggle(values, state.gstCode, on))} />
-                      {state.name}
-                    </label>
-                  ))}
-                </div>
-              </FieldSet>
-              <Field data-invalid={Boolean(errors.pincodes ?? errors.serviceAreas)}>
-                <FieldLabel htmlFor="pincodes">{t('pincodes')}</FieldLabel>
-                <Input id="pincodes" inputMode="numeric" value={pincodes} onChange={(event) => setPincodes(event.target.value)} />
-                <FieldDescription>{t('pincodesHint')}</FieldDescription>
-                {errors.pincodes ?? errors.serviceAreas ? <FieldError>{errors.pincodes ?? errors.serviceAreas}</FieldError> : null}
-              </Field>
-            </FieldGroup>
-            <Button type="submit" size="lg" className="self-start" disabled={!firmName.trim() || submit.isPending}>
-              {submit.isPending ? <Spinner /> : null}
-              {t('submit')}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
+    <form
+      className="mx-auto flex w-full max-w-2xl flex-col gap-4"
+      onSubmit={(event) => {
+        event.preventDefault();
+        setErrors({});
+        submit.mutate();
+      }}
+    >
+      <PageHeader eyebrow={t('eyebrow')} title={t('title')} description={t('description')} />
+      <Section label={t('kind')}>
+        <Stagger step={0.06} className="flex flex-col gap-2">
+          {KINDS.map((item) => (
+            <StaggerItem key={item.id}>
+              <ChoiceRow selected={kind === item.id} onSelect={() => setKind(item.id)} icon={item.icon} title={t(`kinds.${item.id}`)} description={t(`kindHints.${item.id}`)} />
+            </StaggerItem>
+          ))}
+        </Stagger>
+      </Section>
+      <Field data-invalid={Boolean(errors.firmName)}>
+        <FieldLabel htmlFor="firmName">{t('firmName')}</FieldLabel>
+        <Input id="firmName" autoComplete="organization" value={firmName} onChange={(event) => setFirmName(event.target.value)} aria-invalid={Boolean(errors.firmName)} required />
+        {errors.firmName ? <FieldError>{errors.firmName}</FieldError> : null}
+      </Field>
+      {kind === PartnerKind.Ca ? (
+        <Field data-invalid={Boolean(errors.membershipNumber)}>
+          <FieldLabel htmlFor="membershipNumber">{t('membershipNumber')}</FieldLabel>
+          <Input id="membershipNumber" inputMode="numeric" value={membershipNumber} onChange={(event) => setMembershipNumber(event.target.value)} aria-invalid={Boolean(errors.membershipNumber)} />
+          <FieldDescription>{t('membershipHint')}</FieldDescription>
+          {errors.membershipNumber ? <FieldError>{errors.membershipNumber}</FieldError> : null}
+        </Field>
+      ) : null}
+      <Section label={t('segments')}>
+        <div className="flex flex-wrap gap-2">
+          {segments.data?.items.map((segment) => (
+            <ChoiceChip key={segment.key} selected={chosenSegments.includes(segment.key)} label={segment.label} onToggle={() => setChosenSegments((values) => toggle(values, segment.key))} />
+          ))}
+        </div>
+      </Section>
+      <Section label={t('languages')}>
+        <div className="flex flex-wrap gap-2">
+          {SERVICE_LANGUAGES.map((code) => (
+            <ChoiceChip key={code} selected={languages.includes(code)} label={tLanguages(code)} onToggle={() => setLanguages((values) => toggle(values, code))} />
+          ))}
+        </div>
+      </Section>
+      <Section label={t('states')}>
+        <div className="flex max-h-64 flex-wrap gap-2 overflow-y-auto rounded-xl bg-subtle p-3">
+          {states.data?.items.map((state) => (
+            <ChoiceChip key={state.gstCode} selected={stateCodes.includes(state.gstCode)} label={state.name} onToggle={() => setStateCodes((values) => toggle(values, state.gstCode))} className="min-h-10 text-[13px]" />
+          ))}
+        </div>
+      </Section>
+      <Field data-invalid={Boolean(errors.pincodes ?? errors.serviceAreas)}>
+        <FieldLabel htmlFor="pincodes">{t('pincodes')}</FieldLabel>
+        <Input id="pincodes" inputMode="numeric" value={pincodes} onChange={(event) => setPincodes(event.target.value)} aria-invalid={Boolean(errors.pincodes ?? errors.serviceAreas)} />
+        <FieldDescription>{t('pincodesHint')}</FieldDescription>
+        {(errors.pincodes ?? errors.serviceAreas) ? <FieldError>{errors.pincodes ?? errors.serviceAreas}</FieldError> : null}
+      </Field>
+      <Button type="submit" className="mt-2 w-full" disabled={!firmName.trim() || submit.isPending}>
+        {submit.isPending ? <Spinner /> : null}
+        {t('submit')}
+        {submit.isPending ? null : <Icon name="arrow-forward" size={18} />}
+      </Button>
+      <SecureNote>{t('secure')}</SecureNote>
+    </form>
   );
 }

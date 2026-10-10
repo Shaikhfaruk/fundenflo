@@ -1,6 +1,7 @@
-import { Inter, Noto_Sans_Bengali, Noto_Sans_Devanagari, Noto_Sans_Gujarati, Noto_Sans_Gurmukhi, Noto_Sans_Kannada, Noto_Sans_Malayalam, Noto_Sans_Oriya, Noto_Sans_Tamil, Noto_Sans_Telugu } from 'next/font/google';
+import { Inter, Noto_Sans_Bengali, Noto_Sans_Devanagari, Noto_Sans_Gujarati, Noto_Sans_Gurmukhi, Noto_Sans_Kannada, Noto_Sans_Malayalam, Noto_Sans_Oriya, Noto_Sans_Tamil, Noto_Sans_Telugu, Poppins } from 'next/font/google';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
+const poppins = Poppins({ subsets: ['latin', 'devanagari'], weight: ['500', '600', '700'], variable: '--font-poppins', display: 'swap' });
 const devanagari = Noto_Sans_Devanagari({ subsets: ['devanagari'], variable: '--font-noto-devanagari', display: 'swap', preload: false });
 const bengali = Noto_Sans_Bengali({ subsets: ['bengali'], variable: '--font-noto-bengali', display: 'swap', preload: false });
 const gujarati = Noto_Sans_Gujarati({ subsets: ['gujarati'], variable: '--font-noto-gujarati', display: 'swap', preload: false });
@@ -11,4 +12,4 @@ const oriya = Noto_Sans_Oriya({ subsets: ['oriya'], variable: '--font-noto-oriya
 const tamil = Noto_Sans_Tamil({ subsets: ['tamil'], variable: '--font-noto-tamil', display: 'swap', preload: false });
 const telugu = Noto_Sans_Telugu({ subsets: ['telugu'], variable: '--font-noto-telugu', display: 'swap', preload: false });
 
-export const fontVariables = [inter, devanagari, bengali, gujarati, gurmukhi, kannada, malayalam, oriya, tamil, telugu].map((font) => font.variable).join(' ');
+export const fontVariables = [inter, poppins, devanagari, bengali, gujarati, gurmukhi, kannada, malayalam, oriya, tamil, telugu].map((font) => font.variable).join(' ');

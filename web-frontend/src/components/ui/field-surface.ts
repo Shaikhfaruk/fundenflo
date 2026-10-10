@@ -1,0 +1,2 @@
+export const FIELD_SURFACE =
+  'rounded-lg border-2 border-transparent bg-field text-foreground transition-[background-color,border-color,box-shadow] duration-150 outline-none placeholder:text-muted-foreground/60 hover:bg-[#eceff3] focus-visible:border-navy focus-visible:bg-card focus-within:border-navy focus-within:bg-card disabled:cursor-not-allowed disabled:bg-subtle disabled:opacity-70 aria-invalid:border-destructive aria-invalid:bg-[#fff8f7]';

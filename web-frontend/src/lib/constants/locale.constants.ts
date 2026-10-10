@@ -27,3 +27,8 @@ export const BACKEND_LOCALES: readonly string[] = ['en', 'hi'];
 export const DISPLAY_TIME_ZONE = 'Asia/Kolkata';
 
 export const CURRENCY = 'INR';
+
+export const HERO_LOCALES = [
+  { code: 'en', short: 'EN', name: 'English' },
+  { code: 'hi', short: 'हिं', name: 'हिन्दी' },
+] as const;

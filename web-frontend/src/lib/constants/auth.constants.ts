@@ -73,3 +73,13 @@ export const MembershipStatus = {
   Suspended: 'suspended',
   Revoked: 'revoked',
 } as const;
+
+export const INDIAN_MOBILE_PATTERN = /^[6-9]\d{9}$/;
+
+export const MOBILE_DIGITS = 10;
+
+export const MOBILE_GROUP_SPLIT = 5;
+
+export const REFERRAL_CODE_PATTERN = /^[A-Z0-9]{4,24}$/;
+
+export const REFERRAL_CODE_MAX_LENGTH = 24;
