@@ -136,7 +136,7 @@ Controller: `backend/src/modules/catalog/http/catalog.controller.ts` · Postman:
 | `GET` | `/analyses/:id` | assessments (`analyses.controller.ts`; staff can read too) | borrower, partner, staff | M5 | `useful` |
 | `GET` | `/applications/:id/assessment` | assessments (`AnalysisService.assessment`) | borrower, partner | M5 | `useful` |
 | `POST` | `/applications/:id/matches` | matching (`application-matches.controller.ts` → `MatchingService.request`) | borrower, partner | M6 | `useful` |
-| `GET` | `/applications/:id/matches/latest` | matching (`MatchingService.latest`; staff see ineligible products and rule results) | borrower, partner, staff | M6 | `useful` |
+| `GET` | `/applications/:id/matches/latest` | matching (`MatchingService.latest`; staff see ineligible products and rule results; each result names the lender `id`, `key`, `name` and `organizationId` so a partner can record lender-scoped sharing consent, 2026-10-11) | borrower, partner, staff | M6 | `useful` |
 
 ## 07 Applications & Submissions
 

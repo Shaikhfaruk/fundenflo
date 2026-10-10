@@ -7,6 +7,8 @@ import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useJourneyPaths, usePartnerMode } from '@/components/journey/journey-mode';
+import { ConsentOtpSheet, type ConsentOtpTarget } from '@/components/consent/consent-otp-sheet';
 import { JourneyPage } from '@/components/journey/journey-page';
 import { Button } from '@/components/ui/button';
 import { ButtonLink } from '@/components/ui/button-link';
@@ -16,15 +18,17 @@ import { Spinner } from '@/components/ui/spinner';
 import { useErrorText } from '@/hooks/use-error-toast';
 import { Link, useRouter } from '@/i18n/navigation';
 import { ApiError } from '@/lib/api/api-error';
-import { applicationKeys } from '@/lib/api/applications';
+import { applicationKeys, partyName } from '@/lib/api/applications';
+import { applicationQuery } from '@/lib/api/journey';
 import { latestMatchesQuery, matchKeys, runMatches } from '@/lib/api/matches';
+import { confirmBorrowerConsent, sendBorrowerConsent } from '@/lib/api/partners';
 import { requestSubmission, submissionsQuery } from '@/lib/api/submissions';
 import type { MatchItem } from '@/lib/api/types/match.types';
 import type { LenderSubmission } from '@/lib/api/types/submission.types';
+import { ConsentPurpose } from '@/lib/constants/consent.constants';
 import { ErrorCode } from '@/lib/constants/errors.constants';
 import { JOURNEY_SCREEN_STEP, JourneyScreen, MatchOutcome } from '@/lib/constants/journey.constants';
 import { Duration, EASE_OUT, STAGGER_STEP } from '@/lib/constants/motion.constants';
-import { RoutePath } from '@/lib/constants/routes.constants';
 import { CLOSED_SUBMISSION_STATUSES } from '@/lib/constants/status.constants';
 import { cn } from '@/lib/utils';
 
@@ -33,6 +37,7 @@ const initialOf = (name: string | null) => (name?.trim().charAt(0) ?? '?').toUpp
 type CardProps = { item: MatchItem; index: number; selected: boolean; open: boolean; applied: LenderSubmission | undefined; applicationId: string; onSelect: () => void; onToggle: () => void };
 
 function LenderCard({ item, index, selected, open, applied, applicationId, onSelect, onToggle }: CardProps) {
+  const paths = useJourneyPaths();
   const t = useTranslations('flow.lenders');
   const eligible = item.outcome === MatchOutcome.Eligible;
   const selectable = eligible && !applied;
@@ -98,7 +103,7 @@ function LenderCard({ item, index, selected, open, applied, applicationId, onSel
         </>
       ) : null}
       {applied ? (
-        <Link href={RoutePath.submission(applicationId, applied.id)} className="mt-2 flex items-center gap-1 text-sm font-semibold text-gold-deep">
+        <Link href={paths.submission(applicationId, applied.id)} className="mt-2 flex items-center gap-1 text-sm font-semibold text-gold-deep">
           {t('viewStatus')}
           <Icon name="arrow-forward" size={14} />
         </Link>
@@ -108,7 +113,9 @@ function LenderCard({ item, index, selected, open, applied, applicationId, onSel
 }
 
 export function LendersScreen() {
+  const paths = useJourneyPaths();
   const t = useTranslations('flow.lenders');
+  const partner = usePartnerMode();
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -118,6 +125,9 @@ export function LendersScreen() {
   const [chosen, setChosen] = useState<string | null>(null);
   const [openId, setOpenId] = useState<string | null | undefined>(undefined);
   const [error, setError] = useState<string | null>(null);
+  const [consent, setConsent] = useState<(ConsentOtpTarget & { item: MatchItem }) | null>(null);
+  const application = useQuery({ ...applicationQuery(id), enabled: partner });
+  const borrowerName = application.data?.actingParty.displayName ?? (application.data ? partyName(application.data) : null) ?? t('borrower');
   const find = useMutation({
     mutationFn: () => runMatches(id),
     meta: { handlesError: true },
@@ -137,13 +147,13 @@ export function LendersScreen() {
   const selected = selectable.find((item) => item.id === chosen) ?? selectable[0];
   const expanded = openId === undefined ? (selected?.id ?? null) : openId;
   const apply = useMutation({
-    mutationFn: (item: MatchItem) => requestSubmission(id, { matchResultId: item.id, shareWithLender: true }),
+    mutationFn: (item: MatchItem) => requestSubmission(id, partner ? { matchResultId: item.id } : { matchResultId: item.id, shareWithLender: true }),
     meta: { handlesError: true },
     onSuccess: (submission) => {
       toast.success(t('sent', { lender: submission.lender.name ?? t('lender') }));
       void queryClient.invalidateQueries({ queryKey: applicationKeys.detail(id) });
       void queryClient.invalidateQueries({ queryKey: applicationKeys.all });
-      router.push(RoutePath.submission(id, submission.id));
+      router.push(paths.submission(id, submission.id));
     },
     onError: (failure) => {
       if (failure instanceof ApiError && failure.fieldIssues.some((issue) => issue.code === 'stale_match')) {
@@ -154,6 +164,17 @@ export function LendersScreen() {
       setError(failure instanceof ApiError && failure.code === ErrorCode.Conflict ? t('alreadyApplied') : errorText(failure));
     },
   });
+  const askConsent = useMutation({
+    mutationFn: (item: MatchItem) => sendBorrowerConsent(id).then((challenge) => ({ item, challenge })),
+    meta: { handlesError: true },
+    onSuccess: ({ item, challenge }) => setConsent({ item, name: borrowerName, challenge, grant: [{ purpose: ConsentPurpose.LenderSharing, granted: true, organizationIds: item.lender.organizationId ? [item.lender.organizationId] : [] }] }),
+    onError: (failure) => setError(errorText(failure)),
+  });
+  const start = (item: MatchItem) => {
+    setError(null);
+    if (partner) askConsent.mutate(item);
+    else apply.mutate(item);
+  };
   if (matches.isPending || (missing && (find.isPending || isIdle))) {
     return (
       <JourneyPage applicationId={id} step={JOURNEY_SCREEN_STEP[JourneyScreen.Lenders]} title={t('title')} description={t('description')}>
@@ -170,7 +191,7 @@ export function LendersScreen() {
         <section className="flex flex-col gap-2 rounded-xl bg-card p-4 shadow-card">
           <h2 className="font-heading text-lg font-semibold text-navy">{t('scoreFirstTitle')}</h2>
           <p className="text-sm text-muted-foreground">{find.error ? errorText(find.error) : t('scoreFirstBody')}</p>
-          <ButtonLink href={RoutePath.applicationStep(id, JourneyScreen.Score)} size="sm" className="mt-2 self-start">
+          <ButtonLink href={paths.step(id, JourneyScreen.Score)} size="sm" className="mt-2 self-start">
             {t('toScore')}
           </ButtonLink>
         </section>
@@ -183,7 +204,7 @@ export function LendersScreen() {
         <section className="flex flex-col gap-2 rounded-xl bg-card p-4 shadow-card">
           <h2 className="font-heading text-lg font-semibold text-navy">{t('emptyTitle')}</h2>
           <p className="text-sm text-muted-foreground">{t('emptyBody')}</p>
-          <Link href={RoutePath.applicationStep(id, JourneyScreen.Improve)} className="mt-1 text-sm font-semibold text-gold-deep">
+          <Link href={paths.step(id, JourneyScreen.Improve)} className="mt-1 text-sm font-semibold text-gold-deep">
             {t('seeImprove')}
           </Link>
         </section>
@@ -218,7 +239,7 @@ export function LendersScreen() {
                 <span className="truncate text-sm font-semibold text-navy">{item.lender.name ?? t('lender')}</span>
                 <span className="truncate text-xs text-muted-foreground">{item.documentsNeeded.length > 0 ? t('documentsNeeded', { count: item.documentsNeeded.length }) : t('moreDetails')}</span>
               </span>
-              <Link href={RoutePath.applicationStep(id, JourneyScreen.Documents)} className="text-xs font-semibold text-gold-deep">
+              <Link href={paths.step(id, JourneyScreen.Documents)} className="text-xs font-semibold text-gold-deep">
                 {t('addDocuments')}
               </Link>
             </div>
@@ -233,7 +254,7 @@ export function LendersScreen() {
       ) : null}
       <div className="min-h-4 flex-1" />
       <div className="flex flex-col gap-2 pt-4">
-        {selected ? <p className="text-center text-xs/[18px] text-muted-foreground">{t('shareNote', { lender: selected.lender.name ?? t('lender') })}</p> : null}
+        {selected ? <p className="text-center text-xs/[18px] text-muted-foreground">{partner ? t('partnerShareNote', { lender: selected.lender.name ?? t('lender'), name: borrowerName }) : t('shareNote', { lender: selected.lender.name ?? t('lender') })}</p> : null}
         {error ? (
           <p className="flex items-center gap-1.5 rounded-sm bg-error-soft px-3 py-2 text-xs text-destructive" role="alert">
             <Icon name="error" size={15} />
@@ -241,19 +262,27 @@ export function LendersScreen() {
           </p>
         ) : null}
         {selected ? (
-          <Button className="w-full" disabled={apply.isPending} onClick={() => apply.mutate(selected)}>
-            {apply.isPending ? <Spinner /> : null}
-            {t('apply', { lender: selected.lender.name ?? t('lender') })}
-            {apply.isPending ? null : <Icon name="arrow-forward" size={18} />}
+          <Button className="w-full" disabled={apply.isPending || askConsent.isPending || (partner && !selected.lender.organizationId)} onClick={() => start(selected)}>
+            {apply.isPending || askConsent.isPending ? <Spinner /> : null}
+            {partner ? t('partnerApply', { lender: selected.lender.name ?? t('lender') }) : t('apply', { lender: selected.lender.name ?? t('lender') })}
+            {apply.isPending || askConsent.isPending ? null : <Icon name="arrow-forward" size={18} />}
           </Button>
         ) : openSubmissions.length > 0 ? (
-          <ButtonLink href={RoutePath.applicationStep(id, JourneyScreen.Submissions)} className="w-full">
+          <ButtonLink href={paths.step(id, JourneyScreen.Submissions)} className="w-full">
             {t('trackApplications')}
             <Icon name="arrow-forward" size={18} />
           </ButtonLink>
         ) : null}
         <SecureNote>{t('private')}</SecureNote>
       </div>
+      <ConsentOtpSheet
+        target={consent}
+        resending={askConsent.isPending}
+        onResend={() => (consent ? askConsent.mutate(consent.item) : undefined)}
+        onOpenChange={(open) => (open ? undefined : setConsent(null))}
+        confirm={(body) => confirmBorrowerConsent(id, body)}
+        onConfirmed={() => (consent ? apply.mutate(consent.item) : undefined)}
+      />
     </JourneyPage>
   );
 }

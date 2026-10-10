@@ -6,6 +6,7 @@ import { useParams, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 
+import { useJourneyPaths } from '@/components/journey/journey-mode';
 import { JourneyFooter } from '@/components/journey/journey-footer';
 import { ScreenSkeleton } from '@/components/shell/screen-skeleton';
 import { Icon } from '@/components/ui/icon';
@@ -22,7 +23,6 @@ import type { AnalysisStep } from '@/lib/api/types/assessment.types';
 import { ANALYSIS_RUN_PARAM, AnalysisStatus, AnalysisStepState } from '@/lib/constants/assessment.constants';
 import { JOURNEY_SCREEN_STEP, JOURNEY_TOTAL_STEPS, JourneyScreen, screenForStage, UpdateChannel, UpdateEvent } from '@/lib/constants/journey.constants';
 import { Duration, EASE_OUT, STAGGER_STEP } from '@/lib/constants/motion.constants';
-import { RoutePath } from '@/lib/constants/routes.constants';
 import { formatPhone } from '@/lib/format/phone';
 import { useMe } from '@/lib/session/use-me';
 import { cn } from '@/lib/utils';
@@ -61,6 +61,7 @@ function StepRow({ step, failed, first }: { step: AnalysisStep; failed: boolean;
 }
 
 function AnalysisRun({ applicationId, analysisId }: { applicationId: string; analysisId: string }) {
+  const paths = useJourneyPaths();
   const t = useTranslations('flow.analysis');
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -82,18 +83,18 @@ function AnalysisRun({ applicationId, analysisId }: { applicationId: string; ana
   const retry = useMutation({
     mutationFn: () => requestAnalysis(applicationId),
     meta: { handlesError: true },
-    onSuccess: (next) => router.replace(`${RoutePath.applicationStep(applicationId, JourneyScreen.Analysis)}?${ANALYSIS_RUN_PARAM}=${next.id}`),
+    onSuccess: (next) => router.replace(`${paths.step(applicationId, JourneyScreen.Analysis)}?${ANALYSIS_RUN_PARAM}=${next.id}`),
   });
   const continueTo = () => {
     void queryClient.invalidateQueries({ queryKey: applicationKeys.detail(applicationId) });
     const screen = screenForStage(nextStep.data?.stage, nextStep.data?.blockers[0]?.code);
-    router.push(RoutePath.applicationStep(applicationId, screen === JourneyScreen.Verify ? JourneyScreen.Verify : JourneyScreen.Score));
+    router.push(paths.step(applicationId, screen === JourneyScreen.Verify ? JourneyScreen.Verify : JourneyScreen.Score));
   };
   if (analysis.isPending) return <ScreenSkeleton />;
   const mobile = me?.mobile ? formatPhone(me.mobile) : null;
   return (
     <div className="mx-auto flex w-full max-w-[560px] flex-1 flex-col">
-      <StepHeader step={JOURNEY_SCREEN_STEP[JourneyScreen.Analysis]} total={JOURNEY_TOTAL_STEPS} backHref={RoutePath.applicationStep(applicationId, JourneyScreen.Documents)} />
+      <StepHeader step={JOURNEY_SCREEN_STEP[JourneyScreen.Analysis]} total={JOURNEY_TOTAL_STEPS} backHref={paths.step(applicationId, JourneyScreen.Documents)} />
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: Duration.Slow }} className="mt-4 flex flex-col items-center text-center">
         <Halo done={done} failed={failed} />
         <h1 className="mt-4 font-heading text-2xl leading-8 font-semibold text-navy" aria-live="polite">
@@ -147,7 +148,7 @@ function AnalysisRun({ applicationId, analysisId }: { applicationId: string; ana
           error={retry.error ? errorText(retry.error) : null}
           note={t('kept')}
           secondary={
-            <Link href={RoutePath.applicationStep(applicationId, JourneyScreen.Documents)} className="flex min-h-11 items-center justify-center text-sm font-semibold text-gold-deep">
+            <Link href={paths.step(applicationId, JourneyScreen.Documents)} className="flex min-h-11 items-center justify-center text-sm font-semibold text-gold-deep">
               {t('backToDocuments')}
             </Link>
           }
@@ -158,13 +159,14 @@ function AnalysisRun({ applicationId, analysisId }: { applicationId: string; ana
 }
 
 export function AnalysisScreen() {
+  const paths = useJourneyPaths();
   const { id } = useParams<{ id: string }>();
   const search = useSearchParams();
   const run = search.get(ANALYSIS_RUN_PARAM);
   const router = useRouter();
   useEffect(() => {
-    if (!run) router.replace(RoutePath.applicationStep(id, JourneyScreen.Score));
-  }, [run, id, router]);
+    if (!run) router.replace(paths.step(id, JourneyScreen.Score));
+  }, [run, id, router, paths]);
   if (!run) return <ScreenSkeleton />;
   return <AnalysisRun key={run} applicationId={id} analysisId={run} />;
 }

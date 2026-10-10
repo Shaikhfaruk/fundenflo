@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { useJourneyPaths } from '@/components/journey/journey-mode';
 import { ReasonDialog } from '@/components/data/reason-dialog';
 import { StatusBadge } from '@/components/data/status-badge';
 import { Button } from '@/components/ui/button';
@@ -18,7 +19,6 @@ import { submissionsQuery } from '@/lib/api/submissions';
 import type { ApplicationEvent } from '@/lib/api/types/application.types';
 import { APPLICATION_WITHDRAW_MAX_LENGTH, JourneyScreen, SUBMISSION_WITHDRAW_MIN_LENGTH } from '@/lib/constants/journey.constants';
 import { Duration, EASE_OUT, STAGGER_STEP } from '@/lib/constants/motion.constants';
-import { RoutePath } from '@/lib/constants/routes.constants';
 import { SUBMISSION_STATUS_TONE, toneOf } from '@/lib/constants/status.constants';
 import { formatRelative } from '@/lib/format/date';
 
@@ -53,6 +53,7 @@ export function useEventText() {
 }
 
 export function ApplicationActivity({ applicationId, open }: { applicationId: string; open: boolean }) {
+  const paths = useJourneyPaths();
   const t = useTranslations('borrower.activity');
   const locale = useLocale();
   const queryClient = useQueryClient();
@@ -79,14 +80,14 @@ export function ApplicationActivity({ applicationId, open }: { applicationId: st
         <motion.section initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18, duration: Duration.Slow, ease: EASE_OUT }} className="rounded-xl bg-card p-4 shadow-card">
           <div className="mb-2 flex items-center justify-between gap-2">
             <h2 className="font-heading text-lg font-semibold text-navy">{t('applications')}</h2>
-            <Link href={RoutePath.applicationStep(applicationId, JourneyScreen.Submissions)} className="text-xs font-semibold text-gold-deep">
+            <Link href={paths.step(applicationId, JourneyScreen.Submissions)} className="text-xs font-semibold text-gold-deep">
               {t('seeAll')}
             </Link>
           </div>
           <ul className="flex flex-col">
             {applied.map((submission) => (
               <li key={submission.id} className="border-t border-subtle first:border-t-0">
-                <Link href={RoutePath.submission(applicationId, submission.id)} className="flex items-center gap-3 py-2.5">
+                <Link href={paths.submission(applicationId, submission.id)} className="flex items-center gap-3 py-2.5">
                   <span className="flex min-w-0 flex-1 flex-col">
                     <span className="truncate text-sm font-semibold text-foreground">{submission.lender.name ?? submission.product.name}</span>
                     <span className="truncate text-xs text-muted-foreground">{submission.ref}</span>

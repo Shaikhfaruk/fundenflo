@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useEffect } from 'react';
 
+import { useJourneyPaths } from '@/components/journey/journey-mode';
 import { JourneyPage } from '@/components/journey/journey-page';
 import { ScreenSkeleton } from '@/components/shell/screen-skeleton';
 import { ButtonLink } from '@/components/ui/button-link';
@@ -15,7 +16,6 @@ import { assessmentQuery } from '@/lib/api/assessments';
 import type { ImprovementItem } from '@/lib/api/types/assessment.types';
 import { JOURNEY_SCREEN_STEP, JourneyScreen } from '@/lib/constants/journey.constants';
 import { Duration, EASE_OUT, STAGGER_STEP } from '@/lib/constants/motion.constants';
-import { RoutePath } from '@/lib/constants/routes.constants';
 import { cn } from '@/lib/utils';
 
 function Block({ label, body, last }: { label: string; body: string; last?: boolean }) {
@@ -44,6 +44,7 @@ function TipCard({ item, index }: { item: ImprovementItem; index: number }) {
 }
 
 export function ImproveScreen() {
+  const paths = useJourneyPaths();
   const t = useTranslations('flow.improve');
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
@@ -51,11 +52,11 @@ export function ImproveScreen() {
   const items = assessment.data?.improvement ?? [];
   const empty = !assessment.isPending && items.length === 0;
   useEffect(() => {
-    if (empty) router.replace(RoutePath.applicationStep(id, JourneyScreen.Score));
-  }, [empty, id, router]);
+    if (empty) router.replace(paths.step(id, JourneyScreen.Score));
+  }, [empty, id, router, paths]);
   if (assessment.isPending || empty) return <ScreenSkeleton />;
   return (
-    <JourneyPage applicationId={id} step={JOURNEY_SCREEN_STEP[JourneyScreen.Improve]} title={items.length === 1 ? t('titleOne') : t('titleMany')} description={t('description')} onBack={() => router.push(RoutePath.applicationStep(id, JourneyScreen.Score))}>
+    <JourneyPage applicationId={id} step={JOURNEY_SCREEN_STEP[JourneyScreen.Improve]} title={items.length === 1 ? t('titleOne') : t('titleMany')} description={t('description')} onBack={() => router.push(paths.step(id, JourneyScreen.Score))}>
       <div className="flex flex-col gap-4">
         {items.map((item, index) => (
           <TipCard key={item.id} item={item} index={index} />
@@ -67,11 +68,11 @@ export function ImproveScreen() {
       </div>
       <div className="min-h-4 flex-1" />
       <div className="flex flex-col gap-1 pt-4">
-        <ButtonLink href={RoutePath.applicationStep(id, JourneyScreen.Lenders)} className="w-full">
+        <ButtonLink href={paths.step(id, JourneyScreen.Lenders)} className="w-full">
           {t('continue')}
           <Icon name="arrow-forward" size={18} />
         </ButtonLink>
-        <ButtonLink href={RoutePath.applicationStep(id, JourneyScreen.Documents)} variant="ghost" className="w-full text-gold-deep">
+        <ButtonLink href={paths.step(id, JourneyScreen.Documents)} variant="ghost" className="w-full text-gold-deep">
           {t('uploadNew')}
         </ButtonLink>
       </div>

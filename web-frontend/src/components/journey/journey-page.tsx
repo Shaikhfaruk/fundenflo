@@ -2,18 +2,19 @@
 
 import type { ReactNode } from 'react';
 
+import { useJourneyPaths } from '@/components/journey/journey-mode';
 import { FadeIn } from '@/components/motion/fade-in';
 import { Eyebrow } from '@/components/ui/eyebrow';
 import { StepHeader } from '@/components/ui/step-header';
 import { JOURNEY_TOTAL_STEPS } from '@/lib/constants/journey.constants';
-import { RoutePath } from '@/lib/constants/routes.constants';
 
 type Props = { applicationId: string; step: number; eyebrow?: string; icon?: ReactNode; title: string; description?: string; onBack?: () => void; children: ReactNode };
 
 export function JourneyPage({ applicationId, step, eyebrow, icon, title, description, onBack, children }: Props) {
+  const paths = useJourneyPaths();
   return (
     <div className="mx-auto flex w-full max-w-[560px] flex-1 flex-col">
-      <StepHeader step={step} total={JOURNEY_TOTAL_STEPS} onBack={onBack} backHref={onBack ? undefined : RoutePath.application(applicationId)} />
+      <StepHeader step={step} total={JOURNEY_TOTAL_STEPS} onBack={onBack} backHref={onBack ? undefined : paths.application(applicationId)} />
       <FadeIn className="mt-4">
         {icon ? <div className="mb-3">{icon}</div> : null}
         {eyebrow ? <Eyebrow className="mb-2">{eyebrow}</Eyebrow> : null}

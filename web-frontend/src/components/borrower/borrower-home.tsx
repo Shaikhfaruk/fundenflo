@@ -18,8 +18,7 @@ import { Link } from '@/i18n/navigation';
 import { applicationsQuery, partyName } from '@/lib/api/applications';
 import type { Application } from '@/lib/api/types/application.types';
 import { Duration, EASE_OUT, STAGGER_STEP } from '@/lib/constants/motion.constants';
-import { screenForStage } from '@/lib/constants/journey.constants';
-import { AppPath, RoutePath } from '@/lib/constants/routes.constants';
+import { AppPath, BORROWER_PATHS, resumePath } from '@/lib/constants/routes.constants';
 import { APPLICATION_STATUS_TONE, CLOSED_APPLICATION_STATUSES, toneOf } from '@/lib/constants/status.constants';
 import { formatRelative } from '@/lib/format/date';
 import { formatPaise } from '@/lib/format/money';
@@ -32,10 +31,6 @@ const HOW_IT_WORKS: readonly { key: string; icon: IconName }[] = [
   { key: 'lenders', icon: 'verified' },
 ];
 
-const nextHref = (application: Application) => {
-  const screen = screenForStage(application.journeyStage);
-  return screen ? RoutePath.applicationStep(application.id, screen) : RoutePath.application(application.id);
-};
 
 function ActiveCard({ application }: { application: Application }) {
   const t = useTranslations('borrower.home');
@@ -70,7 +65,7 @@ function ActiveCard({ application }: { application: Application }) {
       </div>
       <div className="mt-4 flex items-center justify-between">
         <span className="text-[13px] text-[#9aabc4] tabular">{t('ref', { ref: application.ref })}</span>
-        <Link href={RoutePath.application(application.id)} className="group flex min-h-8 items-center gap-1 text-sm font-semibold text-gold">
+        <Link href={BORROWER_PATHS.application(application.id)} className="group flex min-h-8 items-center gap-1 text-sm font-semibold text-gold">
           {t('track')}
           <Icon name="arrow-forward" size={16} className="transition-transform group-hover:translate-x-0.5" />
         </Link>
@@ -85,7 +80,7 @@ function ApplicationRow({ application }: { application: Application }) {
   const categoryLabel = useCategoryLabel();
   const categoryIcon = useCategoryIcon();
   return (
-    <Link href={RoutePath.application(application.id)} className="flex items-center gap-3 rounded-xl bg-card p-3.5 shadow-card transition-transform outline-none hover:-translate-y-px focus-visible:ring-3 focus-visible:ring-ring/30 active:scale-[0.99]">
+    <Link href={BORROWER_PATHS.application(application.id)} className="flex items-center gap-3 rounded-xl bg-card p-3.5 shadow-card transition-transform outline-none hover:-translate-y-px focus-visible:ring-3 focus-visible:ring-ring/30 active:scale-[0.99]">
       <IconTile icon={categoryIcon(application.categoryKey)} tone="subtle" />
       <span className="flex min-w-0 flex-1 flex-col gap-0.5">
         <span className="truncate text-[15px] font-semibold text-foreground">{partyName(application) ?? categoryLabel(application.categoryKey)}</span>
@@ -164,7 +159,7 @@ export function BorrowerHome() {
         {active ? <ActiveCard application={active} /> : null}
         {active ? (
           <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.14, duration: Duration.Base, ease: EASE_OUT }}>
-            <Link href={nextHref(active)} className="flex items-center gap-3 rounded-xl bg-gold-soft p-3.5 transition-transform active:scale-[0.99]">
+            <Link href={resumePath(BORROWER_PATHS, active)} className="flex items-center gap-3 rounded-xl bg-gold-soft p-3.5 transition-transform active:scale-[0.99]">
               <IconTile icon="error" tone="gold" className="size-9 rounded-[10px]" />
               <span className="flex min-w-0 flex-1 flex-col">
                 <span className="text-sm font-semibold text-navy">{t('pendingTask')}</span>

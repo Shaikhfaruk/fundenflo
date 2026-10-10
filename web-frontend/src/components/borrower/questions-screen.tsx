@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 
+import { useJourneyPaths } from '@/components/journey/journey-mode';
 import { type CityChoice, CityPicker } from '@/components/journey/city-picker';
 import { JourneyFooter } from '@/components/journey/journey-footer';
 import { JourneyPage } from '@/components/journey/journey-page';
@@ -22,7 +23,6 @@ import { questionsQuery, submitAnswers } from '@/lib/api/journey';
 import type { ApplicationQuestions, ResolvedQuestion } from '@/lib/api/types/question.types';
 import { HIDDEN_VISIBILITY, JOURNEY_SCREEN_STEP, JourneyScreen, QuestionKind, QuestionStage } from '@/lib/constants/journey.constants';
 import { Duration, EASE_OUT, STAGGER_STEP } from '@/lib/constants/motion.constants';
-import { RoutePath } from '@/lib/constants/routes.constants';
 import { pickText } from '@/lib/format/localised';
 import { groupRupees, paiseFromRupees, rupeesFromPaiseValue } from '@/lib/format/money';
 import { cn } from '@/lib/utils';
@@ -108,6 +108,7 @@ function QuestionInput({ item, value, onChange, cityLabel, onPickCity }: { item:
 }
 
 function QuestionsForm({ applicationId, data }: { applicationId: string; data: ApplicationQuestions }) {
+  const paths = useJourneyPaths();
   const t = useTranslations('flow.questions');
   const locale = useLocale();
   const router = useRouter();
@@ -127,7 +128,7 @@ function QuestionsForm({ applicationId, data }: { applicationId: string; data: A
     onSuccess: async (result) => {
       await queryClient.invalidateQueries({ queryKey: applicationKeys.detail(applicationId) });
       void queryClient.invalidateQueries({ queryKey: applicationKeys.all, refetchType: 'inactive' });
-      if (result.remaining.length === 0) router.push(RoutePath.applicationStep(applicationId, JourneyScreen.People));
+      if (result.remaining.length === 0) router.push(paths.step(applicationId, JourneyScreen.People));
     },
     onError: (failure, answers) => {
       if (failure instanceof ApiError && failure.fieldIssues.length > 0) {

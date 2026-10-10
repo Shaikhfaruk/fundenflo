@@ -5,6 +5,7 @@ import { motion } from 'motion/react';
 import { useParams } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 
+import { useJourneyPaths } from '@/components/journey/journey-mode';
 import { JourneyPage } from '@/components/journey/journey-page';
 import { AnimatedNumber } from '@/components/motion/animated-number';
 import { ScreenSkeleton } from '@/components/shell/screen-skeleton';
@@ -21,7 +22,6 @@ import type { Assessment, ScoreFactor } from '@/lib/api/types/assessment.types';
 import { ANALYSIS_RUN_PARAM, SCORE_MAX, ScoreStatus } from '@/lib/constants/assessment.constants';
 import { JOURNEY_SCREEN_STEP, JourneyScreen } from '@/lib/constants/journey.constants';
 import { Duration, EASE_OUT, STAGGER_STEP } from '@/lib/constants/motion.constants';
-import { RoutePath } from '@/lib/constants/routes.constants';
 import { formatDate } from '@/lib/format/date';
 import { cn } from '@/lib/utils';
 
@@ -58,11 +58,12 @@ function FactorRow({ factor, href, index }: { factor: ScoreFactor; href: string 
 }
 
 function ScoreView({ applicationId, assessment }: { applicationId: string; assessment: Assessment }) {
+  const paths = useJourneyPaths();
   const t = useTranslations('flow.score');
   const locale = useLocale();
   const { score, improvement } = assessment;
   const scored = score.status === ScoreStatus.Scored && score.value !== null;
-  const improveHref = improvement.length > 0 ? RoutePath.applicationStep(applicationId, JourneyScreen.Improve) : null;
+  const improveHref = improvement.length > 0 ? paths.step(applicationId, JourneyScreen.Improve) : null;
   return (
     <JourneyPage applicationId={applicationId} step={JOURNEY_SCREEN_STEP[JourneyScreen.Score]} title={t('title')} description={t('description')}>
       <motion.section initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06, duration: Duration.Slow, ease: EASE_OUT }} className="relative isolate flex flex-col items-center overflow-hidden rounded-xl bg-navy p-4 text-center text-white shadow-lift">
@@ -94,7 +95,7 @@ function ScoreView({ applicationId, assessment }: { applicationId: string; asses
       <p className="mt-3 text-center text-xs/[18px] text-muted-foreground">{t('basedOn', { documents: score.basedOn.documents, facts: score.basedOn.facts })}</p>
       <div className="min-h-4 flex-1" />
       <div className="flex flex-col gap-2 pt-4">
-        <ButtonLink href={RoutePath.applicationStep(applicationId, JourneyScreen.Lenders)} className="w-full">
+        <ButtonLink href={paths.step(applicationId, JourneyScreen.Lenders)} className="w-full">
           {t('seeLenders')}
           <Icon name="arrow-forward" size={18} />
         </ButtonLink>
@@ -111,13 +112,14 @@ function ScoreView({ applicationId, assessment }: { applicationId: string; asses
 }
 
 function NoScore({ applicationId }: { applicationId: string }) {
+  const paths = useJourneyPaths();
   const t = useTranslations('flow.score');
   const router = useRouter();
   const errorText = useErrorText();
   const start = useMutation({
     mutationFn: () => requestAnalysis(applicationId),
     meta: { handlesError: true },
-    onSuccess: (analysis) => router.push(`${RoutePath.applicationStep(applicationId, JourneyScreen.Analysis)}?${ANALYSIS_RUN_PARAM}=${analysis.id}`),
+    onSuccess: (analysis) => router.push(`${paths.step(applicationId, JourneyScreen.Analysis)}?${ANALYSIS_RUN_PARAM}=${analysis.id}`),
   });
   return (
     <JourneyPage applicationId={applicationId} step={JOURNEY_SCREEN_STEP[JourneyScreen.Score]} title={t('title')} description={t('description')}>
@@ -132,7 +134,7 @@ function NoScore({ applicationId }: { applicationId: string }) {
           {start.isPending ? <Spinner /> : <Icon name="sparkle" size={18} />}
           {t('calculate')}
         </Button>
-        <Link href={RoutePath.applicationStep(applicationId, JourneyScreen.Documents)} className="text-sm font-semibold text-gold-deep">
+        <Link href={paths.step(applicationId, JourneyScreen.Documents)} className="text-sm font-semibold text-gold-deep">
           {t('checkDocuments')}
         </Link>
       </section>

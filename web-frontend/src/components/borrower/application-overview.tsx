@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 
+import { useJourneyPaths } from '@/components/journey/journey-mode';
 import { ApplicationActivity } from '@/components/borrower/application-activity';
 import { useCategoryLabel } from '@/components/borrower/category-labels';
 import { JourneyStepper } from '@/components/borrower/journey-stepper';
@@ -20,7 +21,6 @@ import { partyName } from '@/lib/api/applications';
 import { applicationQuery, nextStepQuery } from '@/lib/api/journey';
 import { Duration, EASE_OUT } from '@/lib/constants/motion.constants';
 import { screenForStage } from '@/lib/constants/journey.constants';
-import { AppPath, RoutePath } from '@/lib/constants/routes.constants';
 import { APPLICATION_STATUS_TONE, CLOSED_APPLICATION_STATUSES, toneOf } from '@/lib/constants/status.constants';
 import { formatDate } from '@/lib/format/date';
 import { formatPaise } from '@/lib/format/money';
@@ -30,6 +30,7 @@ const COPIED_MS = 1600;
 const rise = (delay: number) => ({ initial: { opacity: 0, y: -14 }, animate: { opacity: 1, y: 0 }, transition: { delay, duration: Duration.Slow, ease: EASE_OUT } }) as const;
 
 export function ApplicationOverview() {
+  const paths = useJourneyPaths();
   const t = useTranslations('borrower.overview');
   const tBlockers = useTranslations('borrower.blockers');
   const tJourney = useTranslations('journey');
@@ -61,7 +62,7 @@ export function ApplicationOverview() {
   };
   return (
     <div className="flex flex-col gap-4">
-      <StepHeader title={t('heading')} backHref={AppPath.BorrowerHome} />
+      <StepHeader title={t('heading')} backHref={paths.home} />
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_400px] lg:items-start">
         <div className="flex min-w-0 flex-col gap-4">
           <motion.section {...rise(0)} className="rounded-xl bg-card p-4 shadow-card">
@@ -106,7 +107,7 @@ export function ApplicationOverview() {
                   ))}
                 </ul>
                 {nextScreen ? (
-                  <ButtonLink href={RoutePath.applicationStep(app.id, nextScreen)} size="sm" className="mt-2 self-start">
+                  <ButtonLink href={paths.step(app.id, nextScreen)} size="sm" className="mt-2 self-start">
                     {t('continue')}
                     <Icon name="arrow-forward" size={16} />
                   </ButtonLink>
@@ -132,7 +133,7 @@ export function ApplicationOverview() {
               activeDetail={blockers[0] ? blockerText(blockers[0].code, blockers[0].details.length) : undefined}
               editHref={(stage) => {
                 const screen = screenForStage(stage);
-                return screen ? RoutePath.applicationStep(app.id, screen) : null;
+                return screen ? paths.step(app.id, screen) : null;
               }}
             />
           ) : (

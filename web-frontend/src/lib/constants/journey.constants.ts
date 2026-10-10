@@ -1,3 +1,7 @@
+export const JourneyMode = { Borrower: 'borrower', Partner: 'partner' } as const;
+
+export type JourneyMode = (typeof JourneyMode)[keyof typeof JourneyMode];
+
 const JourneyStage = {
   Category: 'category',
   Requirement: 'requirement',

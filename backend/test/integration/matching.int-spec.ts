@@ -73,8 +73,9 @@ describe('matching an application to live lender products', () => {
       ['match_easy.working_capital', 'eligible'],
       ['match_curious.working_capital', 'needs_info'],
     ]);
-    expect(matched.body.items[0]).toMatchObject({ rank: 1, fit: 100, lender: { name: 'Easy Finance', key: 'match_easy' }, product: { name: 'Easy Finance Working Capital' }, reasons: ['They lend in your area', 'Your business is old enough for them', 'You are GST registered'], documentsNeeded: ['udyam', 'statement'] });
+    expect(matched.body.items[0]).toMatchObject({ rank: 1, fit: 100, lender: { name: 'Easy Finance', key: 'match_easy', organizationId: expect.any(String) }, product: { name: 'Easy Finance Working Capital' }, reasons: ['They lend in your area', 'Your business is old enough for them', 'You are GST registered'], documentsNeeded: ['udyam', 'statement'] });
     expect(matched.body.items[0].hard).toBeUndefined();
+    expect(matched.body.items[0].lender.kind).toBeUndefined();
     expect(matched.body.items[1].missingAttributes).toEqual(['person.work_experience_months']);
 
     const staff = await as(ops).get(`/applications/${applicationId}/matches/latest`).expect(200);

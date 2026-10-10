@@ -7,7 +7,8 @@ import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { type ConsentTarget, PartyConsentSheet } from '@/components/borrower/party-consent-sheet';
+import { ConsentOtpSheet, type ConsentOtpTarget } from '@/components/consent/consent-otp-sheet';
+import { useJourneyPaths } from '@/components/journey/journey-mode';
 import { ConfirmDialog } from '@/components/data/confirm-dialog';
 import { StatusBadge } from '@/components/data/status-badge';
 import { JourneyFooter } from '@/components/journey/journey-footer';
@@ -26,13 +27,12 @@ import { useErrorText, useErrorToast } from '@/hooks/use-error-toast';
 import { useRouter } from '@/i18n/navigation';
 import { ApiError } from '@/lib/api/api-error';
 import { applicationKeys } from '@/lib/api/applications';
-import { addParty, journeyKeys, partiesQuery, removeParty, sendPartyConsent } from '@/lib/api/journey';
+import { addParty, confirmPartyConsent, journeyKeys, partiesQuery, removeParty, sendPartyConsent } from '@/lib/api/journey';
 import type { ApplicationParty } from '@/lib/api/types/application.types';
 import { DEFAULT_COUNTRY_CODE, INDIAN_MOBILE_PATTERN } from '@/lib/constants/auth.constants';
 import { ErrorCode } from '@/lib/constants/errors.constants';
 import { CO_PARTY_ROLES, CoPartyRole, JOURNEY_SCREEN_STEP, JourneyScreen, PARTY_RELATIONSHIPS, PartyConsentStatus, PartyKind } from '@/lib/constants/journey.constants';
 import { Duration, EASE_OUT, STAGGER_STEP } from '@/lib/constants/motion.constants';
-import { RoutePath } from '@/lib/constants/routes.constants';
 import { StatusTone } from '@/lib/constants/status.constants';
 
 const NAME_MIN_LENGTH = 2;
@@ -143,6 +143,7 @@ function PersonRow({ party, index, onConsent, onRemove, sending }: { party: Appl
 }
 
 export function PeopleScreen() {
+  const paths = useJourneyPaths();
   const t = useTranslations('flow.people');
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
@@ -150,10 +151,11 @@ export function PeopleScreen() {
   const toastError = useErrorToast();
   const parties = useQuery(partiesQuery(id));
   const [adding, setAdding] = useState(false);
-  const [target, setTarget] = useState<ConsentTarget | null>(null);
+  const tConsent = useTranslations('consentOtp');
+  const [target, setTarget] = useState<(ConsentOtpTarget & { party: ApplicationParty }) | null>(null);
   const [removing, setRemoving] = useState<ApplicationParty | null>(null);
   const send = useMutation({
-    mutationFn: (party: ApplicationParty) => sendPartyConsent(id, party.id).then((challenge) => ({ party, challenge })),
+    mutationFn: (party: ApplicationParty) => sendPartyConsent(id, party.id).then((challenge) => ({ party, challenge, name: party.party.displayName ?? '' })),
     meta: { handlesError: true },
     onSuccess: (next) => setTarget(next),
     onError: (failure) => toastError(failure),
@@ -210,7 +212,7 @@ export function PeopleScreen() {
           {t('pendingNote', { count: pending })}
         </p>
       ) : null}
-      <JourneyFooter label={others.length === 0 ? t('skip') : t('continue')} onContinue={() => router.push(RoutePath.applicationStep(id, JourneyScreen.Consents))} note={t('secure')} />
+      <JourneyFooter label={others.length === 0 ? t('skip') : t('continue')} onContinue={() => router.push(paths.step(id, JourneyScreen.Consents))} note={t('secure')} />
       <AddPersonSheet
         applicationId={id}
         open={adding}
@@ -220,7 +222,20 @@ export function PeopleScreen() {
           toast.success(t('added', { name: party.party.displayName ?? '' }));
         }}
       />
-      <PartyConsentSheet applicationId={id} target={target} resending={send.isPending} onResend={(party) => send.mutate(party)} onOpenChange={(open) => (open ? undefined : setTarget(null))} />
+      <ConsentOtpSheet
+        target={target}
+        resending={send.isPending}
+        onResend={() => (target ? send.mutate(target.party) : undefined)}
+        onOpenChange={(open) => (open ? undefined : setTarget(null))}
+        confirm={(body) => (target ? confirmPartyConsent(id, target.party.id, body) : Promise.reject(new Error('no party')))}
+        onConfirmed={(result) => {
+          void queryClient.invalidateQueries({ queryKey: journeyKeys.parties(id) });
+          void queryClient.invalidateQueries({ queryKey: applicationKeys.detail(id) });
+          const name = target?.name ?? '';
+          if (result.missingRequired.length === 0) toast.success(tConsent('granted', { name }));
+          else toast.warning(tConsent('declined', { name }));
+        }}
+      />
       <ConfirmDialog
         open={removing !== null}
         onOpenChange={(open) => (open ? undefined : setRemoving(null))}

@@ -3,7 +3,7 @@ export type MatchItem = {
   rank: number;
   outcome: string;
   fit: number;
-  lender: { id: string; key: string | null; name: string | null };
+  lender: { id: string; key: string | null; name: string | null; organizationId: string | null };
   product: { id: string; key: string; versionId: string; name: string };
   reasons: string[];
   missingAttributes: string[];

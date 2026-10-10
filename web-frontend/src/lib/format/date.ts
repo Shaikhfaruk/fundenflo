@@ -33,3 +33,9 @@ export function formatRelative(iso: string | null | undefined, locale = 'en', no
 }
 
 export const todayIsoDate = () => new Date().toISOString().slice(0, 10);
+
+const MINUTE_MS = 60 * 1000;
+
+export const DAY_MS = 24 * 60 * MINUTE_MS;
+
+export const toLocalDateTime = (time: number) => new Date(time - new Date(time).getTimezoneOffset() * MINUTE_MS).toISOString().slice(0, 16);

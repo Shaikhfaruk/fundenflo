@@ -2,6 +2,7 @@ import { queryOptions } from '@tanstack/react-query';
 
 import { apiRequest } from './client';
 import type { Application, ApplicationEvent, CreateApplicationInput } from './types/application.types';
+import { pagedQuery } from './paged';
 import type { Page } from './types/common.types';
 
 export const applicationKeys = {
@@ -12,6 +13,8 @@ export const applicationKeys = {
 };
 
 export const applicationsQuery = (filter: { status?: string } = {}) => queryOptions({ queryKey: applicationKeys.list(filter), queryFn: () => apiRequest<Page<Application>>('GET /applications', { query: filter }) });
+
+export const applicationsPageQuery = (filter: { status?: string } = {}) => pagedQuery<Application>([...applicationKeys.all, 'pages', filter], 'GET /applications', filter);
 
 export const createApplication = (body: CreateApplicationInput) => apiRequest<Application>('POST /applications', { body, idempotent: true });
 

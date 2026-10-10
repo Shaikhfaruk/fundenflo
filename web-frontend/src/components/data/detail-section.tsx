@@ -1,16 +1,19 @@
 'use client';
 
 import { motion } from 'motion/react';
-import type { ReactNode } from 'react';
+import { type ReactNode, useId } from 'react';
 
 import { Duration, EASE_OUT } from '@/lib/constants/motion.constants';
 import { cn } from '@/lib/utils';
 
 export function Section({ title, action, children, className, delay = 0 }: { title: string; action?: ReactNode; children: ReactNode; className?: string; delay?: number }) {
+  const headingId = useId();
   return (
-    <motion.section initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay, duration: Duration.Base, ease: EASE_OUT }} className={cn('flex min-w-0 flex-col gap-3 rounded-xl bg-card p-4 shadow-card', className)}>
+    <motion.section aria-labelledby={headingId} initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay, duration: Duration.Base, ease: EASE_OUT }} className={cn('flex min-w-0 flex-col gap-3 rounded-xl bg-card p-4 shadow-card', className)}>
       <div className="flex items-center justify-between gap-2">
-        <h2 className="font-heading text-lg font-semibold text-navy">{title}</h2>
+        <h2 id={headingId} className="font-heading text-lg font-semibold text-navy">
+          {title}
+        </h2>
         {action}
       </div>
       {children}

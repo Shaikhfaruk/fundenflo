@@ -25,15 +25,17 @@ type Props = {
   options?: Option[];
   optionsLabel?: string;
   noteOptional?: boolean;
+  noteRequiredFor?: readonly string[];
   onConfirm: (reason: string, choice: string | null) => void;
 };
 
-export function ReasonDialog({ open, onOpenChange, title, description, label, hint, confirmLabel, destructive, pending, minLength, maxLength, options, optionsLabel, noteOptional, onConfirm }: Props) {
+export function ReasonDialog({ open, onOpenChange, title, description, label, hint, confirmLabel, destructive, pending, minLength, maxLength, options, optionsLabel, noteOptional, noteRequiredFor, onConfirm }: Props) {
   const id = useId();
   const [reason, setReason] = useState('');
   const [choice, setChoice] = useState<string | null>(null);
   const trimmed = reason.trim();
-  const noteValid = noteOptional ? trimmed.length === 0 || trimmed.length >= minLength : trimmed.length >= minLength;
+  const noteNeeded = !noteOptional || (choice !== null && (noteRequiredFor?.includes(choice) ?? false));
+  const noteValid = noteNeeded ? trimmed.length >= minLength : trimmed.length === 0 || trimmed.length >= minLength;
   const valid = noteValid && (!options || choice !== null);
   return (
     <ConfirmDialog

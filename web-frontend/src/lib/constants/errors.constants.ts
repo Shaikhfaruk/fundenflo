@@ -24,6 +24,8 @@ export const ErrorCode = {
   ServiceUnavailable: 'SERVICE_UNAVAILABLE',
   InternalError: 'INTERNAL_ERROR',
   NetworkError: 'NETWORK_ERROR',
+  LeadProtected: 'LEAD_PROTECTED',
+  BorrowerAlreadyRegistered: 'BORROWER_ALREADY_REGISTERED',
 } as const;
 
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];

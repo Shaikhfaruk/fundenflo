@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { useJourneyPaths, usePartnerMode } from '@/components/journey/journey-mode';
 import { FadeIn } from '@/components/motion/fade-in';
 import { Stagger, StaggerItem } from '@/components/motion/stagger';
 import { Button } from '@/components/ui/button';
@@ -14,18 +15,23 @@ import { Eyebrow } from '@/components/ui/eyebrow';
 import { Field, FieldDescription, FieldError, FieldLabel } from '@/components/ui/field';
 import { Icon, type IconName, isIconName } from '@/components/ui/icon';
 import { Input } from '@/components/ui/input';
+import { MobileInput } from '@/components/ui/mobile-input';
 import { SecureNote } from '@/components/ui/secure-note';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Spinner } from '@/components/ui/spinner';
 import { StepHeader } from '@/components/ui/step-header';
 import { useErrorToast } from '@/hooks/use-error-toast';
-import { useRouter } from '@/i18n/navigation';
+import { Link, useRouter } from '@/i18n/navigation';
 import { ApiError } from '@/lib/api/api-error';
 import { applicationKeys, createApplication } from '@/lib/api/applications';
 import { categoriesQuery, segmentsQuery } from '@/lib/api/catalog';
+import { createPartnerApplication, registerPartnerBorrower } from '@/lib/api/partners';
+import { DEFAULT_COUNTRY_CODE, INDIAN_MOBILE_PATTERN } from '@/lib/constants/auth.constants';
+import { ErrorCode } from '@/lib/constants/errors.constants';
+import { NAME_MIN_LENGTH } from '@/lib/constants/kyc.constants';
 import { Duration, EASE_OUT } from '@/lib/constants/motion.constants';
 import { JOURNEY_TOTAL_STEPS, JourneyScreen, START_STEP } from '@/lib/constants/journey.constants';
-import { AppPath, RoutePath } from '@/lib/constants/routes.constants';
+import { AppPath } from '@/lib/constants/routes.constants';
 import { formatPaise } from '@/lib/format/money';
 
 const BPS_PER_PERCENT = 100;
@@ -36,7 +42,9 @@ const CATEGORY_FALLBACK_ICON: IconName = 'payments';
 const SWAP = { initial: { opacity: 0, x: 24 }, animate: { opacity: 1, x: 0 }, exit: { opacity: 0, x: -24 }, transition: { duration: Duration.Base, ease: EASE_OUT } } as const;
 
 export function StartApplication() {
+  const paths = useJourneyPaths();
   const t = useTranslations('borrower.start');
+  const partner = usePartnerMode();
   const locale = useLocale();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -46,21 +54,33 @@ export function StartApplication() {
   const [subSegment, setSubSegment] = useState<string | null>(null);
   const [category, setCategory] = useState<string | null>(null);
   const [businessName, setBusinessName] = useState('');
+  const [clientName, setClientName] = useState('');
+  const [clientMobile, setClientMobile] = useState('');
+  const [protectedClient, setProtectedClient] = useState(false);
   const [fieldError, setFieldError] = useState<{ path: string; message: string } | null>(null);
   const segments = useQuery(segmentsQuery());
   const chosenSegment = segments.data?.items.find((item) => item.key === segment);
   const needsSubSegment = Boolean(chosenSegment?.subSegments.length);
+  const clientReady = !partner || (clientName.trim().length >= NAME_MIN_LENGTH && INDIAN_MOBILE_PATTERN.test(clientMobile));
   const segmentReady = Boolean(segment) && (!needsSubSegment || Boolean(subSegment));
   const categories = useQuery({ ...categoriesQuery({ segment: segment ?? undefined, subSegment: subSegment ?? undefined }), enabled: segmentReady });
   const create = useMutation({
-    mutationFn: () => createApplication({ segment: segment ?? '', subSegment: subSegment ?? undefined, category: category ?? '', businessName: businessName.trim() || undefined }),
+    mutationFn: async () => {
+      if (!partner) return createApplication({ segment: segment ?? '', subSegment: subSegment ?? undefined, category: category ?? '', businessName: businessName.trim() || undefined });
+      const borrower = await registerPartnerBorrower({ name: clientName.trim(), mobile: clientMobile, countryCode: DEFAULT_COUNTRY_CODE, segment: segment ?? '', subSegment: subSegment ?? undefined, businessName: businessName.trim() || undefined });
+      return createPartnerApplication({ borrowerProfileId: borrower.id, category: category ?? undefined });
+    },
     meta: { handlesError: true },
     onSuccess: (application) => {
       void queryClient.invalidateQueries({ queryKey: applicationKeys.all });
       toast.success(t('created', { ref: application.ref }));
-      router.replace(RoutePath.applicationStep(application.id, JourneyScreen.Requirement));
+      router.replace(paths.step(application.id, JourneyScreen.Requirement));
     },
     onError: (error) => {
+      if (error instanceof ApiError && error.code === ErrorCode.LeadProtected) {
+        setProtectedClient(true);
+        return;
+      }
       const issue = error instanceof ApiError ? error.fieldIssues[0] : undefined;
       if (issue) setFieldError(issue);
       else toastError(error);
@@ -71,13 +91,30 @@ export function StartApplication() {
   const ready = segmentReady && Boolean(category);
   return (
     <div className="mx-auto flex w-full max-w-[560px] flex-1 flex-col">
-      <StepHeader step={step === 1 ? START_STEP.who : START_STEP.what} total={JOURNEY_TOTAL_STEPS} onBack={step > 1 ? () => setStep(1) : undefined} backHref={step === 1 ? AppPath.BorrowerHome : undefined} />
+      <StepHeader step={step === 1 ? START_STEP.who : START_STEP.what} total={JOURNEY_TOTAL_STEPS} onBack={step > 1 ? () => setStep(1) : undefined} backHref={step === 1 ? paths.home : undefined} />
       <AnimatePresence mode="wait" initial={false}>
         {step === 1 ? (
           <motion.section key="who" {...SWAP} className="mt-4 flex flex-1 flex-col">
+            {partner ? (
+              <FadeIn className="mb-4 flex flex-col gap-3 rounded-xl bg-card p-4 shadow-card">
+                <div className="flex flex-col gap-1">
+                  <h1 className="font-heading text-2xl leading-8 font-semibold tracking-[-0.01em] text-foreground">{t('partner.title')}</h1>
+                  <p className="text-sm leading-[22px] text-muted-foreground">{t('partner.body')}</p>
+                </div>
+                <Field>
+                  <FieldLabel htmlFor="client-name">{t('partner.name')}</FieldLabel>
+                  <Input id="client-name" autoComplete="off" value={clientName} onChange={(event) => setClientName(event.target.value)} />
+                </Field>
+                <Field>
+                  <FieldLabel htmlFor="client-mobile">{t('partner.mobile')}</FieldLabel>
+                  <MobileInput id="client-mobile" value={clientMobile} onValueChange={setClientMobile} valid={INDIAN_MOBILE_PATTERN.test(clientMobile)} />
+                  <FieldDescription>{t('partner.mobileHint')}</FieldDescription>
+                </Field>
+              </FadeIn>
+            ) : null}
             <FadeIn>
-              <h1 className="font-heading text-2xl leading-8 font-semibold tracking-[-0.01em] text-foreground">{t('segment')}</h1>
-              <p className="mt-2 text-sm leading-[22px] text-muted-foreground">{t('segmentBody')}</p>
+              {partner ? <h2 className="font-heading text-xl leading-7 font-semibold text-foreground">{t('partner.segment')}</h2> : <h1 className="font-heading text-2xl leading-8 font-semibold tracking-[-0.01em] text-foreground">{t('segment')}</h1>}
+              <p className="mt-2 text-sm leading-[22px] text-muted-foreground">{partner ? t('partner.segmentBody') : t('segmentBody')}</p>
             </FadeIn>
             <Stagger delay={0.1} step={0.08} className="mt-4 flex flex-col gap-3">
               {segments.isPending
@@ -123,7 +160,7 @@ export function StartApplication() {
               {t('segmentHint')}
             </p>
             <div className="min-h-4 flex-1" />
-            <Button className="mt-4 w-full" disabled={!segmentReady} onClick={() => setStep(2)}>
+            <Button className="mt-4 w-full" disabled={!segmentReady || !clientReady} onClick={() => setStep(2)}>
               {t('continue')}
               <Icon name="arrow-forward" size={18} />
             </Button>
@@ -182,7 +219,17 @@ export function StartApplication() {
               ) : null}
             </AnimatePresence>
             <div className="min-h-4 flex-1" />
-            {fieldError && fieldError.path !== 'businessName' ? (
+            {protectedClient ? (
+              <p className="mt-4 flex flex-col gap-1 rounded-sm bg-[#fff1ef] px-3 py-2 text-xs text-destructive" role="alert">
+                <span className="flex items-center gap-1.5">
+                  <Icon name="error" size={15} />
+                  {t('partner.protected')}
+                </span>
+                <Link href={AppPath.PartnerNewDispute} className="font-semibold text-navy underline-offset-4 hover:underline">
+                  {t('partner.claim')}
+                </Link>
+              </p>
+            ) : fieldError && fieldError.path !== 'businessName' ? (
               <p className="mt-4 flex items-center gap-1.5 rounded-sm bg-[#fff1ef] px-3 py-2 text-xs text-destructive" role="alert">
                 <Icon name="error" size={15} />
                 {fieldError.message}

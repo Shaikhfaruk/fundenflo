@@ -19,7 +19,7 @@ import { useErrorToast } from '@/hooks/use-error-toast';
 import { useEnumLabel } from '@/hooks/use-enum-label';
 import { Link } from '@/i18n/navigation';
 import { conversionsQuery, decideConversion, opsLeadKeys } from '@/lib/api/leads';
-import type { OfflineConversion } from '@/lib/api/types/ops.types';
+import type { OfflineConversion } from '@/lib/api/types/lead.types';
 import { CONVERSION_STATUSES, ConversionDecision, LEAD_NOTE_MAX_LENGTH, LEAD_NOTE_MIN_LENGTH } from '@/lib/constants/ops.constants';
 import { RoutePath } from '@/lib/constants/routes.constants';
 import { REVIEW_STATUS_TONE, toneOf } from '@/lib/constants/status.constants';

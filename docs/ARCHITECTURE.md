@@ -26,7 +26,7 @@ flowchart LR
     APP[Borrower app - Expo, old demo, not developed further]
     PUB[Public lead forms]
   end
-  subgraph Web["web-frontend - Next.js 16.4 (W0, W0.5 native design, W1 borrower journey + realtime, W2 documents to lender submission, W6 ops console, W5 lender portal, 2026-10-11)"]
+  subgraph Web["web-frontend - Next.js 16.4 (W0, W0.5 native design, W1 borrower journey + realtime, W2 documents to lender submission, W6 ops console, W5 lender portal, W3/W4 partner portal, 2026-10-11)"]
     UI[Website + installable PWA + native WebView wrapper<br/>borrower, partner, lender, ops, admin, finance]
     BFF[Next.js server: session cookies, /api proxy, refresh]
   end
@@ -487,7 +487,7 @@ stateDiagram-v2
   purged --> [*]
 ```
 
-Submission (built in M6b as `submissionMachine`; every move goes through `SubmissionService.move`, which writes the append-only `submission_events` row, an application timeline entry and the outbox event; sanction, disbursal and rejection refuse any actor that is not a person; ops approval needs the applicant's consent naming the lender (a borrower can give it while requesting, `shareWithLender: true`) and the product's documents scanned; `submissions.deliver` builds the encrypted packet before `send`; the first disbursal closes the application as won and every lender rejecting closes it as lost (a borrower withdrawing their own file keeps the case open so they can apply elsewhere, 2026-10-11)):
+Submission (built in M6b as `submissionMachine`; every move goes through `SubmissionService.move`, which writes the append-only `submission_events` row, an application timeline entry and the outbox event; sanction, disbursal and rejection refuse any actor that is not a person; ops approval needs the applicant's consent naming the lender (a borrower can give it while requesting, `shareWithLender: true`; a partner records it with the borrower's SMS code through `/partner/applications/:id/borrower-consent/verify` with the lender organisation from the match result, 2026-10-11) and the product's documents scanned; `submissions.deliver` builds the encrypted packet before `send`; the first disbursal closes the application as won and every lender rejecting closes it as lost (a borrower withdrawing their own file keeps the case open so they can apply elsewhere, 2026-10-11)):
 
 ```mermaid
 stateDiagram-v2

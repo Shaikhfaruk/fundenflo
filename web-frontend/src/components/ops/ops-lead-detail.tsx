@@ -9,9 +9,12 @@ import { toast } from 'sonner';
 import { useCategoryLabel } from '@/components/borrower/category-labels';
 import { ConfirmDialog } from '@/components/data/confirm-dialog';
 import { KeyValues, Section } from '@/components/data/detail-section';
-import { pagedRows } from '@/components/data/paged-list';
 import { ReasonDialog } from '@/components/data/reason-dialog';
 import { StatusBadge } from '@/components/data/status-badge';
+import { ActivityForm } from '@/components/leads/activity-form';
+import { ActivityList } from '@/components/leads/activity-list';
+import { FollowUpDialog } from '@/components/leads/follow-up-dialog';
+import { LeadContacts } from '@/components/leads/lead-contacts';
 import { ScreenSkeleton } from '@/components/shell/screen-skeleton';
 import { PageHeader } from '@/components/shell/page-header';
 import { Button } from '@/components/ui/button';
@@ -42,12 +45,11 @@ import {
   verifiedPartnersQuery,
 } from '@/lib/api/leads';
 import type { OpsLeadDetail } from '@/lib/api/types/lead.types';
-import type { LeadContact } from '@/lib/api/types/ops.types';
-import { ACTIVITY_BODY_MAX_LENGTH, ACTIVITY_OUTCOMES, ACTIVITY_TYPES, ActivityType, FOLLOW_UP_MAX_DAYS_AHEAD, LEAD_LOST_REASONS, LEAD_NOTE_MAX_LENGTH, LEAD_NOTE_MIN_LENGTH, LEAD_UNQUALIFIED_REASONS, LEAD_URGENCIES } from '@/lib/constants/ops.constants';
+import type { LeadContact } from '@/lib/api/types/lead.types';
+import { LEAD_LOST_REASONS, LEAD_NOTE_MAX_LENGTH, LEAD_NOTE_MIN_LENGTH, LEAD_UNQUALIFIED_REASONS, LEAD_URGENCIES } from '@/lib/constants/ops.constants';
 import { AppPath, RoutePath } from '@/lib/constants/routes.constants';
 import { LEAD_CONSENT_TONE, LEAD_STATUS_TONE, REVIEW_STATUS_TONE, toneOf } from '@/lib/constants/status.constants';
 import { formatDateTime, formatRelative } from '@/lib/format/date';
-import { formatPhone } from '@/lib/format/phone';
 
 const ACTIONS_BY_STATUS: Record<string, LeadAction[]> = {
   new: ['qualify', 'hold', 'disqualify', 'lose'],
@@ -57,100 +59,11 @@ const ACTIONS_BY_STATUS: Record<string, LeadAction[]> = {
   converted: ['lose'],
 };
 
-const DAY_MS = 24 * 60 * 60 * 1000;
-
-const MINUTE_MS = 60 * 1000;
-
-const localDateTime = (time: number) => new Date(time - new Date(time).getTimezoneOffset() * MINUTE_MS).toISOString().slice(0, 16);
-
 const ACTIVE_ASSIGNMENTS: readonly string[] = ['offered', 'accepted', 'working'];
 
 const ROUTABLE: readonly string[] = ['new', 'qualified'];
 
 const REASON_OPTIONS: Partial<Record<LeadAction, readonly string[]>> = { disqualify: LEAD_UNQUALIFIED_REASONS, lose: LEAD_LOST_REASONS };
-
-function ActivityForm({ leadId }: { leadId: string }) {
-  const t = useTranslations('ops.leadDetail');
-  const typeLabel = useEnumLabel('activityType');
-  const outcomeLabel = useEnumLabel('activityOutcome');
-  const queryClient = useQueryClient();
-  const errorToast = useErrorToast();
-  const bodyId = useId();
-  const [type, setType] = useState<string>(ActivityType.Call);
-  const [outcome, setOutcome] = useState<string | null>(null);
-  const [body, setBody] = useState('');
-  const log = useMutation({
-    mutationFn: () => logLeadActivity(leadId, { type, outcome: type === ActivityType.Call && outcome ? outcome : undefined, body: body.trim() || undefined }),
-    meta: { handlesError: true },
-    onSuccess: () => {
-      toast.success(t('activityLogged'));
-      setBody('');
-      setOutcome(null);
-      void queryClient.invalidateQueries({ queryKey: opsLeadKeys.detail(leadId) });
-    },
-    onError: (failure) => errorToast(failure),
-  });
-  return (
-    <div className="flex flex-col gap-3 rounded-lg bg-subtle/60 p-3">
-      <ChipGroup label={t('activityType')}>
-        {ACTIVITY_TYPES.map((value) => (
-          <ChoiceChip key={value} selected={type === value} label={typeLabel(value)} onToggle={() => setType(value)} className="min-h-9 text-[13px]" />
-        ))}
-      </ChipGroup>
-      {type === ActivityType.Call ? (
-        <ChipGroup label={t('outcome')}>
-          {ACTIVITY_OUTCOMES.map((value) => (
-            <ChoiceChip key={value} selected={outcome === value} label={outcomeLabel(value)} onToggle={() => setOutcome(value)} className="min-h-8 text-xs" />
-          ))}
-        </ChipGroup>
-      ) : null}
-      <Field>
-        <FieldLabel htmlFor={bodyId}>{t('activityNote')}</FieldLabel>
-        <Textarea id={bodyId} rows={2} value={body} maxLength={ACTIVITY_BODY_MAX_LENGTH} onChange={(event) => setBody(event.target.value)} />
-      </Field>
-      <Button size="sm" className="self-start" onClick={() => log.mutate()} disabled={log.isPending || (type === ActivityType.Note && body.trim().length === 0)}>
-        {t('logActivity')}
-      </Button>
-    </div>
-  );
-}
-
-function FollowUpDialog({ leadId, open, onOpenChange }: { leadId: string; open: boolean; onOpenChange: (open: boolean) => void }) {
-  const t = useTranslations('ops.leadDetail');
-  const errorToast = useErrorToast();
-  const queryClient = useQueryClient();
-  const dueId = useId();
-  const noteId = useId();
-  const [due, setDue] = useState('');
-  const [note, setNote] = useState('');
-  const [now] = useState(() => Date.now());
-  const dueAt = due ? new Date(due).getTime() : Number.NaN;
-  const dueValid = Number.isFinite(dueAt) && dueAt > now && dueAt <= now + FOLLOW_UP_MAX_DAYS_AHEAD * DAY_MS;
-  const schedule = useMutation({
-    mutationFn: () => scheduleLeadFollowUp(leadId, { dueAt: new Date(due).toISOString(), note: note.trim() }),
-    meta: { handlesError: true },
-    onSuccess: () => {
-      toast.success(t('followUpScheduled'));
-      setDue('');
-      setNote('');
-      void queryClient.invalidateQueries({ queryKey: opsLeadKeys.all });
-      onOpenChange(false);
-    },
-    onError: (failure) => errorToast(failure),
-  });
-  return (
-    <ConfirmDialog open={open} onOpenChange={onOpenChange} title={t('followUpTitle')} confirmLabel={t('schedule')} pending={schedule.isPending} confirmDisabled={!dueValid || note.trim().length < LEAD_NOTE_MIN_LENGTH} onConfirm={() => schedule.mutate()}>
-      <Field>
-        <FieldLabel htmlFor={dueId}>{t('dueAt')}</FieldLabel>
-        <Input id={dueId} type="datetime-local" value={due} min={localDateTime(now)} max={localDateTime(now + FOLLOW_UP_MAX_DAYS_AHEAD * DAY_MS)} onChange={(event) => setDue(event.target.value)} />
-      </Field>
-      <Field>
-        <FieldLabel htmlFor={noteId}>{t('followUpNote')}</FieldLabel>
-        <Textarea id={noteId} rows={2} value={note} maxLength={LEAD_NOTE_MAX_LENGTH} onChange={(event) => setNote(event.target.value)} />
-      </Field>
-    </ConfirmDialog>
-  );
-}
 
 function AssignDialog({ leadId, open, onOpenChange }: { leadId: string; open: boolean; onOpenChange: (open: boolean) => void }) {
   const t = useTranslations('ops.leadDetail');
@@ -244,8 +157,6 @@ function LeadView({ lead }: { lead: OpsLeadDetail }) {
   const reasonLabel = useEnumLabel('leadReason');
   const eventLabel = useEnumLabel('leadEvent');
   const flagLabel = useEnumLabel('leadFlag');
-  const typeLabel = useEnumLabel('activityType');
-  const outcomeLabel = useEnumLabel('activityOutcome');
   const urgencyLabel = useEnumLabel('urgency');
   const locale = useLocale();
   const categoryLabel = useCategoryLabel();
@@ -364,33 +275,12 @@ function LeadView({ lead }: { lead: OpsLeadDetail }) {
             ) : null}
           </Section>
           <Section title={t('contacts')} delay={0.04} action={revealed ? null : <Button variant="outline" size="xs" onClick={() => setRevealOpen(true)}><Icon name="visibility" size={14} />{t('reveal')}</Button>}>
-            <ul className="flex flex-col gap-2">
-              {contacts.map((contact) => (
-                <li key={`${contact.type}-${contact.masked}`} className="flex flex-wrap items-center gap-2 text-sm">
-                  <Icon name={contact.type === 'email' ? 'mail' : 'phone'} size={16} className="text-muted-foreground" />
-                  <span className="font-semibold text-foreground tabular select-all">{contact.value ? (contact.type === 'mobile' ? formatPhone(contact.value) : contact.value) : contact.masked}</span>
-                  {contact.primary ? <span className="rounded-xs bg-subtle px-1.5 py-0.5 text-[10px] font-semibold text-muted-foreground">{t('primary')}</span> : null}
-                  {contact.doNotContact ? <span className="rounded-xs bg-error-soft px-1.5 py-0.5 text-[10px] font-semibold text-destructive">{t('doNotContact')}</span> : null}
-                  {contact.invalid ? <span className="rounded-xs bg-error-soft px-1.5 py-0.5 text-[10px] font-semibold text-destructive">{t('invalid')}</span> : null}
-                </li>
-              ))}
-            </ul>
+            <LeadContacts contacts={contacts} />
             {revealed ? <p className="text-xs text-muted-foreground">{t('revealLogged')}</p> : null}
           </Section>
           <Section title={t('activities')} delay={0.08} action={<Button variant="ghost" size="xs" onClick={() => setFollowUpOpen(true)}><Icon name="alarm" size={14} />{t('followUp')}</Button>}>
-            <ActivityForm leadId={lead.id} />
-            <ul className="flex flex-col">
-              {pagedRows(activities).map((activity) => (
-                <li key={activity.id} className="flex flex-col border-t border-subtle py-2 first:border-t-0">
-                  <span className="text-sm font-semibold text-foreground">
-                    {typeLabel(activity.type)}
-                    {activity.outcome ? ` · ${outcomeLabel(activity.outcome)}` : ''}
-                  </span>
-                  {activity.body ? <span className="text-[13px] text-muted-foreground">{activity.body}</span> : null}
-                  <span className="text-xs text-muted-foreground">{formatRelative(activity.occurredAt, locale)}</span>
-                </li>
-              ))}
-            </ul>
+            <ActivityForm log={(input) => logLeadActivity(lead.id, input)} onLogged={() => void queryClient.invalidateQueries({ queryKey: opsLeadKeys.detail(lead.id) })} />
+            <ActivityList result={activities} />
           </Section>
           <Section title={t('timeline')} delay={0.12}>
             <ol className="flex flex-col">
@@ -471,7 +361,7 @@ function LeadView({ lead }: { lead: OpsLeadDetail }) {
       <ReasonDialog open={revealOpen} onOpenChange={setRevealOpen} title={t('revealTitle')} description={t('revealBody')} label={t('revealReason')} confirmLabel={t('reveal')} pending={reveal.isPending} minLength={LEAD_NOTE_MIN_LENGTH} maxLength={LEAD_NOTE_MAX_LENGTH} onConfirm={(reason) => reveal.mutate(reason)} />
       <ReasonDialog open={revoking !== null} onOpenChange={(open) => (open ? null : setRevoking(null))} title={t('revokeTitle')} label={t('revokeReason')} confirmLabel={t('revoke')} destructive pending={revoke.isPending} minLength={LEAD_NOTE_MIN_LENGTH} maxLength={LEAD_NOTE_MAX_LENGTH} onConfirm={(reason) => (revoking ? revoke.mutate({ id: revoking, reason }) : null)} />
       <AssignDialog leadId={lead.id} open={assignOpen} onOpenChange={setAssignOpen} />
-      {followUpOpen ? <FollowUpDialog leadId={lead.id} open={followUpOpen} onOpenChange={setFollowUpOpen} /> : null}
+      {followUpOpen ? <FollowUpDialog open={followUpOpen} onOpenChange={setFollowUpOpen} schedule={(input) => scheduleLeadFollowUp(lead.id, input)} onScheduled={() => void refresh()} /> : null}
       {editOpen ? <EditDialog lead={lead} open={editOpen} onOpenChange={setEditOpen} /> : null}
     </div>
   );

@@ -1,5 +1,6 @@
 import { expect, type Page } from '@playwright/test';
-import { staticOtp } from './backend';
+
+import { type SessionTokens, staticOtp } from './backend';
 import { freshCode, staffAccount } from './staff-pool';
 
 const TOTP_WAIT_MS = 30_000;
@@ -47,4 +48,18 @@ export async function signInAsLender(page: Page, email: string) {
   await expect(page.getByText(/Sent To/)).toBeVisible();
   await page.getByLabel('One-Time Code').fill(staticOtp());
   await expect(page).toHaveURL(/\/lender$/);
+}
+
+const COOKIE_ORIGIN = process.env.E2E_BASE_URL ?? 'http://localhost:3100';
+
+export async function loadApiSession(page: Page, session: SessionTokens, context: string) {
+  const url = new URL(COOKIE_ORIGIN);
+  const base = { domain: url.hostname, sameSite: 'Lax' as const, secure: url.protocol === 'https:' };
+  const expires = Math.floor(Date.now() / 1000) + session.refreshExpiresIn;
+  await page.context().addCookies([
+    { ...base, name: 'ff_at', value: session.accessToken, path: '/', httpOnly: true, expires: Math.floor(Date.now() / 1000) + session.expiresIn },
+    { ...base, name: 'ff_rt', value: session.refreshToken, path: '/api/session', httpOnly: true, expires },
+    { ...base, name: 'ff_exp', value: String(Date.now() + session.expiresIn * 1000), path: '/', httpOnly: false, expires },
+    { ...base, name: 'ff_ctx', value: context, path: '/', httpOnly: false, expires },
+  ]);
 }

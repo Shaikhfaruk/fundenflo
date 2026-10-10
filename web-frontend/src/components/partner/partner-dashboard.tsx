@@ -7,11 +7,14 @@ import { StatCard } from '@/components/data/stat-card';
 import { StatusBadge } from '@/components/data/status-badge';
 import { FadeIn } from '@/components/motion/fade-in';
 import { PageHeader } from '@/components/shell/page-header';
+import { ButtonLink } from '@/components/ui/button-link';
 import { Eyebrow } from '@/components/ui/eyebrow';
+import { Icon } from '@/components/ui/icon';
 import { IconTile } from '@/components/ui/icon-tile';
 import { Skeleton } from '@/components/ui/skeleton';
 import { partnerDashboardQuery, partnerProfileQuery } from '@/lib/api/partners';
 import { PartnerVerificationStatus } from '@/lib/constants/partner.constants';
+import { AppPath } from '@/lib/constants/routes.constants';
 import { StatusTone } from '@/lib/constants/status.constants';
 import { formatDateTime } from '@/lib/format/date';
 
@@ -39,6 +42,20 @@ export function PartnerDashboard() {
         title={t('title')}
         badge={status ? <StatusBadge status={status} tone={VERIFICATION_TONE[status] ?? StatusTone.Neutral} /> : null}
         description={data ? t('asOf', { time: formatDateTime(data.at, locale) }) : t('description')}
+        actions={
+          verified ? (
+            <>
+              <ButtonLink href={AppPath.PartnerNewLead} size="sm">
+                <Icon name="add" size={16} />
+                {t('addLead')}
+              </ButtonLink>
+              <ButtonLink href={AppPath.PartnerNewClient} size="sm" variant="outline">
+                <Icon name="folder" size={16} />
+                {t('addClient')}
+              </ButtonLink>
+            </>
+          ) : null
+        }
       />
       {status && AWAITING_VERIFICATION.includes(status) ? (
         <FadeIn className="flex items-start gap-3 rounded-xl bg-gold-soft p-4">

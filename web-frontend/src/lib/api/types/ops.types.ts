@@ -166,38 +166,6 @@ export type AttributionDispute = {
   createdAt: string;
 };
 
-export type FollowUp = {
-  id: string;
-  entityType: string;
-  entityId: string;
-  dueAt: string;
-  overdue: boolean;
-  note: string;
-  status: string;
-  doneAt: string | null;
-  outcomeNote: string | null;
-  version: number;
-  createdAt: string;
-};
-
-export type OfflineConversion = {
-  id: string;
-  leadId: string;
-  organizationId: string;
-  lenderName: string;
-  categoryKey: string | null;
-  sanctionedAmountPaise: number;
-  disbursedAmountPaise: number | null;
-  sanctionedOn: string | null;
-  disbursedOn: string | null;
-  loanAccountRef: string | null;
-  note: string | null;
-  status: string;
-  decisionNote: string | null;
-  version: number;
-  createdAt: string;
-};
-
 export type FunnelReport = { groupBy: string; from: string; to: string; total: number; items: Array<{ key: string | null; label: string | null; total: number; byStatus: Record<string, number>; byConsent: Record<string, number> }> };
 
 export type PartnerPerformance = {
@@ -219,10 +187,6 @@ export type PartnerPerformance = {
     disbursedAmountPaise: number;
   }>;
 };
-
-export type LeadActivity = { id: string; type: string; outcome: string | null; body: string | null; durationSeconds: number | null; occurredAt: string; actorUserId: string | null; createdAt: string };
-
-export type LeadContact = { id?: string; type: string; value?: string | null; masked: string; primary: boolean; verified: boolean; doNotContact: boolean; invalid: boolean };
 
 export type LeadAssignment = {
   id: string;

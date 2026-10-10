@@ -62,9 +62,27 @@ export const NAVIGATION: Record<NavArea, NavGroup[]> = {
   ],
   [ShellArea.Partner]: [
     {
-      key: 'main',
+      key: 'work',
       items: [
         { key: 'dashboard', href: AppPath.PartnerHome, icon: 'dashboard', primary: true },
+        { key: 'leads', href: AppPath.PartnerLeads, icon: 'inbox', primary: true },
+        { key: 'followUps', href: AppPath.PartnerFollowUps, icon: 'alarm' },
+        { key: 'clients', href: AppPath.PartnerClients, icon: 'folder', primary: true },
+      ],
+    },
+    {
+      key: 'growth',
+      items: [
+        { key: 'referrals', href: AppPath.PartnerReferrals, icon: 'group' },
+        { key: 'commissions', href: AppPath.PartnerCommissions, icon: 'payments' },
+      ],
+    },
+    {
+      key: 'firm',
+      items: [
+        { key: 'team', href: AppPath.PartnerTeam, icon: 'group', roles: [Role.PartnerOwner] },
+        { key: 'firmProfile', href: AppPath.PartnerProfile, icon: 'verified' },
+        { key: 'settings', href: AppPath.PartnerSettings, icon: 'settings' },
         { key: 'account', href: AppPath.Account, icon: 'account', primary: true },
       ],
     },

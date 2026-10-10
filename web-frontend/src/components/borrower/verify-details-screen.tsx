@@ -5,6 +5,7 @@ import { motion } from 'motion/react';
 import { useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
+import { useJourneyPaths } from '@/components/journey/journey-mode';
 import { PanCard } from '@/components/borrower/pan-card';
 import { JourneyFooter } from '@/components/journey/journey-footer';
 import { JourneyPage } from '@/components/journey/journey-page';
@@ -15,9 +16,9 @@ import { applicationKeys } from '@/lib/api/applications';
 import { borrowerProfileQuery } from '@/lib/api/borrowers';
 import { applicationQuery } from '@/lib/api/journey';
 import { JOURNEY_SCREEN_STEP, JourneyScreen } from '@/lib/constants/journey.constants';
-import { RoutePath } from '@/lib/constants/routes.constants';
 
 export function VerifyDetailsScreen() {
+  const paths = useJourneyPaths();
   const t = useTranslations('flow.verify');
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
@@ -28,7 +29,7 @@ export function VerifyDetailsScreen() {
   if (application.isPending || (profileId && profile.isPending)) return <ScreenSkeleton />;
   if (!profile.data) return <p className="mx-auto max-w-[560px] rounded-xl bg-card p-4 text-sm text-muted-foreground shadow-card">{t('unavailable')}</p>;
   const verified = profile.data.kyc?.pan?.verified === true;
-  const next = () => router.push(RoutePath.applicationStep(id, JourneyScreen.Score));
+  const next = () => router.push(paths.step(id, JourneyScreen.Score));
   return (
     <JourneyPage
       applicationId={id}

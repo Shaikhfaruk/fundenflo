@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 
+import { useJourneyPaths } from '@/components/journey/journey-mode';
 import { type CityChoice, CityPicker } from '@/components/journey/city-picker';
 import { JourneyFooter } from '@/components/journey/journey-footer';
 import { JourneyPage } from '@/components/journey/journey-page';
@@ -26,7 +27,6 @@ import type { Application, RequirementInput } from '@/lib/api/types/application.
 import type { LoanCategory } from '@/lib/api/types/catalog.types';
 import { BUSINESS_SEGMENT, JOURNEY_SCREEN_STEP, JourneyScreen, PURPOSE_NOTE_MAX_LENGTH, PURPOSE_NOTE_MIN_LENGTH } from '@/lib/constants/journey.constants';
 import { Duration, EASE_OUT } from '@/lib/constants/motion.constants';
-import { RoutePath } from '@/lib/constants/routes.constants';
 import { estimateEmiPaise, formatPaise, groupRupees, paiseFromRupees, rupeesFromPaiseValue } from '@/lib/format/money';
 import { cn } from '@/lib/utils';
 
@@ -40,6 +40,7 @@ const SWAP = { initial: { opacity: 0, x: 24 }, animate: { opacity: 1, x: 0 }, ex
 const clampAmount = (paise: number, category: LoanCategory) => Math.min(category.maxAmountPaise, Math.max(category.minAmountPaise, paise));
 
 function RequirementForm({ application, categories }: { application: Application; categories: LoanCategory[] }) {
+  const paths = useJourneyPaths();
   const t = useTranslations('flow.requirement');
   const locale = useLocale();
   const router = useRouter();
@@ -99,7 +100,7 @@ function RequirementForm({ application, categories }: { application: Application
 
   const continuePurpose = () => {
     if (!purposeReady || !purpose) return;
-    save.mutate({ purpose, purposeNote: note.trim() || null }, { onSuccess: () => router.push(RoutePath.applicationStep(application.id, JourneyScreen.Questions)) });
+    save.mutate({ purpose, purposeNote: note.trim() || null }, { onSuccess: () => router.push(paths.step(application.id, JourneyScreen.Questions)) });
   };
 
   const changeCategory = (next: string) => {

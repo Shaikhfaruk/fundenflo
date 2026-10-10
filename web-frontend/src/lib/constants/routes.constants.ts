@@ -1,4 +1,5 @@
 import { LoginAs, SessionContext } from './auth.constants';
+import { JourneyMode, screenForStage } from './journey.constants';
 
 export const AppPath = {
   Landing: '/',
@@ -18,6 +19,17 @@ export const AppPath = {
   BorrowerProfile: '/app/profile',
   PartnerHome: '/partner',
   PartnerSignup: '/partner/signup',
+  PartnerLeads: '/partner/leads',
+  PartnerNewLead: '/partner/leads/new',
+  PartnerFollowUps: '/partner/follow-ups',
+  PartnerClients: '/partner/applications',
+  PartnerNewClient: '/partner/applications/new',
+  PartnerReferrals: '/partner/referrals',
+  PartnerNewDispute: '/partner/disputes/new',
+  PartnerCommissions: '/partner/commissions',
+  PartnerTeam: '/partner/team',
+  PartnerProfile: '/partner/profile',
+  PartnerSettings: '/partner/settings',
   LenderHome: '/lender',
   LenderProducts: '/lender/products',
   OpsHome: '/ops/leads',
@@ -62,10 +74,30 @@ export const LOGIN_AS_PARAM = 'as';
 
 export const NEXT_PARAM = 'next';
 
+const journeyPaths = (base: string, home: string, start: string) => ({
+  home,
+  start,
+  application: (id: string) => `${base}/applications/${id}`,
+  step: (id: string, step: string) => `${base}/applications/${id}/${step}`,
+  submission: (id: string, submissionId: string) => `${base}/applications/${id}/submissions/${submissionId}`,
+});
+
+export type JourneyPaths = ReturnType<typeof journeyPaths>;
+
+export const JOURNEY_PATHS: Record<JourneyMode, JourneyPaths> = {
+  [JourneyMode.Borrower]: journeyPaths(AppPath.BorrowerHome, AppPath.BorrowerHome, AppPath.BorrowerNewApplication),
+  [JourneyMode.Partner]: journeyPaths(AppPath.PartnerHome, AppPath.PartnerClients, AppPath.PartnerNewClient),
+};
+
+export const BORROWER_PATHS = JOURNEY_PATHS[JourneyMode.Borrower];
+
+export const resumePath = (paths: JourneyPaths, application: { id: string; journeyStage: string }) => {
+  const screen = screenForStage(application.journeyStage);
+  return screen ? paths.step(application.id, screen) : paths.application(application.id);
+};
+
 export const RoutePath = {
-  application: (id: string) => `${AppPath.BorrowerHome}/applications/${id}`,
-  applicationStep: (id: string, step: string) => `${AppPath.BorrowerHome}/applications/${id}/${step}`,
-  submission: (id: string, submissionId: string) => `${AppPath.BorrowerHome}/applications/${id}/submissions/${submissionId}`,
+  partnerLead: (id: string) => `${AppPath.PartnerLeads}/${id}`,
   lenderSubmission: (id: string) => `${AppPath.LenderHome}/submissions/${id}`,
   lenderProduct: (id: string) => `${AppPath.LenderProducts}/${id}`,
   opsLead: (id: string) => `${AppPath.OpsHome}/${id}`,

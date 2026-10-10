@@ -15,7 +15,7 @@ let lenderEmail: string;
 test.beforeAll(async ({ browserName: _browser }, testInfo) => {
   const maker = await pooledStaffToken(`maker-${testInfo.project.name}`);
   ops = await pooledStaffToken(`checker-${testInfo.project.name}`);
-  lender = await liveTestLender(`Sahyadri Finance ${String(Date.now()).slice(-5)}`, maker, ops);
+  lender = await liveTestLender(`Sahyadri Finance ${testInfo.project.name.toUpperCase()} ${String(Date.now()).slice(-5)}`, maker, ops);
   lenderEmail = randomEmail('e2e.lender.desk');
   await inviteLenderUser(lenderEmail, lender.organizationId, maker);
 });

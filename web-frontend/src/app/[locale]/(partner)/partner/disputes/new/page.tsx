@@ -1,0 +1,13 @@
+import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
+
+import { PartnerDisputeNew } from '@/components/partner/partner-dispute-new';
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('partner.dispute');
+  return { title: t('metaTitle') };
+}
+
+export default function Page() {
+  return <PartnerDisputeNew />;
+}

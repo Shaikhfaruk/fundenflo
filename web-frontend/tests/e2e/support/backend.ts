@@ -61,7 +61,7 @@ const LAKH = 100_000_00;
 export type TestLender = { id: string; name: string; productId: string; organizationId: string; cleanUp: () => Promise<void> };
 
 export async function liveTestLender(name: string, maker: string, checker: string): Promise<TestLender> {
-  const key = `e2e${Date.now()}`;
+  const key = `e2e${Date.now()}${randomInt(0, 1000)}`;
   const lender = await api<{ id: string; version: number; organizationId: string }>('POST', '/admin/lenders', { key, name, kind: 'nbfc' }, maker);
   const active = await api<{ version: number }>('PATCH', `/admin/lenders/${lender.id}`, { status: 'active' }, maker, lender.version);
   const agreement = await api<{ id: string; version: number }>('POST', `/admin/lenders/${lender.id}/agreements`, { reference: `${key}-1`, validFrom: new Date().toISOString().slice(0, 10) }, maker);
@@ -144,3 +144,42 @@ export const requestDataCorrection = (token: string, details: string) => api<{ i
 export const opsLeadPerson = async (token: string, name: string) => (await api<{ party: { id: string } }>('POST', '/ops/leads', { name, mobile: randomMobile(), countryCode: '+91' }, token)).party.id;
 
 export const inviteLenderUser = (email: string, organizationId: string, token: string) => api('POST', '/admin/invitations', { organizationId, role: 'lender_admin', email }, token);
+
+export type SessionTokens = { accessToken: string; refreshToken: string; expiresIn: number; refreshExpiresIn: number };
+
+export type TestFirm = { mobile: string; organizationId: string; name: string; session: SessionTokens };
+
+export async function verifiedFirm(maker: string, checker: string, name: string): Promise<TestFirm> {
+  const mobile = randomMobile();
+  await api('POST', '/auth/otp/request', { mobile, countryCode: '+91', loginAs: 'ca' });
+  const first = await api<SessionTokens>('POST', '/auth/otp/verify', { mobile, countryCode: '+91', otp: staticOtp() });
+  const firm = await api<{ id: string; organizationId: string }>('POST', '/partner/signup', { kind: 'ca', firmName: name, membershipNumber: '512345', segments: ['msme'], categories: ['business'], languages: ['en', 'hi'], serviceAreas: [{ stateGstCode: '27' }] }, first.accessToken);
+  await api('POST', `/admin/partners/${firm.id}/verify`, { decision: 'approve', note: 'End-to-end firm check' }, maker);
+  await api('POST', `/admin/partners/${firm.id}/verify`, { decision: 'approve', note: 'End-to-end second check' }, checker);
+  const me = await api<{ memberships: Array<{ id: string; organization: { id: string } | null }> }>('GET', '/me', undefined, first.accessToken);
+  const membership = me.memberships.find((item) => item.organization?.id === firm.organizationId);
+  if (!membership) throw new Error(`No membership in ${name} after verification`);
+  const session = await api<SessionTokens>('POST', '/auth/switch-context', { membershipId: membership.id }, first.accessToken);
+  return { mobile, organizationId: firm.organizationId, name, session };
+}
+
+export async function assignedLead(ops: string, organizationId: string, name: string, businessName: string) {
+  const lead = await api<{ id: string }>('POST', '/ops/leads', {
+    name,
+    mobile: randomMobile(),
+    countryCode: '+91',
+    businessName,
+    segment: 'msme',
+    category: 'business',
+    city: 'Pune',
+    amountText: '15 lakh',
+    consent: { basis: 'consent', evidence: 'Agreed on the phone call', items: [{ purpose: 'contact', granted: true }, { purpose: 'partner_sharing', granted: true }] },
+  }, ops);
+  await api('POST', `/ops/leads/${lead.id}/assign`, { organizationId }, ops);
+  return lead.id;
+}
+
+export const approveAsOps = async (ops: string, submissionId: string) => {
+  const submission = await api<{ version: number }>('GET', `/ops/submissions/${submissionId}`, undefined, ops);
+  return api<{ status: string }>('POST', `/ops/submissions/${submissionId}/approve`, { expectedVersion: submission.version }, ops);
+};

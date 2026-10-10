@@ -1,7 +1,12 @@
 import { type Locale, localise } from '../../../common/i18n/locale.js';
 import type { MatchResult, MatchRun } from '../../../generated/prisma/client.js';
 
-type LenderSummary = { id: string; key: string; name: string };
+type LenderSummary = { id: string; key: string; name: string; organizationId: string };
+
+const lenderOf = (lenders: Map<string, LenderSummary>, id: string) => {
+  const lender = lenders.get(id);
+  return lender ? { id: lender.id, key: lender.key, name: lender.name, organizationId: lender.organizationId } : { id, key: null, name: null, organizationId: null };
+};
 
 export const toMatchRunView = (run: MatchRun & { results: MatchResult[] }, lenders: Map<string, LenderSummary>, locale: Locale, includeIneligible: boolean) => ({
   id: run.id,
@@ -16,7 +21,7 @@ export const toMatchRunView = (run: MatchRun & { results: MatchResult[] }, lende
       rank: result.rank,
       outcome: result.outcome,
       fit: result.fit,
-      lender: lenders.get(result.lenderId) ?? { id: result.lenderId, key: null, name: null },
+      lender: lenderOf(lenders, result.lenderId),
       product: { id: result.productDocumentId, key: result.productKey, versionId: result.productVersionId, name: localise(result.productName, locale) },
       reasons: (result.reasons as unknown[]).map((reason) => localise(reason, locale)),
       missingAttributes: result.missingAttributes,

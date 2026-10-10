@@ -368,7 +368,11 @@
     "ledger": "Trial Balance",
     "switchRole": "Switch Role",
     "duplicates": "Possible Duplicates",
-    "merges": "Merge History"
+    "merges": "Merge History",
+    "work": "Your Work",
+    "growth": "Growth",
+    "firm": "Your Firm",
+    "firmProfile": "Firm Profile"
   },
   "status": {
     "draft": "Draft",
@@ -419,7 +423,11 @@
     "scanned": "Scanned",
     "extracting": "Reading",
     "classifying": "Reading",
-    "overdue": "Overdue"
+    "overdue": "Overdue",
+    "reported": "Reported",
+    "paid": "Paid",
+    "reversed": "Reversed",
+    "not_started": "Not Started"
   },
   "journey": {
     "category": "Loan Type",
@@ -600,6 +608,17 @@
       "reasons": {
         "NO_VERIFIED_LENDER_ROUTE": "No verified lender offers this for you yet.",
         "CATEGORY_INACTIVE": "Not offered right now."
+      },
+      "partner": {
+        "title": "Add A Client",
+        "body": "We create the borrower profile in your firm's name and send them an SMS. They can sign in with this mobile number any time to see their case.",
+        "name": "Client Name",
+        "mobile": "Client Mobile Number",
+        "mobileHint": "Consent codes are sent to this number.",
+        "segment": "Who Is The Loan For?",
+        "segmentBody": "Choose the client's entity type to personalise documents and lender matching.",
+        "protected": "Another firm referred this borrower recently, so you cannot file for them now.",
+        "claim": "Raise A Claim If You Introduced Them First"
       }
     },
     "overview": {
@@ -722,7 +741,9 @@
       "offeredHint": "Accept before the offer expires",
       "activeHint": "Leads you are working on",
       "firstContactHint": "Call these borrowers first",
-      "protectedHint": "Referrals credited to you"
+      "protectedHint": "Referrals credited to you",
+      "addLead": "Add A Lead",
+      "addClient": "Add A Client"
     },
     "signup": {
       "title": "Register Your Firm",
@@ -754,6 +775,334 @@
         "connector": "Individuals who introduce borrowers"
       },
       "secure": "Your firm details are checked by two FundenFlo team members"
+    },
+    "leads": {
+      "metaTitle": "Leads",
+      "eyebrow": "Lead Inbox",
+      "title": "Leads",
+      "description": "Accept offers quickly, call the borrower first, and keep notes as you go.",
+      "add": "Add A Lead",
+      "borrower": "Borrower",
+      "business": "Business",
+      "need": "Need",
+      "place": "Place",
+      "status": "Status",
+      "when": "When",
+      "respondBy": "Respond {when}",
+      "callBy": "Call {when}",
+      "empty": {
+        "offered": {
+          "title": "No Offers Right Now",
+          "body": "New leads that match your service area appear here."
+        },
+        "active": {
+          "title": "Nothing In Progress",
+          "body": "Leads you accept move here."
+        },
+        "closed": {
+          "title": "No Closed Leads",
+          "body": "Declined, returned and finished leads appear here."
+        }
+      }
+    },
+    "leadDetail": {
+      "metaTitle": "Lead",
+      "back": "All Leads",
+      "unavailable": "This lead is not available to your firm.",
+      "accept": "Accept",
+      "decline": "Decline",
+      "convert": "Start Application",
+      "reportConversion": "Report Offline Loan",
+      "subAssign": "Assign To Team",
+      "return": "Give Back",
+      "lost": "Mark Lost",
+      "offerDeadline": "Accept by {when} or the offer moves to another firm.",
+      "firstContactBy": "Call the borrower by {when}.",
+      "summary": "Requirement",
+      "edit": "Edit",
+      "category": "Loan Type",
+      "amount": "Amount",
+      "tenure": "Tenure",
+      "place": "Place",
+      "urgency": "Urgency",
+      "contactTime": "Best Time To Call",
+      "offered": "Offered",
+      "acceptedAt": "Accepted",
+      "purposeNote": "Notes From The Borrower",
+      "activities": "Calls And Notes",
+      "followUp": "Follow-Up",
+      "contacts": "Contact",
+      "reveal": "Show Number",
+      "revealLogged": "Viewing the number was logged.",
+      "acceptToReveal": "Accept the lead to see the full number.",
+      "revealHint": "The full number is shown when you need to call. Each view is logged.",
+      "conversions": "Offline Loans",
+      "noConversions": "Report a loan the borrower took outside FundenFlo so it counts for your firm.",
+      "sanctionedLine": "{amount} sanctioned on {date}",
+      "titles": {
+        "decline": "Decline This Lead",
+        "return": "Give This Lead Back",
+        "lost": "Mark This Lead Lost"
+      },
+      "bodies": {
+        "decline": "The lead goes to another firm.",
+        "return": "FundenFlo routes the lead to another firm.",
+        "lost": "The lead closes. Use this when the borrower no longer needs a loan through you."
+      },
+      "note": "Note",
+      "reason": "Reason",
+      "revealTitle": "Show The Borrower's Number",
+      "revealBody": "Tell us why you need the number. Views are logged for the borrower's privacy.",
+      "revealReason": "Reason",
+      "accepted": "Lead accepted. Call the borrower soon.",
+      "done": {
+        "decline": "Lead declined",
+        "return": "Lead given back",
+        "lost": "Lead marked lost"
+      },
+      "editTitle": "Edit Requirement",
+      "save": "Save",
+      "saved": "Lead updated",
+      "amountRupees": "Amount (₹)",
+      "tenureMonths": "Tenure (months)",
+      "conversionTitle": "Report An Offline Loan",
+      "conversionBody": "FundenFlo checks the details with the lender before it counts.",
+      "report": "Report",
+      "lenderName": "Lender",
+      "sanctionedRupees": "Sanctioned (₹)",
+      "sanctionedOn": "Sanctioned On",
+      "disbursedRupees": "Disbursed (₹)",
+      "disbursedOn": "Disbursed On",
+      "loanAccount": "Loan Account Reference",
+      "noteOptional": "Note (optional)",
+      "conversionReported": "Offline loan reported",
+      "convertTitle": "Start An Application",
+      "convertBody": "We create the borrower profile and a case in your firm's name. You then go through documents, score and lenders with the borrower.",
+      "segment": "Borrower Type",
+      "subSegment": "Kind Of Business",
+      "converted": "Application {ref} created",
+      "subAssignTitle": "Assign To A Team Member",
+      "member": "Team Member",
+      "memberFallback": "Member {id}",
+      "chooseMember": "Choose a member",
+      "subAssigned": "Lead assigned"
+    },
+    "newLead": {
+      "metaTitle": "Add A Lead",
+      "back": "All Leads",
+      "eyebrow": "Lead Inbox",
+      "title": "Add A Lead",
+      "description": "Refer a borrower you know. The referral is protected for your firm.",
+      "who": "Borrower",
+      "name": "Full Name",
+      "mobile": "Mobile Number",
+      "businessName": "Business Name (optional)",
+      "need": "What They Need",
+      "amount": "Amount",
+      "amountPlaceholder": "For example 10 lakh",
+      "city": "City",
+      "chooseCity": "Choose a city",
+      "consent": "Borrower Consent",
+      "consentLink": "Send them a consent link by SMS",
+      "consentLinkBody": "They agree on their own phone. The lead reaches your inbox once they do.",
+      "consentNow": "They are with me and agree now",
+      "consentNowBody": "Go through each choice with them. You confirm they agreed.",
+      "consentNowHint": "Only use this when the borrower is with you and has agreed to each choice.",
+      "claim": "Raise A Claim If You Introduced Them First",
+      "submit": "Add Lead",
+      "saved": "Lead {ref} added",
+      "assignedTitle": "{name} Is In Your Inbox",
+      "waitingTitle": "Waiting For {name}",
+      "assignedBody": "Call them soon. The first-contact timer has started.",
+      "waitingBody": "We sent {name} an SMS to agree to share their details with your firm.",
+      "heldBody": "The referral is saved and protected for your firm.",
+      "protectedUntil": "{ref} is protected for your firm until {date}.",
+      "openLead": "Open Lead",
+      "seeReferrals": "See Referrals",
+      "another": "Add Another"
+    },
+    "followUps": {
+      "metaTitle": "Follow-Ups",
+      "eyebrow": "Your Work",
+      "title": "Follow-Ups",
+      "description": "Calls and tasks you scheduled for your leads.",
+      "status": "Status",
+      "assignee": "Whose"
+    },
+    "clients": {
+      "metaTitle": "Clients",
+      "eyebrow": "Your Work",
+      "title": "Clients",
+      "description": "Cases your firm files for borrowers. Open one to continue where it stopped.",
+      "add": "Add A Client",
+      "client": "Client",
+      "category": "Loan Type",
+      "amount": "Amount",
+      "stage": "Stage",
+      "status": "Status",
+      "updated": "Updated",
+      "allStatuses": "All Statuses",
+      "emptyTitle": "No Clients Yet",
+      "emptyBody": "Add a client or start an application from an accepted lead."
+    },
+    "referrals": {
+      "metaTitle": "Referrals",
+      "eyebrow": "Growth",
+      "title": "Referrals",
+      "description": "Share your code with borrowers. Referred borrowers are protected for your firm.",
+      "refer": "Refer A Borrower",
+      "claim": "Claim A Borrower",
+      "codes": "Your Referral Codes",
+      "noCodes": "Referral codes are available once your firm is verified.",
+      "codesHint": "Borrowers enter the code when they sign up on FundenFlo.",
+      "copied": "Copied {code}",
+      "copyFailed": "Could not copy. Select the code and copy it.",
+      "copy": "Copy {code}",
+      "copyShort": "Copy",
+      "borrower": "Borrower",
+      "status": "Lead",
+      "consent": "Consent",
+      "protectedUntil": "Protected Until",
+      "referred": "Referred",
+      "emptyTitle": "No Referrals Yet",
+      "emptyBody": "Borrowers you refer appear here."
+    },
+    "dispute": {
+      "metaTitle": "Claim A Borrower",
+      "back": "Referrals",
+      "eyebrow": "Growth",
+      "title": "Claim A Borrower",
+      "description": "Another firm holds this borrower, but you introduced them first. Tell us what happened and FundenFlo decides.",
+      "mobile": "Borrower's Mobile Number",
+      "note": "What Happened",
+      "noteHint": "At least 10 characters. Mention dates and any engagement letter.",
+      "submit": "Send Claim",
+      "sentTitle": "Claim Sent",
+      "sentBody": "FundenFlo reviews claims within a few working days and tells both firms the outcome."
+    },
+    "commissions": {
+      "metaTitle": "Commissions",
+      "eyebrow": "Growth",
+      "title": "Commissions",
+      "description": "What FundenFlo owes your firm for disbursed loans, and what has been paid.",
+      "payable": "Payable Now",
+      "payableHint": "Approved and waiting for payout",
+      "count": "{count, plural, one {# payout} other {# payouts}}",
+      "statement": "Monthly Statement",
+      "month": "Month",
+      "statementUnavailable": "No statement for this month.",
+      "opening": "Opening Payable",
+      "paidNet": "Paid (Net)",
+      "closing": "Closing Payable",
+      "paidGross": "Paid (Gross)",
+      "tds": "TDS",
+      "payouts": "Payouts",
+      "noPayouts": "No payouts this month.",
+      "paidOn": "Paid {date} · UTR {utr}",
+      "ledger": "Ledger",
+      "posted": "Date",
+      "memo": "Entry",
+      "credit": "Earned",
+      "debit": "Paid Out",
+      "emptyTitle": "No Entries Yet",
+      "emptyBody": "Commission appears here once a lender disburses a loan you worked on."
+    },
+    "team": {
+      "metaTitle": "Team",
+      "eyebrow": "Your Firm",
+      "title": "Team",
+      "description": "People in your firm who can work leads and file cases.",
+      "members": "Members",
+      "you": "(you)",
+      "memberLine": "{role} · since {since}",
+      "memberFallback": "Member {id}",
+      "suspend": "Suspend",
+      "reactivate": "Reactivate",
+      "remove": "Remove",
+      "invite": "Invite A Member",
+      "mobile": "Mobile Number",
+      "inviteHint": "We send them an SMS with a link to join your firm.",
+      "send": "Send Invitation",
+      "invitations": "Invitations",
+      "noInvitations": "No invitations sent.",
+      "expires": "Expires {when}",
+      "invited": "Invitation sent",
+      "updated": "Member updated",
+      "confirm": {
+        "active": "Reactivate {name}?",
+        "suspended": "Suspend {name}?",
+        "revoked": "Remove {name}?"
+      },
+      "confirmBody": {
+        "active": "They can sign in to your firm again.",
+        "suspended": "They cannot sign in to your firm until you reactivate them. Their leads stay with the firm.",
+        "revoked": "They lose access to your firm for good. Their leads stay with the firm."
+      },
+      "action": {
+        "active": "Reactivate",
+        "suspended": "Suspend",
+        "revoked": "Remove"
+      }
+    },
+    "profile": {
+      "metaTitle": "Firm Profile",
+      "eyebrow": "Your Firm",
+      "unavailable": "Your firm profile is not available right now.",
+      "firm": "Firm",
+      "level": "Level",
+      "levels": {
+        "new": "New",
+        "active": "Active",
+        "strategic": "Strategic"
+      },
+      "membershipNumber": "ICAI Membership Number",
+      "firmRegistration": "Firm Registration Number",
+      "kycStatus": "KYC",
+      "joined": "Joined",
+      "kyc": "KYC And Payout Details",
+      "kycBody": "Commission is paid to this bank account after TDS. We check PAN and GSTIN before the first payout.",
+      "ownerOnly": "Only the firm owner can change these details.",
+      "pan": "PAN",
+      "panHint": "Firm or proprietor PAN",
+      "gstin": "GSTIN (optional)",
+      "gstinHint": "If your firm is GST registered",
+      "onFile": "On file: {value}",
+      "bank": "Bank Account",
+      "bankOnFile": "On file: account ending {last4}, IFSC {ifsc}",
+      "accountNumber": "Account Number",
+      "ifsc": "IFSC",
+      "holderName": "Account Holder",
+      "save": "Save Details",
+      "saved": "Firm details saved"
+    },
+    "settings": {
+      "metaTitle": "Settings",
+      "eyebrow": "Your Firm",
+      "title": "Settings",
+      "description": "How many leads your firm takes and where you work.",
+      "ownerOnly": "Only the firm owner can change these settings.",
+      "capacity": "Lead Capacity",
+      "paused": "Pause New Leads",
+      "pausedBody": "Stop receiving offers for now. Leads you already have stay with you.",
+      "maxOpen": "Most Open Leads At A Time",
+      "maxOpenHint": "Leave empty for no limit.",
+      "days": "Working Days",
+      "start": "Start Time",
+      "end": "End Time",
+      "hoursInvalid": "End time must be after start time.",
+      "languages": "Languages",
+      "segments": "Borrower Types",
+      "categories": "Loan Types",
+      "save": "Save Capacity",
+      "saved": "Capacity saved",
+      "areas": "Service Areas",
+      "states": "States",
+      "cities": "Cities: {names}",
+      "pincodes": "Pincodes",
+      "pincodesHint": "Separate pincodes with commas.",
+      "pincodesInvalid": "Use 6-digit pincodes separated by commas.",
+      "saveAreas": "Save Service Areas",
+      "areasSaved": "Service areas saved"
     }
   },
   "lender": {
@@ -937,21 +1286,8 @@
       "revealBody": "Every reveal is logged with your reason.",
       "revealReason": "Reason",
       "revealLogged": "Reveal logged on the lead timeline.",
-      "primary": "Primary",
-      "doNotContact": "Do Not Contact",
-      "invalid": "Invalid",
       "activities": "Activities",
-      "activityType": "Activity type",
-      "outcome": "Outcome",
-      "activityNote": "Note",
-      "logActivity": "Log Activity",
-      "activityLogged": "Activity logged",
       "followUp": "Follow-Up",
-      "followUpTitle": "Schedule A Follow-Up",
-      "dueAt": "Due",
-      "followUpNote": "What To Do",
-      "schedule": "Schedule",
-      "followUpScheduled": "Follow-up scheduled",
       "timeline": "Timeline",
       "consent": "Consent",
       "sendConsentLink": "Send Consent Link",
@@ -1198,18 +1534,7 @@
       "title": "Follow-Ups",
       "description": "Calls and tasks you promised to come back to.",
       "status": "Status",
-      "assignee": "Assigned To",
-      "due": "Due {when}",
-      "openLead": "Open Lead",
-      "overdue": "Overdue",
-      "snooze": "Tomorrow",
-      "done": "Done",
-      "cancel": "Cancel",
-      "doneTitle": "Mark As Done",
-      "outcome": "Outcome (Optional)",
-      "saved": "Follow-up updated",
-      "emptyTitle": "All Caught Up",
-      "emptyBody": "No follow-ups in this view."
+      "assignee": "Assigned To"
     },
     "conversions": {
       "eyebrow": "Ops Console",
@@ -1655,17 +1980,6 @@
         "pending": "Pending",
         "granted": "Consent Given",
         "declined": "Declined"
-      },
-      "consent": {
-        "title": "Consent From {name}",
-        "body": "Ask them for the 6-digit code we sent by SMS and set the choices they agree to.",
-        "sent": "Code sent to {recipient}",
-        "codeLabel": "Code From {name}",
-        "resendIn": "Resend code in {seconds}s",
-        "resend": "Resend Code",
-        "confirm": "Confirm Consent",
-        "granted": "{name} gave consent",
-        "declined": "{name} did not give the required consent"
       }
     },
     "consents": {
@@ -1681,7 +1995,15 @@
       "missing": "The required consent is still off.",
       "saved": "Consent preferences saved",
       "secure": "256-Bit Encrypted",
-      "unavailable": "Consent choices are not available right now. Please try again later."
+      "unavailable": "Consent choices are not available right now. Please try again later.",
+      "partner": {
+        "title": "Borrower Consent",
+        "description": "Go through each choice with {name}. We send them a code by SMS to confirm what they agree to.",
+        "send": "Send Code To {name}",
+        "withdrawAnytime": "{name} can change or withdraw consent any time by signing in to FundenFlo with their mobile number.",
+        "saved": "Consent recorded for {name}",
+        "borrower": "the borrower"
+      }
     },
     "documents": {
       "metaTitle": "Your Documents",
@@ -1849,7 +2171,10 @@
       "trackApplications": "Track My Applications",
       "stale": "This lender’s offer changed. We refreshed your matches — choose again.",
       "alreadyApplied": "You have already applied to this lender.",
-      "private": "Private • Shared Only With The Lender You Choose"
+      "private": "Private • Shared Only With The Lender You Choose",
+      "partnerApply": "Get Consent And Apply With {lender}",
+      "partnerShareNote": "{name} confirms by SMS code that the file may go to {lender}. Our team checks it before it is sent.",
+      "borrower": "the borrower"
     },
     "submissions": {
       "metaTitle": "Your Applications",
@@ -2152,6 +2477,43 @@
       "sms_link": "SMS link",
       "whatsapp_link": "WhatsApp link",
       "api": "API"
+    },
+    "declineReason": {
+      "outside_service_area": "Outside our service area",
+      "category_not_handled": "We do not handle this loan type",
+      "capacity_full": "We are at capacity",
+      "conflict_of_interest": "Conflict of interest",
+      "other": "Other"
+    },
+    "returnReason": {
+      "unreachable": "Could not reach them",
+      "not_interested": "Not interested",
+      "not_eligible": "Not eligible",
+      "wrong_details": "Wrong details",
+      "capacity_full": "We are at capacity",
+      "other": "Other"
+    },
+    "weekday": {
+      "1": "Mon",
+      "2": "Tue",
+      "3": "Wed",
+      "4": "Thu",
+      "5": "Fri",
+      "6": "Sat",
+      "7": "Sun"
+    },
+    "inboxView": {
+      "offered": "Offers",
+      "active": "Working",
+      "closed": "Closed"
+    },
+    "partnerRole": {
+      "partner_owner": "Owner",
+      "partner_agent": "Team Member"
+    },
+    "referralScope": {
+      "firm": "Firm Code",
+      "member": "Your Code"
     }
   },
   "documentRequest": {
@@ -2162,5 +2524,48 @@
     "dueInDays": "Due In Days",
     "send": "Send Request",
     "requested": "Documents requested"
+  },
+  "consentOtp": {
+    "title": "Consent From {name}",
+    "body": "Ask them for the 6-digit code we sent by SMS and set the choices they agree to.",
+    "sent": "Code sent to {recipient}",
+    "codeLabel": "Code From {name}",
+    "resendIn": "Resend code in {seconds}s",
+    "resend": "Resend Code",
+    "confirm": "Confirm Consent",
+    "granted": "{name} gave consent",
+    "declined": "{name} did not give the required consent",
+    "grantBody": "Read these to them, then ask for the 6-digit code we sent by SMS.",
+    "granting": "{name} agrees to:"
+  },
+  "leadWork": {
+    "primary": "Primary",
+    "doNotContact": "Do Not Contact",
+    "invalid": "Invalid",
+    "activityType": "Activity type",
+    "outcome": "Outcome",
+    "activityNote": "Note",
+    "logActivity": "Log Activity",
+    "activityLogged": "Activity logged",
+    "followUpTitle": "Schedule A Follow-Up",
+    "dueAt": "Due",
+    "followUpNote": "What To Do",
+    "schedule": "Schedule",
+    "followUpScheduled": "Follow-up scheduled",
+    "noActivities": "No activity logged yet.",
+    "followUps": {
+      "due": "Due {when}",
+      "openLead": "Open Lead",
+      "overdue": "Overdue",
+      "snooze": "Tomorrow",
+      "done": "Done",
+      "cancel": "Cancel",
+      "doneTitle": "Mark As Done",
+      "outcome": "Outcome (Optional)",
+      "saved": "Follow-up updated",
+      "emptyTitle": "All Caught Up",
+      "emptyBody": "No follow-ups in this view.",
+      "openNamed": "{name} · {ref}"
+    }
   }
 }

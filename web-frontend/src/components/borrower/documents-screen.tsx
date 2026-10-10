@@ -7,6 +7,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useJourneyPaths } from '@/components/journey/journey-mode';
 import { DocumentSlotCard, type UploadState } from '@/components/borrower/document-slot-card';
 import { JourneyFooter } from '@/components/journey/journey-footer';
 import { JourneyPage } from '@/components/journey/journey-page';
@@ -26,7 +27,6 @@ import { DOCUMENT_POLL_MS, DocumentRequestStatus, DocumentStatus, MIME_LABELS, P
 import { ErrorCode } from '@/lib/constants/errors.constants';
 import { JOURNEY_SCREEN_STEP, JourneyScreen } from '@/lib/constants/journey.constants';
 import { Duration, EASE_OUT, STAGGER_STEP } from '@/lib/constants/motion.constants';
-import { RoutePath } from '@/lib/constants/routes.constants';
 import { formatDate } from '@/lib/format/date';
 import { formatSizeLimit } from '@/lib/format/file-size';
 
@@ -76,6 +76,7 @@ const acceptedLabel = (checklist: DocumentChecklist) => {
 };
 
 function DocumentsForm({ applicationId, checklist, documents, requests }: { applicationId: string; checklist: DocumentChecklist; documents: DocumentView[]; requests: DocumentRequest[] }) {
+  const paths = useJourneyPaths();
   const t = useTranslations('flow.documents');
   const locale = useLocale();
   const router = useRouter();
@@ -161,12 +162,12 @@ function DocumentsForm({ applicationId, checklist, documents, requests }: { appl
     meta: { handlesError: true },
     onSuccess: (analysis) => {
       void refresh();
-      router.push(`${RoutePath.applicationStep(applicationId, JourneyScreen.Analysis)}?${ANALYSIS_RUN_PARAM}=${analysis.id}`);
+      router.push(`${paths.step(applicationId, JourneyScreen.Analysis)}?${ANALYSIS_RUN_PARAM}=${analysis.id}`);
     },
     onError: (failure) => {
       if (failure instanceof ApiError && failure.code === ErrorCode.ConsentRequired) {
         setError(t('consentNeeded'));
-        router.push(RoutePath.applicationStep(applicationId, JourneyScreen.Consents));
+        router.push(paths.step(applicationId, JourneyScreen.Consents));
         return;
       }
       setError(errorText(failure));

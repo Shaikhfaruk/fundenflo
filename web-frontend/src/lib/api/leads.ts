@@ -4,8 +4,8 @@ import { apiRequest } from './client';
 import { pagedQuery } from './paged';
 import type { Page } from './types/common.types';
 import type { AdminPartner } from './types/admin.types';
-import type { CreateLeadInput, OpsLead, OpsLeadDetail, OpsLeadFilter, OpsLeadPatch } from './types/lead.types';
-import type { FollowUp, FunnelReport, LeadActivity, LeadContact, OfflineConversion, PartnerPerformance } from './types/ops.types';
+import type { CreateLeadInput, FollowUp, LeadActivity, LeadContact, OfflineConversion, OpsLead, OpsLeadDetail, OpsLeadFilter, OpsLeadPatch } from './types/lead.types';
+import type { FunnelReport, PartnerPerformance } from './types/ops.types';
 
 export const opsLeadKeys = {
   all: ['ops-leads'] as const,

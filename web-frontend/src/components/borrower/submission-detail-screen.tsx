@@ -7,6 +7,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { useJourneyPaths } from '@/components/journey/journey-mode';
 import { submissionSteps } from '@/components/borrower/submission-steps';
 import { ReasonDialog } from '@/components/data/reason-dialog';
 import { StatusBadge } from '@/components/data/status-badge';
@@ -26,7 +27,6 @@ import type { SubmissionDetail } from '@/lib/api/types/submission.types';
 import { DocumentRequestStatus } from '@/lib/constants/document.constants';
 import { JourneyScreen, SUBMISSION_WITHDRAW_MAX_LENGTH, SUBMISSION_WITHDRAW_MIN_LENGTH, UpdateChannel, UpdateEvent } from '@/lib/constants/journey.constants';
 import { Duration, EASE_OUT, STAGGER_STEP } from '@/lib/constants/motion.constants';
-import { RoutePath } from '@/lib/constants/routes.constants';
 import { SUBMISSION_STATUS_TONE, SubmissionStatus, toneOf, WITHDRAWABLE_SUBMISSION_STATUSES } from '@/lib/constants/status.constants';
 import { formatDate } from '@/lib/format/date';
 import { formatPaise } from '@/lib/format/money';
@@ -69,6 +69,7 @@ function StatusTimeline({ submission }: { submission: SubmissionDetail }) {
 }
 
 function Detail({ applicationId, submission }: { applicationId: string; submission: SubmissionDetail }) {
+  const paths = useJourneyPaths();
   const t = useTranslations('flow.submission');
   const locale = useLocale();
   const queryClient = useQueryClient();
@@ -108,7 +109,7 @@ function Detail({ applicationId, submission }: { applicationId: string; submissi
   const mobile = me?.mobile ? formatPhone(me.mobile) : t('yourMobile');
   return (
     <div className="mx-auto flex w-full max-w-[560px] flex-col gap-4">
-      <StepHeader title={t('heading')} backHref={RoutePath.applicationStep(applicationId, JourneyScreen.Submissions)} />
+      <StepHeader title={t('heading')} backHref={paths.step(applicationId, JourneyScreen.Submissions)} />
       <motion.section {...rise(0)} className="rounded-xl bg-card p-4 shadow-card">
         <div className="flex items-center justify-between gap-2">
           <span className="text-[11px] font-semibold tracking-[0.06em] text-muted-foreground uppercase">{t('facility')}</span>
@@ -144,7 +145,7 @@ function Detail({ applicationId, submission }: { applicationId: string; submissi
             <p className="text-sm font-semibold text-navy">{t('requestTitle', { count: openRequests.reduce((sum, request) => sum + request.documentTypes.length, 0) })}</p>
             <p className="truncate text-[13px] text-foreground">{openRequests.flatMap((request) => request.documentTypes.map((type) => type.label)).join(', ')}</p>
           </div>
-          <ButtonLink href={RoutePath.applicationStep(applicationId, JourneyScreen.Documents)} size="xs">
+          <ButtonLink href={paths.step(applicationId, JourneyScreen.Documents)} size="xs">
             {t('uploadNow')}
           </ButtonLink>
         </motion.section>

@@ -76,7 +76,7 @@ function SidebarBody({ area, me, groups, onNavigate }: { area: NavArea; me: MeVi
           <p className="truncate text-sm font-semibold text-white">{me.activeContext.organization.name}</p>
         </div>
       ) : null}
-      <div className="-mx-1 flex-1 overflow-y-auto px-1">
+      <div className="-mx-1 min-h-0 flex-1 overflow-y-auto px-1">
         <Suspense fallback={<NavLinks groups={groups} active={null} />}>
           <ActiveNavLinks groups={groups} onNavigate={onNavigate} />
         </Suspense>
