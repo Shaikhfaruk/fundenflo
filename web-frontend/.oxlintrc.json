@@ -1,0 +1,73 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": [
+    "typescript",
+    "unicorn",
+    "oxc",
+    "react",
+    "jsx-a11y",
+    "nextjs"
+  ],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn"
+  },
+  "rules": {
+    "no-console": "error",
+    "no-alert": "error",
+    "no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_"
+      }
+    ],
+    "typescript/no-floating-promises": "error",
+    "typescript/no-explicit-any": "error",
+    "eqeqeq": "error",
+    "typescript/no-unsafe-type-assertion": "off",
+    "typescript/no-unnecessary-type-parameters": "off",
+    "react/react-in-jsx-scope": "off",
+    "react/no-danger": "warn",
+    "jsx-a11y/no-autofocus": "off",
+    "jsx-a11y/label-has-associated-control": [
+      "error",
+      {
+        "controlComponents": [
+          "Switch",
+          "Checkbox",
+          "RadioGroupItem",
+          "Input",
+          "Textarea",
+          "Select",
+          "InputOTP"
+        ],
+        "assert": "either",
+        "depth": 4
+      }
+    ],
+    "react/no-unstable-nested-components": [
+      "warn",
+      {
+        "allowAsProps": true
+      }
+    ],
+    "unicorn/require-post-message-target-origin": "off"
+  },
+  "ignorePatterns": [
+    ".next/**",
+    "node_modules/**",
+    "src/lib/api/backend-routes.ts"
+  ],
+  "overrides": [
+    {
+      "files": [
+        "src/components/ui/**"
+      ],
+      "rules": {
+        "jsx-a11y/prefer-tag-over-role": "off",
+        "jsx-a11y/label-has-associated-control": "off"
+      }
+    }
+  ]
+}

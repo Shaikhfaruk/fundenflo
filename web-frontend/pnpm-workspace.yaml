@@ -1,0 +1,8 @@
+allowBuilds:
+  '@parcel/watcher': false
+  '@swc/core': false
+  sharp: false
+  unrs-resolver: false
+minimumReleaseAgeExclude:
+  - lucide-react@1.55.0
+  - '@types/node@24.19.2'

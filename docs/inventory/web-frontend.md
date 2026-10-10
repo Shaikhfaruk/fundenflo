@@ -1,41 +1,41 @@
-# Inventory — Web frontend screens
+# Inventory — Web frontend
 
-> App: `web-frontend/` (Next.js 16.4). Plan: [`../FRONTEND_ARCHITECTURE_PLAN.md`](../FRONTEND_ARCHITECTURE_PLAN.md). Last updated: 2026-10-10.
-> Every backend route meant for people appears below at least once (367 of 387). Excluded: `/v0/*` (17, compat for the old app), `/health/*` (2, infrastructure), `POST /public/leads` (1, server-to-server with an API key). `pnpm api:coverage` in `web-frontend/` enforces this once W0 is built.
-> Status: `planned` until the screen is built and covered by a Playwright flow, then `useful`.
+> App: `web-frontend/` (Next.js 16.4). Plan: [`../FRONTEND_ARCHITECTURE_PLAN.md`](../FRONTEND_ARCHITECTURE_PLAN.md). Last updated: 2026-10-10 (W0 built).
+> Every backend route meant for people appears below at least once (367 of 387). Excluded: `/v0/*` (17, compat for the old app), `/health/*` (2, infrastructure), `POST /public/leads` (1, server-to-server with an API key). `pnpm api:coverage` in `web-frontend/` counts the routes the code calls (40 of 367 after W0).
+> Status: `useful` when the screen is built, calls every route listed and is covered by a Playwright flow (`web-frontend/tests/e2e/`); otherwise `planned`.
 
 ## Public
 
 | Path | Screen | Who | Backend routes | Milestone | Status |
 |---|---|---|---|---|---|
-| `/` | Landing: what FundenFlo does, loan categories, sign-in and install | everyone | `GET /catalog/segments` · `GET /catalog/loan-categories` | W0 | `planned` |
-| `/login` | OTP sign-in (mobile or email; borrower or partner), with optional referral code | borrower, partner | `POST /auth/otp/request` · `POST /auth/otp/verify` | W0 | `planned` |
-| `/staff/login` | Staff and lender sign-in (email + password) then authenticator code | staff, lender | `POST /auth/staff/login` · `POST /auth/staff/mfa/verify` | W0 | `planned` |
-| `/staff/invite/[token]` | Accept a staff or lender invitation: set password, enrol authenticator | staff, lender | `POST /auth/staff/invitations/accept` | W0 | `planned` |
+| `/` | Landing: what FundenFlo does, loan categories, sign-in and install | everyone | `GET /catalog/segments` · `GET /catalog/loan-categories` | W0 | `useful` |
+| `/login` | OTP sign-in (mobile or email; borrower or partner), with optional referral code | borrower, partner | `POST /auth/otp/request` · `POST /auth/otp/verify` | W0 | `useful` |
+| `/staff/login` | Staff and lender sign-in (email + password) then authenticator code | staff, lender | `POST /auth/staff/login` · `POST /auth/staff/mfa/verify` | W0 | `useful` |
+| `/staff/invite/[token]` | Accept a staff or lender invitation: set password, enrol authenticator | staff, lender | `POST /auth/staff/invitations/accept` | W0 | `useful` |
 | `/c/[token]` | Consent link from SMS: read the purposes, confirm with OTP | lead (not signed in) | `GET /public/consent-requests/:token` · `POST /public/consent-requests/:token` · `GET /catalog/consent-templates` | W2 | `planned` |
-| `/offline` | Offline page served by the service worker | everyone | — | W0 | `planned` |
-| `(session)` | Session handling in the BFF: refresh, logout, context switch | everyone | `POST /auth/token/refresh` · `POST /auth/logout` · `POST /auth/switch-context` | W0 | `planned` |
+| `/offline` | Offline page served by the service worker | everyone | — | W0 | `useful` |
+| `(session)` | Session handling in the BFF: refresh, logout, context switch | everyone | `POST /auth/token/refresh` · `POST /auth/logout` · `POST /auth/switch-context` | W0 | `useful` |
 
 ## Account
 
 | Path | Screen | Who | Backend routes | Milestone | Status |
 |---|---|---|---|---|---|
-| `/account` | Profile: name, language, email; who am I and my roles | every context | `GET /me` · `PATCH /me/profile` | W0 | `planned` |
-| `/account/security` | Devices (sessions) and sign out others; linked logins; mobile change with OTP | every context | `GET /me/sessions` · `DELETE /me/sessions/:id` · `DELETE /me/sessions` · `GET /me/logins` · `POST /me/logins` · `POST /me/logins/verify` · `DELETE /me/logins/:id` · `POST /me/mobile-change` · `POST /me/mobile-change/verify` | W0 | `planned` |
-| `/account/consents` | Consent centre: what I agreed to, give WhatsApp and marketing opt-ins, withdraw | every context | `GET /me/consents` · `POST /me/consents` · `POST /me/consents/:purpose/withdraw` | W0 | `planned` |
-| `/account/notifications` | Update channels: SMS, email, push | every context | `GET /me/notification-preferences` · `PUT /me/notification-preferences` | W0 | `planned` |
-| `/account/privacy` | My data requests: download a copy, ask for a correction or erasure | every context | `GET /me/data-requests` · `POST /me/data-requests` · `GET /me/data-requests/:id/export-url` | W0 | `planned` |
-| `/account/switch` | Switch role: borrower, partner firm, lender, staff | every context | `POST /auth/switch-context` | W0 | `planned` |
+| `/account` | Profile: name, language, email; who am I and my roles | every context | `GET /me` · `PATCH /me/profile` | W0 | `useful` |
+| `/account/security` | Devices (sessions) and sign out others; linked logins; mobile change with OTP | every context | `GET /me/sessions` · `DELETE /me/sessions/:id` · `DELETE /me/sessions` · `GET /me/logins` · `POST /me/logins` · `POST /me/logins/verify` · `DELETE /me/logins/:id` · `POST /me/mobile-change` · `POST /me/mobile-change/verify` | W0 | `useful` |
+| `/account/consents` | Consent centre: what I agreed to, give WhatsApp and marketing opt-ins, withdraw | every context | `GET /me/consents` · `POST /me/consents` · `POST /me/consents/:purpose/withdraw` | W0 | `useful` |
+| `/account/notifications` | Update channels: SMS, email, push | every context | `GET /me/notification-preferences` · `PUT /me/notification-preferences` | W0 | `useful` |
+| `/account/privacy` | My data requests: download a copy, ask for a correction or erasure | every context | `GET /me/data-requests` · `POST /me/data-requests` · `GET /me/data-requests/:id/export-url` | W0 | `useful` |
+| `/account/switch` | Switch role: borrower, partner firm, lender, staff | every context | `POST /auth/switch-context` | W0 | `useful` |
 | `(shell)` | Realtime catch-up after reconnect; native wrapper push token | every context | `GET /sync/changes` · `PUT /me/sessions/current/push-token` | W0 | `planned` |
 
 ## Borrower
 
 | Path | Screen | Who | Backend routes | Milestone | Status |
 |---|---|---|---|---|---|
-| `/app` | Home: my applications with next step, start a new one, readiness score | borrower | `GET /applications` · `GET /borrower-profiles` | W1 | `planned` |
-| `/app/profile` | Borrower profile (individual or business), PAN verification | borrower | `POST /borrower-profiles` · `GET /borrower-profiles/:id` · `PATCH /borrower-profiles/:id` · `POST /borrower-profiles/:id/kyc/pan` · `GET /catalog/geo/states` · `GET /catalog/geo/cities` · `GET /catalog/geo/pincodes/:pincode` | W1 | `planned` |
-| `/app/applications/new` | Start: segment, sub-segment, loan category and purpose, business name | borrower | `POST /applications` · `GET /catalog/segments` · `GET /catalog/loan-categories` | W1 | `planned` |
-| `/app/applications/[id]` | Case overview: stage, next step, blockers, status | borrower | `GET /applications/:id` · `GET /applications/:id/next-step` | W1 | `planned` |
+| `/app` | Home: my applications with stage, status, amount and next step | borrower | `GET /applications` | W0 | `useful` |
+| `/app/profile` | Borrower profile (individual or business), PAN verification | borrower | `GET /borrower-profiles` · `POST /borrower-profiles` · `GET /borrower-profiles/:id` · `PATCH /borrower-profiles/:id` · `POST /borrower-profiles/:id/kyc/pan` · `GET /catalog/geo/states` · `GET /catalog/geo/cities` · `GET /catalog/geo/pincodes/:pincode` | W1 | `planned` |
+| `/app/applications/new` | Start: segment, sub-segment, loan category with availability, business name | borrower | `POST /applications` · `GET /catalog/segments` · `GET /catalog/loan-categories` | W0 | `useful` |
+| `/app/applications/[id]` | Case overview: journey stepper, current step and blockers, requirement summary | borrower | `GET /applications/:id` · `GET /applications/:id/next-step` | W0 | `useful` |
 | `/app/applications/[id]/requirement` | Requirement: amount, tenure, purpose, urgency | borrower | `PATCH /applications/:id/requirement` | W1 | `planned` |
 | `/app/applications/[id]/questions` | Pre-check and lender questions (progressive profiling) | borrower | `GET /applications/:id/questions` · `PUT /applications/:id/answers` · `GET /catalog/questions` | W1 | `planned` |
 | `/app/applications/[id]/people` | Co-applicants and directors, consent by OTP | borrower | `GET /applications/:id/parties` · `POST /applications/:id/parties` · `DELETE /applications/:id/parties/:pid` · `POST /applications/:id/parties/:pid/consent-otp` · `POST /applications/:id/parties/:pid/consent-otp/verify` | W1 | `planned` |
@@ -50,8 +50,8 @@
 
 | Path | Screen | Who | Backend routes | Milestone | Status |
 |---|---|---|---|---|---|
-| `/partner/signup` | Become a partner: firm details, kind (CA, DSA), city | signed-in user | `POST /partner/signup` | W3 | `planned` |
-| `/partner` | Dashboard: offers, active leads, due follow-ups, conversions, referrals | partner | `GET /partner/dashboard` · `GET /partner/profile` | W3 | `planned` |
+| `/partner/signup` | Register a firm: kind, name, ICAI number, segments, languages, states and pincodes; registration received state | signed-in user | `POST /partner/signup` | W0 | `useful` |
+| `/partner` | Dashboard: offers, active leads, due follow-ups, conversions, referrals; verification banner | partner | `GET /partner/dashboard` · `GET /partner/profile` | W0 | `useful` |
 | `/partner/leads` | Lead inbox: offers to accept or decline, my leads | partner | `GET /partner/leads` | W3 | `planned` |
 | `/partner/leads/new` | Add my own lead (with consent request) | partner | `POST /partner/leads` | W3 | `planned` |
 | `/partner/leads/[id]` | Lead: accept, decline, return, reveal contact, edit, lost, sub-assign, activities, follow-ups, offline conversion, convert to application | partner | `GET /partner/leads/:id` · `POST /partner/leads/:id/accept` · `POST /partner/leads/:id/decline` · `POST /partner/leads/:id/return` · `POST /partner/leads/:id/reveal-contact` · `POST /partner/leads/:id/sub-assign` · `POST /partner/leads/:id/lost` · `GET /partner/leads/:id/activities` · `POST /partner/leads/:id/activities` · `POST /partner/leads/:id/follow-ups` · `PATCH /partner/leads/:id` · `POST /partner/leads/:id/offline-conversion` · `POST /partner/leads/:id/convert` | W3 | `planned` |
@@ -69,7 +69,7 @@
 
 | Path | Screen | Who | Backend routes | Milestone | Status |
 |---|---|---|---|---|---|
-| `/lender` | Submissions inbox: new, under review, queries, decisions | lender | `GET /lender/submissions` | W5 | `planned` |
+| `/lender` | Submissions inbox with status tabs | lender | `GET /lender/submissions` | W0 | `useful` |
 | `/lender/submissions/[id]` | Submission: borrower packet, documents, acknowledge, query, sanction, disburse, reject, ask for documents | lender | `GET /lender/submissions/:id` · `POST /lender/submissions/:id/events` · `POST /lender/submissions/:id/document-requests` · `GET /lender/submissions/:id/documents/:documentId/download-url` | W5 | `planned` |
 | `/lender/products` | Our products on FundenFlo and their live criteria | lender | `GET /lender/products` | W5 | `planned` |
 | `/lender/products/[id]` | Ask for a product change (goes to FundenFlo for approval) | lender | `POST /lender/products/:id/change-requests` | W5 | `planned` |
@@ -78,7 +78,8 @@
 
 | Path | Screen | Who | Backend routes | Milestone | Status |
 |---|---|---|---|---|---|
-| `/ops/leads` | Lead queue: filters, create, bulk assign and route | ops | `GET /ops/leads` · `POST /ops/leads` · `POST /ops/leads/bulk-assign` · `POST /ops/leads/bulk-route` · `POST /ops/leads/merge` | W6 | `planned` |
+| `/ops/leads` | Lead queue: search, status and consent filters, load more | ops | `GET /ops/leads` | W0 | `useful` |
+| `/ops/leads (actions)` | Create a lead, bulk assign and route, merge duplicates | ops | `POST /ops/leads` · `POST /ops/leads/bulk-assign` · `POST /ops/leads/bulk-route` · `POST /ops/leads/merge` | W6 | `planned` |
 | `/ops/leads/[id]` | Lead: edit, qualify, disqualify, hold, reopen, recycle, lose, reveal contact, consent request, route, assign, revoke, activities, follow-ups | ops | `GET /ops/leads/:id` · `PATCH /ops/leads/:id` · `POST /ops/leads/:id/qualify` · `POST /ops/leads/:id/disqualify` · `POST /ops/leads/:id/hold` · `POST /ops/leads/:id/reopen` · `POST /ops/leads/:id/recycle` · `POST /ops/leads/:id/lose` · `POST /ops/leads/:id/reveal-contact` · `POST /ops/leads/:id/consent-request` · `POST /ops/leads/:id/route` · `POST /ops/leads/:id/assign` · `POST /ops/leads/assignments/:assignmentId/revoke` · `GET /ops/leads/:id/activities` · `POST /ops/leads/:id/activities` · `POST /ops/leads/:id/follow-ups` | W6 | `planned` |
 | `/ops/follow-ups` | Team follow-ups | ops | `GET /ops/follow-ups` · `PATCH /ops/follow-ups/:id` | W6 | `planned` |
 | `/ops/conversions` | Offline conversions reported by partners: verify or reject | ops | `GET /ops/offline-conversions` · `POST /ops/offline-conversions/:id/decide` | W6 | `planned` |
@@ -133,3 +134,19 @@
 | `/finance/payouts` | Partner payouts: approve, mark paid (second person), reverse | finance | `GET /admin/finance/payouts` · `GET /admin/finance/payouts/:id` · `POST /admin/finance/payouts/:id/approve` · `POST /admin/finance/payouts/:id/mark-paid` · `POST /admin/finance/payouts/:id/reverse` | W8 | `planned` |
 | `/finance/reconciliation` | Bank or lender statement reconciliation runs | finance | `GET /admin/finance/reconciliation` · `POST /admin/finance/reconciliation` | W8 | `planned` |
 | `/finance/ledger` | Trial balance | finance | `GET /admin/finance/ledger/trial-balance` | W8 | `planned` |
+
+## Building blocks
+
+| Item | Path | What it does | Status |
+|---|---|---|---|
+| Session BFF | `src/app/api/session/*/route.ts`, `src/lib/server/*` | OTP and MFA verify, switch context, refresh (per-token de-duplication for 10 s), logout, socket token; httpOnly cookies `ff_at` / `ff_rt` (path `/api/session`) plus readable `ff_exp` / `ff_ctx`; same-origin check on writes | `useful` |
+| API proxy | `src/app/api/v1/[...path]/route.ts` | Forwards to the backend `/v1` with the bearer token, `If-Match`, `Idempotency-Key`, `X-Request-Id`, `X-Forwarded-For`; streams bodies; refuses token-issuing paths; synthetic `TOKEN_EXPIRED` when the access cookie has lapsed | `useful` |
+| Typed client | `src/lib/api/*.ts`, `src/lib/api/backend-routes.ts` (generated) | `apiRequest(route, options)`: proactive refresh, one retry after `TOKEN_EXPIRED`, `ApiError` with field issues; one module per backend area with TanStack `queryOptions` | `useful` |
+| Client session | `src/lib/session/*` | Web Locks single-flight refresh across tabs, BroadcastChannel session signals, destination after sign-in, `useMe` | `useful` |
+| Proxy (route guard) | `src/proxy.ts` | next-intl locale routing; protected areas redirect to `/login` or `/staff/login` with `next` | `useful` |
+| App shell | `src/components/shell/*` | Sidebar on desktop, top bar + bottom tabs + menu sheet on phones; menu per role (`src/lib/constants/navigation.constants.ts`); area guard with switch-role prompt; user menu with theme and sign out | `useful` |
+| Design system | `src/app/globals.css`, `src/components/ui/*`, `src/components/data/*` | FundenFlo tokens light and dark, shadcn (Base UI) components with 44 px touch targets, status badges, responsive list (table on desktop, cards on phones), stat card, search input, confirm dialog | `useful` |
+| PWA | `src/app/manifest.ts`, `public/sw.js`, `src/components/pwa/*`, `public/icons/*` | Manifest with maskable icons, versioned service worker (static cache-first, pages network-first with `/offline`, never `/api`), update prompt, install button | `useful` |
+| Text and languages | `src/messages/en.json`, `src/i18n/*`, `scripts/translate-messages.mjs` | next-intl with `[locale]` root segment (`as-needed` prefix); Google Cloud Translation script for 10 Indian languages | `useful` (English only until translated) |
+| Checks | `scripts/api-coverage.mjs`, `scripts/check-spacing.mjs`, `knip.json`, `.oxlintrc.json`, `vitest.config.mts`, `playwright.config.ts` | Route coverage, spacing rule (≤ `*-4`), unused code, lint with React and a11y rules, unit tests, end-to-end on desktop and phone | `useful` |
+| Realtime | — | Socket.IO bridge that invalidates queries on backend events | `planned` (W1) |

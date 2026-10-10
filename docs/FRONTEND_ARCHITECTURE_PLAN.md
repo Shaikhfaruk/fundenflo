@@ -1,6 +1,6 @@
 # FundenFlo Web Frontend — Architecture and Build Plan
 
-> Written 2026-10-10. App folder: `web-frontend/`. Screen-by-screen map with the backend routes each screen calls: [`inventory/web-frontend.md`](inventory/web-frontend.md).
+> Written 2026-10-10; W0 built the same day. App folder: `web-frontend/`. Screen-by-screen map with the backend routes each screen calls: [`inventory/web-frontend.md`](inventory/web-frontend.md).
 > The old Expo app in `frontend/` is not used or changed.
 
 ## 1. Goal
@@ -20,15 +20,15 @@ It covers all seven areas: public pages, borrower, partner (CA/DSA), lender, ops
 | Framework | Next.js App Router, React Server Components, Turbopack | `next` 16.4.0, `react` 19.3.0 |
 | Language | TypeScript, strict | 5.x |
 | Styling | Tailwind CSS with design tokens in CSS variables; light and dark themes (`next-themes`) | `tailwindcss` 4.3.3 |
-| Components | shadcn/ui source copied into `src/components/ui` (Radix primitives), restyled to the FundenFlo system; icons `lucide-react` | shadcn 4.21.4, `radix-ui` 1.7.0 |
+| Components | shadcn/ui source copied into `src/components/ui` (Base UI primitives, `base-nova` style), restyled to the FundenFlo system with 44 px touch targets on phones; icons `lucide-react` | shadcn 4.21.4, `@base-ui/react` 1.9.0 |
 | Data | TanStack Query on the client; server components for first paint | 5.104.1 |
 | Forms | React Hook Form + Zod (same Zod major as the backend) | 7.89.0 / `zod` 4.6.5 |
 | Text | `next-intl`; English catalogue is the source; other languages generated (section 6) | 4.14.9 |
 | Toasts | `sonner` (never `alert`) | 2.0.8 |
-| PWA | Web app manifest (`app/manifest.ts`) + Serwist service worker | `@serwist/turbopack` 9.5.13 |
+| PWA | Web app manifest (`app/manifest.ts`) + hand-written `public/sw.js` (Serwist's Turbopack route needs Cache Components off) | — |
 | Realtime | Socket.IO client to the API gateway | 4.8.4 (server 4.8.3) |
 | Tests | Vitest + Testing Library (units), Playwright (end to end, desktop and phone viewports) | 5.0.3 / 1.64.0 |
-| Lint | oxlint + `tsc --noEmit`, same as the backend | — |
+| Lint and checks | oxlint with React, a11y and Next plugins, `tsc --noEmit`, knip (unused code), spacing check | oxlint 1.87.0, knip |
 
 Project rules that apply to every screen: no code comments; Tailwind margins and paddings stay at `*-4` or below (larger gaps come from layout, e.g. `gap-*`, `space-*` and grid); enums and constants live in constants files; messages go through toasts or inline errors.
 
@@ -125,16 +125,16 @@ Full table: [`inventory/web-frontend.md`](inventory/web-frontend.md). Summary:
 | Borrower (home, profile + PAN, application journey: start, requirement, questions, people, consents, documents, assessment, matches, submissions, timeline) | 13 | 45 |
 | Partner (sign-up, dashboard, leads inbox and detail, follow-ups, own leads, clients and filed applications, referrals, disputes, commissions, team, profile and KYC, settings) | 14 | 38 |
 | Lender (submissions inbox and detail, products, change requests) | 4 | 7 |
-| Ops (leads, follow-ups, conversions, reports, cases, document review, signals, submissions, parties, disputes, risk, data requests) | 17 | 65 |
+| Ops (leads, follow-ups, conversions, reports, cases, document review, signals, submissions, parties, disputes, risk, data requests) | 18 | 65 |
 | Admin (users, invitations, audit, catalog, attributes and conditions, questionnaires, change requests, consents, notification templates, imports, lead sources and API clients, routing, partners, lenders and products, documents, scoring, commission schemes) | 24 | 170 |
 | Finance (receivables, payouts, reconciliation, trial balance) | 4 | 11 |
-| **Total** (some catalog routes are shared by several screens) | **90** | **367** |
+| **Total** (some catalog routes are shared by several screens) | **91** | **367** |
 
 ## 6. Languages
 
-- All interface text lives in `src/messages/en.json`; screens never hard-code strings.
+- All interface text lives in `src/messages/en.json`; screens never hard-code strings. Pages sit under a `[locale]` root segment read with `next/root-params`, so every language prerenders; English has no prefix (`/app`), other languages do (`/hi/app`) once their catalogue exists (`src/messages/available-locales.ts`).
 - `pnpm i18n:translate` sends new or changed English strings to the Google Cloud Translation API and writes `hi`, `bn`, `mr`, `gu`, `ta`, `te`, `kn`, `ml`, `pa`, `or` catalogues (key `GOOGLE_TRANSLATE_API_KEY`, never committed). Generated files are reviewed like code; a hand-corrected string is kept on the next run.
-- The language menu sets the user's language (`PATCH /me/profile` `preferredLanguage`, which also drives SMS and push language).
+- The account screen has two choices: screen language (URL prefix, any generated language) and SMS and push language (`PATCH /me/profile` `preferredLanguage`, which the backend accepts as `en` or `hi`).
 - Consent texts, document names and other backend content are shown in the backend's own locale and marked `translate="no"`: the backend records the exact consent text shown (template version and text hash), so it must not be rewritten in the browser.
 - The in-page Google Translate widget is not used: it rewrites the page's DOM, which breaks React updates, and it would alter recorded consent text.
 
@@ -164,3 +164,6 @@ Full table: [`inventory/web-frontend.md`](inventory/web-frontend.md). Summary:
 - Push notifications are Expo-only; a website or PWA gets realtime toasts and in-app badges. Browser web push would need a backend channel (VAPID keys and a `webpush` sender) and is not planned.
 - The web origin must be allowed by the API's CORS settings only for the Socket.IO connection; other calls are server to server through the BFF.
 - The direct-upload routes (`/documents/upload-url`, `/documents/:id/complete`) are still planned; uploads go through the proxy.
+- Behind the web server the API must run with `TRUST_PROXY=true` so the client IP forwarded in `X-Forwarded-For` reaches consent evidence and session records.
+- Only the `journey` consent template is seeded. WhatsApp and marketing opt-ins appear on the account screen once compliance publishes a `communications` consent template (the consent wording needs legal review).
+- Local development: the backend `.env` needs `CORS_ORIGINS=http://localhost:3100` for the realtime socket.
