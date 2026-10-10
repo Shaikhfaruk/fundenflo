@@ -769,6 +769,88 @@
       "amount": "Sanctioned",
       "eyebrow": "Lender Desk",
       "emptyTitle": "Nothing Here Yet"
+    },
+    "detail": {
+      "title": "Submission",
+      "back": "All Submissions",
+      "unavailable": "We could not load this submission.",
+      "askDocuments": "Ask For Documents",
+      "recorded": "Update recorded",
+      "loan": "Loan Request",
+      "category": "Loan",
+      "amount": "Amount",
+      "tenure": "Tenure",
+      "months": "{count, plural, one {# month} other {# months}}",
+      "purpose": "Purpose",
+      "received": "Received",
+      "reference": "Your Reference",
+      "sanctioned": "Sanctioned",
+      "disbursed": "Disbursed",
+      "rejection": "Rejection",
+      "facts": "Verified Details",
+      "noFacts": "No details shared.",
+      "provenance": {
+        "declared": "Declared by the borrower",
+        "extracted": "Read from a document",
+        "third_party_verified": "Verified with a third party",
+        "ops_verified": "Verified by FundenFlo",
+        "derived": "Calculated"
+      },
+      "history": "History",
+      "assessment": "FundenFlo Assessment",
+      "scoredOn": "Scored {date}",
+      "noScore": "No score shared.",
+      "documents": "Documents",
+      "noDocuments": "No documents shared yet.",
+      "openDocument": "Open {name}",
+      "requests": "Document Requests",
+      "noRequests": "Nothing requested.",
+      "dueBy": "Due by {date}"
+    },
+    "products": {
+      "eyebrow": "Lender Portal",
+      "title": "Our Products",
+      "description": "Products live on FundenFlo and the criteria borrowers are matched against.",
+      "liveSince": "Version {number} · live since {date}",
+      "pending": "Change v{number} waiting for review",
+      "propose": "Propose Change",
+      "category": "Loan",
+      "amount": "Amount",
+      "tenure": "Tenure",
+      "tenureRange": "{min}–{max} months",
+      "coverage": "Coverage",
+      "nationwide": "Nationwide",
+      "states": "{count, plural, one {# state} other {# states}}",
+      "segments": "Borrowers",
+      "pricing": "Pricing",
+      "mustHave": "Must Have",
+      "preferred": "Preferred",
+      "emptyTitle": "No Live Products",
+      "emptyBody": "Ask FundenFlo to publish your first product."
+    },
+    "change": {
+      "eyebrow": "Propose A Change",
+      "back": "Our Products",
+      "unavailable": "We could not find this product.",
+      "description": "FundenFlo reviews every change before it goes live.",
+      "limits": "Amount And Tenure",
+      "minAmount": "Smallest Loan (₹)",
+      "maxAmount": "Largest Loan (₹)",
+      "minTenure": "Shortest Tenure (Months)",
+      "maxTenure": "Longest Tenure (Months)",
+      "nationwide": "Lend Nationwide",
+      "pricing": "Pricing Disclosure",
+      "criteria": "Criteria Thresholds",
+      "hard": "must have",
+      "soft": "preferred",
+      "ruleHint": "Rule: {op} · {text}",
+      "why": "Why The Change",
+      "reason": "Reason",
+      "reviewNote": "Your current product stays live until the change is approved.",
+      "send": "Send For Review",
+      "sent": "Change sent for review",
+      "pendingTitle": "A Change Is Already Waiting",
+      "pendingBody": "Version {number} is with FundenFlo for review. You can propose another once it is decided."
     }
   },
   "ops": {
@@ -976,14 +1058,7 @@
       "actingPerson": "Person acting for the business",
       "consents": "Consents",
       "declined": "Declined",
-      "notAsked": "Not asked",
-      "requestTitle": "Request Documents",
-      "requestBody": "The borrower sees the request on their documents screen.",
-      "documentTypes": "Document types",
-      "noteForBorrower": "Note For The Borrower (Optional)",
-      "dueInDays": "Due In Days",
-      "sendRequest": "Send Request",
-      "requested": "Documents requested"
+      "notAsked": "Not asked"
     },
     "documentReview": {
       "title": "Document Review",
@@ -1666,7 +1741,8 @@
       "stillChecking": "Hang on — we are still checking your documents.",
       "addToContinue": "Add your {names} to continue.",
       "consentNeeded": "Turn on document reading in your consents first.",
-      "unavailable": "Your document list is not available right now. Please try again shortly."
+      "unavailable": "Your document list is not available right now. Please try again shortly.",
+      "lenderWants": "Lender asked for: {names}"
     },
     "verify": {
       "metaTitle": "Verify Your Details",
@@ -2077,5 +2153,14 @@
       "whatsapp_link": "WhatsApp link",
       "api": "API"
     }
+  },
+  "documentRequest": {
+    "title": "Request Documents",
+    "body": "The borrower sees the request on their documents screen.",
+    "types": "Document types",
+    "note": "Note For The Borrower (Optional)",
+    "dueInDays": "Due In Days",
+    "send": "Send Request",
+    "requested": "Documents requested"
   }
 }

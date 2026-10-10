@@ -28,7 +28,7 @@ Items marked `dead` or `duplicate` are never deleted without the owner's review.
 | Events, real-time channels, notifications | [`inventory/events-and-channels.md`](inventory/events-and-channels.md) | Domain events, rooms, notification templates |
 | Shared building blocks (engines, infrastructure, common) | [`inventory/shared-building-blocks.md`](inventory/shared-building-blocks.md) | Reusable components and where enums/constants live |
 | Frontend app (reference, not edited) | [`inventory/frontend-api-calls.md`](inventory/frontend-api-calls.md) | 19 service functions calling 17 endpoints |
-| Web frontend (`web-frontend/`, Next.js) | [`inventory/web-frontend.md`](inventory/web-frontend.md) | 91 screens covering 367 backend routes (all except `/v0`, health and API-key lead intake); W0 built 19 screens and the building blocks, 40 routes connected; W0.5 rebuilt them in the native app design; W1 added the borrower journey to documents, profile and PAN, and realtime (57 routes connected) |
+| Web frontend (`web-frontend/`, Next.js) | [`inventory/web-frontend.md`](inventory/web-frontend.md) | 91 screens covering 367 backend routes (all except `/v0`, health and API-key lead intake); W0 built 19 screens and the building blocks, 40 routes connected; W0.5 rebuilt them in the native app design; W1 added the borrower journey to documents, profile and PAN, and realtime (57 routes connected); W2 documents to lender submission, W6 ops console and W5 lender portal (152 routes connected, 2026-10-11) |
 
 ## Repository files
 
@@ -38,7 +38,7 @@ Items marked `dead` or `duplicate` are never deleted without the owner's review.
 | `.claude/context/` | Machine-readable working context, by topic and date | `useful` | Local only (git-ignored) |
 | `docs/BACKEND_ARCHITECTURE_PLAN.md` | Architecture and build plan | `useful` | Source for every `planned` row |
 | `docs/FRONTEND_ARCHITECTURE_PLAN.md` | Web frontend architecture and build plan (Next.js PWA for every role) | `useful` | Source for the `planned` rows in `inventory/web-frontend.md` |
-| `web-frontend/` | Next.js web app, PWA and WebView target | `useful` | W1 2026-10-11: `pnpm verify` (typecheck, lint, spacing, knip, 18 unit tests, coverage 57 of 367, build) and 14 Playwright runs (7 flows × desktop and phone) pass |
+| `web-frontend/` | Next.js web app, PWA and WebView target | `useful` | W5 2026-10-11: `pnpm verify` (typecheck, lint, spacing, knip, 28 unit tests, coverage 152 of 367, build) and the Playwright suite (desktop and phone) pass |
 | `docs/ARCHITECTURE.md` | Living diagrams | `useful` | Linked from every inventory table |
 | `docs/inventory.md`, `docs/inventory/*.md` | This system map | `useful` | — |
 | `docs/DUPLICATES.md` | Known duplicates register and single-implementation rules | `useful` | No open duplicates as of 2026-10-09 |

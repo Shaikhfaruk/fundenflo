@@ -1,20 +1,23 @@
 import { expect, test } from '@playwright/test';
 
-import { liveTestLender, opsReviewDocument, randomMobile, randomPan, type TestLender } from './support/backend';
+import { inviteLenderUser, liveTestLender, opsReviewDocument, randomEmail, randomMobile, randomPan, type TestLender } from './support/backend';
 import { bff, preparedApplication } from './support/bff';
 import { writePdf } from './support/pdf';
 import { pooledStaffToken } from './support/staff-pool';
-import { signInAsStaff, signInWithOtp } from './support/sign-in';
+import { signInAsLender, signInAsStaff, signInWithOtp } from './support/sign-in';
 
 const LAKH_PAISE = 100_000_00;
 
 let lender: TestLender;
 let ops: string;
+let lenderEmail: string;
 
 test.beforeAll(async ({ browserName: _browser }, testInfo) => {
   const maker = await pooledStaffToken(`maker-${testInfo.project.name}`);
   ops = await pooledStaffToken(`checker-${testInfo.project.name}`);
   lender = await liveTestLender(`Sahyadri Finance ${String(Date.now()).slice(-5)}`, maker, ops);
+  lenderEmail = randomEmail('e2e.lender.desk');
+  await inviteLenderUser(lenderEmail, lender.organizationId, maker);
 });
 
 test.afterAll(async () => {
@@ -26,6 +29,7 @@ test('a borrower uploads documents, gets a score, applies to a matched lender an
   const stamp = `${Date.now()}-${testInfo.project.name}`;
   const statement = writePdf(testInfo.outputPath('bank-statement.pdf'), `Statement of account ${stamp}. Closing balance 125000.00`);
   const gstReturns = writePdf(testInfo.outputPath('gst-returns.pdf'), `GSTR-3B summary ${stamp}. Ten returns filed.`);
+  const itr = writePdf(testInfo.outputPath('itr.pdf'), `ITR acknowledgement ${stamp}. Total income 18 lakh.`);
   await signInWithOtp(page, randomMobile());
   await expect(page).toHaveURL(/\/app$/);
   const api = bff(page);
@@ -95,6 +99,17 @@ test('a borrower uploads documents, gets a score, applies to a matched lender an
   await expect(page.getByText(`Application sent to ${lender.name}`)).toBeVisible();
   await expect(page.getByRole('heading', { name: new RegExp(lender.name) })).toBeVisible();
   await expect(page.locator('li[aria-current="step"]')).toContainText('Application Received');
+  await page.getByRole('button', { name: 'Withdraw This Application' }).click();
+  await page.getByLabel('Reason').fill('Want to change the amount first');
+  await page.getByRole('button', { name: 'Withdraw', exact: true }).click();
+  await expect(page.getByText('Application withdrawn')).toBeVisible();
+  await expect(page.getByText('This application was withdrawn.')).toBeVisible();
+
+  await page.goto(`/app/applications/${id}/lenders`);
+  await page.getByRole('article').filter({ hasText: lender.name }).getByRole('button', { name: new RegExp(lender.name) }).click();
+  await page.getByRole('button', { name: `Share And Apply With ${lender.name}` }).click();
+  await expect(page).toHaveURL(/\/submissions\/[0-9a-f-]+$/);
+  await expect(page.locator('li[aria-current="step"]')).toContainText('Application Received');
   const submissionId = page.url().split('/').pop() ?? '';
 
   const opsContext = await browser.newContext({ ...testInfo.project.use });
@@ -104,37 +119,82 @@ test('a borrower uploads documents, gets a score, applies to a matched lender an
   await opsPage.getByRole('button', { name: 'Approve And Send' }).click();
   await opsPage.getByRole('dialog').getByRole('button', { name: 'Approve And Send' }).click();
   await expect(opsPage.getByText('Submission approved')).toBeVisible();
-  await expect(async () => {
-    await opsPage.reload();
-    await expect(opsPage.getByRole('button', { name: 'Acknowledge' })).toBeVisible();
-  }).toPass({ timeout: 30_000 });
-  await opsPage.getByRole('button', { name: 'Acknowledge' }).click();
-  await opsPage.getByLabel('Lender Reference (Optional)').fill('SAH-2026-0042');
-  await opsPage.getByRole('dialog').getByRole('button', { name: 'Save' }).click();
-  await expect(opsPage.getByText('Update recorded')).toBeVisible();
   await opsContext.close();
+
+  const lenderContext = await browser.newContext({ ...testInfo.project.use });
+  const lenderPage = await lenderContext.newPage();
+  await signInAsLender(lenderPage, lenderEmail);
+  await expect(async () => {
+    await lenderPage.reload();
+    await expect(lenderPage.getByRole('link', { name: /SB-/ }).first()).toBeVisible();
+  }).toPass({ timeout: 30_000 });
+  await lenderPage.getByRole('link', { name: /SB-/ }).first().click();
+  await expect(lenderPage.getByRole('heading', { name: 'Kapoor Textiles' })).toBeVisible();
+  await expect(lenderPage.getByText('Average Monthly Inflow')).toBeVisible();
+  await lenderPage.getByRole('button', { name: 'Acknowledge' }).click();
+  await lenderPage.getByLabel('Lender Reference (Optional)').fill('SAH-2026-0042');
+  await lenderPage.getByRole('dialog').getByRole('button', { name: 'Save' }).click();
+  await expect(lenderPage.getByText('Update recorded')).toBeVisible();
   await expect(async () => {
     await page.reload();
     await expect(page.locator('li[aria-current="step"]')).toContainText('Lender Review');
   }).toPass({ timeout: 30_000 });
+  await lenderPage.getByRole('button', { name: 'Ask For Documents' }).click();
+  await lenderPage.getByRole('dialog').getByRole('button', { name: 'Income Tax Return' }).click();
+  await lenderPage.getByRole('dialog').getByRole('button', { name: 'Send Request' }).click();
+  await expect(lenderPage.getByText('Documents requested')).toBeVisible();
+
+  await page.goto(`/app/applications/${id}/documents`);
+  await expect(page.getByText('Lender asked for: Income Tax Return')).toBeVisible();
+  await page.getByLabel('Upload ITR Or GST Returns').setInputFiles(itr);
+  await expect(page.getByText('ITR Or GST Returns uploaded')).toBeVisible();
+  await expect(async () => {
+    await lenderPage.reload();
+    await expect(lenderPage.getByRole('button', { name: 'Record Sanction' })).toBeVisible();
+  }).toPass({ timeout: 45_000 });
+  await lenderPage.getByRole('button', { name: 'Record Sanction' }).click();
+  await lenderPage.getByLabel('Amount (₹)').fill('1800000');
+  await lenderPage.getByRole('dialog').getByRole('button', { name: 'Record Sanction' }).click();
+  await expect(lenderPage.getByText('Update recorded').first()).toBeVisible();
+  await lenderPage.getByRole('button', { name: 'Record Disbursal' }).click();
+  await lenderPage.getByLabel('Amount (₹)').fill('1800000');
+  await lenderPage.getByRole('dialog').getByRole('button', { name: 'Record Disbursal' }).click();
+  await expect(lenderPage.getByText('Disbursed').first()).toBeVisible();
+
+  await lenderPage.goto('/lender/products');
+  await lenderPage.getByRole('link', { name: 'Propose Change' }).click();
+  await lenderPage.getByLabel('Largest Loan (₹)').fill('7500000');
+  await lenderPage.getByLabel('Reason').fill('Raising our ticket size for MSME working capital');
+  await lenderPage.getByRole('button', { name: 'Send For Review' }).click();
+  await expect(lenderPage.getByText('Change sent for review')).toBeVisible();
+  await expect(lenderPage.getByText('Change v2 waiting for review')).toBeVisible();
+  await lenderContext.close();
+
+  await page.goto(`/app/applications/${id}/submissions/${submissionId}`);
+  await expect(async () => {
+    await page.reload();
+    await expect(page.getByText('Money is on its way to your account.')).toBeVisible();
+    await expect(page.locator('li[aria-current="step"]')).toHaveCount(0);
+  }).toPass({ timeout: 30_000 });
 
   await page.goto(`/app/applications/${id}`);
   await expect(page.getByRole('heading', { name: 'Applications Sent' })).toBeVisible();
-  await expect(page.getByText('Lender application: Under Review')).toBeVisible();
+  await expect(page.getByText('Lender application: Disbursed')).toBeVisible();
 
-  await page.goto(`/app/applications/${id}/submissions/${submissionId}`);
-  await page.getByRole('button', { name: 'Withdraw This Application' }).click();
-  await page.getByLabel('Reason').fill('Found a better offer elsewhere');
-  await page.getByRole('button', { name: 'Withdraw', exact: true }).click();
-  await expect(page.getByText('Application withdrawn')).toBeVisible();
-  await expect(page.getByText('This application was withdrawn.')).toBeVisible();
+  await expect(page.getByText('Loan Disbursed').first()).toBeVisible();
+});
 
+test('a borrower withdraws a case they no longer need', async ({ page }) => {
+  await signInWithOtp(page, randomMobile());
+  await expect(page).toHaveURL(/\/app$/);
+  const id = await preparedApplication(bff(page), 'Mehra Bakers', 'Jaipur');
   await page.goto(`/app/applications/${id}`);
   await page.getByRole('button', { name: 'Withdraw Application' }).click();
   await page.getByLabel('Reason').fill('Not needed any more');
   await page.getByRole('button', { name: 'Withdraw', exact: true }).click();
   await expect(page.getByText('Application withdrawn')).toBeVisible();
   await expect(page.getByText('Withdrawn').first()).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Withdraw Application' })).toHaveCount(0);
 });
 
 test('an expired or unknown consent link explains what to do next', async ({ page }) => {

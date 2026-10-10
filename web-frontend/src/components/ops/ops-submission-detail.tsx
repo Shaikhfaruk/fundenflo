@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 import { KeyValues, Section } from '@/components/data/detail-section';
 import { ReasonDialog } from '@/components/data/reason-dialog';
 import { StatusBadge } from '@/components/data/status-badge';
-import { SubmissionActionDialog } from '@/components/ops/submission-action-dialog';
+import { SubmissionActionDialog } from '@/components/submissions/submission-action-dialog';
 import { ScreenSkeleton } from '@/components/shell/screen-skeleton';
 import { PageHeader } from '@/components/shell/page-header';
 import { Button } from '@/components/ui/button';
@@ -62,7 +62,7 @@ function SubmissionView({ submission }: { submission: OpsSubmissionDetail }) {
     onError: (failure) => errorToast(failure),
   });
   const actions = ACTIONS_BY_STATUS[submission.status] ?? [SubmissionAction.Note];
-  const packet = submission.packet?.content as { borrower?: { name?: string; facts?: unknown[] }; documents?: unknown[] } | undefined;
+  const packet = submission.packet?.content;
   return (
     <div className="flex flex-col gap-4">
       <Link href={AppPath.OpsSubmissions} className="flex items-center gap-1 self-start text-sm font-semibold text-navy hover:underline">

@@ -12,16 +12,14 @@ import { ConfirmDialog } from '@/components/data/confirm-dialog';
 import { KeyValues, Section } from '@/components/data/detail-section';
 import { pagedRows } from '@/components/data/paged-list';
 import { ReasonDialog } from '@/components/data/reason-dialog';
+import { RequestDocumentsDialog } from '@/components/data/request-documents-dialog';
 import { StatusBadge } from '@/components/data/status-badge';
 import { FactValueInput } from '@/components/ops/fact-value-input';
 import { ScreenSkeleton } from '@/components/shell/screen-skeleton';
 import { PageHeader } from '@/components/shell/page-header';
 import { Button } from '@/components/ui/button';
-import { ChipGroup } from '@/components/ui/chip-group';
-import { ChoiceChip } from '@/components/ui/choice';
 import { Field, FieldLabel } from '@/components/ui/field';
 import { Icon } from '@/components/ui/icon';
-import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useErrorToast } from '@/hooks/use-error-toast';
 import { useEnumLabel } from '@/hooks/use-enum-label';
@@ -30,7 +28,7 @@ import { assignCase, attributesQuery, documentTypesQuery, opsCaseKeys, opsCaseQu
 import { partyFactsQuery } from '@/lib/api/ops-parties';
 import type { AttributeDefinition } from '@/lib/api/types/admin.types';
 import type { OpsCaseDetail, PartyFact } from '@/lib/api/types/ops.types';
-import { DOCUMENT_REQUEST_DUE_DAYS, LEAD_NOTE_MAX_LENGTH, LEAD_NOTE_MIN_LENGTH, RecomputeMode } from '@/lib/constants/ops.constants';
+import { LEAD_NOTE_MAX_LENGTH, LEAD_NOTE_MIN_LENGTH, RecomputeMode } from '@/lib/constants/ops.constants';
 import { AppPath, RoutePath } from '@/lib/constants/routes.constants';
 import { APPLICATION_STATUS_TONE, DOCUMENT_STATUS_TONE, REVIEW_STATUS_TONE, SUBMISSION_STATUS_TONE, toneOf } from '@/lib/constants/status.constants';
 import { formatDate, formatRelative } from '@/lib/format/date';
@@ -73,51 +71,6 @@ function VerifyFactDialog({ caseId, fact, attribute, onClose }: { caseId: string
   );
 }
 
-function RequestDocumentsDialog({ caseId, open, onOpenChange }: { caseId: string; open: boolean; onOpenChange: (open: boolean) => void }) {
-  const t = useTranslations('ops.caseDetail');
-  const locale = useLocale();
-  const queryClient = useQueryClient();
-  const errorToast = useErrorToast();
-  const noteId = useId();
-  const daysId = useId();
-  const types = useQuery({ ...documentTypesQuery(), enabled: open });
-  const [chosen, setChosen] = useState<string[]>([]);
-  const [note, setNote] = useState('');
-  const [days, setDays] = useState(String(DOCUMENT_REQUEST_DUE_DAYS));
-  const request = useMutation({
-    mutationFn: () => requestCaseDocuments(caseId, { documentTypes: chosen, note: note.trim() || undefined, dueInDays: Number(days) || undefined }),
-    meta: { handlesError: true },
-    onSuccess: () => {
-      toast.success(t('requested'));
-      setChosen([]);
-      setNote('');
-      void queryClient.invalidateQueries({ queryKey: opsCaseKeys.detail(caseId) });
-      onOpenChange(false);
-    },
-    onError: (failure) => errorToast(failure),
-  });
-  const toggle = (key: string) => setChosen((current) => (current.includes(key) ? current.filter((item) => item !== key) : [...current, key]));
-  return (
-    <ConfirmDialog open={open} onOpenChange={onOpenChange} title={t('requestTitle')} description={t('requestBody')} confirmLabel={t('sendRequest')} pending={request.isPending} confirmDisabled={chosen.length === 0 || (note.trim().length > 0 && note.trim().length < LEAD_NOTE_MIN_LENGTH)} onConfirm={() => request.mutate()}>
-      <ChipGroup label={t('documentTypes')} showLabel>
-        {(types.data?.items ?? [])
-          .filter((type) => type.status === 'active')
-          .map((type) => (
-            <ChoiceChip key={type.key} selected={chosen.includes(type.key)} label={pickText(type.label, locale) || type.key} onToggle={() => toggle(type.key)} className="min-h-9 text-[13px]" />
-          ))}
-      </ChipGroup>
-      <Field>
-        <FieldLabel htmlFor={noteId}>{t('noteForBorrower')}</FieldLabel>
-        <Textarea id={noteId} rows={2} value={note} maxLength={LEAD_NOTE_MAX_LENGTH} onChange={(event) => setNote(event.target.value)} />
-      </Field>
-      <Field>
-        <FieldLabel htmlFor={daysId}>{t('dueInDays')}</FieldLabel>
-        <Input id={daysId} inputMode="numeric" value={days} onChange={(event) => setDays(event.target.value.replaceAll(/\D/g, '').slice(0, 2))} className="w-24 tabular" />
-      </Field>
-    </ConfirmDialog>
-  );
-}
-
 function CaseView({ detail }: { detail: OpsCaseDetail }) {
   const t = useTranslations('ops.caseDetail');
   const tCommon = useTranslations('common');
@@ -137,6 +90,7 @@ function CaseView({ detail }: { detail: OpsCaseDetail }) {
   const partyId = application.party.id;
   const facts = useQuery(partyFactsQuery(partyId));
   const attributes = useQuery(attributesQuery());
+  const documentTypes = useQuery(documentTypesQuery());
   const submissions = useInfiniteQuery(opsSubmissionsQuery({ applicationId: application.id }));
   const [verifying, setVerifying] = useState<PartyFact | null>(null);
   const [requestOpen, setRequestOpen] = useState(false);
@@ -349,7 +303,17 @@ function CaseView({ detail }: { detail: OpsCaseDetail }) {
         </div>
       </div>
       {verifying ? <VerifyFactDialog key={verifying.factId} caseId={application.id} fact={verifying} attribute={attributeOf(verifying.attributeKey)} onClose={() => setVerifying(null)} /> : null}
-      <RequestDocumentsDialog caseId={application.id} open={requestOpen} onOpenChange={setRequestOpen} />
+      {requestOpen ? (
+        <RequestDocumentsDialog
+          open={requestOpen}
+          onOpenChange={setRequestOpen}
+          types={(documentTypes.data?.items ?? []).filter((type) => type.status === 'active').map((type) => ({ key: type.key, label: pickText(type.label, locale) || type.key }))}
+          onSubmit={async (body) => {
+            await requestCaseDocuments(application.id, body);
+            await refresh();
+          }}
+        />
+      ) : null}
       <ReasonDialog
         open={recomputeOpen}
         onOpenChange={setRecomputeOpen}

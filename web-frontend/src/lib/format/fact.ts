@@ -63,3 +63,15 @@ export function parseFactInput(raw: string, attribute: Pick<AttributeDefinition,
   if (type === AttributeDataType.Boolean) return text === 'true' || text === 'false' ? { ok: true, value: text === 'true' } : { ok: false };
   return { ok: true, value: text };
 }
+
+const PAISE_SUFFIX = '_paise';
+
+export const attributeTitle = (key: string) =>
+  (key.split('.').pop() ?? key)
+    .replace(new RegExp(`${PAISE_SUFFIX}$`), '')
+    .split('_')
+    .filter(Boolean)
+    .map((word) => `${word.charAt(0).toUpperCase()}${word.slice(1)}`)
+    .join(' ');
+
+export const formatKeyedFact = (key: string, value: unknown, locale: string, yesNo: { yes: string; no: string }) => formatFactValue(value, { dataType: key.endsWith(PAISE_SUFFIX) ? AttributeDataType.Money : AttributeDataType.String, enumValues: null }, locale, yesNo);

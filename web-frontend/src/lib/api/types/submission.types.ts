@@ -1,4 +1,4 @@
-import type { DocumentRequest } from './document.types';
+import type { DocumentRequest, DocumentView } from './document.types';
 
 export type LenderSubmission = {
   id: string;
@@ -35,3 +35,21 @@ export type SubmissionEvent = {
 };
 
 export type SubmissionDetail = LenderSubmission & { events: SubmissionEvent[]; documentRequests: DocumentRequest[] };
+
+type PacketFact = { attributeKey: string; value: unknown; provenance: string; observedAt: string; stale: boolean };
+
+type SubmissionPacket = {
+  application: { ref: string; segment: string; subSegment: string | null; category: string; purpose: string | null; purposeNote: string | null; amountPaise: number | null; tenureMonths: number | null };
+  borrower: { name: string | null; facts: PacketFact[] };
+  applicant: { name: string | null; facts: PacketFact[] } | null;
+  coParties: Array<{ name: string | null; role: string; facts: PacketFact[] }>;
+  assessment: { id: string; status: string; value: number | null; band: Record<string, string> | null; computedAt: string } | null;
+  match: { outcome: string; fit: number; rank: number; reasons: Array<Record<string, string>> } | null;
+  documents: Array<{ id: string; documentType: string; fileName: string; uploadedAt: string }>;
+};
+
+export type SubmissionFile = SubmissionDetail & {
+  packet: { id: string; hash: string; createdAt: string; content: SubmissionPacket } | null;
+  documents: DocumentView[];
+  attributeLabels: Record<string, string>;
+};

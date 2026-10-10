@@ -58,11 +58,11 @@ export async function inviteLender(email: string, token: string): Promise<string
 
 const LAKH = 100_000_00;
 
-export type TestLender = { id: string; name: string; productId: string; cleanUp: () => Promise<void> };
+export type TestLender = { id: string; name: string; productId: string; organizationId: string; cleanUp: () => Promise<void> };
 
 export async function liveTestLender(name: string, maker: string, checker: string): Promise<TestLender> {
   const key = `e2e${Date.now()}`;
-  const lender = await api<{ id: string; version: number }>('POST', '/admin/lenders', { key, name, kind: 'nbfc' }, maker);
+  const lender = await api<{ id: string; version: number; organizationId: string }>('POST', '/admin/lenders', { key, name, kind: 'nbfc' }, maker);
   const active = await api<{ version: number }>('PATCH', `/admin/lenders/${lender.id}`, { status: 'active' }, maker, lender.version);
   const agreement = await api<{ id: string; version: number }>('POST', `/admin/lenders/${lender.id}/agreements`, { reference: `${key}-1`, validFrom: new Date().toISOString().slice(0, 10) }, maker);
   await api('PATCH', `/admin/lenders/${lender.id}/agreements/${agreement.id}`, { status: 'active' }, maker, agreement.version);
@@ -83,7 +83,9 @@ export async function liveTestLender(name: string, maker: string, checker: strin
     id: lender.id,
     name,
     productId: product.id,
+    organizationId: lender.organizationId,
     cleanUp: async () => {
+      await api('POST', `/admin/lender-products/${product.id}/versions/2/retire`, { reason: 'End-to-end test finished' }, maker).catch(() => null);
       await api('POST', `/admin/lender-products/${product.id}/versions/1/retire`, { reason: 'End-to-end test finished' }, maker);
       const current = await api<{ version: number }>('GET', `/admin/lenders/${lender.id}`, undefined, maker);
       await api('PATCH', `/admin/lenders/${lender.id}`, { status: 'offboarded' }, maker, current.version ?? active.version);
@@ -140,3 +142,5 @@ export async function caseWithDocuments(businessName: string, statementText?: st
 export const requestDataCorrection = (token: string, details: string) => api<{ id: string; ref: string }>('POST', '/me/data-requests', { kind: 'correction', details }, token);
 
 export const opsLeadPerson = async (token: string, name: string) => (await api<{ party: { id: string } }>('POST', '/ops/leads', { name, mobile: randomMobile(), countryCode: '+91' }, token)).party.id;
+
+export const inviteLenderUser = (email: string, organizationId: string, token: string) => api('POST', '/admin/invitations', { organizationId, role: 'lender_admin', email }, token);

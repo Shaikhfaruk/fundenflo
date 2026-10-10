@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { formatDate, formatRelative } from './date';
-import { factInputOf, formatFactValue, parseFactInput } from './fact';
+import { attributeTitle, factInputOf, formatFactValue, formatKeyedFact, parseFactInput } from './fact';
 import { formatFileSize, formatSizeLimit } from './file-size';
 import { estimateEmiPaise, formatPaise, groupRupees, paiseFromRupees } from './money';
 
@@ -62,5 +62,14 @@ describe('fact values', () => {
     expect(parseFactInput('2.5', { dataType: 'integer' })).toEqual({ ok: false });
     expect(parseFactInput('true', { dataType: 'boolean' })).toEqual({ ok: true, value: true });
     expect(factInputOf(1_200_000_00, money)).toBe('1200000');
+  });
+});
+
+describe('packet facts', () => {
+  it('titles attribute keys and formats paise values as money', () => {
+    expect(attributeTitle('business.monthly_turnover_paise')).toBe('Monthly Turnover');
+    expect(attributeTitle('business.gst_registered')).toBe('Gst Registered');
+    expect(formatKeyedFact('banking.avg_monthly_inflow_paise', 1_200_000_00, 'en', { yes: 'Yes', no: 'No' })).toBe('₹12,00,000');
+    expect(formatKeyedFact('business.gst_registered', true, 'en', { yes: 'Yes', no: 'No' })).toBe('Yes');
   });
 });

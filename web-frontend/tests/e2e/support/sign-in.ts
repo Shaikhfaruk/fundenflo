@@ -38,3 +38,13 @@ export async function signInAsStaff(page: Page, key: string) {
     }
   }
 }
+
+export async function signInAsLender(page: Page, email: string) {
+  await page.goto('/login?as=lender');
+  await expect(page.getByLabel('Email Address')).toBeVisible();
+  await page.getByLabel('Email Address').fill(email);
+  await page.getByRole('button', { name: 'Get OTP' }).click();
+  await expect(page.getByText(/Sent To/)).toBeVisible();
+  await page.getByLabel('One-Time Code').fill(staticOtp());
+  await expect(page).toHaveURL(/\/lender$/);
+}

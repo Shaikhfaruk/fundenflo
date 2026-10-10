@@ -74,6 +74,7 @@ export const NAVIGATION: Record<NavArea, NavGroup[]> = {
       key: 'main',
       items: [
         { key: 'submissions', href: AppPath.LenderHome, icon: 'inbox', primary: true },
+        { key: 'products', href: AppPath.LenderProducts, icon: 'assignment', primary: true },
         { key: 'account', href: AppPath.Account, icon: 'account', primary: true },
       ],
     },

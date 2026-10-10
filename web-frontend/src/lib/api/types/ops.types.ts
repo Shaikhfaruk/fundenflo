@@ -1,7 +1,7 @@
 import type { ConsentState } from './consent.types';
 import type { ApplicationEvent, Application, ApplicationParty } from './application.types';
 import type { DocumentChecklist, DocumentView } from './document.types';
-import type { LenderSubmission, SubmissionDetail } from './submission.types';
+import type { LenderSubmission, SubmissionFile } from './submission.types';
 import type { NextStep } from '../journey';
 
 export type OpsCase = Application & { assessment: { scoreResultId: string | null; scoredAt: string | null }; match: { matchRunId: string | null; matchedAt: string | null }; assigneeUserId: string | null };
@@ -18,10 +18,7 @@ export type OpsCaseDetail = {
 
 export type OpsSubmission = LenderSubmission;
 
-export type OpsSubmissionDetail = SubmissionDetail & {
-  packet: { id: string; hash: string; createdAt: string; content: Record<string, unknown> } | null;
-  documents: Array<{ id: string; documentType: string | { key: string; label?: unknown }; fileName?: string; status?: string }>;
-};
+export type OpsSubmissionDetail = SubmissionFile;
 
 type ExtractionField = { attributeKey: string; value: unknown; confidence: number | null; page: number | null };
 

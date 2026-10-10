@@ -179,7 +179,7 @@ function DocumentsForm({ applicationId, checklist, documents, requests }: { appl
         item={item}
         rejected={latestRejected(item, documents)}
         upload={uploads[item.key]}
-        requested={requestedKeys.has(item.key) || item.documentTypes.some((type) => requestedKeys.has(type.key))}
+        requested={item.documentTypes.filter((type) => requestedKeys.has(type.key)).map((type) => type.key)}
         locked={analyse.isPending}
         removingId={removingId}
         onUpload={(input) => void start(item, input)}

@@ -21,7 +21,7 @@ type Props = {
   item: ChecklistItem;
   rejected: DocumentView | null;
   upload: UploadState | undefined;
-  requested: boolean;
+  requested: string[];
   locked: boolean;
   removingId: string | null;
   onUpload: (input: { file: File; documentType: string; password?: string }) => void;
@@ -34,7 +34,8 @@ const sourceClass = 'relative flex min-h-11 flex-1 basis-[110px] cursor-pointer 
 
 export function DocumentSlotCard({ item, rejected, upload, requested, locked, removingId, onUpload, onCancel, onRemove, onView }: Props) {
   const t = useTranslations('flow.documents');
-  const [typeKey, setTypeKey] = useState(item.documentTypes[0]?.key ?? item.key);
+  const [typeKey, setTypeKey] = useState(item.documentTypes.find((entry) => requested.includes(entry.key))?.key ?? item.documentTypes[0]?.key ?? item.key);
+  const requestedLabels = item.documentTypes.filter((entry) => requested.includes(entry.key)).map((entry) => entry.label ?? entry.key);
   const [withPassword, setWithPassword] = useState(false);
   const [password, setPassword] = useState('');
   const [invalid, setInvalid] = useState<string | null>(null);
@@ -71,7 +72,7 @@ export function DocumentSlotCard({ item, rejected, upload, requested, locked, re
   ) : showRejected || upload?.phase === 'failed' ? (
     <span className="rounded-full bg-error-soft px-2.5 py-1 text-[11px] font-semibold tracking-[0.04em] text-destructive uppercase">{t('notAccepted')}</span>
   ) : (
-    <span className="rounded-full bg-subtle px-2.5 py-1 text-[11px] font-semibold tracking-[0.06em] text-muted-foreground uppercase">{requested ? t('requested') : item.required ? t('pending') : t('optional')}</span>
+    <span className="rounded-full bg-subtle px-2.5 py-1 text-[11px] font-semibold tracking-[0.06em] text-muted-foreground uppercase">{requestedLabels.length > 0 ? t('requested') : item.required ? t('pending') : t('optional')}</span>
   );
   const canAdd = !uploading && !locked;
   const sources = (
@@ -100,7 +101,13 @@ export function DocumentSlotCard({ item, rejected, upload, requested, locked, re
         </div>
         {badge}
       </div>
-      {item.documentTypes.length > 1 && !item.satisfied ? (
+      {requestedLabels.length > 0 ? (
+        <p className="flex items-center gap-1.5 rounded-sm bg-gold-soft px-2.5 py-1.5 text-xs font-semibold text-[#5d4200]">
+          <Icon name="info" size={14} />
+          {t('lenderWants', { names: requestedLabels.join(', ') })}
+        </p>
+      ) : null}
+      {item.documentTypes.length > 1 ? (
         <div className="flex flex-col gap-2">
           <span className="text-xs font-semibold text-muted-foreground">{t('uploadAs')}</span>
           <div className="flex flex-wrap gap-2">

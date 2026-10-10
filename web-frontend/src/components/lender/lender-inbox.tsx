@@ -9,11 +9,14 @@ import { type Column, ResponsiveList } from '@/components/data/responsive-list';
 import { StatusBadge } from '@/components/data/status-badge';
 import { PageHeader } from '@/components/shell/page-header';
 import { Button } from '@/components/ui/button';
+import { Icon } from '@/components/ui/icon';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Link } from '@/i18n/navigation';
 import { lenderSubmissionsQuery } from '@/lib/api/lender';
 import type { LenderSubmission } from '@/lib/api/types/submission.types';
 import { LENDER_INBOX_FILTERS } from '@/lib/constants/lender.constants';
+import { RoutePath } from '@/lib/constants/routes.constants';
 import { SUBMISSION_STATUS_TONE, toneOf } from '@/lib/constants/status.constants';
 import { formatDate } from '@/lib/format/date';
 import { formatPaise } from '@/lib/format/money';
@@ -33,10 +36,10 @@ export function LenderInbox() {
       key: 'ref',
       header: t('ref'),
       cell: (row) => (
-        <span className="flex items-center gap-3">
+        <Link href={RoutePath.lenderSubmission(row.id)} className="flex items-center gap-3 hover:underline">
           <span className="h-8 w-1 shrink-0 rounded-full bg-navy" aria-hidden="true" />
           <span className="font-semibold text-navy tabular">{row.ref}</span>
-        </span>
+        </Link>
       ),
       hideOnCard: true,
     },
@@ -68,9 +71,10 @@ export function LenderInbox() {
           columns={columns}
           rowKey={(row) => row.id}
           title={(row) => (
-            <span className="flex items-center justify-between gap-2">
+            <Link href={RoutePath.lenderSubmission(row.id)} className="flex items-center justify-between gap-2">
               <span className="tabular">{row.ref}</span>
-            </span>
+              <Icon name="chevron-right" size={18} className="text-muted-foreground" />
+            </Link>
           )}
           empty={<EmptyState icon="inbox" title={t('emptyTitle')} body={t('empty')} />}
         />

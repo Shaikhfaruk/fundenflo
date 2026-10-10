@@ -2,6 +2,7 @@ import { queryOptions } from '@tanstack/react-query';
 
 import { apiRequest } from './client';
 import type { City, GeoState, LoanCategory, PincodePlace, Segment } from './types/catalog.types';
+import type { DocumentChecklist } from './types/document.types';
 
 const CATALOG_STALE_TIME_MS = 10 * 60_000;
 
@@ -24,3 +25,6 @@ export const statesQuery = () => queryOptions({ queryKey: catalogKeys.states(), 
 export const citySearchQuery = (q: string) => queryOptions({ queryKey: catalogKeys.cities(q), queryFn: () => apiRequest<{ items: City[] }>('GET /catalog/geo/cities', { query: { q } }), staleTime: CATALOG_STALE_TIME_MS });
 
 export const pincodeQuery = (pincode: string) => queryOptions({ queryKey: catalogKeys.pincode(pincode), queryFn: () => apiRequest<PincodePlace>('GET /catalog/geo/pincodes/:pincode', { params: { pincode } }), staleTime: CATALOG_STALE_TIME_MS, retry: false });
+
+export const catalogChecklistQuery = (stage: string, segment: string) =>
+  queryOptions({ queryKey: [...catalogKeys.all, 'document-checklist', stage, segment] as const, queryFn: () => apiRequest<DocumentChecklist>('GET /catalog/document-checklist', { query: { stage, segment } }), staleTime: CATALOG_STALE_TIME_MS });
