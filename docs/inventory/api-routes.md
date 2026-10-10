@@ -302,7 +302,7 @@ Planned:
 | `GET` | `/lender/products` | lenders (`lender-products.controller.ts` → `LenderPortalService.products`: live products with the compiled definition, the raw `content` to base a proposal on, the product `name` and any `pendingVersion` waiting for review, 2026-10-11) | lender | M4 | `useful` |
 | `POST` | `/lender/products/:id/change-requests` | lenders (`LenderPortalService.propose`: new version submitted with the lender user as maker) | lender | M4 | `useful` |
 | `GET` | `/lender/submissions` | submissions (`lender-submissions.controller.ts` → `SubmissionService.browse`; only files already sent to the lender's organization) | lender | M6 | `useful` |
-| `GET` | `/lender/submissions/:id` | submissions (`SubmissionService.detail`: decrypted packet, shared documents, document requests, events) | lender | M6 | `useful` |
+| `GET` | `/lender/submissions/:id` | submissions (`SubmissionService.detail`: decrypted packet, shared documents, document requests, events; `attributeLabels` maps the fact keys in the packet to their labels, 2026-10-11) | lender | M6 | `useful` |
 | `POST` | `/lender/submissions/:id/events` | submissions (`SubmissionService.act`: acknowledge, raise_query, sanction, disburse (tranches up to the sanction), reject with a reason, note; viewers read only) | lender | M6 | `useful` |
 | `POST` | `/lender/submissions/:id/document-requests` | submissions (`SubmissionService.requestDocuments` → `DocumentRequestService.create`; raises a query when the file is under review) | lender | M6 | `useful` |
 | `GET` | `/lender/submissions/:id/documents/:documentId/download-url` | submissions (`SubmissionService.documentUrl` → `DocumentService.sharedReadUrl`; only packet files, evidence and fulfilled request files; added because lenders have no general document grant) | lender | M6 | `useful` |
@@ -349,7 +349,7 @@ Planned:
 | `POST` | `/ops/cases/:id/assign` | applications (`ops-cases.controller.ts` → `OpsCaseService.assign`: active ops lead, reviewer or credit analyst, or `null` to unassign) | staff | M6 | `useful` |
 | `POST` | `/ops/cases/:id/document-requests` | submissions (`ops-submissions.controller.ts` → `DocumentRequestService.forApplication`; open cases only) | staff | M6 | `useful` |
 | `GET` | `/ops/submissions` | submissions (`OpsSubmissionsController.list` → `SubmissionService.browse` with status, lender and application filters; added as the approval queue) | staff | M6 | `useful` |
-| `GET` | `/ops/submissions/:id` | submissions (`SubmissionService.detail` as staff) | staff | M6 | `useful` |
+| `GET` | `/ops/submissions/:id` | submissions (`SubmissionService.detail` as staff, with `attributeLabels`) | staff | M6 | `useful` |
 | `POST` | `/ops/submissions/:id/approve` | submissions (`SubmissionService.approve`: lender-scoped `lender_sharing` consent and the product's assessment and submission documents; replaces the planned `/ops/cases/:id/approve-submission` because the submission id names the file) | staff | M6 | `useful` |
 | `POST` | `/ops/submissions/:id/events` | submissions (`SubmissionService.act` for offline lenders: decisions need a note, sanction and disbursal need an evidence document) | staff | M6 | `useful` |
 | `GET` | `/ops/attribution-disputes` | partners (`ops-attribution-disputes.controller.ts` → `AttributionDisputeService.list`) | staff | M7 | `useful` |

@@ -10,7 +10,7 @@ import { ErrorCode } from '../../../common/errors/error-codes.js';
 import { transitionOrThrow } from '../../../common/errors/transition.js';
 import { EventName } from '../../../common/events/event-names.js';
 import { assertVersion } from '../../../common/http/versioning.js';
-import type { Locale } from '../../../common/i18n/locale.js';
+import { type Locale, localise } from '../../../common/i18n/locale.js';
 import { type PageQuery, pageWindow, toPage } from '../../../common/listing/cursor-page.js';
 import { paiseFromNumber, paiseToNumber } from '../../../common/money/paise.js';
 import { documentsNeeded } from '../../../engines/matching/match-products.js';
@@ -20,6 +20,7 @@ import type { LenderSubmission, Prisma } from '../../../generated/prisma/client.
 import { RefGenerator, RefKind } from '../../../infrastructure/database/ref-generator.js';
 import { AppAction, type AppAbility } from '../../access/domain/ability.types.js';
 import { type ApplicationSubject, ApplicationService } from '../../applications/application/application.service.js';
+import { AttributeDictionary } from '../../attributes/application/attribute-dictionary.service.js';
 import { AuditService } from '../../audit/application/audit.service.js';
 import { ChangeRecorder } from '../../audit/application/change-recorder.service.js';
 import { AuditAction, AuditEntity } from '../../audit/domain/audit.constants.js';
@@ -73,6 +74,8 @@ type EventDetails = { fromStatus?: SubmissionStatus; toStatus?: SubmissionStatus
 
 type Movement = { data?: Prisma.LenderSubmissionUncheckedUpdateManyInput; details?: EventDetails; action?: AuditAction; event?: EventName; payload?: Record<string, unknown> };
 
+type FactHolder = { facts?: Array<{ attributeKey?: unknown }> } | null | undefined;
+
 const CLOSED: readonly SubmissionStatus[] = [SubmissionStatus.rejected, SubmissionStatus.withdrawn];
 
 const QUERYABLE: readonly SubmissionStatus[] = [SubmissionStatus.sent_to_lender, SubmissionStatus.under_review];
@@ -107,6 +110,7 @@ export class SubmissionService {
     private readonly audit: AuditService,
     private readonly changes: ChangeRecorder,
     private readonly risk: RiskService,
+    private readonly attributes: AttributeDictionary,
   ) {}
 
   @Transactional()
@@ -188,9 +192,11 @@ export class SubmissionService {
     const submission = await this.shared(id, ability, AppAction.Read, context);
     const audience = audienceOf(context);
     const packet = await this.submissions.latestPacket(id);
+    const content = packet ? this.packets.read(packet) : null;
     return {
       ...(await this.view(submission, locale, audience)),
-      packet: packet ? { id: packet.id, hash: packet.hash, createdAt: packet.createdAt.toISOString(), content: this.packets.read(packet) } : null,
+      packet: packet ? { id: packet.id, hash: packet.hash, createdAt: packet.createdAt.toISOString(), content } : null,
+      attributeLabels: await this.attributeLabels(content, locale),
       documents: await this.documents.summaries(await this.sharedDocumentIds(submission.id)),
       documentRequests: await this.requests.forSubmission(id, locale),
       events: visibleEvents(await this.submissions.events(id, SUBMISSION_EVENTS_LIMIT), audience),
@@ -405,6 +411,17 @@ export class SubmissionService {
       leadId: application.leadId,
       ...extra,
     };
+  }
+
+  private async attributeLabels(content: unknown, locale: Locale) {
+    const packet = (content ?? {}) as { borrower?: FactHolder; applicant?: FactHolder; coParties?: FactHolder[] };
+    const keys = new Set([packet.borrower, packet.applicant, ...(packet.coParties ?? [])].flatMap((holder) => holder?.facts ?? []).flatMap((fact) => (typeof fact.attributeKey === 'string' ? [fact.attributeKey] : [])));
+    if (keys.size === 0) return {};
+    const dictionary = await this.attributes.active();
+    return Object.fromEntries([...keys].flatMap((key) => {
+      const view = dictionary.get(key);
+      return view ? [[key, localise(view.label, locale) || key]] : [];
+    }));
   }
 
   private async shareWithLender(partyId: string, organizationId: string, applicationId: string, actor: UserActor, locale: Locale) {

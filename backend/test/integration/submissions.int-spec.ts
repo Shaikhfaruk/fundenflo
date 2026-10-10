@@ -138,6 +138,7 @@ describe('lender submissions, document requests and lender decisions', () => {
     expect(inbox.body.items.map((item: { id: string }) => item.id)).toEqual([requested.body.id]);
     const detail = await as(admin).get(`/lender/submissions/${requested.body.id}`).expect(200);
     expect(detail.body).toMatchObject({ status: 'sent_to_lender', packet: { content: { borrower: { name: 'Mehta Garments' }, application: { amountPaise: 20 * LAKH, tenureMonths: 36 } } } });
+    expect(detail.body.attributeLabels).toMatchObject({ 'business.gst_registered': expect.any(String) });
     expect(detail.body.documents).toHaveLength(2);
     expect((await as(admin).get(`/lender/submissions/${requested.body.id}/documents/${udyam}/download-url`).expect(200)).body.url).toBeTruthy();
     await as(admin).get(`/lender/submissions/${requested.body.id}/documents/${rival.body.id}/download-url`).expect(404);
