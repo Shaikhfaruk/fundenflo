@@ -299,7 +299,7 @@ Planned:
 
 | Method | Path | Module | Context | Milestone | Status |
 |---|---|---|---|---|---|
-| `GET` | `/lender/products` | lenders (`lender-products.controller.ts` → `LenderPortalService.products`) | lender | M4 | `useful` |
+| `GET` | `/lender/products` | lenders (`lender-products.controller.ts` → `LenderPortalService.products`: live products with the compiled definition, the raw `content` to base a proposal on, the product `name` and any `pendingVersion` waiting for review, 2026-10-11) | lender | M4 | `useful` |
 | `POST` | `/lender/products/:id/change-requests` | lenders (`LenderPortalService.propose`: new version submitted with the lender user as maker) | lender | M4 | `useful` |
 | `GET` | `/lender/submissions` | submissions (`lender-submissions.controller.ts` → `SubmissionService.browse`; only files already sent to the lender's organization) | lender | M6 | `useful` |
 | `GET` | `/lender/submissions/:id` | submissions (`SubmissionService.detail`: decrypted packet, shared documents, document requests, events) | lender | M6 | `useful` |

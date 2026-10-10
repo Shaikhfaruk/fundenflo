@@ -23,7 +23,23 @@ export class LenderPortalService {
   async products(actor: UserActor) {
     const lender = await this.lenderOf(actor);
     const products = (await this.config.active<CompiledLenderProduct>(ConfigResource.lender_product)).filter((product) => product.compiled.lenderId === lender.id);
-    return { lender: { id: lender.id, key: lender.key, name: lender.organization.name, status: lender.status }, items: products.map((product) => ({ id: product.documentId, key: product.key, versionId: product.versionId, number: product.number, effectiveFrom: product.effectiveFrom.toISOString(), definition: product.compiled })) };
+    const items = await Promise.all(
+      products.map(async (product) => {
+        const [document, version] = await Promise.all([this.config.getDocument(ConfigResource.lender_product, product.documentId), this.config.getVersion(ConfigResource.lender_product, product.documentId, product.number)]);
+        return {
+          id: product.documentId,
+          key: product.key,
+          name: document.name,
+          versionId: product.versionId,
+          number: product.number,
+          effectiveFrom: product.effectiveFrom.toISOString(),
+          definition: product.compiled,
+          content: version.content,
+          pendingVersion: document.openVersion,
+        };
+      }),
+    );
+    return { lender: { id: lender.id, key: lender.key, name: lender.organization.name, status: lender.status }, items };
   }
 
   async propose(documentId: string, input: { content: unknown; reason: string }, actor: UserActor) {

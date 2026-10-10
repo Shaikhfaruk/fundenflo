@@ -13,7 +13,7 @@
         "products"
       ]
     },
-    "description": "The signed-in lender's published products with their current definitions. Lender context (admin, credit officer, viewer)."
+    "description": "The signed-in lender's published products with their current definitions. Lender context (admin, credit officer, viewer). Each item carries the compiled `definition`, the raw `content` of the live version (send an edited copy to propose a change), the product `name` and `pendingVersion` (`{ id, number, status }` while a proposal waits for FundenFlo, otherwise `null`)."
   },
   "event": [
     {
@@ -42,7 +42,7 @@
             "products"
           ]
         },
-        "description": "The signed-in lender's published products with their current definitions. Lender context (admin, credit officer, viewer)."
+        "description": "The signed-in lender's published products with their current definitions. Lender context (admin, credit officer, viewer). Each item carries the compiled `definition`, the raw `content` of the live version (send an edited copy to propose a change), the product `name` and `pendingVersion` (`{ id, number, status }` while a proposal waits for FundenFlo, otherwise `null`)."
       },
       "status": "OK",
       "code": 200,
@@ -53,7 +53,7 @@
           "value": "application/json; charset=utf-8"
         }
       ],
-      "body": "{\n  \"lender\": {\n    \"id\": \"01a122a0-1a2b-7c3d-8e4f-5061728394a5\",\n    \"key\": \"lenderx\",\n    \"name\": \"Lender X Finance Ltd\",\n    \"status\": \"active\"\n  },\n  \"items\": [\n    {\n      \"id\": \"01a122a0-5e6f-7a71-9283-94a5b6c7d8e9\",\n      \"key\": \"lenderx.working_capital\",\n      \"versionId\": \"01a122a0-6f70-7b82-a394-a5b6c7d8e9fa\",\n      \"number\": 1,\n      \"effectiveFrom\": \"2026-10-10T18:00:00.000Z\",\n      \"definition\": {}\n    }\n  ]\n}"
+      "body": "{\n  \"lender\": {\n    \"id\": \"01a122a0-1a2b-7c3d-8e4f-5061728394a5\",\n    \"key\": \"lenderx\",\n    \"name\": \"Lender X Finance Ltd\",\n    \"status\": \"active\"\n  },\n  \"items\": [\n    {\n      \"id\": \"01a122a0-5e6f-7a71-9283-94a5b6c7d8e9\",\n      \"key\": \"lenderx.working_capital\",\n      \"versionId\": \"01a122a0-6f70-7b82-a394-a5b6c7d8e9fa\",\n      \"number\": 1,\n      \"effectiveFrom\": \"2026-10-10T18:00:00.000Z\",\n      \"definition\": {},\n      \"name\": {\n        \"en\": \"Lender X Working Capital\"\n      },\n      \"content\": {\n        \"category\": \"business\",\n        \"segments\": [\n          \"msme\"\n        ],\n        \"amountPaise\": {\n          \"min\": 50000000,\n          \"max\": 500000000\n        },\n        \"tenureMonths\": {\n          \"min\": 12,\n          \"max\": 36\n        },\n        \"coverage\": {\n          \"states\": [\n            \"06\"\n          ]\n        }\n      },\n      \"pendingVersion\": null\n    }\n  ]\n}"
     }
   ]
 }

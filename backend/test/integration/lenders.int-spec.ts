@@ -171,7 +171,7 @@ describe('lender onboarding, products, availability and simulation', () => {
     const viewer = await otpLogin(t, viewerMobile, LoginAs.lender);
 
     const listed = await as(viewer).get('/lender/products').expect(200);
-    expect(listed.body).toMatchObject({ lender: { key: 'lenderx', status: 'active' }, items: [{ id: productId, key: 'lenderx.working_capital', number: 1 }] });
+    expect(listed.body).toMatchObject({ lender: { key: 'lenderx', status: 'active' }, items: [{ id: productId, key: 'lenderx.working_capital', number: 1, name: expect.any(Object), content: expect.any(Object), pendingVersion: { number: 2, status: 'draft' } }] });
     await as(viewer).post(`/lender/products/${productId}/change-requests`, { content: content(18), reason: 'We now lend from 18 months' }).expect(403);
     await as(admin).post(`/lender/products/${productId}/change-requests`, { content: content(18), reason: 'We now lend from 18 months' }).expect(409);
 
@@ -180,6 +180,7 @@ describe('lender onboarding, products, availability and simulation', () => {
     expect(draft.body.status).toBe('draft');
     const proposed = await as(admin).post(`/lender/products/${productId}/change-requests`, { content: content(18), reason: 'We now lend from 18 months' }).expect(201);
     expect(proposed.body).toMatchObject({ status: 'in_review', changeRequest: { status: 'pending' } });
+    expect((await as(admin).get('/lender/products').expect(200)).body.items[0].pendingVersion).toMatchObject({ number: proposed.body.number, status: 'in_review' });
     await as(ops).post(`/admin/change-requests/${proposed.body.changeRequest.id}/approve`).expect(200);
     await as(manager).post(`/admin/lender-products/${productId}/versions/${proposed.body.number}/publish`).expect(200);
     expect((await as(admin).get('/lender/products').expect(200)).body.items[0].definition.hard[0].when.value).toBe(18);
