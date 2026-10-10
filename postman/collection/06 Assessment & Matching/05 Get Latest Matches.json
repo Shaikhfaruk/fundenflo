@@ -21,7 +21,7 @@
         }
       ]
     },
-    "description": "The latest match run. Staff also see `ineligible` products and each product's screening and rule results. Only products of active lenders with an agreement in force, in the application's category, are considered. Borrower, partner and staff contexts."
+    "description": "The latest match run. Staff also see `ineligible` products and each product's screening and rule results. Only products of active lenders with an agreement in force, in the application's category, are considered. Each result names the lender (`id`, `key`, `name`, `organizationId`); partners pass `organizationId` as the lender scope when the borrower confirms sharing by SMS code (`POST /partner/applications/:id/borrower-consent/verify`). Borrower, partner and staff contexts."
   },
   "event": [
     {
