@@ -46,6 +46,13 @@ const conversion = (payload: Payload): RealtimeTarget[] => {
   return [{ kind: 'emit', rooms: rooms(RealtimeRoom.staff, organizationId && RealtimeRoom.organization(organizationId)), event: RealtimeEvent.ConversionChanged, data: { conversionId: text(payload, 'conversionId'), leadId: text(payload, 'leadId'), status: text(payload, 'status') } }];
 };
 
+const document = (payload: Payload): RealtimeTarget[] => {
+  const userId = text(payload, 'uploadedByUserId');
+  const organizationId = text(payload, 'partnerOrganizationId');
+  const targets = rooms(userId && RealtimeRoom.user(userId), organizationId && RealtimeRoom.organization(organizationId));
+  return targets.length > 0 ? [{ kind: 'emit', rooms: targets, event: RealtimeEvent.DocumentChanged, data: { documentId: text(payload, 'documentId'), applicationId: text(payload, 'applicationId'), status: text(payload, 'status') } }] : [];
+};
+
 const ROUTES: Partial<Record<EventName, (payload: Payload) => RealtimeTarget[]>> = {
   [EventName.LeadCaptured]: lead,
   [EventName.LeadUpdated]: lead,
@@ -71,6 +78,9 @@ const ROUTES: Partial<Record<EventName, (payload: Payload) => RealtimeTarget[]>>
   [EventName.ImportValidated]: (payload) => [{ kind: 'emit', rooms: [RealtimeRoom.staff], event: RealtimeEvent.ImportChanged, data: { importId: text(payload, 'entityId') } }],
   [EventName.ImportCommitted]: (payload) => [{ kind: 'emit', rooms: [RealtimeRoom.staff], event: RealtimeEvent.ImportChanged, data: { importId: text(payload, 'entityId') } }],
   [EventName.ImportUndone]: (payload) => [{ kind: 'emit', rooms: [RealtimeRoom.staff], event: RealtimeEvent.ImportChanged, data: { importId: text(payload, 'entityId') } }],
+  [EventName.DocumentScanned]: document,
+  [EventName.DocumentRejected]: document,
+  [EventName.DocumentDeleted]: document,
   [EventName.MembershipChanged]: (payload) => {
     const membershipId = text(payload, 'membershipId');
     return membershipId && payload.status !== undefined && payload.status !== 'active' ? [{ kind: 'disconnect', rooms: [RealtimeRoom.membership(membershipId)] }] : [];

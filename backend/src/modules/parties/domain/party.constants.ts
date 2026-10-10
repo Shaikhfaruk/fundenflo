@@ -33,6 +33,9 @@ export const PartyMergeParticipantKey = {
   Answers: 'answers',
   Consents: 'consents',
   Leads: 'leads',
+  Borrowers: 'borrowers',
+  Applications: 'applications',
+  Documents: 'documents',
 } as const;
 
 export type PartyMergeParticipantKey = (typeof PartyMergeParticipantKey)[keyof typeof PartyMergeParticipantKey];

@@ -17,6 +17,86 @@ model DocumentType {
   createdAt          DateTime        @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt          DateTime        @updatedAt @map("updated_at") @db.Timestamptz(3)
 
+  documents Document[]
+
   @@index([status])
   @@map("document_types")
+}
+
+enum DocumentStatus {
+  uploaded
+  scanning
+  scanned
+  classifying
+  extracting
+  verified
+  needs_review
+  rejected
+  expired
+  deleted
+  purged
+}
+
+enum DocumentSource {
+  upload
+  digilocker
+  account_aggregator
+  ops
+}
+
+enum DocumentRejectReason {
+  infected
+  wrong_document
+  illegible
+  outdated
+  other
+}
+
+model Document {
+  id                    String                @id @default(uuid(7)) @db.Uuid
+  documentTypeId        String                @map("document_type_id") @db.Uuid
+  partyId               String                @map("party_id") @db.Uuid
+  borrowerProfileId     String?               @map("borrower_profile_id") @db.Uuid
+  applicationId         String?               @map("application_id") @db.Uuid
+  partnerOrganizationId String?               @map("partner_organization_id") @db.Uuid
+  source                DocumentSource        @default(upload)
+  status                DocumentStatus        @default(uploaded)
+  storageKey            String                @unique @map("storage_key")
+  fileName              String                @map("file_name")
+  mimeType              String                @map("mime_type")
+  sizeBytes             Int                   @map("size_bytes")
+  sha256                String
+  pages                 Int?
+  periodStart           DateTime?             @map("period_start") @db.Date
+  periodEnd             DateTime?             @map("period_end") @db.Date
+  passwordEnc           String?               @map("password_enc")
+  scanEngine            String?               @map("scan_engine")
+  scanSignature         String?               @map("scan_signature")
+  scanAttempts          Int                   @default(0) @map("scan_attempts")
+  scannedAt             DateTime?             @map("scanned_at") @db.Timestamptz(3)
+  rejectReason          DocumentRejectReason? @map("reject_reason")
+  rejectNote            String?               @map("reject_note")
+  freshUntil            DateTime?             @map("fresh_until") @db.Timestamptz(3)
+  retentionUntil        DateTime?             @map("retention_until") @db.Timestamptz(3)
+  lockedAt              DateTime?             @map("locked_at") @db.Timestamptz(3)
+  uploadedByUserId      String                @map("uploaded_by_user_id") @db.Uuid
+  uploadedContext       SessionContext        @map("uploaded_context")
+  deletedAt             DateTime?             @map("deleted_at") @db.Timestamptz(3)
+  deletedByUserId       String?               @map("deleted_by_user_id") @db.Uuid
+  storageDeletedAt      DateTime?             @map("storage_deleted_at") @db.Timestamptz(3)
+  version               Int                   @default(1)
+  createdAt             DateTime              @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt             DateTime              @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  documentType    DocumentType     @relation(fields: [documentTypeId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  party           Party            @relation("document_party", fields: [partyId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  borrowerProfile BorrowerProfile? @relation(fields: [borrowerProfileId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  application     LoanApplication? @relation(fields: [applicationId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([partyId, status])
+  @@index([partyId, sha256])
+  @@index([applicationId, status])
+  @@index([borrowerProfileId, createdAt])
+  @@index([status, updatedAt])
+  @@map("documents")
 }

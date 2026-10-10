@@ -83,3 +83,10 @@ These are the places where a second copy is most tempting. Use the one listed.
 | Changing an application's status | `ApplicationService.transition()` (state machine, event row, audit, outbox) | Updating `loan_applications.status` from other services or controllers |
 | Marking a lead converted when its person starts an application | `LeadService.convertToApplication()` | Closing lead assignments or setting `convertedApplicationId` from applications |
 | Deciding an application's next step and blockers | `computeJourney()` in `applications/domain/journey.ts` | Per-client or per-controller stage logic |
+| Receiving a document file | `POST /documents` → `DocumentService.upload` (streamed by `DocumentUploadEngine`, owner via `@DocumentOwnerFor`) | Per-module upload routes or buffering files in memory |
+| Deciding a file's real type | `sniffMimeType()` in `engines/documents/file-signature.ts` | Trusting the client `Content-Type` or the file extension |
+| Scanning files for malware | `AntivirusScanner` port through `DocumentScanService` | Calling clamd or another engine from other modules |
+| Whether a checklist slot is covered | `DocumentChecklistService.heldChecklist()` (`satisfyChecklist`) | Counting `documents` rows in applications or lenders |
+| Logging who read or downloaded a document | Audit events with `AuditEntity.Document` (`document.download_url_issued`) | A separate `document_access_logs` table (planned in §9, replaced by the audit log) |
+| Re-checking an application after documents or consents change | queue `applications.refresh` → `ApplicationService.refreshForParties()` | Updating `journey_stage` or status from documents or consents code |
+| Sanitising a file name | `common/utils/file-name.ts` (`safeFileName`, `displayFileName`) | Local regex helpers in services |

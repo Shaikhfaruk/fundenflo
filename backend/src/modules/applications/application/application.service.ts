@@ -14,7 +14,7 @@ import { paiseFromNumber } from '../../../common/money/paise.js';
 import { RefGenerator, RefKind } from '../../../infrastructure/database/ref-generator.js';
 import { remainingRequired } from '../../../engines/questionnaire/resolve.js';
 import type { QuestionnaireContext } from '../../../engines/questionnaire/questionnaire.types.js';
-import { ApplicationEvent, applicationMachine, CLOSED_APPLICATION_STATES } from '../../../engines/state-machines/machines/application.machine.js';
+import { ApplicationEvent, applicationMachine, CLOSED_APPLICATION_STATES, PRE_SUBMISSION_APPLICATION_STATES } from '../../../engines/state-machines/machines/application.machine.js';
 import type { Prisma } from '../../../generated/prisma/client.js';
 import { AppAction, type AppAbility } from '../../access/domain/ability.types.js';
 import { ChangeRecorder } from '../../audit/application/change-recorder.service.js';
@@ -26,9 +26,11 @@ import { ConsentService } from '../../consents/application/consent.service.js';
 import { JOURNEY_CONSENT_CONTEXT } from '../../consents/domain/consent.constants.js';
 import { DocumentChecklistService } from '../../documents/application/document-checklist.service.js';
 import { DocumentStage } from '../../documents/domain/document.constants.js';
+import type { DocumentOwnerScope } from '../../documents/domain/document-owner.types.js';
 import { LeadService } from '../../leads/application/lead.service.js';
 import { type AnswerInput, QuestionnaireService } from '../../questionnaires/application/questionnaire.service.js';
 import { QuestionnaireStage } from '../../questionnaires/domain/questionnaire.constants.js';
+import { APPLICATION_REFRESH_BATCH, APPLICATION_TIMELINE_LIMIT } from '../domain/application.constants.js';
 import { computeJourney, JourneyStage } from '../domain/journey.js';
 import { type ApplicationRow, ApplicationRepository } from '../infrastructure/application.repository.js';
 import { ApplicationTimeline } from './application-timeline.service.js';
@@ -39,8 +41,6 @@ export type CreateApplicationInput = { segment: string; subSegment?: string; bus
 export type RequirementPatch = { category?: string; purpose?: string | null; purposeNote?: string | null; amountPaise?: number; tenureMonths?: number; cityId?: string; city?: string; pincode?: string };
 
 export type ApplicationActor = { userId: string; actingPartyId: string; channel: ApplicationChannel; partnerOrganizationId: string | null; answerChannel: AnswerChannel };
-
-const TIMELINE_LIMIT = 100;
 
 @Injectable()
 export class ApplicationService {
@@ -162,12 +162,24 @@ export class ApplicationService {
 
   async timelineOf(id: string, ability: AppAbility) {
     await this.visible(id, ability, AppAction.Read);
-    return { items: (await this.applications.events(id, TIMELINE_LIMIT)).map(toApplicationEventView) };
+    return { items: (await this.applications.events(id, APPLICATION_TIMELINE_LIMIT)).map(toApplicationEventView) };
   }
 
   async checklist(id: string, ability: AppAbility, locale: Locale, stage: string = DocumentStage.Assessment) {
     const application = await this.visible(id, ability, AppAction.Read);
-    return this.checklists.checklist({ stage, segment: application.segmentKey, subSegment: application.subSegmentKey ?? undefined, category: application.categoryKey ?? undefined }, locale, { partyId: application.partyId });
+    return this.checklists.heldChecklist({ stage, segment: application.segmentKey, subSegment: application.subSegmentKey ?? undefined, category: application.categoryKey ?? undefined }, locale, { partyId: application.partyId, applicationId: application.id });
+  }
+
+  async documentScope(id: string, ability: AppAbility): Promise<DocumentOwnerScope> {
+    const application = await this.visible(id, ability, AppAction.Update);
+    this.assertOpen(application);
+    return { partyId: application.partyId, borrowerProfileId: application.borrowerProfileId, applicationId: application.id, partnerOrganizationId: application.partnerOrganizationId };
+  }
+
+  async refreshForParties(partyIds: string[]) {
+    const open = await this.applications.openForParties(partyIds, [...PRE_SUBMISSION_APPLICATION_STATES], APPLICATION_REFRESH_BATCH);
+    for (const { id } of open) await this.refreshLocked(id);
+    return open.length;
   }
 
   @Transactional()
@@ -195,9 +207,16 @@ export class ApplicationService {
     return next;
   }
 
+  @Transactional()
+  private async refreshLocked(id: string) {
+    await this.applications.lock(id);
+    await this.refreshStage(id);
+  }
+
   private async refreshStage(id: string) {
     const application = await this.require(id);
     const journey = await this.journeyOf(application, DEFAULT_LOCALE);
+    if (application.status === ApplicationStatus.pre_screened && journey.completed.includes(JourneyStage.Consent)) await this.transition(application, ApplicationEvent.RequestDocuments);
     if (journey.stage === application.journeyStage) return;
     await this.applications.update(id, { journeyStage: journey.stage });
     await this.timeline.record(id, ApplicationEventType.stage_changed, { data: { from: application.journeyStage, to: journey.stage } });
@@ -211,19 +230,17 @@ export class ApplicationService {
       ...(application.purposeKey === null ? ['purpose'] : []),
     ];
     const context = this.contextOf(application, QuestionnaireStage.PreCheck);
-    const [questionnaire, answers, consentMissing, checklist] = await Promise.all([
-      this.questionnaires.resolve(context, application.partyId),
-      this.questionnaires.listAnswers(application.partyId, { limit: 100 }),
-      this.consents.missingRequired(application.actingPartyId, JOURNEY_CONSENT_CONTEXT),
-      this.checklists.checklist({ stage: DocumentStage.Assessment, segment: application.segmentKey, subSegment: application.subSegmentKey ?? undefined, category: application.categoryKey ?? undefined }, locale, { partyId: application.partyId }),
-    ]);
+    const questionnaire = await this.questionnaires.resolve(context, application.partyId);
+    const answers = await this.questionnaires.listAnswers(application.partyId, { limit: 100 });
+    const consentMissing = await this.consents.missingRequired(application.actingPartyId, JOURNEY_CONSENT_CONTEXT);
+    const checklist = await this.checklists.heldChecklist({ stage: DocumentStage.Assessment, segment: application.segmentKey, subSegment: application.subSegmentKey ?? undefined, category: application.categoryKey ?? undefined }, locale, { partyId: application.partyId, applicationId: application.id });
     const answered = new Set(answers.items.map((answer) => answer.questionKey));
     return computeJourney({
       categoryChosen: application.categoryKey !== null,
       requirementMissing,
       preCheckRemaining: remainingRequired(questionnaire, answered),
       consentMissing,
-      documentsMissing: checklist.items.filter((item) => item.required && !item.conditional).map((item) => item.key),
+      documentsMissing: checklist.items.filter((item) => item.required && !item.conditional && !item.satisfied).map((item) => item.key),
       detailsVerified: false,
       scored: false,
       matched: false,

@@ -1,0 +1,109 @@
+{
+  "name": "Get Document Download URL",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/documents/:id/download-url",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "documents",
+        ":id",
+        "download-url"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{documentId}}"
+        }
+      ]
+    },
+    "description": "A read link valid for 5 minutes, served with the detected content type. Only for files that passed the malware scan (409 `DOCUMENT_NOT_READY` while scanning or after rejection). Every link issued is recorded in the audit log. Borrowers see the documents of their own borrower profiles and applications; staff see them by role (ops and compliance can also download; support sees metadata only). Others get 404."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.test('returns a link', () => pm.expect(pm.response.json().url).to.match(/^https?:/));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/documents/:id/download-url",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "documents",
+            ":id",
+            "download-url"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{documentId}}"
+            }
+          ]
+        },
+        "description": "A read link valid for 5 minutes, served with the detected content type. Only for files that passed the malware scan (409 `DOCUMENT_NOT_READY` while scanning or after rejection). Every link issued is recorded in the audit log. Borrowers see the documents of their own borrower profiles and applications; staff see them by role (ops and compliance can also download; support sees metadata only). Others get 404."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"url\": \"http://127.0.0.1:10000/devstoreaccount1/fundenflo-private/documents/01a12270-1a2b-7c3d-8e4f-5061728394a5?sv=2025-01-05&se=2026-10-10T16%3A35%3A00Z&sr=b&sp=r&sig=REDACTED\",\n  \"expiresAt\": \"2026-10-10T16:35:00.000Z\"\n}"
+    },
+    {
+      "name": "409 DOCUMENT_NOT_READY",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/documents/:id/download-url",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "documents",
+            ":id",
+            "download-url"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{documentId}}"
+            }
+          ]
+        },
+        "description": "A read link valid for 5 minutes, served with the detected content type. Only for files that passed the malware scan (409 `DOCUMENT_NOT_READY` while scanning or after rejection). Every link issued is recorded in the audit log. Borrowers see the documents of their own borrower profiles and applications; staff see them by role (ops and compliance can also download; support sees metadata only). Others get 404."
+      },
+      "status": "Conflict",
+      "code": 409,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"DOCUMENT_NOT_READY\",\n  \"message\": \"This document is still being checked. Try again in a moment.\",\n  \"details\": {\n    \"status\": \"scanning\"\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

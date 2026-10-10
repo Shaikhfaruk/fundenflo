@@ -9,6 +9,7 @@ import type {
   BorrowerProfile,
   ConfigDocument,
   ConsentPurpose,
+  Document,
   DocumentType,
   FollowUp,
   ImportBatch,
@@ -37,6 +38,7 @@ export const AppAction = {
   Approve: 'approve',
   Publish: 'publish',
   Assign: 'assign',
+  Download: 'download',
 } as const;
 
 export type AppAction = (typeof AppAction)[keyof typeof AppAction];
@@ -72,6 +74,7 @@ export type AppSubjects =
       DocumentType: DocumentType;
       BorrowerProfile: BorrowerProfile;
       LoanApplication: LoanApplication;
+      Document: Document;
     }>;
 
 export type AppAbility = Ability<[AppAction, AppSubjects], PrismaQueryOf<Prisma.TypeMap>>;

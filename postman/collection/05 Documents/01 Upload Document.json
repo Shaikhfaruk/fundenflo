@@ -1,0 +1,239 @@
+{
+  "name": "Upload Document",
+  "request": {
+    "method": "POST",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/documents",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "documents"
+      ]
+    },
+    "description": "Multipart upload (`file`, `documentType`, and either `applicationId` or `borrowerProfileId`; optional `password` for a protected PDF, stored encrypted for extraction). The file streams straight to private storage; its type is read from the content (a renamed file is refused with 415), checked against the document type's accepted types and size limit (413), and hashed. The same file uploaded again for the same slot returns the existing document. New documents start as `uploaded` and are scanned for malware in the background (`scanned` or `rejected` with `rejectReason: infected`). Profile-level documents (no application) count for every application of that profile. Borrowers see the documents of their own borrower profiles and applications; staff see them by role (ops and compliance can also download; support sees metadata only). Others get 404.",
+    "body": {
+      "mode": "formdata",
+      "formdata": [
+        {
+          "key": "documentType",
+          "value": "bank_statement",
+          "type": "text"
+        },
+        {
+          "key": "applicationId",
+          "value": "{{applicationId}}",
+          "type": "text"
+        },
+        {
+          "key": "file",
+          "type": "file",
+          "src": "fixtures/sample-bank-statement.pdf"
+        }
+      ]
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 201', () => pm.response.to.have.status(201));",
+          "pm.collectionVariables.set('documentId', String(pm.response.json().id));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "201 Created",
+      "originalRequest": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/documents",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "documents"
+          ]
+        },
+        "description": "Multipart upload (`file`, `documentType`, and either `applicationId` or `borrowerProfileId`; optional `password` for a protected PDF, stored encrypted for extraction). The file streams straight to private storage; its type is read from the content (a renamed file is refused with 415), checked against the document type's accepted types and size limit (413), and hashed. The same file uploaded again for the same slot returns the existing document. New documents start as `uploaded` and are scanned for malware in the background (`scanned` or `rejected` with `rejectReason: infected`). Profile-level documents (no application) count for every application of that profile. Borrowers see the documents of their own borrower profiles and applications; staff see them by role (ops and compliance can also download; support sees metadata only). Others get 404.",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "documentType",
+              "value": "bank_statement",
+              "type": "text"
+            },
+            {
+              "key": "applicationId",
+              "value": "{{applicationId}}",
+              "type": "text"
+            },
+            {
+              "key": "file",
+              "type": "file",
+              "src": "fixtures/sample-bank-statement.pdf"
+            }
+          ]
+        }
+      },
+      "status": "Created",
+      "code": 201,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12270-1a2b-7c3d-8e4f-5061728394a5\",\n  \"documentType\": {\n    \"key\": \"bank_statement\",\n    \"label\": {\n      \"en\": \"Bank Statement\",\n      \"hi\": \"बैंक स्टेटमेंट\"\n    }\n  },\n  \"partyId\": \"01a12260-3c4d-7e5f-8061-728394a5b6c7\",\n  \"borrowerProfileId\": \"01a12260-1a2b-7c3d-8e4f-5061728394a5\",\n  \"applicationId\": \"01a12260-2b3c-7d4e-9f50-61728394a5b6\",\n  \"source\": \"upload\",\n  \"status\": \"uploaded\",\n  \"fileName\": \"sample-bank-statement.pdf\",\n  \"mimeType\": \"application/pdf\",\n  \"sizeBytes\": 623,\n  \"pages\": null,\n  \"period\": {\n    \"start\": null,\n    \"end\": null\n  },\n  \"passwordProtected\": false,\n  \"rejectReason\": null,\n  \"rejectNote\": null,\n  \"scannedAt\": null,\n  \"freshUntil\": \"2026-11-24T16:30:00.000Z\",\n  \"locked\": false,\n  \"uploadedContext\": \"borrower\",\n  \"version\": 1,\n  \"createdAt\": \"2026-10-10T16:30:00.000Z\",\n  \"updatedAt\": \"2026-10-10T16:30:00.000Z\"\n}"
+    },
+    {
+      "name": "415 FILE_TYPE_NOT_ALLOWED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/documents",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "documents"
+          ]
+        },
+        "description": "Multipart upload (`file`, `documentType`, and either `applicationId` or `borrowerProfileId`; optional `password` for a protected PDF, stored encrypted for extraction). The file streams straight to private storage; its type is read from the content (a renamed file is refused with 415), checked against the document type's accepted types and size limit (413), and hashed. The same file uploaded again for the same slot returns the existing document. New documents start as `uploaded` and are scanned for malware in the background (`scanned` or `rejected` with `rejectReason: infected`). Profile-level documents (no application) count for every application of that profile. Borrowers see the documents of their own borrower profiles and applications; staff see them by role (ops and compliance can also download; support sees metadata only). Others get 404.",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "documentType",
+              "value": "bank_statement",
+              "type": "text"
+            },
+            {
+              "key": "applicationId",
+              "value": "{{applicationId}}",
+              "type": "text"
+            },
+            {
+              "key": "file",
+              "type": "file",
+              "src": "fixtures/sample-bank-statement.pdf"
+            }
+          ]
+        }
+      },
+      "status": "Unsupported Media Type",
+      "code": 415,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"FILE_TYPE_NOT_ALLOWED\",\n  \"message\": \"This file type is not accepted for this document.\",\n  \"details\": {\n    \"detected\": null,\n    \"accepted\": [\n      \"application/pdf\",\n      \"image/jpeg\",\n      \"image/png\"\n    ]\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "413 PAYLOAD_TOO_LARGE",
+      "originalRequest": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/documents",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "documents"
+          ]
+        },
+        "description": "Multipart upload (`file`, `documentType`, and either `applicationId` or `borrowerProfileId`; optional `password` for a protected PDF, stored encrypted for extraction). The file streams straight to private storage; its type is read from the content (a renamed file is refused with 415), checked against the document type's accepted types and size limit (413), and hashed. The same file uploaded again for the same slot returns the existing document. New documents start as `uploaded` and are scanned for malware in the background (`scanned` or `rejected` with `rejectReason: infected`). Profile-level documents (no application) count for every application of that profile. Borrowers see the documents of their own borrower profiles and applications; staff see them by role (ops and compliance can also download; support sees metadata only). Others get 404.",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "documentType",
+              "value": "bank_statement",
+              "type": "text"
+            },
+            {
+              "key": "applicationId",
+              "value": "{{applicationId}}",
+              "type": "text"
+            },
+            {
+              "key": "file",
+              "type": "file",
+              "src": "fixtures/sample-bank-statement.pdf"
+            }
+          ]
+        }
+      },
+      "status": "Payload Too Large",
+      "code": 413,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"PAYLOAD_TOO_LARGE\",\n  \"message\": \"The request body is too large.\",\n  \"details\": {\n    \"sizeBytes\": 12582912,\n    \"maxSizeBytes\": 10485760\n  },\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/documents",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "documents"
+          ]
+        },
+        "description": "Multipart upload (`file`, `documentType`, and either `applicationId` or `borrowerProfileId`; optional `password` for a protected PDF, stored encrypted for extraction). The file streams straight to private storage; its type is read from the content (a renamed file is refused with 415), checked against the document type's accepted types and size limit (413), and hashed. The same file uploaded again for the same slot returns the existing document. New documents start as `uploaded` and are scanned for malware in the background (`scanned` or `rejected` with `rejectReason: infected`). Profile-level documents (no application) count for every application of that profile. Borrowers see the documents of their own borrower profiles and applications; staff see them by role (ops and compliance can also download; support sees metadata only). Others get 404.",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "documentType",
+              "value": "bank_statement",
+              "type": "text"
+            },
+            {
+              "key": "applicationId",
+              "value": "{{applicationId}}",
+              "type": "text"
+            },
+            {
+              "key": "file",
+              "type": "file",
+              "src": "fixtures/sample-bank-statement.pdf"
+            }
+          ]
+        }
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"file\",\n      \"code\": \"required\",\n      \"message\": \"attach the document file\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

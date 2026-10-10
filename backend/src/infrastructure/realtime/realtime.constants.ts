@@ -17,6 +17,7 @@ export const RealtimeEvent = {
   ConversionChanged: 'lead.conversion.changed',
   FollowUpDue: 'follow_up.due',
   ImportChanged: 'import.changed',
+  DocumentChanged: 'document.changed',
 } as const;
 
 export type RealtimeEvent = (typeof RealtimeEvent)[keyof typeof RealtimeEvent];

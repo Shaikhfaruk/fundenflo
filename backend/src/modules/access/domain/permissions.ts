@@ -23,6 +23,7 @@ const manageOrganizationMembers = (type: OrganizationType): Grant => ({ can }) =
 const ownBorrowing: Grant = ({ can }, { userId }) => {
   const own = { actingParty: { is: { user: { is: { id: userId } } } } };
   can([AppAction.Create, AppAction.Read, AppAction.Update], ['BorrowerProfile', 'LoanApplication'], own);
+  can([AppAction.Create, AppAction.Read, AppAction.Delete, AppAction.Download], 'Document', { borrowerProfile: { is: own } });
 };
 
 export const ROLE_GRANTS: Partial<Record<Role, Grant>> = {
@@ -41,7 +42,7 @@ export const ROLE_GRANTS: Partial<Record<Role, Grant>> = {
     can([AppAction.Read, AppAction.Update], 'PartnerProfile');
     can([AppAction.Read, AppAction.Approve], 'ConfigDocument');
     can(CONFIG_MAKER, 'ConfigDocument', { resource: { in: OPS_CONFIG_RESOURCES } });
-    can(AppAction.Manage, ['ApiClient', 'Lead', 'LeadAssignment', 'LeadSource', 'ImportBatch', 'Activity', 'FollowUp', 'OfflineConversion', 'BorrowerProfile', 'LoanApplication']);
+    can(AppAction.Manage, ['ApiClient', 'Lead', 'LeadAssignment', 'LeadSource', 'ImportBatch', 'Activity', 'FollowUp', 'OfflineConversion', 'BorrowerProfile', 'LoanApplication', 'Document']);
   },
   [Role.ops_reviewer]: ({ can }) => {
     can([AppAction.Read, AppAction.Update], ['Lead', 'Party']);
@@ -50,17 +51,19 @@ export const ROLE_GRANTS: Partial<Record<Role, Grant>> = {
     can([AppAction.Create, AppAction.Read, AppAction.Update], 'FollowUp');
     can(AppAction.Read, 'OfflineConversion');
     can([AppAction.Read, AppAction.Update], ['BorrowerProfile', 'LoanApplication']);
+    can([AppAction.Read, AppAction.Update, AppAction.Download], 'Document');
     can(AppAction.Read, ['LeadSource', 'AttributeDefinition', 'Question', 'ConsentPurpose', 'PartnerProfile', 'DocumentType', NonModelSubject.Catalog]);
   },
   [Role.compliance_officer]: ({ can }) => {
     can(AppAction.Read, ['User', 'Membership', 'Invitation', 'Organization', 'AuditEvent', 'AttributeDefinition', 'Party', 'Question', 'DocumentType', NonModelSubject.Catalog]);
     can(AppAction.Manage, 'ConsentPurpose');
     can(AppAction.Read, ['PartnerProfile', 'ApiClient', 'Lead', 'LeadAssignment', 'LeadSource', 'ImportBatch', 'Activity', 'FollowUp', 'OfflineConversion', 'BorrowerProfile', 'LoanApplication']);
+    can([AppAction.Read, AppAction.Download], 'Document');
     can([AppAction.Read, AppAction.Approve], 'ConfigDocument');
     can(CONFIG_MAKER, 'ConfigDocument', { resource: { in: COMPLIANCE_CONFIG_RESOURCES } });
   },
   [Role.support]: ({ can }) => {
-    can(AppAction.Read, ['User', 'Membership', 'AttributeDefinition', 'Party', 'Question', 'ConfigDocument', 'ConsentPurpose', 'PartnerProfile', 'Lead', 'LeadAssignment', 'LeadSource', 'Activity', 'FollowUp', 'OfflineConversion', 'DocumentType', 'BorrowerProfile', 'LoanApplication', NonModelSubject.Catalog]);
+    can(AppAction.Read, ['User', 'Membership', 'AttributeDefinition', 'Party', 'Question', 'ConfigDocument', 'ConsentPurpose', 'PartnerProfile', 'Lead', 'LeadAssignment', 'LeadSource', 'Activity', 'FollowUp', 'OfflineConversion', 'DocumentType', 'BorrowerProfile', 'LoanApplication', 'Document', NonModelSubject.Catalog]);
   },
   [Role.partner_manager]: (builder, actor) => {
     manageOrganizationMembers(OrganizationType.partner)(builder, actor);

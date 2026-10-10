@@ -57,7 +57,7 @@ export class AzureBlobStorage implements ObjectStorage, OnModuleInit {
 
   async createReadUrl(key: string, options: ReadUrlOptions): Promise<string> {
     const contentDisposition = options.downloadName ? `attachment; filename="${options.downloadName.replace(/"/g, '')}"` : undefined;
-    return this.sasUrl(key, 'r', options.ttlSeconds, { contentDisposition });
+    return this.sasUrl(key, 'r', options.ttlSeconds, { contentDisposition, contentType: options.contentType });
   }
 
   async createUploadUrl(key: string, options: UploadUrlOptions): Promise<string> {

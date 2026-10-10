@@ -48,6 +48,9 @@ export const ErrorCode = {
   PARTNER_ALREADY_REGISTERED: 'PARTNER_ALREADY_REGISTERED',
   API_KEY_INVALID: 'API_KEY_INVALID',
   CONSENT_LINK_INVALID: 'CONSENT_LINK_INVALID',
+  FILE_TYPE_NOT_ALLOWED: 'FILE_TYPE_NOT_ALLOWED',
+  DOCUMENT_NOT_READY: 'DOCUMENT_NOT_READY',
+  DOCUMENT_LOCKED: 'DOCUMENT_LOCKED',
   SERVICE_UNAVAILABLE: 'SERVICE_UNAVAILABLE',
   INTERNAL_ERROR: 'INTERNAL_ERROR',
 } as const;
@@ -104,6 +107,9 @@ export const ERROR_CATALOG: Record<ErrorCode, { status: number; message: string 
   PARTNER_ALREADY_REGISTERED: { status: 409, message: 'This account already has a partner registration.' },
   API_KEY_INVALID: { status: 401, message: 'This API key is missing, revoked or not valid.' },
   CONSENT_LINK_INVALID: { status: 410, message: 'This consent link has expired or was already used.' },
+  FILE_TYPE_NOT_ALLOWED: { status: 415, message: 'This file type is not accepted for this document.' },
+  DOCUMENT_NOT_READY: { status: 409, message: 'This document is still being checked. Try again in a moment.' },
+  DOCUMENT_LOCKED: { status: 409, message: 'This document was sent to a lender and cannot be removed.' },
   SERVICE_UNAVAILABLE: { status: 503, message: 'The service is temporarily unavailable. Please try again.' },
   INTERNAL_ERROR: { status: 500, message: 'Something went wrong. Please try again.' },
 };

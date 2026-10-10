@@ -62,6 +62,7 @@ model LoanApplication {
   party           Party              @relation("application_party", fields: [partyId], references: [id], onDelete: Restrict, onUpdate: Restrict)
   actingParty     Party              @relation("application_acting_party", fields: [actingPartyId], references: [id], onDelete: Restrict, onUpdate: Restrict)
   events          ApplicationEvent[]
+  documents       Document[]
 
   @@index([actingPartyId, status])
   @@index([partyId])

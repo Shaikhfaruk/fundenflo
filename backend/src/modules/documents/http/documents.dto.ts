@@ -1,7 +1,9 @@
 import { z } from 'zod';
 
-import { CatalogStatus, DataSensitivity } from '../../../common/enums/db.enums.js';
+import { CatalogStatus, DataSensitivity, DocumentStatus } from '../../../common/enums/db.enums.js';
 import { localisedLongTextSchema, localisedTextSchema } from '../../../common/i18n/locale.js';
+import { pageQuerySchema } from '../../../common/listing/cursor-page.js';
+import { uuidSchema } from '../../../common/validation/common.schemas.js';
 import { DOCUMENT_KEY_PATTERN, DOCUMENT_MAX_SIZE_BYTES, DOCUMENT_MIME_TYPES, DOCUMENT_PERIOD_RULES, DocumentStage } from '../domain/document.constants.js';
 
 const typeShape = {
@@ -40,3 +42,11 @@ export const checklistQuerySchema = z.object({
   fact: z.union([factPair, z.array(factPair).max(20)]).transform((value) => (Array.isArray(value) ? value : [value])).optional(),
 });
 export type ChecklistQuery = z.output<typeof checklistQuerySchema>;
+
+export const listDocumentsSchema = pageQuerySchema.extend({
+  applicationId: uuidSchema.optional(),
+  borrowerProfileId: uuidSchema.optional(),
+  status: z.enum(Object.values(DocumentStatus)).optional(),
+  documentType: z.string().regex(DOCUMENT_KEY_PATTERN).optional(),
+});
+export type ListDocumentsDto = z.output<typeof listDocumentsSchema>;

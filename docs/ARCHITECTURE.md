@@ -1,7 +1,7 @@
 # FundenFlo Backend — Architecture Diagrams
 
 > Living document. Any change that adds, renames, moves or removes a module, route group, queue, job, channel or worker updates the matching diagram here **and** [`inventory.md`](inventory.md) in the same change.
-> **Built (M0, M1, M2, M3a):** system context, identity & multiple logins (diagrams 3–4, parties/users/memberships/sessions parts), audit, notifications, outbox and the four M0 queues in diagram 9, the `catalog` module (diagram 2; feeds the Category and Requirement steps in diagram 7), the `attributes` module with the `conditions` and `facts` engines (diagram 2; the fact store and rule evaluation behind every step of diagram 7), and `config-publishing` + `questionnaires` with the `state-machines` and `questionnaire` engines (diagram 7: Pre-check step and the config lifecycle), `consents` with the `consents` engine (diagram 7: Consent step; diagram 5: consent gate before sharing), `partners` light with organization lifecycle (diagram 4: partner sign-in states; diagram 5: the CA pool routing will draw from), leads core: capture, lifecycle and the ops queue, and lead routing: versioned routing rules, the `assignment` engine, offers with accept deadlines, manual assign and revoke, and the `leads.route` queue, the CA lead inbox: masked offers, accept, decline, return, logged contact reveal, hand-over and lost, the `sla` (generic timers, swept every 30 s) and `activities` (activity log, follow-ups) modules, lead notifications, partner referrals with protection, CA lead edits and offline conversions, the party match review queue with undoable merges, realtime (Socket.IO gateway with the Redis adapter, `realtime.publish` via the Redis emitter) with push notifications, delta sync and lead / CA reports, and M2 config core: document types, versioned document requirements with the `documents` checklist engine, and the progressive profiling hook, and M3a: `borrowers` (one borrower profile per party, MSME business parties) and `applications` (requirement, pre-check, derived journey stage, `applicationMachine`, lead conversion) (diagrams 2, 3, 5, 6, 7, 8 and 9, green parts). Everything else is planned. Design rationale: [`BACKEND_ARCHITECTURE_PLAN.md`](BACKEND_ARCHITECTURE_PLAN.md).
+> **Built (M0, M1, M2, M3a, M3b):** system context, identity & multiple logins (diagrams 3–4, parties/users/memberships/sessions parts), audit, notifications, outbox and the four M0 queues in diagram 9, the `catalog` module (diagram 2; feeds the Category and Requirement steps in diagram 7), the `attributes` module with the `conditions` and `facts` engines (diagram 2; the fact store and rule evaluation behind every step of diagram 7), and `config-publishing` + `questionnaires` with the `state-machines` and `questionnaire` engines (diagram 7: Pre-check step and the config lifecycle), `consents` with the `consents` engine (diagram 7: Consent step; diagram 5: consent gate before sharing), `partners` light with organization lifecycle (diagram 4: partner sign-in states; diagram 5: the CA pool routing will draw from), leads core: capture, lifecycle and the ops queue, and lead routing: versioned routing rules, the `assignment` engine, offers with accept deadlines, manual assign and revoke, and the `leads.route` queue, the CA lead inbox: masked offers, accept, decline, return, logged contact reveal, hand-over and lost, the `sla` (generic timers, swept every 30 s) and `activities` (activity log, follow-ups) modules, lead notifications, partner referrals with protection, CA lead edits and offline conversions, the party match review queue with undoable merges, realtime (Socket.IO gateway with the Redis adapter, `realtime.publish` via the Redis emitter) with push notifications, delta sync and lead / CA reports, and M2 config core: document types, versioned document requirements with the `documents` checklist engine, and the progressive profiling hook, and M3a: `borrowers` (one borrower profile per party, MSME business parties) and `applications` (requirement, pre-check, derived journey stage, `applicationMachine`, lead conversion), and M3b: private document upload with type sniffing, background antivirus scan (`documents.scan`, `integrations/antivirus`), download links, checklist satisfaction and `applications.refresh` (diagrams 2, 3, 5, 6, 7, 8 and 9, green parts). Everything else is planned. Design rationale: [`BACKEND_ARCHITECTURE_PLAN.md`](BACKEND_ARCHITECTURE_PLAN.md).
 > Last updated: 2026-10-10
 
 ## Diagrams
@@ -158,10 +158,10 @@ flowchart TB
   LeadsGroup --> Ports
   Platform --> Ports
   classDef built fill:#d8f3dc,stroke:#2d6a4f,color:#081c15
-  class auth,access,parties,catalog,attributes,questionnaires,consents,partners,leads,imports,activities,sla,realtime,sync,documents,borrowers,applications,notifications,audit,configPublishing,conditions,facts,questionnaire,partyMatching,stateMachines,consentFold,assignment,docChecklist,database,queue,storage,crypto,cache built
+  class auth,access,parties,catalog,attributes,questionnaires,consents,partners,leads,imports,activities,sla,realtime,sync,documents,borrowers,applications,notifications,audit,configPublishing,conditions,facts,questionnaire,partyMatching,stateMachines,consentFold,assignment,docChecklist,database,queue,storage,crypto,cache,avP built
 ```
 
-Green = built (M0 – M3a). Rules: engines import nothing from Nest, modules or infrastructure. Modules talk only through exported façade services or domain events. Integrations are reached only through ports.
+Green = built (M0 – M3b). Rules: engines import nothing from Nest, modules or infrastructure. Modules talk only through exported façade services or domain events. Integrations are reached only through ports.
 
 ---
 
@@ -448,6 +448,33 @@ stateDiagram-v2
   expired --> [*]
 ```
 
+Document (built in M3b as `documentMachine`; the scan runs in the worker, `classifying` and `extracting` arrive with M5 extraction, `deleted` erases the file at once and `purged` is the retention or erasure end state):
+
+```mermaid
+stateDiagram-v2
+  direction LR
+  [*] --> uploaded
+  uploaded --> scanning: start_scan
+  scanning --> scanned: pass_scan
+  scanning --> rejected: fail_scan (infected or file missing)
+  scanned --> classifying: classify (M5)
+  classifying --> extracting: extract (M5)
+  extracting --> verified: verify
+  scanned --> verified: verify (ops)
+  extracting --> needs_review: flag
+  needs_review --> verified: verify
+  verified --> rejected: reject
+  verified --> expired: expire
+  rejected --> deleted: delete
+  verified --> deleted: delete
+  scanned --> deleted: delete
+  deleted --> purged: purge
+  expired --> purged: purge
+  purged --> [*]
+```
+
+Submission (planned for M6):
+
 ```mermaid
 stateDiagram-v2
   direction LR
@@ -488,7 +515,10 @@ flowchart LR
   SCHED -->|every 30 s| SLAQ[sla.timers: sweep due timers, SKIP LOCKED, handler per kind]
   Q -->|lead.captured / status_changed / updated, assignment declined / expired / revoked| ROUTEQ[leads.route: route]
   OPSR[Ops bulk-route] -->|direct enqueue| ROUTEQ
-  Q --> DOCQ[documents.scan → documents.extract]
+  Q -->|document.uploaded, scan_overdue| SCANQ[documents.scan: antivirus port]
+  SCANQ -->|document.scanned| DOCQ[documents.extract]
+  SLAQ -->|document_scan overdue| SCANQ
+  Q -->|document uploaded / rejected / deleted, consent granted / withdrawn| APPREF[applications.refresh: journey stage, request_documents]
   DOCQ --> ANQ[analysis.run]
   ANQ --> MQ2[matching.run]
   Q --> SUBQ[submissions.deliver]
@@ -499,7 +529,7 @@ flowchart LR
   SCHED -->|15 min| REP[reports.refresh]
   API[API request: OTP, invitation, consent link] -->|direct enqueue| NOTIF
   classDef built fill:#d8f3dc,stroke:#2d6a4f,color:#081c15
-  class UC,OB,RELAY,SCHED,MAINT,Q,REVOKE,CSYNC,DROPQ,NOTIF,API,IMPAPI,IMPQ,ROUTEQ,OPSR,SLAQ,LNOTIFY,RTP,GW,ROOMS built
+  class UC,OB,RELAY,SCHED,MAINT,Q,REVOKE,CSYNC,DROPQ,NOTIF,API,IMPAPI,IMPQ,ROUTEQ,OPSR,SLAQ,LNOTIFY,RTP,GW,ROOMS,SCANQ,APPREF built
 ```
 
 Queue and job details (producers, consumers, triggers) are in [`inventory/worker-queues-jobs.md`](inventory/worker-queues-jobs.md).

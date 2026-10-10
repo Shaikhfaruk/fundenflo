@@ -15,6 +15,7 @@ export type PutObjectInput = {
 export type ReadUrlOptions = {
   ttlSeconds: number;
   downloadName?: string;
+  contentType?: string;
 };
 
 export type UploadUrlOptions = {

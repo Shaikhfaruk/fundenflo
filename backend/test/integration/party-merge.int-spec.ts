@@ -86,6 +86,32 @@ describe('party match reviews and merges', () => {
     expect(kinds.body.details.map((issue: { code: string }) => issue.code)).toContain('kind_mismatch');
   });
 
+  it('carries borrower profiles, applications and documents to the survivor and back on revert', async () => {
+    const appUser = await otpLogin(t, randomMobile(), LoginAs.borrower);
+    const appParty = (await t.prisma.user.findUniqueOrThrow({ where: { id: appUser.user.id } })).partyId;
+    const application = await t.api().post('/v1/applications').set(bearer(appUser.accessToken)).send({ segment: 'individual', subSegment: 'salaried', category: 'personal' }).expect(201);
+    const document = await t.api().post('/v1/documents').set(bearer(appUser.accessToken)).field('documentType', 'pan').field('borrowerProfileId', application.body.borrowerProfileId).attach('file', Buffer.from('%PDF-1.7\nPAN card\n%%EOF\n'), { filename: 'pan.pdf', contentType: 'application/pdf' }).expect(201);
+    const enquiry = await lead({ name: 'Imran Qureshi', mobile: randomMobile(), consent });
+
+    const merged = await t.api().post('/v1/ops/parties/merge').set(bearer(ops.accessToken)).send({ survivorPartyId: enquiry.party.id, mergedPartyId: appParty, reason: 'Enquiry before the app sign-up' }).expect(201);
+    const moved = { application: await t.prisma.loanApplication.findUniqueOrThrow({ where: { id: application.body.id } }), profile: await t.prisma.borrowerProfile.findUniqueOrThrow({ where: { id: application.body.borrowerProfileId } }), document: await t.prisma.document.findUniqueOrThrow({ where: { id: document.body.id } }) };
+    expect(moved.application).toMatchObject({ partyId: enquiry.party.id, actingPartyId: enquiry.party.id });
+    expect(moved.profile).toMatchObject({ partyId: enquiry.party.id, actingPartyId: enquiry.party.id });
+    expect(moved.document.partyId).toBe(enquiry.party.id);
+    await t.api().get(`/v1/applications/${application.body.id}`).set(bearer(appUser.accessToken)).expect(200);
+    await t.api().get(`/v1/documents/${document.body.id}`).set(bearer(appUser.accessToken)).expect(200);
+
+    await t.api().post(`/v1/ops/party-merges/${merged.body.id}/revert`).set(bearer(ops.accessToken)).send({ reason: 'Different people after all' }).expect(200);
+    expect(await t.prisma.loanApplication.findUniqueOrThrow({ where: { id: application.body.id } })).toMatchObject({ partyId: appParty, actingPartyId: appParty });
+    expect((await t.prisma.document.findUniqueOrThrow({ where: { id: document.body.id } })).partyId).toBe(appParty);
+
+    const second = await otpLogin(t, randomMobile(), LoginAs.borrower);
+    await t.api().post('/v1/borrower-profiles').set(bearer(second.accessToken)).send({ segment: 'individual' }).expect(201);
+    const secondParty = (await t.prisma.user.findUniqueOrThrow({ where: { id: second.user.id } })).partyId;
+    const refused = await t.api().post('/v1/ops/parties/merge').set(bearer(ops.accessToken)).send({ survivorPartyId: appParty, mergedPartyId: secondParty, reason: 'Two profiles' }).expect(400);
+    expect(refused.body.details.map((issue: { code: string }) => issue.code)).toEqual(expect.arrayContaining(['two_logins', 'two_borrower_profiles']));
+  });
+
   it('dismisses a review when the people are different', async () => {
     const mobile = randomMobile();
     await lead({ name: 'Aarav Mehta', mobile });

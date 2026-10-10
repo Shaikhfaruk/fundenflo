@@ -26,7 +26,7 @@
         }
       ]
     },
-    "description": "The document checklist for this application, with conditions resolved against the borrower's facts. Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records."
+    "description": "The document checklist for this application, with conditions resolved against the borrower's facts. Each item says whether it is `satisfied` and lists the documents counted for it: the application's own uploads plus profile-level ones, excluding rejected, deleted and stale (past `freshUntil`) documents. Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records."
   },
   "event": [
     {
@@ -68,7 +68,7 @@
             }
           ]
         },
-        "description": "The document checklist for this application, with conditions resolved against the borrower's facts. Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records."
+        "description": "The document checklist for this application, with conditions resolved against the borrower's facts. Each item says whether it is `satisfied` and lists the documents counted for it: the application's own uploads plus profile-level ones, excluding rejected, deleted and stale (past `freshUntil`) documents. Borrower context (the applicant's own records, reached through their login); partner context sees applications its firm filed (M3c). Lists and reads never show other people's records."
       },
       "status": "OK",
       "code": 200,
@@ -79,7 +79,7 @@
           "value": "application/json; charset=utf-8"
         }
       ],
-      "body": "{\n  \"stage\": \"assessment\",\n  \"requirements\": [\n    {\n      \"key\": \"assessment.base\",\n      \"versionId\": \"01a12250-3c4d-7e5f-8061-728394a5b6c7\"\n    }\n  ],\n  \"items\": [\n    {\n      \"key\": \"bank_statement\",\n      \"label\": \"Bank Statement\",\n      \"description\": \"Last 6 Months · Main Account\",\n      \"required\": true,\n      \"minCount\": 1,\n      \"anyOf\": false,\n      \"conditional\": false,\n      \"documentTypes\": [],\n      \"neededBy\": [\n        \"assessment.base\"\n      ]\n    }\n  ],\n  \"hidden\": []\n}"
+      "body": "{\n  \"stage\": \"assessment\",\n  \"requirements\": [\n    {\n      \"key\": \"assessment.base\",\n      \"versionId\": \"01a12250-3c4d-7e5f-8061-728394a5b6c7\"\n    }\n  ],\n  \"items\": [\n    {\n      \"key\": \"bank_statement\",\n      \"label\": \"Bank Statement\",\n      \"description\": \"Last 6 Months · Main Account\",\n      \"required\": true,\n      \"minCount\": 1,\n      \"anyOf\": false,\n      \"conditional\": false,\n      \"documentTypes\": [],\n      \"neededBy\": [\n        \"assessment.base\"\n      ],\n      \"satisfied\": true,\n      \"documents\": [\n        {\n          \"id\": \"01a12270-1a2b-7c3d-8e4f-5061728394a5\",\n          \"documentType\": \"bank_statement\",\n          \"status\": \"scanned\",\n          \"fileName\": \"sample-bank-statement.pdf\",\n          \"applicationId\": \"01a12260-2b3c-7d4e-9f50-61728394a5b6\",\n          \"createdAt\": \"2026-10-10T16:00:00.000Z\"\n        }\n      ]\n    }\n  ],\n  \"hidden\": []\n}"
     }
   ]
 }

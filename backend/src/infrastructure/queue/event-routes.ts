@@ -6,8 +6,8 @@ const ROUTES: Partial<Record<EventName, QueueName[]>> = {
   [EventName.MembershipChanged]: [QueueName.AuthSessionRevocations],
   [EventName.UserStatusChanged]: [QueueName.AuthSessionRevocations],
   [EventName.OrganizationStatusChanged]: [QueueName.AuthSessionRevocations],
-  [EventName.ConsentGranted]: [QueueName.LeadsConsentSync],
-  [EventName.ConsentWithdrawn]: [QueueName.LeadsConsentSync],
+  [EventName.ConsentGranted]: [QueueName.LeadsConsentSync, QueueName.ApplicationsRefresh],
+  [EventName.ConsentWithdrawn]: [QueueName.LeadsConsentSync, QueueName.ApplicationsRefresh],
   [EventName.PartyMerged]: [QueueName.LeadsConsentSync],
   [EventName.PartyMergeReverted]: [QueueName.LeadsConsentSync],
   [EventName.UserSignedUp]: [QueueName.LeadsDropoff],
@@ -23,6 +23,10 @@ const ROUTES: Partial<Record<EventName, QueueName[]>> = {
   [EventName.LeadSlaWarned]: [QueueName.LeadsNotify],
   [EventName.LeadSlaBreached]: [QueueName.LeadsNotify],
   [EventName.FollowUpDue]: [QueueName.LeadsNotify],
+  [EventName.DocumentUploaded]: [QueueName.DocumentsScan, QueueName.ApplicationsRefresh],
+  [EventName.DocumentScanOverdue]: [QueueName.DocumentsScan],
+  [EventName.DocumentRejected]: [QueueName.ApplicationsRefresh],
+  [EventName.DocumentDeleted]: [QueueName.ApplicationsRefresh],
 };
 
 export const EVENT_ROUTES: Partial<Record<EventName, QueueName[]>> = { ...ROUTES };

@@ -93,6 +93,11 @@ export const envSchema = z
     STORAGE_CONNECTION_STRING: optional(z.string().min(1)),
     STORAGE_ACCOUNT_URL: optional(z.url()),
     STORAGE_CONTAINER: z.string().regex(/^[a-z0-9](?:[a-z0-9-]{1,61}[a-z0-9])$/, 'must be a valid blob container name'),
+
+    ANTIVIRUS_DRIVER: z.enum(['clamav', 'eicar']).default('eicar'),
+    CLAMAV_HOST: optional(z.string().min(1)),
+    CLAMAV_PORT: z.coerce.number().int().min(1).max(65535).default(3310),
+    CLAMAV_TIMEOUT_MS: z.coerce.number().int().min(1000).max(600000).default(60000),
   })
   .superRefine((env, ctx) => {
     const issue = (path: string, message: string) => ctx.addIssue({ code: 'custom', path: [path], message });
@@ -120,11 +125,13 @@ export const envSchema = z
     if (!env.STORAGE_CONNECTION_STRING && !env.STORAGE_ACCOUNT_URL) {
       issue('STORAGE_ACCOUNT_URL', 'set STORAGE_ACCOUNT_URL (managed identity) or STORAGE_CONNECTION_STRING');
     }
+    if (env.ANTIVIRUS_DRIVER === 'clamav' && !env.CLAMAV_HOST) issue('CLAMAV_HOST', 'required when ANTIVIRUS_DRIVER=clamav');
 
     if (env.NODE_ENV === 'production') {
       if (env.SMS_DRIVER === 'log') issue('SMS_DRIVER', 'a real SMS provider is required in production');
       if (env.EMAIL_DRIVER === 'log') issue('EMAIL_DRIVER', 'a real email provider is required in production');
       if (env.PUSH_DRIVER === 'log') issue('PUSH_DRIVER', 'expo is required in production');
+      if (env.ANTIVIRUS_DRIVER !== 'clamav') issue('ANTIVIRUS_DRIVER', 'clamav is required in production');
       if (env.CRYPTO_DRIVER === 'local') issue('CRYPTO_DRIVER', 'azure_key_vault is required in production');
       if (env.AUTH_OTP_STATIC_CODE) issue('AUTH_OTP_STATIC_CODE', 'must be empty in production');
     }

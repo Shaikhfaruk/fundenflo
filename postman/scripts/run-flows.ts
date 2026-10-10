@@ -111,7 +111,7 @@ function runFlow(file: string, env: Map<string, string>): boolean {
     Object.assign(variables, staff, Object.fromEntries(IDENTITY_CREDENTIALS.map((key) => [`${DEFAULT_IDENTITY}${key}`, staff[`staff${key}`] ?? ''])));
   }
   if (flow.requires?.includes('checkerInvitation')) Object.assign(variables, createStaffInvitation('checker', 'ops_lead', CHECKER_FULL_NAME));
-  const args = ['run', output, '-e', ENVIRONMENT, '--bail', '--color', 'on', ...Object.entries(variables).flatMap(([name, value]) => ['--env-var', `${name}=${value}`])];
+  const args = ['run', output, '-e', ENVIRONMENT, '--working-dir', POSTMAN_ROOT, '--no-insecure-file-read', '--bail', '--color', 'on', ...Object.entries(variables).flatMap(([name, value]) => ['--env-var', `${name}=${value}`])];
   process.stdout.write(`\n▶ ${flow.name}\n`);
   return spawnSync(NEWMAN, args, { stdio: 'inherit' }).status === 0;
 }

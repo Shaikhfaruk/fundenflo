@@ -1,0 +1,3 @@
+export const APPLICATION_REFRESH_BATCH = 50;
+
+export const APPLICATION_TIMELINE_LIMIT = 100;

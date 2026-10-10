@@ -75,6 +75,11 @@ export const EventName = {
   ApplicationUpdated: 'application.updated',
   ApplicationStatusChanged: 'application.status.changed',
   LeadConverted: 'lead.converted',
+  DocumentUploaded: 'document.uploaded',
+  DocumentScanned: 'document.scanned',
+  DocumentRejected: 'document.rejected',
+  DocumentScanOverdue: 'document.scan_overdue',
+  DocumentDeleted: 'document.deleted',
 } as const;
 
 export type EventName = (typeof EventName)[keyof typeof EventName];

@@ -8,13 +8,19 @@ import { coerceFactText } from '../../../engines/conditions/coerce.js';
 import type { FactValue } from '../../../engines/conditions/condition.types.js';
 import type { ChecklistContext, ChecklistItem, CompiledDocumentRequirement } from '../../../engines/documents/documents.types.js';
 import { latestAssessmentYear, resolveChecklist } from '../../../engines/documents/resolve-checklist.js';
+import { type SlotSatisfaction, satisfyChecklist } from '../../../engines/documents/satisfy-checklist.js';
 import { AttributeDictionary } from '../../attributes/application/attribute-dictionary.service.js';
 import { FactService } from '../../attributes/application/fact.service.js';
 import { ConfigPublishingService } from '../../config-publishing/application/config-publishing.service.js';
 import { renderTemplate } from '../../notifications/domain/template-renderer.js';
 import { DocumentTextParam } from '../domain/document.constants.js';
+import { DocumentRepository } from '../infrastructure/document.repository.js';
 import type { DocumentTypeView } from './document.views.js';
 import { DocumentTypeService } from './document-type.service.js';
+
+export type ChecklistHolder = { partyId: string; applicationId: string | null };
+
+type HeldRow = Awaited<ReturnType<DocumentRepository['heldFor']>>[number];
 
 @Injectable()
 export class DocumentChecklistService {
@@ -23,6 +29,7 @@ export class DocumentChecklistService {
     private readonly types: DocumentTypeService,
     private readonly facts: FactService,
     private readonly dictionary: AttributeDictionary,
+    private readonly documents: DocumentRepository,
   ) {}
 
   async typedFacts(pairs: Array<[string, string]>): Promise<Record<string, FactValue>> {
@@ -54,6 +61,22 @@ export class DocumentChecklistService {
       requirements: checklist.requirements,
       items: checklist.items.map((item) => this.view(item, types, text)),
       hidden: checklist.hidden,
+    };
+  }
+
+  async heldChecklist(context: ChecklistContext, locale: Locale, holder: ChecklistHolder) {
+    const base = await this.checklist(context, locale, { partyId: holder.partyId });
+    const held = await this.documents.heldFor(holder.partyId, holder.applicationId);
+    const slots = base.items.map((item) => ({ key: item.key, documentTypes: item.documentTypes.map((type) => type.key), minCount: item.minCount }));
+    const satisfaction = satisfyChecklist(slots, held.map((document) => ({ id: document.id, documentType: document.documentType.key, freshUntil: document.freshUntil })));
+    return { ...base, items: base.items.map((item) => ({ ...item, ...this.heldView(satisfaction.get(item.key), held) })) };
+  }
+
+  private heldView(slot: SlotSatisfaction | undefined, held: HeldRow[]) {
+    const ids = new Set(slot?.documentIds ?? []);
+    return {
+      satisfied: slot?.satisfied ?? false,
+      documents: held.filter((document) => ids.has(document.id)).map((document) => ({ id: document.id, documentType: document.documentType.key, status: document.status, fileName: document.fileName, applicationId: document.applicationId, createdAt: document.createdAt.toISOString() })),
     };
   }
 

@@ -20,6 +20,7 @@ model BorrowerProfile {
   party        Party             @relation("borrower_party", fields: [partyId], references: [id], onDelete: Restrict, onUpdate: Restrict)
   actingParty  Party             @relation("borrower_acting_party", fields: [actingPartyId], references: [id], onDelete: Restrict, onUpdate: Restrict)
   applications LoanApplication[]
+  documents    Document[]
 
   @@index([actingPartyId])
   @@index([partnerOrganizationId])

@@ -50,4 +50,19 @@ export class ApplicationRepository {
   events(applicationId: string, take: number) {
     return this.txHost.tx.applicationEvent.findMany({ where: { applicationId }, orderBy: { id: 'desc' }, take });
   }
+
+  openForParties(partyIds: string[], statuses: ApplicationStatus[], take: number) {
+    return this.txHost.tx.loanApplication.findMany({ where: { status: { in: statuses }, OR: [{ partyId: { in: partyIds } }, { actingPartyId: { in: partyIds } }] }, select: { id: true }, orderBy: { id: 'asc' }, take });
+  }
+
+  async idsOfParty(partyId: string) {
+    const party = await this.txHost.tx.loanApplication.findMany({ where: { partyId }, select: { id: true } });
+    const acting = await this.txHost.tx.loanApplication.findMany({ where: { actingPartyId: partyId }, select: { id: true } });
+    return { party: party.map((row) => row.id), acting: acting.map((row) => row.id) };
+  }
+
+  async moveParty(ids: { party: string[]; acting: string[] }, partyId: string) {
+    await this.txHost.tx.loanApplication.updateMany({ where: { id: { in: ids.party } }, data: { partyId, version: { increment: 1 } } });
+    await this.txHost.tx.loanApplication.updateMany({ where: { id: { in: ids.acting } }, data: { actingPartyId: partyId, version: { increment: 1 } } });
+  }
 }

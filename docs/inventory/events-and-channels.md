@@ -38,7 +38,10 @@
 | `answers.recorded` | questionnaires (`questionnaire.service.ts`) | none yet (M1: lead quality re-score, routing re-evaluation) | — | M1 | `useful` | §6.2 |
 | `borrower_profile.changed` | borrowers (`borrower-profile.service.ts`, via `ChangeRecorder`) | none yet | — | M3 | `useful` | spec `applications` |
 | `application.created` · `application.updated` · `application.status.changed` | applications (`application.service.ts`, via `ChangeRecorder`) | none yet (M3d sync source and user/partner org rooms; M6 notifications) | user + partner org rooms (planned) | M3 | `useful` | spec `applications`; flow `borrower-journey` |
-| `document.uploaded` · `document.scanned` · `document.verified` · `document.rejected` | documents | `documents.extract`, applications, notifications | user room | M3 | `planned` | §8.3 |
+| `document.uploaded` | documents (`DocumentService.upload`, via `ChangeRecorder`; payload ids, type, party, application, uploader) | `documents.scan`, `applications.refresh` | — | M3 | `useful` | spec `documents-upload`; flow `documents` |
+| `document.scanned` · `document.rejected` · `document.deleted` | documents (`DocumentScanService`, `DocumentService.remove`) | `applications.refresh` (rejected, deleted); `realtime.publish` (`document.changed`); M5 `documents.extract` on scanned | uploader's user room + partner org room | M3 | `useful` | spec `documents-upload` |
+| `document.scan_overdue` | documents (`DocumentScanSlaHandler`, 15 min after upload or the last re-queue) | `documents.scan` | — | M3 | `useful` | spec `documents-upload` |
+| `document.verified` | documents (M5 extraction / ops review) | applications, notifications | user room | M5 | `planned` | §8.3 |
 | `analysis.completed` · `score.computed` | assessments | matching, notifications | user room | M5 | `planned` | §8.4 |
 | `submission.status.changed` · `submission.disbursed` | applications | commissions, leads, notifications | user, partner org, lender org rooms | M6 | `planned` | §8.2 |
 | `receivable.received` · `payout.paid` · `payout.reversed` | commissions | notifications, reports | partner org room | M7 | `planned` | §8.5 |
@@ -50,10 +53,10 @@ Built in M1.9a. Gateway: `backend/src/modules/realtime/http/realtime.gateway.ts`
 
 | Room | Who joins | Server → client events | Milestone | Status |
 |---|---|---|---|---|
-| `user:{userId}` | every session of the user | `follow_up.due`; disconnected when the user is suspended | M1 | `useful` |
+| `user:{userId}` | every session of the user | `follow_up.due`, `document.changed` (`{ documentId, applicationId, status }` for documents the user uploaded); disconnected when the user is suspended | M1, M3 | `useful` |
 | `session:{sessionId}` | that session | (reserved for session-level pushes) | M1 | `useful` |
 | `membership:{membershipId}` | sessions acting as that membership | `lead.assignment.changed`, `lead.sla` for leads handed to the member; disconnected when the membership stops being active | M1 | `useful` |
-| `org:{organizationId}` | partner and lender sessions of that organization | `lead.assignment.changed`, `lead.sla`, `lead.conversion.changed`; later `submission.updated`, `payout.updated` | M1 | `useful` |
+| `org:{organizationId}` | partner and lender sessions of that organization | `lead.assignment.changed`, `lead.sla`, `lead.conversion.changed`, `document.changed` (documents of the firm's clients); later `submission.updated`, `payout.updated` | M1, M3 | `useful` |
 | `staff` | staff sessions | `lead.changed`, `lead.assignment.changed`, `lead.sla`, `lead.conversion.changed`, `import.changed` | M1 | `useful` |
 
 

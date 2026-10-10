@@ -10,6 +10,7 @@ import { transitionOrThrow } from '../../../common/errors/transition.js';
 import { assertVersion } from '../../../common/http/versioning.js';
 import { uuidv7 } from '../../../common/ids/uuid-v7.js';
 import { type PageQuery, pageWindow, toPage } from '../../../common/listing/cursor-page.js';
+import { safeFileName } from '../../../common/utils/file-name.js';
 import { parseOrThrow } from '../../../common/validation/zod-validation.pipe.js';
 import { ImportBatchEvent, importBatchMachine } from '../../../engines/state-machines/machines/import-batch.machine.js';
 import type { ImportBatch, Prisma } from '../../../generated/prisma/client.js';
@@ -51,8 +52,6 @@ const formatOf = (fileName: string): ImportFormat | null => {
   return null;
 };
 
-const safeName = (fileName: string) => fileName.replace(/[^A-Za-z0-9._-]+/g, '_').slice(-120);
-
 @Injectable()
 export class ImportService {
   private readonly logger = new Logger(ImportService.name);
@@ -77,7 +76,7 @@ export class ImportService {
     if (!format) throw this.invalid('fileName', 'unsupported_format', 'upload a .csv or .xlsx file');
     const id = uuidv7();
     const contentType = IMPORT_CONTENT_TYPES[format];
-    const batch = await this.imports.create({ id, kind: input.kind, fileName: input.fileName, contentType, storageKey: `imports/${id}/${safeName(input.fileName)}`, createdByUserId: actor.userId });
+    const batch = await this.imports.create({ id, kind: input.kind, fileName: input.fileName, contentType, storageKey: `imports/${id}/${safeFileName(input.fileName)}`, createdByUserId: actor.userId });
     await this.changes.record({ action: AuditAction.ImportCreated, entityType: AuditEntity.ImportBatch, entityId: id, event: EventName.ImportChanged, metadata: { kind: input.kind, fileName: input.fileName } });
     const url = await this.storage.createUploadUrl(batch.storageKey, { ttlSeconds: IMPORT_UPLOAD_URL_TTL_SECONDS, contentType });
     return {

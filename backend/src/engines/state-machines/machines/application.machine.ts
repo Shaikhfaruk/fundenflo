@@ -51,6 +51,8 @@ export const applicationMachine = defineMachine<ApplicationState, ApplicationEve
   },
 });
 
+export const PRE_SUBMISSION_APPLICATION_STATES: readonly ApplicationState[] = OPEN;
+
 export const OPEN_APPLICATION_STATES: readonly ApplicationState[] = [...OPEN, Submitted];
 
 export const CLOSED_APPLICATION_STATES: readonly ApplicationState[] = [ClosedWon, ClosedLost, Withdrawn, Expired];

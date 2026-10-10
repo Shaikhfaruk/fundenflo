@@ -1,0 +1,36 @@
+{
+  "name": "Documents: upload to an application, background malware scan, download link, checklist and delete",
+  "steps": [
+    {
+      "request": "01 Auth/01 Request OTP.json",
+      "variables": {
+        "loginAs": "borrower"
+      }
+    },
+    {
+      "request": "01 Auth/02 Verify OTP.json"
+    },
+    {
+      "request": "04 Borrower Journey/05 Create Application.json"
+    },
+    {
+      "request": "05 Documents/01 Upload Document.json"
+    },
+    {
+      "request": "05 Documents/02 List Documents.json"
+    },
+    {
+      "request": "05 Documents/03 Get Document.json",
+      "waitSeconds": 3
+    },
+    {
+      "request": "05 Documents/04 Get Document Download URL.json"
+    },
+    {
+      "request": "04 Borrower Journey/12 Get Application Document Checklist.json"
+    },
+    {
+      "request": "05 Documents/05 Delete Document.json"
+    }
+  ]
+}

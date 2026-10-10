@@ -4,6 +4,7 @@ import { defineMachine, TransitionError } from './define-machine.js';
 import { applicationMachine } from './machines/application.machine.js';
 import { assignmentMachine } from './machines/assignment.machine.js';
 import { configVersionMachine } from './machines/config-version.machine.js';
+import { documentMachine } from './machines/document.machine.js';
 import { importBatchMachine } from './machines/import-batch.machine.js';
 import { leadMachine } from './machines/lead.machine.js';
 import { organizationMachine } from './machines/organization.machine.js';
@@ -119,5 +120,22 @@ describe('application machine', () => {
     expect(applicationMachine.can('submitted', 'expire')).toBe(false);
     expect(applicationMachine.can('closed_won', 'withdraw')).toBe(false);
     expect(applicationMachine.next('documents_pending', 'expire')).toBe('expired');
+  });
+});
+
+describe('document machine', () => {
+  it('scans before anything else and rejects infected files', () => {
+    expect(documentMachine.next('uploaded', 'start_scan')).toBe('scanning');
+    expect(documentMachine.next('scanning', 'pass_scan')).toBe('scanned');
+    expect(documentMachine.next('scanning', 'fail_scan')).toBe('rejected');
+    expect(documentMachine.can('uploaded', 'verify')).toBe(false);
+    expect(documentMachine.can('scanning', 'classify')).toBe(false);
+  });
+
+  it('can be deleted until purged and purged from any state', () => {
+    expect(documentMachine.next('rejected', 'delete')).toBe('deleted');
+    expect(documentMachine.can('deleted', 'delete')).toBe(false);
+    expect(documentMachine.next('deleted', 'purge')).toBe('purged');
+    expect(documentMachine.can('purged', 'purge')).toBe(false);
   });
 });

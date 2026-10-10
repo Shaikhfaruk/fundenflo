@@ -34,4 +34,15 @@ export class BorrowerProfileRepository {
   updateVersioned(id: string, version: number, data: Prisma.BorrowerProfileUncheckedUpdateManyInput) {
     return this.txHost.tx.borrowerProfile.updateMany({ where: { id, version }, data: { ...data, version: { increment: 1 } } });
   }
+
+  async idsOfParty(partyId: string) {
+    const party = await this.txHost.tx.borrowerProfile.findMany({ where: { partyId }, select: { id: true } });
+    const acting = await this.txHost.tx.borrowerProfile.findMany({ where: { actingPartyId: partyId }, select: { id: true } });
+    return { party: party.map((row) => row.id), acting: acting.map((row) => row.id) };
+  }
+
+  async moveParty(ids: { party: string[]; acting: string[] }, partyId: string) {
+    await this.txHost.tx.borrowerProfile.updateMany({ where: { id: { in: ids.party } }, data: { partyId, version: { increment: 1 } } });
+    await this.txHost.tx.borrowerProfile.updateMany({ where: { id: { in: ids.acting } }, data: { actingPartyId: partyId, version: { increment: 1 } } });
+  }
 }

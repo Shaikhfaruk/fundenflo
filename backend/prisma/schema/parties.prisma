@@ -63,6 +63,7 @@ model Party {
   actingProfiles     BorrowerProfile[]   @relation("borrower_acting_party")
   applications       LoanApplication[]   @relation("application_party")
   actingApplications LoanApplication[]   @relation("application_acting_party")
+  documents          Document[]          @relation("document_party")
   businessLeads      Lead[]              @relation("lead_business")
 
   @@index([kind, status])

@@ -1,0 +1,105 @@
+{
+  "name": "Get Document",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/documents/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "documents",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{documentId}}"
+        }
+      ]
+    },
+    "description": "One document's status and metadata (never the storage location). Borrowers see the documents of their own borrower profiles and applications; staff see them by role (ops and compliance can also download; support sees metadata only). Others get 404."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/documents/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "documents",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{documentId}}"
+            }
+          ]
+        },
+        "description": "One document's status and metadata (never the storage location). Borrowers see the documents of their own borrower profiles and applications; staff see them by role (ops and compliance can also download; support sees metadata only). Others get 404."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a12270-1a2b-7c3d-8e4f-5061728394a5\",\n  \"documentType\": {\n    \"key\": \"bank_statement\",\n    \"label\": {\n      \"en\": \"Bank Statement\",\n      \"hi\": \"बैंक स्टेटमेंट\"\n    }\n  },\n  \"partyId\": \"01a12260-3c4d-7e5f-8061-728394a5b6c7\",\n  \"borrowerProfileId\": \"01a12260-1a2b-7c3d-8e4f-5061728394a5\",\n  \"applicationId\": \"01a12260-2b3c-7d4e-9f50-61728394a5b6\",\n  \"source\": \"upload\",\n  \"status\": \"scanned\",\n  \"fileName\": \"sample-bank-statement.pdf\",\n  \"mimeType\": \"application/pdf\",\n  \"sizeBytes\": 623,\n  \"pages\": null,\n  \"period\": {\n    \"start\": null,\n    \"end\": null\n  },\n  \"passwordProtected\": false,\n  \"rejectReason\": null,\n  \"rejectNote\": null,\n  \"scannedAt\": \"2026-10-10T16:30:00.000Z\",\n  \"freshUntil\": \"2026-11-24T16:30:00.000Z\",\n  \"locked\": false,\n  \"uploadedContext\": \"borrower\",\n  \"version\": 3,\n  \"createdAt\": \"2026-10-10T16:30:00.000Z\",\n  \"updatedAt\": \"2026-10-10T16:30:00.000Z\"\n}"
+    },
+    {
+      "name": "404 NOT_FOUND",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/documents/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "documents",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{documentId}}"
+            }
+          ]
+        },
+        "description": "One document's status and metadata (never the storage location). Borrowers see the documents of their own borrower profiles and applications; staff see them by role (ops and compliance can also download; support sees metadata only). Others get 404."
+      },
+      "status": "Not Found",
+      "code": 404,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"NOT_FOUND\",\n  \"message\": \"The requested record was not found.\",\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

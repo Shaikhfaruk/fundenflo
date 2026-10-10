@@ -3,9 +3,11 @@ import { DiscoveryModule } from '@nestjs/core';
 
 import { InfrastructureModule } from './infrastructure/infrastructure.module.js';
 import { AuthorizationModule } from './modules/access/authorization.module.js';
+import { APPLICATION_PROCESSORS, ApplicationsModule } from './modules/applications/applications.module.js';
 import { MaintenanceProcessor } from './infrastructure/maintenance/maintenance.processor.js';
 import { OutboxRelayProcessor } from './infrastructure/outbox/outbox-relay.processor.js';
 import { AuditModule } from './modules/audit/audit.module.js';
+import { DOCUMENT_PROCESSORS, DocumentsModule } from './modules/documents/documents.module.js';
 import { IMPORT_PROCESSORS, ImportsModule } from './modules/imports/imports.module.js';
 import { LEAD_PROCESSORS, LeadsModule } from './modules/leads/leads.module.js';
 import { RealtimeModule } from './modules/realtime/realtime.module.js';
@@ -27,7 +29,9 @@ import { WorkerScheduler } from './worker-scheduler.service.js';
     RealtimeModule.forRoot({ worker: true }),
     LeadsModule,
     ImportsModule,
+    DocumentsModule,
+    ApplicationsModule,
   ],
-  providers: [OutboxRelayProcessor, SessionRevocationProcessor, MaintenanceProcessor, WorkerScheduler, ...LEAD_PROCESSORS, ...IMPORT_PROCESSORS, ...SLA_PROCESSORS],
+  providers: [OutboxRelayProcessor, SessionRevocationProcessor, MaintenanceProcessor, WorkerScheduler, ...LEAD_PROCESSORS, ...IMPORT_PROCESSORS, ...SLA_PROCESSORS, ...DOCUMENT_PROCESSORS, ...APPLICATION_PROCESSORS],
 })
 export class WorkerModule {}

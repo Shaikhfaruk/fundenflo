@@ -118,10 +118,10 @@ Controller: `backend/src/modules/catalog/http/catalog.controller.ts` · Postman:
 
 | Method | Path | Module | Context | Milestone | Status |
 |---|---|---|---|---|---|
-| `POST` | `/documents` | documents | borrower, partner, staff | M3 | `planned` |
-| `GET` | `/documents/:id` | documents | borrower, partner, staff | M3 | `planned` |
-| `GET` | `/documents/:id/download-url` | documents | partner, lender, staff | M3 | `planned` |
-| `DELETE` | `/documents/:id` | documents | borrower, partner | M3 | `planned` |
+| `POST` `GET` | `/documents` | documents (`documents.controller.ts` → `DocumentService`; multipart via `DocumentUploadEngine`, owner resolved by `DocumentOwnerRegistry`; list added for clients that show a profile's or application's files) | borrower, partner, staff | M3 | `useful` |
+| `GET` | `/documents/:id` | documents (`documents.controller.ts`) | borrower, partner, staff | M3 | `useful` |
+| `GET` | `/documents/:id/download-url` | documents (`documents.controller.ts` → `DocumentService.downloadUrl`; borrower added: the data principal may read their own clean files; lender grants arrive with submissions in M6) | borrower, partner, lender, staff | M3 | `useful` |
+| `DELETE` | `/documents/:id` | documents (`documents.controller.ts` → `DocumentService.remove`) | borrower, partner | M3 | `useful` |
 | `POST` | `/documents/upload-url` | documents | borrower, partner | v1.1 | `planned` |
 | `POST` | `/documents/:id/complete` | documents | borrower, partner | v1.1 | `planned` |
 

@@ -86,6 +86,12 @@ export const AuditAction = {
   ApplicationChanged: 'application.changed',
   ApplicationStatusChanged: 'application.status_changed',
   LeadConverted: 'lead.converted',
+  DocumentUploaded: 'document.uploaded',
+  DocumentScanned: 'document.scanned',
+  DocumentRejected: 'document.rejected',
+  DocumentScanOverdue: 'document.scan_overdue',
+  DocumentDownloadUrlIssued: 'document.download_url_issued',
+  DocumentDeleted: 'document.deleted',
 } as const;
 
 export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction];
@@ -127,6 +133,7 @@ export const AuditEntity = {
   OfflineConversion: 'offline_conversion',
   BorrowerProfile: 'borrower_profile',
   LoanApplication: 'loan_application',
+  Document: 'document',
 } as const;
 
 export type AuditEntity = (typeof AuditEntity)[keyof typeof AuditEntity];

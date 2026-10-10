@@ -25,6 +25,7 @@ export const CipherPurpose = {
   LeadRawPayload: 'leads.raw_payload',
   ImportRow: 'import_rows.raw',
   ImportSample: 'import_batches.sample_rows',
+  DocumentPassword: 'documents.password',
 } as const;
 
 export type CipherPurpose = (typeof CipherPurpose)[keyof typeof CipherPurpose];
