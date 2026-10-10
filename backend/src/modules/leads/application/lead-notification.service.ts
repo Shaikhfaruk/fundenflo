@@ -72,7 +72,8 @@ export class LeadNotificationService {
 
   private async paramsByLocale(build: (locale: string | null) => Promise<Record<string, string>>) {
     const cache = new Map<string, Record<string, string>>();
-    const [en, hi] = await Promise.all([build('en'), build('hi')]);
+    const en = await build('en');
+    const hi = await build('hi');
     cache.set('en', en);
     cache.set('hi', hi);
     return (locale: string | null) => cache.get(resolveLocale(locale ?? undefined)) ?? en;

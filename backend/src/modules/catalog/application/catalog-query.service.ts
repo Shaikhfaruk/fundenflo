@@ -36,7 +36,8 @@ export class CatalogQueryService {
   }
 
   async referenceKeys(): Promise<{ segments: Set<string>; subSegments: Set<string>; categories: Set<string> }> {
-    const [segments, categories] = await Promise.all([this.segments(DEFAULT_LOCALE), this.categoryConfigs(DEFAULT_LOCALE, undefined)]);
+    const segments = await this.segments(DEFAULT_LOCALE);
+    const categories = await this.categoryConfigs(DEFAULT_LOCALE, undefined);
     return {
       segments: new Set(segments.map((segment) => segment.key)),
       subSegments: new Set(segments.flatMap((segment) => segment.subSegments.map((sub) => sub.key))),

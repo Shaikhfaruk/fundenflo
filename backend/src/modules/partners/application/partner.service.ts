@@ -169,10 +169,8 @@ export class PartnerService {
 
   async members(actor: UserActor, ability: AppAbility, query: PageQuery) {
     const organizationId = this.organizationOf(actor);
-    const [members, invitations] = await Promise.all([
-      this.memberships.listMembers(organizationId, ability),
-      this.invitations.list({ ...query, organizationId, status: InvitationStatus.pending }, ability),
-    ]);
+    const members = await this.memberships.listMembers(organizationId, ability);
+    const invitations = await this.invitations.list({ ...query, organizationId, status: InvitationStatus.pending }, ability);
     return { members, invitations: invitations.items };
   }
 

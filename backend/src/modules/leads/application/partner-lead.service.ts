@@ -80,16 +80,14 @@ export class PartnerLeadService {
     const followUps = accessibleBy(ability, AppAction.Read).ofType('FollowUp');
     const now = new Date();
     const endOfToday = new Date(startOfDisplayDay(now).getTime() + DAY_MS);
-    const [offers, active, firstContactDue, dueToday, overdue, conversionsPending, wonThisMonth, protectedReferrals] = await Promise.all([
-      this.leads.countAssignments({ AND: [assignments, { status: offered }] }),
-      this.leads.countAssignments({ AND: [assignments, { status: { in: [...WORKABLE] } }] }),
-      this.leads.countAssignments({ AND: [assignments, { status: { in: [...WORKABLE] }, firstContactedAt: null }] }),
-      this.activityStore.countFollowUps({ AND: [followUps, { status: FollowUpStatus.open, dueAt: { gte: now, lt: endOfToday } }] }),
-      this.activityStore.countFollowUps({ AND: [followUps, { status: FollowUpStatus.open, dueAt: { lt: now } }] }),
-      this.leads.countConversions({ organizationId, status: OfflineConversionStatus.reported }),
-      this.leads.countConversions({ organizationId, status: OfflineConversionStatus.verified, decidedAt: { gte: startOfDisplayMonth(now) } }),
-      this.attributions.countActive(organizationId, now),
-    ]);
+    const offers = await this.leads.countAssignments({ AND: [assignments, { status: offered }] });
+    const active = await this.leads.countAssignments({ AND: [assignments, { status: { in: [...WORKABLE] } }] });
+    const firstContactDue = await this.leads.countAssignments({ AND: [assignments, { status: { in: [...WORKABLE] }, firstContactedAt: null }] });
+    const dueToday = await this.activityStore.countFollowUps({ AND: [followUps, { status: FollowUpStatus.open, dueAt: { gte: now, lt: endOfToday } }] });
+    const overdue = await this.activityStore.countFollowUps({ AND: [followUps, { status: FollowUpStatus.open, dueAt: { lt: now } }] });
+    const conversionsPending = await this.leads.countConversions({ organizationId, status: OfflineConversionStatus.reported });
+    const wonThisMonth = await this.leads.countConversions({ organizationId, status: OfflineConversionStatus.verified, decidedAt: { gte: startOfDisplayMonth(now) } });
+    const protectedReferrals = await this.attributions.countActive(organizationId, now);
     return { leads: { offered: offers, active, firstContactDue }, followUps: { dueToday, overdue }, conversions: { pending: conversionsPending, wonThisMonth }, referrals: { protected: protectedReferrals }, at: now.toISOString() };
   }
 
@@ -250,7 +248,8 @@ export class PartnerLeadService {
   }
 
   private async view(assignment: PartnerAssignmentRow, ability: AppAbility) {
-    const [contacts, conversions] = await Promise.all([this.parties.listContacts(assignment.lead.partyId, false), this.conversions.forAssignment(assignment.id)]);
+    const contacts = await this.parties.listContacts(assignment.lead.partyId, false);
+    const conversions = await this.conversions.forAssignment(assignment.id);
     return { ...toPartnerLeadView(assignment, contacts), conversions, availableActions: this.actionsFor(assignment, ability) };
   }
 

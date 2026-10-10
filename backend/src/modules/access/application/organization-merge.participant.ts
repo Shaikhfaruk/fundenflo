@@ -8,7 +8,8 @@ export class OrganizationMergeParticipant implements PartyMergeParticipant {
   constructor(private readonly repository: AccessRepository) {}
 
   async check({ sourceId, targetId }: MergeParties): Promise<MergeIssue[]> {
-    const [source, target] = await Promise.all([this.repository.findOrganizationByParty(sourceId), this.repository.findOrganizationByParty(targetId)]);
+    const source = await this.repository.findOrganizationByParty(sourceId);
+    const target = await this.repository.findOrganizationByParty(targetId);
     return source && target ? [{ path: 'parties', code: 'two_organizations', message: 'both businesses operate their own organization on the platform' }] : [];
   }
 

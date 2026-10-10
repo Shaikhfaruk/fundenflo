@@ -14,7 +14,8 @@ export class PartyCoreMergeParticipant implements PartyMergeParticipant {
   constructor(private readonly parties: PartyRepository) {}
 
   async check({ sourceId, targetId }: MergeParties): Promise<MergeIssue[]> {
-    const [source, target] = await Promise.all([this.parties.listIdentifiers(sourceId), this.parties.listIdentifiers(targetId)]);
+    const source = await this.parties.listIdentifiers(sourceId);
+    const target = await this.parties.listIdentifiers(targetId);
     return source.flatMap((identifier) => {
       const other = target.find((candidate) => candidate.type === identifier.type);
       return other && other.valueHash !== identifier.valueHash ? [{ path: `identifiers.${identifier.type}`, code: 'identifier_conflict', message: `the two parties have different ${identifier.type.toUpperCase()} numbers` }] : [];
@@ -22,7 +23,8 @@ export class PartyCoreMergeParticipant implements PartyMergeParticipant {
   }
 
   async merge({ sourceId, targetId }: MergeParties): Promise<CoreUndo> {
-    const [sourceContacts, targetContacts] = await Promise.all([this.parties.listContacts(sourceId), this.parties.listContacts(targetId)]);
+    const sourceContacts = await this.parties.listContacts(sourceId);
+    const targetContacts = await this.parties.listContacts(targetId);
     const byKey = new Map(targetContacts.map((contact) => [`${contact.type}:${contact.valueHash}`, contact]));
     const primaryTypes = new Set(targetContacts.filter((contact) => contact.isPrimary).map((contact) => contact.type));
     const undo: CoreUndo = { contacts: [], flags: [], identifiers: [], relationshipsFrom: [], relationshipsTo: [] };
@@ -40,7 +42,8 @@ export class PartyCoreMergeParticipant implements PartyMergeParticipant {
         await this.parties.updateContact(existing.id, { verifiedAt, doNotContact });
       }
     }
-    const [sourceIdentifiers, targetIdentifiers] = await Promise.all([this.parties.listIdentifiers(sourceId), this.parties.listIdentifiers(targetId)]);
+    const sourceIdentifiers = await this.parties.listIdentifiers(sourceId);
+    const targetIdentifiers = await this.parties.listIdentifiers(targetId);
     undo.identifiers = sourceIdentifiers.filter((identifier) => !targetIdentifiers.some((other) => other.type === identifier.type)).map((identifier) => identifier.id);
     await this.parties.moveIdentifiers(undo.identifiers, targetId);
     const relationships = (await this.parties.relationshipsTouching(sourceId)).filter((relationship) => relationship.fromPartyId !== targetId && relationship.toPartyId !== targetId);

@@ -30,6 +30,7 @@ import { INVITATION_TOKEN_BYTES, INVITATION_TTL_DAYS, ORGANIZATION_CONTEXT } fro
 import { assertRoleAllowed } from '../domain/role-rules.js';
 import { AccessRepository, type InvitationWithOrganization } from '../infrastructure/access.repository.js';
 import { toInvitationView } from './access.views.js';
+import { DAY_MS } from '../../../common/constants/time.constants.js';
 
 export type InvitationInput = {
   organizationId: string;
@@ -89,7 +90,7 @@ export class InvitationService {
       identifierMasked: encoded.masked,
       tokenHash: token ? sha256(token) : null,
       invitedByUserId,
-      expiresAt: new Date(Date.now() + INVITATION_TTL_DAYS * 24 * 3600_000),
+      expiresAt: new Date(Date.now() + INVITATION_TTL_DAYS * DAY_MS),
     });
     await this.outbox.publish({
       name: EventName.InvitationCreated,

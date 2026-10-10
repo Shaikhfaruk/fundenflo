@@ -170,11 +170,9 @@ export class LeadRoutingService {
   private async candidates(lead: LeadDetailRow, partners: Array<{ organizationId: string; level: keyof typeof DEFAULT_LEVEL_WEIGHTS; maxOpenLeads: number | null }>, rule: CompiledRoutingRule) {
     const ids = partners.map((partner) => partner.organizationId);
     if (ids.length === 0) return [];
-    const [open, last, worked] = await Promise.all([
-      this.leads.openAssignmentCounts(ids, ACTIVE_ASSIGNMENT_STATES),
-      this.leads.lastOffers(ids),
-      this.leads.workedOrganizationsForParty(lead.partyId, WORKED),
-    ]);
+    const open = await this.leads.openAssignmentCounts(ids, ACTIVE_ASSIGNMENT_STATES);
+    const last = await this.leads.lastOffers(ids);
+    const worked = await this.leads.workedOrganizationsForParty(lead.partyId, WORKED);
     const openBy = new Map(open.map((row) => [row.organizationId, row._count.organizationId]));
     const lastBy = new Map(last.map((row) => [row.organizationId, row._max.offeredAt]));
     const workedBy = new Set(worked.map((row) => row.organizationId));

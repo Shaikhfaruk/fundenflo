@@ -61,10 +61,8 @@ export class ConsentRepository {
   }
 
   async consentIdsOfParty(partyId: string) {
-    const [records, requests] = await Promise.all([
-      this.txHost.tx.consentRecord.findMany({ where: { partyId }, select: { id: true } }),
-      this.txHost.tx.consentRequest.findMany({ where: { partyId }, select: { id: true } }),
-    ]);
+    const records = await this.txHost.tx.consentRecord.findMany({ where: { partyId }, select: { id: true } });
+    const requests = await this.txHost.tx.consentRequest.findMany({ where: { partyId }, select: { id: true } });
     return { records: records.map((row) => row.id), requests: requests.map((row) => row.id) };
   }
 

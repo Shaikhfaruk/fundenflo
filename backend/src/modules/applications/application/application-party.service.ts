@@ -23,6 +23,7 @@ import { type ApplicationPartyRow, ApplicationRepository } from '../infrastructu
 import { ApplicationTimeline } from './application-timeline.service.js';
 import { toApplicationPartyView } from './application.views.js';
 import { ApplicationService } from './application.service.js';
+import { mapInSequence } from '../../../common/utils/in-sequence.js';
 
 export type CoPartyInput = { role: (typeof CO_PARTY_ROLES)[number]; name: string; mobile: string; countryCode?: string; relationship?: string };
 
@@ -56,7 +57,7 @@ export class ApplicationPartyService {
   async list(applicationId: string, ability: AppAbility) {
     await this.applications.get(applicationId, ability);
     const rows = await this.repository.parties(applicationId);
-    return { items: await Promise.all(rows.map((row) => this.view(row))) };
+    return { items: await mapInSequence(rows, (row) => this.view(row)) };
   }
 
   @Transactional()

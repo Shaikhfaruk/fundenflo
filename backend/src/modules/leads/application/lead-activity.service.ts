@@ -80,7 +80,8 @@ export class LeadActivityService {
     const items = await this.activities.listFollowUps({ AND: [scope, { entityType: ActivityEntityType.lead }] }, filters, limit);
     const leadIds = [...new Set(items.map((item) => item.entityId))];
     if (leadIds.length === 0) return { items: [] };
-    const [summaries, held] = await Promise.all([this.leads.findSummaries(leadIds), organizationId ? this.leads.heldLeadIds(leadIds, organizationId, HELD) : Promise.resolve(null)]);
+    const summaries = await this.leads.findSummaries(leadIds);
+    const held = organizationId ? await this.leads.heldLeadIds(leadIds, organizationId, HELD) : null;
     const visible = held ? new Set(held.map((row) => row.leadId)) : null;
     const byId = new Map(summaries.map((lead) => [lead.id, lead]));
     return {

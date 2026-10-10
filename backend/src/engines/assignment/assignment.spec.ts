@@ -2,8 +2,9 @@ import { describe, expect, it } from 'vitest';
 
 import type { AssignmentCandidate } from './assignment.types.js';
 import { eligibleCandidates, pickAssignees } from './pick-assignees.js';
+import { MINUTE_MS } from '../../common/constants/time.constants.js';
 
-const at = (minutesAgo: number | null) => (minutesAgo === null ? null : new Date(Date.UTC(2026, 9, 10, 12) - minutesAgo * 60_000));
+const at = (minutesAgo: number | null) => (minutesAgo === null ? null : new Date(Date.UTC(2026, 9, 10, 12) - minutesAgo * MINUTE_MS));
 const ca = (id: string, overrides: Partial<AssignmentCandidate> = {}): AssignmentCandidate => ({ id, weight: 1, openCount: 0, capacity: null, lastAssignedAt: null, previouslyWorked: false, ...overrides });
 
 const pool = [ca('a', { lastAssignedAt: at(10), openCount: 4, capacity: 10 }), ca('b', { lastAssignedAt: at(60), openCount: 9, capacity: 10 }), ca('c', { lastAssignedAt: null, openCount: 1, capacity: 2 })];

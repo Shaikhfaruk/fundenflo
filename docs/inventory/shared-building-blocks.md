@@ -67,7 +67,8 @@
 | IDs | `common/ids/uuid-v7.ts` | `uuidv7()` | OTP challenges, scripts | M0 | `useful` (spec `uuid-v7.spec.ts`) |
 | Events | `common/events/` | `EventName`, `DomainEventInput`, `DomainEventEnvelope` | outbox and consumers | M0 | `useful` |
 | Enums and constants | `common/enums/` (`db.enums.ts` re-exports Prisma enums, `device-platform.enum.ts`), `common/constants/`; module-only in `modules/<m>/domain/` | —; `MONTHS_PER_YEAR` in `common/constants/time.constants.ts` (seeds and compat) | all | M0 | `useful` |
-| Time constants | `common/constants/time.constants.ts` | `DAY_MS` | sessions, auth maintenance, facts engine | M1 | `useful` |
+| Time constants | `common/constants/time.constants.ts` | `MINUTE_MS`, `HOUR_MS`, `DAY_MS` | sessions, auth maintenance, facts engine; 2026-10-10: every duration in code (idempotency TTL, invitations, staff lock, lead drop-off delay, SAS clock skew, API key last-used, activity skew, publish tolerance, referral window, engine specs) | M1 | `useful` |
+| Sequential map | `common/utils/in-sequence.ts` | `mapInSequence(items, run)` (one database call at a time; replaces `Promise.all` over queries so a transaction connection never runs two queries at once) | matching, lead reports, application parties | 2026-10-10 | `useful` (spec `in-sequence.spec.ts`) |
 | JSON diff | `common/utils/json-diff.ts` | `diffJson(before, after, maxChanges?)` → `{ changes: [{ path, kind, before?, after? }], truncated }` | change requests | M1 | `useful` (spec `json-diff.spec.ts`) |
 | File names | `common/utils/file-name.ts` | `safeFileName` (ASCII for storage keys and download names; moved from imports), `displayFileName` (strips paths and control characters, keeps Unicode) | imports, documents | M1 / M3 | `useful` |
 | Regex patterns | `common/utils/regex.ts` | `isValidPattern` | conditions engine, question validation | M1 | `useful` |

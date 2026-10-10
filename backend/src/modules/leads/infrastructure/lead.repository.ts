@@ -116,10 +116,8 @@ export class LeadRepository {
   }
 
   async leadIdsOfParty(partyId: string) {
-    const [person, business] = await Promise.all([
-      this.txHost.tx.lead.findMany({ where: { partyId }, select: { id: true } }),
-      this.txHost.tx.lead.findMany({ where: { businessPartyId: partyId }, select: { id: true } }),
-    ]);
+    const person = await this.txHost.tx.lead.findMany({ where: { partyId }, select: { id: true } });
+    const business = await this.txHost.tx.lead.findMany({ where: { businessPartyId: partyId }, select: { id: true } });
     return { person: person.map((row) => row.id), business: business.map((row) => row.id) };
   }
 

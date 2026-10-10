@@ -17,6 +17,8 @@ These are the places where a second copy is most tempting. Use the one listed.
 
 | Need | Use only | Do not build |
 |---|---|---|
+| Several database reads in one use case | Sequential `await`s, or `mapInSequence` for a list | `Promise.all` over Prisma calls (a transaction connection would run two queries at once; pg@9 makes that an error) |
+| A duration in milliseconds | `MINUTE_MS`, `HOUR_MS`, `DAY_MS` from `common/constants/time.constants.ts` | Inline `60_000` / `3600_000` literals |
 | WhatsApp or marketing opt-in | Consent purposes `whatsapp` / `marketing` through `POST /me/consents` and withdraw | A preference flag for the same opt-in |
 | Choosing which channels carry updates | `NotificationPreferenceService`, applied once in `UserNotifier.notify` | Channel checks in each sending module |
 | Changing message text or DLT ids | `PATCH /admin/notification-templates/:id` | Direct SQL, or reseeding to overwrite text |

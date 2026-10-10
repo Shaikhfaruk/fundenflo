@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
 import { isStale, resolveFact } from './resolve-fact.js';
+import { DAY_MS } from '../../common/constants/time.constants.js';
 
 const NOW = new Date('2026-10-09T12:00:00.000Z');
-const daysAgo = (days: number) => new Date(NOW.getTime() - days * 24 * 3600_000);
+const daysAgo = (days: number) => new Date(NOW.getTime() - days * DAY_MS);
 const fact = (id: string, rank: number, ageDays: number, validUntil: Date | null = null) => ({ id, rank, observedAt: daysAgo(ageDays), validUntil });
 
 describe('resolveFact', () => {

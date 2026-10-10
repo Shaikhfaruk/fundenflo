@@ -35,6 +35,7 @@ import { IdentityRepository } from '../infrastructure/identity.repository.js';
 import { LoginIdentifierService } from './login-identifier.service.js';
 import { MeViewBuilder } from './me-view.builder.js';
 import { actorForSession, SessionService } from './session.service.js';
+import { MINUTE_MS } from '../../../common/constants/time.constants.js';
 
 type MfaState = {
   userId: string;
@@ -189,7 +190,7 @@ export class StaffAuthService implements OnModuleInit {
     const locked = failedAttempts >= STAFF_LOGIN_MAX_FAILURES;
     await this.identity.updateStaffCredential(userId, {
       failedAttempts: locked ? 0 : failedAttempts,
-      lockedUntil: locked ? new Date(Date.now() + STAFF_LOCK_MINUTES * 60_000) : null,
+      lockedUntil: locked ? new Date(Date.now() + STAFF_LOCK_MINUTES * MINUTE_MS) : null,
     });
     await this.audit.record({
       action: AuditAction.StaffLoginFailed,

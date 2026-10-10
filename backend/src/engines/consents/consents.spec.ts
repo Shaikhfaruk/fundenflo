@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
 import { consentAllows, type ConsentEvent, foldConsent } from './fold-consent.js';
+import { MINUTE_MS } from '../../common/constants/time.constants.js';
 
 const NOW = new Date('2026-10-09T12:00:00.000Z');
-const at = (minutes: number) => new Date(NOW.getTime() + minutes * 60_000);
+const at = (minutes: number) => new Date(NOW.getTime() + minutes * MINUTE_MS);
 let counter = 0;
 const event = (granted: boolean, minutes: number, organizationIds: string[] | null = null, expiresAt: Date | null = null): ConsentEvent => ({
   id: `e${(counter += 1)}`,

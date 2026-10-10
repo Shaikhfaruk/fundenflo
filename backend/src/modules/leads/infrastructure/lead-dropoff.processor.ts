@@ -14,6 +14,7 @@ import { QueueRegistry } from '../../../infrastructure/queue/queue-registry.serv
 import { LeadCaptureService } from '../application/lead-capture.service.js';
 import { LeadSourceService } from '../application/lead-source.service.js';
 import { DROPOFF_CHECK_JOB, LeadSourceKey } from '../domain/lead.constants.js';
+import { HOUR_MS } from '../../../common/constants/time.constants.js';
 
 type SignedUpPayload = { userId: string; partyId: string; loginAs: LoginAs };
 
@@ -40,7 +41,7 @@ export class LeadDropoffProcessor extends ContextualProcessor<DomainEventEnvelop
       await this.queues.get(QueueName.LeadsDropoff).add(
         DROPOFF_CHECK_JOB,
         { userId: payload.userId, partyId: payload.partyId } satisfies DropoffCheck,
-        { delay: this.config.LEAD_DROPOFF_DELAY_HOURS * 3_600_000, jobId: `dropoff-${payload.userId}` },
+        { delay: this.config.LEAD_DROPOFF_DELAY_HOURS * HOUR_MS, jobId: `dropoff-${payload.userId}` },
       );
       return { scheduled: true };
     }

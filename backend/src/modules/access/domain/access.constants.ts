@@ -1,4 +1,5 @@
 import { ConfigResource, LoginAs, OrganizationType, Role, SessionContext } from '../../../common/enums/db.enums.js';
+import { MINUTE_MS } from '../../../common/constants/time.constants.js';
 
 type ActiveContext = Exclude<SessionContext, typeof SessionContext.none>;
 
@@ -65,4 +66,4 @@ export const API_KEY_PATTERN = /^ffk_([A-Za-z0-9_-]{8})\.([A-Za-z0-9_-]{43})$/;
 
 export const API_KEY_RATE_LIMIT = { name: 'api-key', limit: 120, windowSeconds: 60 } as const;
 
-export const API_KEY_LAST_USED_RESOLUTION_MS = 60_000;
+export const API_KEY_LAST_USED_RESOLUTION_MS = MINUTE_MS;

@@ -213,7 +213,8 @@ export class LeadCaptureService {
 
   private async person(input: LeadCaptureInput, context: LeadCaptureContext): Promise<CapturedPerson> {
     if (context.partyId) {
-      const [summary, contacts] = await Promise.all([this.parties.summary(context.partyId), this.parties.listContacts(context.partyId, false)]);
+      const summary = await this.parties.summary(context.partyId);
+      const contacts = await this.parties.listContacts(context.partyId, false);
       return {
         partyId: context.partyId,
         outcome: 'known',

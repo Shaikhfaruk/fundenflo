@@ -6,6 +6,7 @@ import { AccessRepository } from '../../access/infrastructure/access.repository.
 import { CatalogQueryService } from '../../catalog/application/catalog-query.service.js';
 import { GeoService } from '../../catalog/application/geo.service.js';
 import { type FunnelColumn, type FunnelRow, LeadRepository } from '../infrastructure/lead.repository.js';
+import { mapInSequence } from '../../../common/utils/in-sequence.js';
 
 type FunnelGroup = { key: string | null; label: string; total: number; byStatus: Record<string, number>; byConsent: Record<string, number> };
 
@@ -39,7 +40,8 @@ export class LeadReportService {
   }
 
   async partnerPerformance(from: Date, to: Date) {
-    const [rows, conversions] = await Promise.all([this.leads.partnerPerformance(from, to), this.leads.verifiedConversions(from, to)]);
+    const rows = await this.leads.partnerPerformance(from, to);
+    const conversions = await this.leads.verifiedConversions(from, to);
     const organizations = new Map((await this.access.findOrganizations([...new Set([...rows.map((row) => row.organizationId), ...conversions.map((row) => row.organizationId)])])).map((organization) => [organization.id, organization.name]));
     const won = new Map(conversions.map((row) => [row.organizationId, { count: row._count.organizationId, disbursedPaise: row._sum.disbursedAmountPaise === null ? 0 : paiseToNumber(row._sum.disbursedAmountPaise) }]));
     const items = rows.map((row) => {
@@ -71,7 +73,7 @@ export class LeadReportService {
     const keys = [...new Set(rows.flatMap((row) => (row.key ? [row.key] : [])))];
     if (groupBy === 'source') return new Map((await this.leads.listSources({ id: { in: keys } })).map((source) => [source.id, source.name]));
     if (groupBy === 'city') return new Map((await this.geo.findActiveCities(keys)).map((city) => [city.id, city.name]));
-    if (groupBy === 'category') return new Map(await Promise.all(keys.map(async (key) => [key, await this.catalog.categoryLabel(key, DEFAULT_LOCALE)] as const)));
+    if (groupBy === 'category') return new Map(await mapInSequence(keys, async (key) => [key, await this.catalog.categoryLabel(key, DEFAULT_LOCALE)] as const));
     return new Map(keys.map((key) => [key, key]));
   }
 }

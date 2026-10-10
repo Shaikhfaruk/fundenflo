@@ -11,6 +11,7 @@ import type { Prisma } from '../../generated/prisma/client.js';
 import { sha256 } from '../crypto/secure-random.js';
 import { isUniqueViolation } from '../database/prisma-errors.js';
 import { PrismaService } from '../database/prisma.service.js';
+import { HOUR_MS } from '../../common/constants/time.constants.js';
 
 type Claim = { scope: string; key: string; requestHash: string };
 
@@ -52,7 +53,7 @@ export class IdempotencyInterceptor implements NestInterceptor {
   }
 
   private async claim(claim: Claim): Promise<{ status: number; body: unknown } | null> {
-    const expiresAt = new Date(Date.now() + IDEMPOTENCY_TTL_HOURS * 3600_000);
+    const expiresAt = new Date(Date.now() + IDEMPOTENCY_TTL_HOURS * HOUR_MS);
     try {
       await this.prisma.idempotencyKey.create({ data: { ...claim, expiresAt } });
       return null;

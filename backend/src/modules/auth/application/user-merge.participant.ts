@@ -8,7 +8,8 @@ export class UserMergeParticipant implements PartyMergeParticipant {
   constructor(private readonly repository: IdentityRepository) {}
 
   async check({ sourceId, targetId }: MergeParties): Promise<MergeIssue[]> {
-    const [source, target] = await Promise.all([this.repository.findUserByParty(sourceId), this.repository.findUserByParty(targetId)]);
+    const source = await this.repository.findUserByParty(sourceId);
+    const target = await this.repository.findUserByParty(targetId);
     return source && target ? [{ path: 'parties', code: 'two_logins', message: 'both parties have their own login; they are treated as different people' }] : [];
   }
 

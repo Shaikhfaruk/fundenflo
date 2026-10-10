@@ -13,6 +13,7 @@ import { InjectConfig } from '../../config/config.constants.js';
 import type { AppConfig } from '../../config/env.schema.js';
 import { STORAGE_UPLOAD_BUFFER_BYTES, STORAGE_UPLOAD_CONCURRENCY } from './storage.constants.js';
 import type { ObjectStat, ObjectStorage, PutObjectInput, ReadUrlOptions, UploadUrlOptions } from './storage.port.js';
+import { MINUTE_MS } from '../../common/constants/time.constants.js';
 
 @Injectable()
 export class AzureBlobStorage implements ObjectStorage, OnModuleInit {
@@ -73,7 +74,7 @@ export class AzureBlobStorage implements ObjectStorage, OnModuleInit {
 
   private async sasUrl(key: string, permission: string, ttlSeconds: number, headers: { contentDisposition?: string; contentType?: string }): Promise<string> {
     const blob = this.container.getBlobClient(key);
-    const startsOn = new Date(Date.now() - 60_000);
+    const startsOn = new Date(Date.now() - MINUTE_MS);
     const expiresOn = new Date(Date.now() + ttlSeconds * 1000);
     const permissions = BlobSASPermissions.parse(permission);
 

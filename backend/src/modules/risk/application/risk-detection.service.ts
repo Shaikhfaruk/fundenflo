@@ -8,6 +8,7 @@ import { LeadAttributionService } from '../../partners/application/lead-attribut
 import { PartnerKycService } from '../../partners/application/partner-kyc.service.js';
 import { CONSISTENCY_SEVERITY, GST_ITR_ATTRIBUTE_PATTERN, REFERRAL_BURST_THRESHOLD, REFERRAL_BURST_WINDOW_MS, RiskRule } from '../domain/risk.constants.js';
 import { RiskService } from './risk.service.js';
+import { MINUTE_MS } from '../../../common/constants/time.constants.js';
 
 type Payload = Record<string, unknown>;
 
@@ -123,7 +124,7 @@ export class RiskDetectionService {
         ruleKey: RiskRule.ReferralBurst,
         subject: { type: RiskSubjectType.partner_organization, id: organizationId },
         organizationId,
-        evidence: { signupsWithCode: recent, windowMinutes: REFERRAL_BURST_WINDOW_MS / 60_000 },
+        evidence: { signupsWithCode: recent, windowMinutes: REFERRAL_BURST_WINDOW_MS / MINUTE_MS },
         fingerprint: `${RiskRule.ReferralBurst}:${organizationId}:${bucket}`,
       }),
     );

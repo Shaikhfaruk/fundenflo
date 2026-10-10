@@ -23,6 +23,7 @@ import { LenderService } from '../../lenders/application/lender.service.js';
 import { MATCH_DOCUMENT_STAGES } from '../domain/matching.constants.js';
 import { MatchingRepository } from '../infrastructure/matching.repository.js';
 import { toMatchRunView } from './matching.views.js';
+import { mapInSequence } from '../../../common/utils/in-sequence.js';
 
 const json = (value: unknown) => value as Prisma.InputJsonValue;
 
@@ -67,8 +68,8 @@ export class MatchingService {
     const roles = await this.parties.partyIdsByRole(applicationId);
     const lookups = {
       primary: await this.merged(subject.partyId, subject.actingPartyId),
-      coApplicants: await Promise.all(roles.coApplicants.map((partyId) => this.facts.rankedLookup(partyId))),
-      directors: await Promise.all(roles.directors.map((partyId) => this.facts.rankedLookup(partyId))),
+      coApplicants: await mapInSequence(roles.coApplicants, (partyId) => this.facts.rankedLookup(partyId)),
+      directors: await mapInSequence(roles.directors, (partyId) => this.facts.rankedLookup(partyId)),
     };
     const outcomes = matchProducts(
       products.map((product) => ({ productDocumentId: product.documentId, productKey: product.key, productVersionId: product.versionId, product: product.compiled })),
