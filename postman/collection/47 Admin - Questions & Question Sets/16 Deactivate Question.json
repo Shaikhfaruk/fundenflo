@@ -1,0 +1,110 @@
+{
+  "name": "Deactivate Question",
+  "request": {
+    "method": "PATCH",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "If-Match",
+        "value": "\"{{questionVersion}}\""
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/questions/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "questions",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{questionId}}"
+        }
+      ]
+    },
+    "description": "Deactivates a question (status `inactive`) so new question sets cannot use it; answers already given stay. Flows use it to clean up the questions they create. Staff with question manage access.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"status\": \"inactive\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.test('is inactive', () => pm.expect(pm.response.json().status).to.eql('inactive'));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{questionVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/questions/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "questions",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{questionId}}"
+            }
+          ]
+        },
+        "description": "Deactivates a question (status `inactive`) so new question sets cannot use it; answers already given stay. Flows use it to clean up the questions they create. Staff with question manage access.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"inactive\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a121b0-1a2b-7c3d-8e4f-5061728394a5\",\n  \"key\": \"constitution\",\n  \"attributeKey\": \"business.constitution\",\n  \"type\": \"single_select\",\n  \"label\": {\n    \"en\": \"Type Of Business\"\n  },\n  \"help\": {\n    \"en\": \"As shown on your registration certificate\"\n  },\n  \"options\": [\n    {\n      \"value\": \"pvt\",\n      \"label\": {\n        \"en\": \"Pvt Ltd\"\n      },\n      \"fact\": \"private_limited\"\n    },\n    {\n      \"value\": \"llp\",\n      \"label\": {\n        \"en\": \"LLP\"\n      },\n      \"fact\": \"llp\"\n    },\n    {\n      \"value\": \"prop\",\n      \"label\": {\n        \"en\": \"Proprietor\"\n      },\n      \"fact\": \"proprietorship\"\n    }\n  ],\n  \"validation\": null,\n  \"ui\": {\n    \"widget\": \"chips\",\n    \"columns\": 2\n  },\n  \"status\": \"inactive\",\n  \"version\": 2,\n  \"updatedAt\": \"2026-10-09T17:10:00.000Z\"\n}"
+    }
+  ]
+}

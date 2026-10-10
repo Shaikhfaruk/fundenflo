@@ -102,6 +102,9 @@
     },
     {
       "request": "42 Admin - Lead Sources & API Keys/07 Revoke API Key.json"
+    },
+    {
+      "request": "42 Admin - Lead Sources & API Keys/08 Deactivate Lead Source.json"
     }
   ]
 }

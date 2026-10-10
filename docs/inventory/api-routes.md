@@ -338,7 +338,7 @@ Planned:
 | `GET` | `/ops/data-requests/:id` | privacy (`DataRequestService.get` with live legal holds for erasure) | staff | M8 | `useful` |
 | `POST` | `/ops/data-requests/:id/complete` | privacy (`DataRequestService.complete`: correction reply, access export rebuild, erasure through participants when no hold applies) | staff | M8 | `useful` |
 | `POST` | `/ops/data-requests/:id/reject` | privacy (`DataRequestService.reject`) | staff | M8 | `useful` |
-| `GET` | `/ops/cases` | applications (`ops-cases.controller.ts` → `ApplicationService.list` with status, category, channel, firm and reference filters) | staff | M3 | `useful` |
+| `GET` | `/ops/cases` | applications (`ops-cases.controller.ts` → `ApplicationService.list` with status, category, channel and firm filters; `q` matches the reference prefix or the borrower or acting person name, 2026-10-11) | staff | M3 | `useful` |
 | `GET` | `/ops/cases/:id` | applications (`ops-cases.controller.ts` → `OpsCaseService.detail`) | staff | M3 | `useful` |
 | `POST` | `/ops/cases/:id/facts/:attribute/verify` | applications (`ops-cases.controller.ts` → `ApplicationService.verifyFact` → `FactService.record` as `ops_verified`) | staff | M5 | `useful` |
 | `POST` | `/ops/assessments/:id/recompute` | assessments (`ops-assessments.controller.ts` → `AnalysisService.recompute`) | staff | M5 | `useful` |

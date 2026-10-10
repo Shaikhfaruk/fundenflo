@@ -118,6 +118,7 @@ describe('partner-filed borrowers and applications, lead conversion and the ops 
     const list = await as(ops).get('/ops/cases', { channel: 'partner', partnerOrganizationId: firmA }).expect(200);
     expect(list.body.items.map((item: { id: string }) => item.id)).toContain(application.body.id);
     expect((await as(ops).get('/ops/cases', { q: application.body.ref.slice(0, 8) }).expect(200)).body.items.length).toBeGreaterThanOrEqual(1);
+    expect((await as(ops).get('/ops/cases', { q: 'kavya iy' }).expect(200)).body.items.map((item: { id: string }) => item.id)).toContain(application.body.id);
     const detail = await as(ops).get(`/ops/cases/${application.body.id}`).expect(200);
     expect(detail.body).toMatchObject({ application: { id: application.body.id, channel: 'partner' }, parties: [{ role: 'borrower' }], documents: [], nextStep: { stage: 'requirement' } });
     expect(detail.body.consents.map((state: { purpose: string }) => state.purpose)).toContain('ai_documents');

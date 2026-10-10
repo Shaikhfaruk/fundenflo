@@ -10,6 +10,7 @@
     { "request": "46 Admin - Attributes & Conditions/03 Get Attribute.json" },
     { "request": "46 Admin - Attributes & Conditions/04 Update Attribute.json" },
     { "request": "46 Admin - Attributes & Conditions/05 Validate Condition.json" },
-    { "request": "46 Admin - Attributes & Conditions/06 Evaluate Condition.json" }
+    { "request": "46 Admin - Attributes & Conditions/06 Evaluate Condition.json" },
+    { "request": "46 Admin - Attributes & Conditions/07 Deactivate Attribute.json" }
   ]
 }

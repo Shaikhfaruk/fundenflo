@@ -24,6 +24,7 @@
     { "request": "49 Admin - Consents/09 Create Consent Template Version.json" },
     { "request": "49 Admin - Consents/14 Retire Consent Template Version.json" },
     { "request": "49 Admin - Consents/14 Retire Consent Template Version.json", "variables": { "consentTemplateNumber": "1" } },
+    { "request": "49 Admin - Consents/15 Deactivate Consent Purpose.json" },
     { "request": "01 Auth/01 Request OTP.json", "variables": { "loginAs": "borrower" } },
     { "request": "01 Auth/02 Verify OTP.json" },
     { "request": "03 Catalog/07 Get Consent Template.json" },

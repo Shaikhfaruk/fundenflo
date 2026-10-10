@@ -1,0 +1,110 @@
+{
+  "name": "Deactivate Lead Source",
+  "request": {
+    "method": "PATCH",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "If-Match",
+        "value": "\"{{leadSourceVersion}}\""
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/lead-sources/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "lead-sources",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{leadSourceId}}"
+        }
+      ]
+    },
+    "description": "Deactivates a lead source (status `inactive`) so it stops accepting new leads; leads already captured keep it. Flows use it to clean up the sources they create. Staff with lead source manage access.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"status\": \"inactive\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.test('is inactive', () => pm.expect(pm.response.json().status).to.eql('inactive'));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{leadSourceVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/lead-sources/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "lead-sources",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{leadSourceId}}"
+            }
+          ]
+        },
+        "description": "Deactivates a lead source (status `inactive`) so it stops accepting new leads; leads already captured keep it. Flows use it to clean up the sources they create. Staff with lead source manage access.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"inactive\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a121e0-4d5e-7f60-8172-8394a5b6c7d8\",\n  \"key\": \"website_diwali\",\n  \"name\": \"Diwali landing page (Hindi)\",\n  \"kind\": \"web_form\",\n  \"status\": \"inactive\",\n  \"questionSetStage\": null,\n  \"consentContext\": \"lead_capture\",\n  \"defaultLawfulBasis\": null,\n  \"version\": 2,\n  \"updatedAt\": \"2026-10-09T18:45:00.000Z\"\n}"
+    }
+  ]
+}

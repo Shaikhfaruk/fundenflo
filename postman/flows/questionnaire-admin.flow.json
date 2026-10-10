@@ -30,6 +30,7 @@
     { "request": "48 Admin - Change Requests/04 Reject Change Request.json", "identity": "checker" },
     { "request": "47 Admin - Questions & Question Sets/15 Retire Version.json", "identity": "maker" },
     { "request": "47 Admin - Questions & Question Sets/07 Get Question Set.json" },
-    { "request": "47 Admin - Questions & Question Sets/15 Retire Version.json", "variables": { "questionSetNumber": "1" }, "identity": "maker" }
+    { "request": "47 Admin - Questions & Question Sets/15 Retire Version.json", "variables": { "questionSetNumber": "1" }, "identity": "maker" },
+    { "request": "47 Admin - Questions & Question Sets/16 Deactivate Question.json", "identity": "maker" }
   ]
 }

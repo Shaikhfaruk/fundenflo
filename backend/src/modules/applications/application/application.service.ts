@@ -133,7 +133,7 @@ export class ApplicationService {
       categoryKey: query.category,
       partnerOrganizationId: query.partnerOrganizationId,
       channel: query.channel,
-      ...(query.q ? { ref: { startsWith: query.q.toUpperCase() } } : {}),
+      ...(query.q ? { OR: [{ ref: { startsWith: query.q.toUpperCase() } }, { party: { displayName: { contains: query.q, mode: 'insensitive' } } }, { actingParty: { displayName: { contains: query.q, mode: 'insensitive' } } }] } : {}),
     };
     const rows = await this.applications.list({ AND: [accessibleBy(ability, AppAction.Read).ofType('LoanApplication'), filters] }, window.take);
     return toPage(rows, query.limit, toApplicationView);

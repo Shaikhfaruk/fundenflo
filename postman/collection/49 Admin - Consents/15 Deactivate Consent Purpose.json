@@ -1,0 +1,110 @@
+{
+  "name": "Deactivate Consent Purpose",
+  "request": {
+    "method": "PATCH",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "If-Match",
+        "value": "\"{{consentPurposeVersion}}\""
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/consent-purposes/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "consent-purposes",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{consentPurposeId}}"
+        }
+      ]
+    },
+    "description": "Deactivates a consent purpose (status `inactive`): it disappears from consent lists and new templates; recorded consents stay in the history. Flows use it to clean up the purposes they create. Compliance officers.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"status\": \"inactive\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.test('is inactive', () => pm.expect(pm.response.json().status).to.eql('inactive'));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{consentPurposeVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/consent-purposes/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "consent-purposes",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{consentPurposeId}}"
+            }
+          ]
+        },
+        "description": "Deactivates a consent purpose (status `inactive`): it disappears from consent lists and new templates; recorded consents stay in the history. Flows use it to clean up the purposes they create. Compliance officers.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"inactive\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a121c0-1a2b-7c3d-8e4f-5061728394a5\",\n  \"key\": \"partner_sharing\",\n  \"label\": {\n    \"en\": \"Share My Enquiry With A FundenFlo Partner\"\n  },\n  \"description\": null,\n  \"scopeKind\": \"organizations\",\n  \"scopeOrganizationType\": \"partner\",\n  \"allowedBases\": [\n    \"consent\"\n  ],\n  \"validityDays\": null,\n  \"status\": \"inactive\",\n  \"version\": 2,\n  \"updatedAt\": \"2026-10-09T17:40:00.000Z\"\n}"
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+{
+  "name": "Deactivate Attribute",
+  "request": {
+    "method": "PATCH",
+    "header": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "If-Match",
+        "value": "\"{{attributeVersion}}\""
+      }
+    ],
+    "url": {
+      "raw": "{{baseUrl}}/admin/attributes/:id",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "admin",
+        "attributes",
+        ":id"
+      ],
+      "variable": [
+        {
+          "key": "id",
+          "value": "{{attributeId}}"
+        }
+      ]
+    },
+    "description": "Deactivates an attribute (status `inactive`): it can no longer be recorded or used in new rules; facts already stored stay. Flows use it to clean up the attributes they create. Staff with attribute manage access.",
+    "body": {
+      "mode": "raw",
+      "raw": "{\n  \"status\": \"inactive\"\n}",
+      "options": {
+        "raw": {
+          "language": "json"
+        }
+      }
+    }
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "pm.test('is inactive', () => pm.expect(pm.response.json().status).to.eql('inactive'));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "If-Match",
+            "value": "\"{{attributeVersion}}\""
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/admin/attributes/:id",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "admin",
+            "attributes",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "{{attributeId}}"
+            }
+          ]
+        },
+        "description": "Deactivates an attribute (status `inactive`): it can no longer be recorded or used in new rules; facts already stored stay. Flows use it to clean up the attributes they create. Staff with attribute manage access.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"inactive\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"id\": \"01a1216b-4f50-7d93-9fa5-b6c7d8e9fa0b\",\n  \"key\": \"business.industry\",\n  \"label\": {\n    \"en\": \"Industry\",\n    \"hi\": \"उद्योग\"\n  },\n  \"description\": null,\n  \"dataType\": \"enum\",\n  \"unit\": null,\n  \"enumValues\": [\n    {\n      \"value\": \"manufacturing\",\n      \"label\": {\n        \"en\": \"Manufacturing\"\n      }\n    },\n    {\n      \"value\": \"trading\",\n      \"label\": {\n        \"en\": \"Trading\"\n      }\n    }\n  ],\n  \"subject\": \"business\",\n  \"sensitivity\": \"public\",\n  \"allowedProvenance\": [\n    \"declared\",\n    \"ops_verified\"\n  ],\n  \"freshnessDays\": 365,\n  \"status\": \"inactive\",\n  \"version\": 2,\n  \"updatedAt\": \"2026-10-09T16:46:23.412Z\"\n}"
+    }
+  ]
+}

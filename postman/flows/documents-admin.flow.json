@@ -86,6 +86,10 @@
         "documentRequirementNumber": "1"
       },
       "identity": "maker"
+    },
+    {
+      "request": "56 Admin - Documents/15 Deactivate Document Type.json",
+      "identity": "maker"
     }
   ]
 }
