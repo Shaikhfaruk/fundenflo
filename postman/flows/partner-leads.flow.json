@@ -198,6 +198,14 @@
       "identity": "partner"
     },
     {
+      "request": "10 Partner Portal - Onboarding, Team & Leads/27 Get Partner Dashboard.json",
+      "identity": "partner"
+    },
+    {
+      "request": "09 Sync & Sessions/01 Get Changes.json",
+      "identity": "partner"
+    },
+    {
       "request": "53 Admin - Routing Rules/10 Retire Routing Rule Version.json",
       "identity": "maker"
     }

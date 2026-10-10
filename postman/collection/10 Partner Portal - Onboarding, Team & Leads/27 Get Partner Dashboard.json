@@ -1,0 +1,59 @@
+{
+  "name": "Get Partner Dashboard",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/partner/dashboard",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "partner",
+        "dashboard"
+      ]
+    },
+    "description": "What needs the CA's attention now: offers waiting, active leads, first contacts not yet logged, follow-ups due today and overdue (a member sees only their own), offline conversions waiting for ops and verified this month, and referrals still protected. Partner context."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/partner/dashboard",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "partner",
+            "dashboard"
+          ]
+        },
+        "description": "What needs the CA's attention now: offers waiting, active leads, first contacts not yet logged, follow-ups due today and overdue (a member sees only their own), offline conversions waiting for ops and verified this month, and referrals still protected. Partner context."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"leads\": {\n    \"offered\": 2,\n    \"active\": 7,\n    \"firstContactDue\": 1\n  },\n  \"followUps\": {\n    \"dueToday\": 3,\n    \"overdue\": 1\n  },\n  \"conversions\": {\n    \"pending\": 1,\n    \"wonThisMonth\": 2\n  },\n  \"referrals\": {\n    \"protected\": 4\n  },\n  \"at\": \"2026-10-10T14:00:00.000Z\"\n}"
+    }
+  ]
+}

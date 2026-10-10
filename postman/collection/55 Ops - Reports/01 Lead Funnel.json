@@ -1,0 +1,111 @@
+{
+  "name": "Lead Funnel",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/ops/reports/leads/funnel?groupBy=source",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "reports",
+        "leads",
+        "funnel"
+      ],
+      "query": [
+        {
+          "key": "groupBy",
+          "value": "source"
+        }
+      ]
+    },
+    "description": "Leads created between `from` and `to` (default the last 30 days, at most 366 days), grouped by `groupBy` (`source`, `campaign`, `city`, `category`, `segment`) with counts per status and consent status. Test leads are excluded. Staff only, lead read access."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/ops/reports/leads/funnel?groupBy=source",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "reports",
+            "leads",
+            "funnel"
+          ],
+          "query": [
+            {
+              "key": "groupBy",
+              "value": "source"
+            }
+          ]
+        },
+        "description": "Leads created between `from` and `to` (default the last 30 days, at most 366 days), grouped by `groupBy` (`source`, `campaign`, `city`, `category`, `segment`) with counts per status and consent status. Test leads are excluded. Staff only, lead read access."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"groupBy\": \"source\",\n  \"from\": \"2026-09-10T14:00:00.000Z\",\n  \"to\": \"2026-10-10T14:00:00.000Z\",\n  \"total\": 42,\n  \"items\": [\n    {\n      \"key\": \"01a121a0-1a2b-7c3d-8e4f-5061728394a5\",\n      \"label\": \"Backlog and file imports\",\n      \"total\": 30,\n      \"byStatus\": {\n        \"new\": 18,\n        \"in_progress\": 9,\n        \"won\": 3\n      },\n      \"byConsent\": {\n        \"ok\": 21,\n        \"pending\": 9\n      }\n    }\n  ]\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/ops/reports/leads/funnel?groupBy=source",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "reports",
+            "leads",
+            "funnel"
+          ],
+          "query": [
+            {
+              "key": "groupBy",
+              "value": "source"
+            }
+          ]
+        },
+        "description": "Leads created between `from` and `to` (default the last 30 days, at most 366 days), grouped by `groupBy` (`source`, `campaign`, `city`, `category`, `segment`) with counts per status and consent status. Test leads are excluded. Staff only, lead read access."
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"from\",\n      \"code\": \"custom\",\n      \"message\": \"from must be before to, at most 366 days apart\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

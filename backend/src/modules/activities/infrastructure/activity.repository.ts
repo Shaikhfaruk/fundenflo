@@ -35,4 +35,12 @@ export class ActivityRepository {
   updateFollowUpVersioned(id: string, version: number, data: Prisma.FollowUpUncheckedUpdateManyInput) {
     return this.txHost.tx.followUp.updateMany({ where: { id, version }, data: { ...data, version: { increment: 1 } } });
   }
+
+  syncFollowUps(where: Prisma.FollowUpWhereInput, take: number) {
+    return this.txHost.tx.followUp.findMany({ where, select: { id: true, version: true, updatedAt: true }, orderBy: [{ updatedAt: 'asc' }, { id: 'asc' }], take });
+  }
+
+  countFollowUps(where: Prisma.FollowUpWhereInput) {
+    return this.txHost.tx.followUp.count({ where });
+  }
 }

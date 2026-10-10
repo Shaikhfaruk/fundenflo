@@ -195,6 +195,13 @@ Built in M1.8d (Postman `08 Leads & Imports/` 38–39). Controller: `backend/src
 | `GET` | `/ops/offline-conversions` | leads | staff | M1 | `useful` |
 | `POST` | `/ops/offline-conversions/:id/decide` | leads | staff | M1 | `useful` |
 
+Built in M1.9b (Postman `55 Ops - Reports/`). Controller: `backend/src/modules/leads/http/ops-reports.controller.ts` → `LeadReportService` (live SQL aggregates over a bounded range, at most 366 days; test leads excluded).
+
+| Method | Path | Module | Context | Milestone | Status |
+|---|---|---|---|---|---|
+| `GET` | `/ops/reports/leads/funnel` | leads | staff | M1 | `useful` |
+| `GET` | `/ops/reports/partners/performance` | leads → access (organization names) | staff | M1 | `useful` |
+
 Built in M1.8a (Postman `08 Leads & Imports/` 28–32). Controller: `backend/src/modules/leads/http/ops-leads.controller.ts` → `LeadRoutingService`; lead update access. Automatic routing runs in the worker (`leads.route`).
 
 | Method | Path | Module | Context | Milestone | Status |
@@ -209,8 +216,6 @@ Planned:
 
 | Method | Path | Module | Context | Milestone | Status |
 |---|---|---|---|---|---|
-| `GET` | `/ops/reports/leads/funnel` | leads | staff | M1 | `planned` |
-| `GET` | `/ops/reports/partners/performance` | leads | staff | M1 | `planned` |
 
 ## 09 Sync & Sessions
 
@@ -218,7 +223,7 @@ The WebSocket namespace `/v1/realtime` (built in M1.9a) is documented with its r
 
 | Method | Path | Module | Context | Milestone | Status |
 |---|---|---|---|---|---|
-| `GET` | `/sync/changes` | sync | any | M1 | `planned` |
+| `GET` | `/sync/changes` | sync (`sync.controller.ts` → `SyncService`; sources in leads and activities) | any | M1 | `useful` |
 
 ## 10 Partner Portal - Onboarding, Team & Leads
 
@@ -263,13 +268,13 @@ Built in M1.8d (Postman `10 Partner Portal - Onboarding, Team & Leads/` 23–26)
 | `PATCH` | `/partner/leads/:id` | leads | partner | M1 | `useful` |
 | `POST` | `/partner/leads/:id/offline-conversion` | leads | partner | M1 | `useful` |
 | `GET` | `/partner/referrals` | leads → partners | partner | M1 | `useful` |
+| `GET` | `/partner/dashboard` | leads (`partner-dashboard.controller.ts` → `PartnerLeadService.dashboard`) | partner | M1 | `useful` |
 
 Planned:
 
 | Method | Path | Module | Context | Milestone | Status |
 |---|---|---|---|---|---|
 | `PATCH` | `/partner/profile` | partners | partner_owner | M7 | `planned` |
-| `GET` | `/partner/dashboard` | partners | partner | M1 | `planned` |
 | `POST` | `/partner/leads/:id/convert` | leads | partner | M3 | `planned` |
 
 ## 11 Partner Portal - Applications & Commissions

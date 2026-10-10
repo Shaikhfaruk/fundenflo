@@ -1,0 +1,63 @@
+{
+  "name": "Partner Performance",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/ops/reports/partners/performance",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "ops",
+        "reports",
+        "partners",
+        "performance"
+      ]
+    },
+    "description": "Per CA firm, for offers made between `from` and `to` (default the last 30 days): offers, accepted, declined, expired, returned, revoked, still open, accept rate (of decided offers), median minutes to accept and to first contact, first contact on time rate and misses, and verified offline conversions with the disbursed amount. Staff only, assignment read access."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/ops/reports/partners/performance",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "ops",
+            "reports",
+            "partners",
+            "performance"
+          ]
+        },
+        "description": "Per CA firm, for offers made between `from` and `to` (default the last 30 days): offers, accepted, declined, expired, returned, revoked, still open, accept rate (of decided offers), median minutes to accept and to first contact, first contact on time rate and misses, and verified offline conversions with the disbursed amount. Staff only, assignment read access."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"from\": \"2026-09-10T14:00:00.000Z\",\n  \"to\": \"2026-10-10T14:00:00.000Z\",\n  \"items\": [\n    {\n      \"organization\": {\n        \"id\": \"01a121c0-6f70-7b82-a394-a5b6c7d8e9fa\",\n        \"name\": \"Mehta & Associates\"\n      },\n      \"offers\": 24,\n      \"accepted\": 18,\n      \"declined\": 3,\n      \"expired\": 1,\n      \"returned\": 2,\n      \"revoked\": 0,\n      \"open\": 2,\n      \"acceptRate\": 0.818,\n      \"medianAcceptMinutes\": 42,\n      \"medianFirstContactMinutes\": 95,\n      \"firstContactOnTimeRate\": 0.889,\n      \"firstContactMissed\": 2,\n      \"conversionsVerified\": 3,\n      \"disbursedAmountPaise\": 450000000\n    }\n  ]\n}"
+    }
+  ]
+}

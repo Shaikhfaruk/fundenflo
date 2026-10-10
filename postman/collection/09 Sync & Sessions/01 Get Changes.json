@@ -1,0 +1,119 @@
+{
+  "name": "Get Changes",
+  "request": {
+    "method": "GET",
+    "header": [],
+    "url": {
+      "raw": "{{baseUrl}}/sync/changes?types=lead,assignment,follow_up&limit=200",
+      "host": [
+        "{{baseUrl}}"
+      ],
+      "path": [
+        "sync",
+        "changes"
+      ],
+      "query": [
+        {
+          "key": "types",
+          "value": "lead,assignment,follow_up"
+        },
+        {
+          "key": "limit",
+          "value": "200"
+        }
+      ]
+    },
+    "description": "Delta feed for lists that went offline: ids and versions of everything the caller may see that changed after `since`, oldest first, across the requested `types` (`lead`, `assignment`, `follow_up`; default all). Send `nextCursor` back as `since` until `hasMore` is false; refetch an item when its version is newer than the cached one. Staff see what their role allows; a CA firm sees its own assignments, leads it holds and its follow-ups. Pair with the `/v1/realtime` socket for live updates. Any signed-in context."
+  },
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "pm.test('responds 200', () => pm.response.to.have.status(200));",
+          "const body = pm.response.json();",
+          "pm.collectionVariables.set('syncCursor', body.nextCursor || '');"
+        ]
+      }
+    }
+  ],
+  "response": [
+    {
+      "name": "200 OK",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/sync/changes?types=lead,assignment,follow_up&limit=200",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "sync",
+            "changes"
+          ],
+          "query": [
+            {
+              "key": "types",
+              "value": "lead,assignment,follow_up"
+            },
+            {
+              "key": "limit",
+              "value": "200"
+            }
+          ]
+        },
+        "description": "Delta feed for lists that went offline: ids and versions of everything the caller may see that changed after `since`, oldest first, across the requested `types` (`lead`, `assignment`, `follow_up`; default all). Send `nextCursor` back as `since` until `hasMore` is false; refetch an item when its version is newer than the cached one. Staff see what their role allows; a CA firm sees its own assignments, leads it holds and its follow-ups. Pair with the `/v1/realtime` socket for live updates. Any signed-in context."
+      },
+      "status": "OK",
+      "code": 200,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"items\": [\n    {\n      \"type\": \"lead\",\n      \"id\": \"01a121e0-1a2b-7c3d-8e4f-5061728394a5\",\n      \"version\": 4,\n      \"updatedAt\": \"2026-10-10T14:00:00.000Z\"\n    },\n    {\n      \"type\": \"assignment\",\n      \"id\": \"01a121f9-3c4d-7e5f-8061-728394a5b6c7\",\n      \"version\": 2,\n      \"updatedAt\": \"2026-10-10T14:00:00.000Z\"\n    }\n  ],\n  \"nextCursor\": \"eyJhIjoiMjAyNi0xMC0xMFQxNDowMDowMC4wMDBaIiwidCI6ImxlYWQiLCJpIjoiMDFhMTIxZTAifQ\",\n  \"hasMore\": false\n}"
+    },
+    {
+      "name": "400 VALIDATION_FAILED",
+      "originalRequest": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/sync/changes?types=lead,assignment,follow_up&limit=200",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "sync",
+            "changes"
+          ],
+          "query": [
+            {
+              "key": "types",
+              "value": "lead,assignment,follow_up"
+            },
+            {
+              "key": "limit",
+              "value": "200"
+            }
+          ]
+        },
+        "description": "Delta feed for lists that went offline: ids and versions of everything the caller may see that changed after `since`, oldest first, across the requested `types` (`lead`, `assignment`, `follow_up`; default all). Send `nextCursor` back as `since` until `hasMore` is false; refetch an item when its version is newer than the cached one. Staff see what their role allows; a CA firm sees its own assignments, leads it holds and its follow-ups. Pair with the `/v1/realtime` socket for live updates. Any signed-in context."
+      },
+      "status": "Bad Request",
+      "code": 400,
+      "_postman_previewlanguage": "json",
+      "header": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ],
+      "body": "{\n  \"code\": \"VALIDATION_FAILED\",\n  \"message\": \"Some fields are missing or invalid.\",\n  \"details\": [\n    {\n      \"path\": \"since\",\n      \"code\": \"invalid_cursor\",\n      \"message\": \"use nextCursor from an earlier response\"\n    }\n  ],\n  \"requestId\": \"b9dbcb7b-33af-4782-af86-fc87dbb3c28d\"\n}"
+    }
+  ]
+}

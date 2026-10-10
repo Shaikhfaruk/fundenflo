@@ -22,6 +22,10 @@ export class LeadAttributionService {
     return leadIds.length === 0 ? Promise.resolve([]) : this.attributions.findActive(leadIds, now);
   }
 
+  countActive(organizationId: string, now = new Date()) {
+    return this.attributions.countActive(organizationId, now);
+  }
+
   async listForOrganization(organizationId: string, query: PageQuery) {
     const window = pageWindow(query);
     return { rows: await this.attributions.listForOrganization(organizationId, window.idFilter, window.take), limit: query.limit };

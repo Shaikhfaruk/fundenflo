@@ -19,6 +19,7 @@ import { LeadsModule } from './modules/leads/leads.module.js';
 import { ActivitiesModule } from './modules/activities/activities.module.js';
 import { RealtimeModule } from './modules/realtime/realtime.module.js';
 import { SlaModule } from './modules/sla/sla.module.js';
+import { SyncModule } from './modules/sync/sync.module.js';
 import { NotificationsModule } from './modules/notifications/notifications.module.js';
 import { PartnersModule } from './modules/partners/partners.module.js';
 import { QuestionnairesModule } from './modules/questionnaires/questionnaires.module.js';
@@ -40,6 +41,7 @@ import { QuestionnairesModule } from './modules/questionnaires/questionnaires.mo
     ActivitiesModule,
     SlaModule,
     RealtimeModule.forRoot({ worker: false }),
+    SyncModule,
     LeadsModule,
     ImportsModule,
   ],

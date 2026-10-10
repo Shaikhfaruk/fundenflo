@@ -76,6 +76,10 @@ export class ActivityService {
     return (await this.activities.updateFollowUps({ ...where, id: { in: open.map((followUp) => followUp.id) } }, { status: FollowUpStatus.cancelled, doneAt: new Date(), outcomeNote })).count;
   }
 
+  countFollowUps(where: Prisma.FollowUpWhereInput) {
+    return this.activities.countFollowUps(where);
+  }
+
   async findFollowUp(id: string, scope: Prisma.FollowUpWhereInput) {
     const followUp = await this.activities.findFollowUp({ AND: [scope, { id }] });
     if (!followUp) throw new AppError(ErrorCode.NOT_FOUND);

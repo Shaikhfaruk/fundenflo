@@ -5,7 +5,9 @@ import type { Redis } from 'ioredis';
 import type { Server, ServerOptions } from 'socket.io';
 
 export class RedisIoAdapter extends IoAdapter {
-  private readonly clients: Redis[];
+  private readonly publisher: Redis;
+
+  private readonly subscriber: Redis;
 
   private readonly adapter: ReturnType<typeof createAdapter>;
 
@@ -15,10 +17,9 @@ export class RedisIoAdapter extends IoAdapter {
     private readonly corsOrigins: string[],
   ) {
     super(app);
-    const publisher = redis.duplicate();
-    const subscriber = redis.duplicate();
-    this.clients = [publisher, subscriber];
-    this.adapter = createAdapter(publisher, subscriber);
+    this.publisher = redis.duplicate();
+    this.subscriber = redis.duplicate();
+    this.adapter = createAdapter(this.publisher, this.subscriber);
   }
 
   override createIOServer(port: number, options?: Partial<ServerOptions>): Server {
@@ -29,6 +30,10 @@ export class RedisIoAdapter extends IoAdapter {
   }
 
   override async dispose() {
-    await Promise.all(this.clients.map((client) => client.quit()));
+    await this.subscriber.punsubscribe().catch(() => null);
+    await this.subscriber.unsubscribe().catch(() => null);
+    await Promise.all([this.publisher, this.subscriber].map(async (client) => {
+      await client.quit().catch(() => client.disconnect());
+    }));
   }
 }

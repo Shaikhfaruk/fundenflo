@@ -3,7 +3,7 @@
 > The map of everything in the system. **Search here before creating any function, class, route, worker, queue, channel or file, and reuse or extend what is listed.**
 > Any change that adds, renames, moves, removes or changes the behaviour or callers of an item updates this inventory and the matching diagram in [`ARCHITECTURE.md`](ARCHITECTURE.md) in the same change.
 > Known duplicates: [`DUPLICATES.md`](DUPLICATES.md). Design: [`BACKEND_ARCHITECTURE_PLAN.md`](BACKEND_ARCHITECTURE_PLAN.md).
-> Last updated: 2026-10-10 · Backend: **M0 foundation + M1.1 catalog + M1.2 attributes, facts and conditions + M1.3 config publishing and questionnaires + M1.4 consents + M1.5 partners light + M1.6a/b leads core, consent links and drop-offs + M1.7 imports + M1.8a routing rules and lead assignments + M1.8b CA lead inbox + M1.8c SLA timers, activities and follow-ups + M1.8d lead notifications, referrals, CA edits and offline conversions + M1.6c party match reviews and merges + M1.9a realtime and push built** (202 routes, 11 queues, 197 tests). Remaining M1+ items are `planned`.
+> Last updated: 2026-10-10 · Backend: **M0 foundation + M1.1 catalog + M1.2 attributes, facts and conditions + M1.3 config publishing and questionnaires + M1.4 consents + M1.5 partners light + M1.6a/b leads core, consent links and drop-offs + M1.7 imports + M1.8a routing rules and lead assignments + M1.8b CA lead inbox + M1.8c SLA timers, activities and follow-ups + M1.8d lead notifications, referrals, CA edits and offline conversions + M1.6c party match reviews and merges + M1.9a realtime and push + M1.9b sync, reports and partner dashboard built: **M1 complete** (206 routes, 11 queues, 204 tests). Remaining M1+ items are `planned`.
 > Automated checks: `pnpm inventory:check` (routes ↔ `inventory/api-routes.md`), `pnpm postman:coverage` (routes ↔ Postman), `pnpm lint:boundaries` (module rules).
 
 ## Status legend
@@ -22,9 +22,9 @@ Items marked `dead` or `duplicate` are never deleted without the owner's review.
 
 | Service | Table | Items |
 |---|---|---|
-| API — modules | [`inventory/api-modules.md`](inventory/api-modules.md) | 27 modules (17 built) |
-| API — routes | [`inventory/api-routes.md`](inventory/api-routes.md) | Every HTTP and WebSocket route, grouped by Postman folder (202 built) |
-| Worker — queues, jobs, cron | [`inventory/worker-queues-jobs.md`](inventory/worker-queues-jobs.md) | 11 built, 8 planned |
+| API — modules | [`inventory/api-modules.md`](inventory/api-modules.md) | 27 modules (18 built) |
+| API — routes | [`inventory/api-routes.md`](inventory/api-routes.md) | Every HTTP and WebSocket route, grouped by Postman folder (206 built) |
+| Worker — queues, jobs, cron | [`inventory/worker-queues-jobs.md`](inventory/worker-queues-jobs.md) | 11 built, 8 planned (`reports.refresh` moved to M8) |
 | Events, real-time channels, notifications | [`inventory/events-and-channels.md`](inventory/events-and-channels.md) | Domain events, rooms, notification templates |
 | Shared building blocks (engines, infrastructure, common) | [`inventory/shared-building-blocks.md`](inventory/shared-building-blocks.md) | Reusable components and where enums/constants live |
 | Frontend app (reference, not edited) | [`inventory/frontend-api-calls.md`](inventory/frontend-api-calls.md) | 19 service functions calling 17 endpoints |
@@ -39,7 +39,7 @@ Items marked `dead` or `duplicate` are never deleted without the owner's review.
 | `docs/ARCHITECTURE.md` | Living diagrams | `useful` | Linked from every inventory table |
 | `docs/inventory.md`, `docs/inventory/*.md` | This system map | `useful` | — |
 | `docs/DUPLICATES.md` | Known duplicates register and single-implementation rules | `useful` | No open duplicates as of 2026-10-09 |
-| `postman/` | Postman collection source, environments, flows and scripts (plan §12) | `useful` | 202 request files + 1 external upload request, 15 flows (the runner clears local loopback rate-limit counters before each flow, never in production or against a non-local Redis) (step variables may reference other variables) (the runner supports several staff identities per flow via `requires: checkerInvitation` and step `identity`); `pnpm postman:coverage` and `pnpm postman:flows` pass |
+| `postman/` | Postman collection source, environments, flows and scripts (plan §12) | `useful` | 206 request files + 1 external upload request, 15 flows (the runner clears local loopback rate-limit counters before each flow, never in production or against a non-local Redis) (step variables may reference other variables) (the runner supports several staff identities per flow via `requires: checkerInvitation` and step `identity`); `pnpm postman:coverage` and `pnpm postman:flows` pass |
 | `backend/` | NestJS 12 API + worker (`package.json`, `nest-cli.json`, `tsconfig*.json`, `prisma.config.ts`, `prisma/`, `src/`, `test/`, `docker-compose.yml`, `.env.example`, `.oxlintrc.json`, `.dependency-cruiser.cjs`, `vitest.config*.ts`, `pnpm-workspace.yaml`) | `useful` | `pnpm build`, `pnpm test`, `pnpm test:integration` pass |
 | `backend/prisma/migrations/20261009154711_init` | Generated schema for M0 tables | `useful` | Applied locally and in every integration run |
 | `backend/prisma/migrations/20261009163422_catalog_geography` | Catalog and geography tables | `useful` | Applied locally and in every integration run |

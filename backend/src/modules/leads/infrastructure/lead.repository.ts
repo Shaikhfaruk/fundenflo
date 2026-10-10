@@ -1,7 +1,8 @@
 import { TransactionHost } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
 
-import type { AssignmentStatus, LeadFlag, LeadStatus, OfflineConversionStatus, Prisma } from '../../../generated/prisma/client.js';
+import { OfflineConversionStatus } from '../../../common/enums/db.enums.js';
+import { type AssignmentStatus, type LeadFlag, type LeadStatus, Prisma } from '../../../generated/prisma/client.js';
 import type { PrismaTx } from '../../../infrastructure/database/database.types.js';
 import { LEAD_EVENTS_IN_DETAIL } from '../domain/lead.constants.js';
 
@@ -22,6 +23,33 @@ export const leadDetailInclude = {
 export const partnerAssignmentInclude = {
   lead: { include: leadListInclude },
 } as const satisfies Prisma.LeadAssignmentInclude;
+
+export const FUNNEL_COLUMNS = {
+  source: 'source_id',
+  campaign: 'campaign',
+  city: 'city_id',
+  category: 'category_key',
+  segment: 'segment_key',
+} as const;
+
+export type FunnelColumn = keyof typeof FUNNEL_COLUMNS;
+
+export type FunnelRow = { key: string | null; status: string; consent: string; count: number };
+
+export type PerformanceRow = {
+  organizationId: string;
+  offers: number;
+  accepted: number;
+  declined: number;
+  expired: number;
+  returned: number;
+  revoked: number;
+  open: number;
+  firstContactOnTime: number;
+  firstContactMissed: number;
+  medianAcceptSeconds: number | null;
+  medianFirstContactSeconds: number | null;
+};
 
 export type LeadListRow = Prisma.LeadGetPayload<{ include: typeof leadListInclude }>;
 export type PartnerAssignmentRow = Prisma.LeadAssignmentGetPayload<{ include: typeof partnerAssignmentInclude }>;
@@ -98,6 +126,53 @@ export class LeadRepository {
   async moveLeads(ids: { person: string[]; business: string[] }, partyId: string) {
     await this.txHost.tx.lead.updateMany({ where: { id: { in: ids.person } }, data: { partyId, version: { increment: 1 } } });
     await this.txHost.tx.lead.updateMany({ where: { id: { in: ids.business } }, data: { businessPartyId: partyId, version: { increment: 1 } } });
+  }
+
+  syncLeads(where: Prisma.LeadWhereInput, take: number) {
+    return this.txHost.tx.lead.findMany({ where, select: { id: true, version: true, updatedAt: true }, orderBy: [{ updatedAt: 'asc' }, { id: 'asc' }], take });
+  }
+
+  syncAssignments(where: Prisma.LeadAssignmentWhereInput, take: number) {
+    return this.txHost.tx.leadAssignment.findMany({ where, select: { id: true, version: true, updatedAt: true }, orderBy: [{ updatedAt: 'asc' }, { id: 'asc' }], take });
+  }
+
+  funnelCounts(column: FunnelColumn, from: Date, to: Date) {
+    return this.txHost.tx.$queryRaw<FunnelRow[]>`
+      SELECT ${Prisma.raw(FUNNEL_COLUMNS[column])}::text AS key, status::text AS status, consent_status::text AS consent, count(*)::int AS count
+      FROM leads
+      WHERE created_at >= ${from} AND created_at < ${to} AND NOT (flags @> ARRAY['test']::"LeadFlag"[])
+      GROUP BY 1, 2, 3`;
+  }
+
+  partnerPerformance(from: Date, to: Date) {
+    return this.txHost.tx.$queryRaw<PerformanceRow[]>`
+      SELECT organization_id::text AS "organizationId",
+        count(*)::int AS offers,
+        count(*) FILTER (WHERE accepted_at IS NOT NULL)::int AS accepted,
+        count(*) FILTER (WHERE status = 'declined')::int AS declined,
+        count(*) FILTER (WHERE status = 'expired')::int AS expired,
+        count(*) FILTER (WHERE status = 'returned')::int AS returned,
+        count(*) FILTER (WHERE status = 'revoked')::int AS revoked,
+        count(*) FILTER (WHERE status IN ('offered', 'accepted', 'working'))::int AS open,
+        count(*) FILTER (WHERE first_contacted_at IS NOT NULL AND first_contacted_at <= first_contact_by)::int AS "firstContactOnTime",
+        count(*) FILTER (WHERE accepted_at IS NOT NULL AND first_contact_by < now() AND (first_contacted_at IS NULL OR first_contacted_at > first_contact_by))::int AS "firstContactMissed",
+        (percentile_cont(0.5) WITHIN GROUP (ORDER BY extract(epoch FROM accepted_at - offered_at)) FILTER (WHERE accepted_at IS NOT NULL))::float8 AS "medianAcceptSeconds",
+        (percentile_cont(0.5) WITHIN GROUP (ORDER BY extract(epoch FROM first_contacted_at - accepted_at)) FILTER (WHERE first_contacted_at IS NOT NULL))::float8 AS "medianFirstContactSeconds"
+      FROM lead_assignments
+      WHERE offered_at >= ${from} AND offered_at < ${to}
+      GROUP BY organization_id`;
+  }
+
+  verifiedConversions(from: Date, to: Date) {
+    return this.txHost.tx.offlineConversion.groupBy({ by: ['organizationId'], where: { status: OfflineConversionStatus.verified, decidedAt: { gte: from, lt: to } }, _count: { organizationId: true }, _sum: { disbursedAmountPaise: true } });
+  }
+
+  countAssignments(where: Prisma.LeadAssignmentWhereInput) {
+    return this.txHost.tx.leadAssignment.count({ where });
+  }
+
+  countConversions(where: Prisma.OfflineConversionWhereInput) {
+    return this.txHost.tx.offlineConversion.count({ where });
   }
 
   addFlag(id: string, flag: LeadFlag) {

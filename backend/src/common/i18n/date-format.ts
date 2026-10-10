@@ -1,4 +1,4 @@
-import { DISPLAY_TIME_ZONE } from '../constants/time.constants.js';
+import { DISPLAY_TIME_ZONE, DISPLAY_UTC_OFFSET_MINUTES, MINUTE_MS } from '../constants/time.constants.js';
 import { DEFAULT_LOCALE, type Locale, resolveLocale } from './locale.js';
 
 const formatters = new Map<Locale, Intl.DateTimeFormat>();
@@ -11,4 +11,16 @@ export function formatDisplayDateTime(date: Date, locale?: string | null): strin
     formatters.set(resolved, formatter);
   }
   return formatter.format(date);
+}
+
+const shift = (date: Date, minutes: number) => new Date(date.getTime() + minutes * MINUTE_MS);
+
+export function startOfDisplayDay(date: Date): Date {
+  const local = shift(date, DISPLAY_UTC_OFFSET_MINUTES);
+  return shift(new Date(Date.UTC(local.getUTCFullYear(), local.getUTCMonth(), local.getUTCDate())), -DISPLAY_UTC_OFFSET_MINUTES);
+}
+
+export function startOfDisplayMonth(date: Date): Date {
+  const local = shift(date, DISPLAY_UTC_OFFSET_MINUTES);
+  return shift(new Date(Date.UTC(local.getUTCFullYear(), local.getUTCMonth(), 1)), -DISPLAY_UTC_OFFSET_MINUTES);
 }

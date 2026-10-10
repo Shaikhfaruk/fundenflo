@@ -62,6 +62,9 @@ These are the places where a second copy is most tempting. Use the one listed.
 | Reading CSV or XLSX uploads | `readTable()` in `modules/imports/infrastructure/table-reader.ts` | Per-feature spreadsheet parsing |
 | Pushing live updates to open screens | an entry in `realtimeTargets` (`infrastructure/realtime/realtime-routes.ts`) for the domain event | Emitting from services or controllers, or a second socket server |
 | Push notifications to app users | `UserNotifier` with the `push` channel (tokens from sessions) | Storing device tokens elsewhere or calling Expo directly |
+| Offline catch-up feeds | a `@SyncSourceFor(type)` provider in the owning module, served by `GET /sync/changes` | Per-screen `updatedSince` endpoints |
+| Lead and CA reports | `LeadReportService` | Ad-hoc report queries in controllers |
+| Local day or month boundaries | `startOfDisplayDay` / `startOfDisplayMonth` | Manual timezone offsets |
 | Locale handling | `common/i18n/locale.ts` (`localise`, `resolveLocale`, `@RequestLocale()`) | Per-module locale constants |
 | Referral protection and lead attribution to a partner firm | `LeadAttributionService` (partners) | Protection flags or referrer columns on leads |
 | Reporting and verifying a loan closed outside the platform | `LeadConversionService` | Marking leads won by hand |

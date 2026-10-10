@@ -3,11 +3,13 @@ import { z } from 'zod';
 import { ActivityOutcome, ActivityType, CatalogStatus, ConsentBasis, FollowUpStatus, OfflineConversionStatus, LeadConsentStatus, LeadFlag, LeadLostReason, LeadSourceKind, LeadStatus, LeadUnqualifiedReason, LeadUrgency } from '../../../common/enums/db.enums.js';
 import { SUPPORTED_LOCALES } from '../../../common/i18n/locale.js';
 import { MAX_PAGE_SIZE } from '../../../common/constants/listing.constants.js';
+import { DAY_MS } from '../../../common/constants/time.constants.js';
 import { pageQuerySchema } from '../../../common/listing/cursor-page.js';
 import { ACTIVITY_BODY_MAX_LENGTH, ACTIVITY_MAX_DURATION_SECONDS } from '../../activities/domain/activity.constants.js';
 import { CONFIG_KEY_PATTERN } from '../../config-publishing/domain/config.constants.js';
 import { AssignmentDeclineReason, AssignmentReturnReason, BULK_ROUTE_MAX, OTHER_REASON, PartnerInboxView } from '../domain/lead-routing.constants.js';
-import { LEAD_MERGE_MAX, LEAD_NOTE_MAX_LENGTH, LEAD_SOURCE_KEY_PATTERN, LEAD_TEXT_MAX_LENGTH } from '../domain/lead.constants.js';
+import { LEAD_MERGE_MAX, LEAD_NOTE_MAX_LENGTH, LEAD_REPORT_DEFAULT_DAYS, LEAD_REPORT_MAX_DAYS, LEAD_SOURCE_KEY_PATTERN, LEAD_TEXT_MAX_LENGTH } from '../domain/lead.constants.js';
+import { FUNNEL_COLUMNS } from '../infrastructure/lead.repository.js';
 
 const key = z.string().trim().regex(/^[a-z0-9][a-z0-9_-]{0,63}$/);
 const text = z.string().trim().min(1).max(LEAD_TEXT_MAX_LENGTH);
@@ -267,3 +269,23 @@ export const conversionDecisionSchema = z
   .strict()
   .refine((value) => value.decision !== ConversionDecision.Reject || value.note !== undefined, { path: ['note'], message: 'explain why the conversion is rejected' });
 export type ConversionDecisionDto = z.output<typeof conversionDecisionSchema>;
+
+const rangeShape = { from: z.coerce.date().optional(), to: z.coerce.date().optional() };
+
+const withRange = <T extends { from?: Date; to?: Date }>(value: T) => {
+  const to = value.to ?? new Date();
+  return { ...value, to, from: value.from ?? new Date(to.getTime() - LEAD_REPORT_DEFAULT_DAYS * DAY_MS) };
+};
+
+const validRange = (value: { from: Date; to: Date }) => value.from < value.to && value.to.getTime() - value.from.getTime() <= LEAD_REPORT_MAX_DAYS * DAY_MS;
+
+const RANGE_ISSUE = { path: ['from'], message: `from must be before to, at most ${LEAD_REPORT_MAX_DAYS} days apart` };
+
+export const reportRangeSchema = z.object(rangeShape).transform(withRange).refine(validRange, RANGE_ISSUE);
+export type ReportRangeDto = z.output<typeof reportRangeSchema>;
+
+export const funnelReportSchema = z
+  .object({ ...rangeShape, groupBy: z.enum(Object.keys(FUNNEL_COLUMNS) as [keyof typeof FUNNEL_COLUMNS, ...Array<keyof typeof FUNNEL_COLUMNS>]).default('source') })
+  .transform(withRange)
+  .refine(validRange, RANGE_ISSUE);
+export type FunnelReportDto = z.output<typeof funnelReportSchema>;

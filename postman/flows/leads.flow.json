@@ -92,6 +92,15 @@
       }
     },
     {
+      "request": "09 Sync & Sessions/01 Get Changes.json"
+    },
+    {
+      "request": "55 Ops - Reports/01 Lead Funnel.json"
+    },
+    {
+      "request": "55 Ops - Reports/02 Partner Performance.json"
+    },
+    {
       "request": "42 Admin - Lead Sources & API Keys/07 Revoke API Key.json"
     }
   ]

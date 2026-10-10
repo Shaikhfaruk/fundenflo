@@ -19,4 +19,8 @@ export class LeadAttributionRepository {
   listForOrganization(organizationId: string, idFilter: Prisma.UuidFilter | undefined, take: number) {
     return this.txHost.tx.leadAttribution.findMany({ where: { organizationId, id: idFilter }, orderBy: { id: 'desc' }, take });
   }
+
+  countActive(organizationId: string, now: Date) {
+    return this.txHost.tx.leadAttribution.count({ where: { organizationId, protectedUntil: { gt: now } } });
+  }
 }

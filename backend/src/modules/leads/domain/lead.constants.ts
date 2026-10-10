@@ -41,6 +41,10 @@ export const LEAD_MERGE_MAX = 20;
 
 export const LEAD_EVENTS_IN_DETAIL = 50;
 
+export const LEAD_REPORT_DEFAULT_DAYS = 30;
+
+export const LEAD_REPORT_MAX_DAYS = 366;
+
 export const LEAD_RAW_PAYLOAD_MAX_BYTES = 32_000;
 
 export const DEFAULT_LEAD_CONSENT_CONTEXT = 'lead_capture';

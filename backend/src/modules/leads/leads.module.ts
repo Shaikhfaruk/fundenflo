@@ -22,8 +22,10 @@ import { LeadImportHandler } from './application/lead-import.handler.js';
 import { LeadLocator } from './application/lead-locator.service.js';
 import { LeadMergeParticipant } from './application/lead-merge.participant.js';
 import { LeadNotificationService } from './application/lead-notification.service.js';
+import { LeadReportService } from './application/lead-report.service.js';
 import { LeadRoutingService } from './application/lead-routing.service.js';
 import { AssignmentAcceptSlaHandler, AssignmentFirstContactSlaHandler } from './application/lead-sla.handlers.js';
+import { AssignmentSyncSource, LeadSyncSource } from './application/lead-sync.sources.js';
 import { LeadSourceService } from './application/lead-source.service.js';
 import { LeadTimeline } from './application/lead-timeline.service.js';
 import { LeadService } from './application/lead.service.js';
@@ -35,6 +37,8 @@ import { OpsFollowUpsController } from './http/ops-follow-ups.controller.js';
 import { OpsLeadActivitiesController } from './http/ops-lead-activities.controller.js';
 import { OpsLeadsController } from './http/ops-leads.controller.js';
 import { OpsOfflineConversionsController } from './http/ops-offline-conversions.controller.js';
+import { OpsReportsController } from './http/ops-reports.controller.js';
+import { PartnerDashboardController } from './http/partner-dashboard.controller.js';
 import { PartnerFollowUpsController } from './http/partner-follow-ups.controller.js';
 import { PartnerLeadActivitiesController } from './http/partner-lead-activities.controller.js';
 import { PartnerLeadsController } from './http/partner-leads.controller.js';
@@ -59,6 +63,8 @@ const AdminRoutingRulesController = createVersionedConfigController({ resource: 
     OpsLeadActivitiesController,
     OpsFollowUpsController,
     OpsOfflineConversionsController,
+    OpsReportsController,
+    PartnerDashboardController,
     PartnerLeadsController,
     PartnerLeadActivitiesController,
     PartnerFollowUpsController,
@@ -78,9 +84,12 @@ const AdminRoutingRulesController = createVersionedConfigController({ resource: 
     LeadActivityService,
     AssignmentAcceptSlaHandler,
     AssignmentFirstContactSlaHandler,
+    LeadSyncSource,
+    AssignmentSyncSource,
     LeadService,
     LeadNotificationService,
     LeadConversionService,
+    LeadReportService,
     LeadImportHandler,
     RoutingRuleHandler,
     LeadRoutingService,

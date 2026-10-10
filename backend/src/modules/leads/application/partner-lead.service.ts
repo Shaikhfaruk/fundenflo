@@ -3,11 +3,13 @@ import { Transactional } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
 
 import type { UserActor } from '../../../common/context/actor.js';
-import { AnswerChannel, AssignmentStatus, AttributionKind, ConsentChannel, type LeadLostReason, LeadConsentStatus, LeadEventType, LeadStatus, SessionContext } from '../../../common/enums/db.enums.js';
+import { AnswerChannel, AssignmentStatus, AttributionKind, ConsentChannel, FollowUpStatus, OfflineConversionStatus, type LeadLostReason, LeadConsentStatus, LeadEventType, LeadStatus, SessionContext } from '../../../common/enums/db.enums.js';
 import { AppError } from '../../../common/errors/app-error.js';
 import { ErrorCode } from '../../../common/errors/error-codes.js';
 import { type PageQuery, pageWindow, toPage } from '../../../common/listing/cursor-page.js';
 import { EventName } from '../../../common/events/event-names.js';
+import { DAY_MS } from '../../../common/constants/time.constants.js';
+import { startOfDisplayDay, startOfDisplayMonth } from '../../../common/i18n/date-format.js';
 import type { Locale } from '../../../common/i18n/locale.js';
 import { LeadEvent, OPEN_LEAD_STATES } from '../../../engines/state-machines/machines/lead.machine.js';
 import { MembershipService } from '../../access/application/membership.service.js';
@@ -16,6 +18,7 @@ import { ChangeRecorder } from '../../audit/application/change-recorder.service.
 import { AuditAction, AuditEntity } from '../../audit/domain/audit.constants.js';
 import { ConsentService } from '../../consents/application/consent.service.js';
 import { ConsentPurposeKey } from '../../consents/domain/consent.constants.js';
+import { ActivityService } from '../../activities/application/activity.service.js';
 import type { ActivityInput } from '../../activities/domain/activity.types.js';
 import { PartyService } from '../../parties/application/party.service.js';
 import { LeadAttributionService } from '../../partners/application/lead-attribution.service.js';
@@ -66,7 +69,27 @@ export class PartnerLeadService {
     private readonly conversions: LeadConversionService,
     private readonly timeline: LeadTimeline,
     private readonly changes: ChangeRecorder,
+    private readonly activityStore: ActivityService,
   ) {}
+
+  async dashboard(actor: UserActor, ability: AppAbility) {
+    const organizationId = this.organizationOf(actor);
+    const assignments = accessibleBy(ability, AppAction.Read).ofType('LeadAssignment');
+    const followUps = accessibleBy(ability, AppAction.Read).ofType('FollowUp');
+    const now = new Date();
+    const endOfToday = new Date(startOfDisplayDay(now).getTime() + DAY_MS);
+    const [offers, active, firstContactDue, dueToday, overdue, conversionsPending, wonThisMonth, protectedReferrals] = await Promise.all([
+      this.leads.countAssignments({ AND: [assignments, { status: offered }] }),
+      this.leads.countAssignments({ AND: [assignments, { status: { in: [...WORKABLE] } }] }),
+      this.leads.countAssignments({ AND: [assignments, { status: { in: [...WORKABLE] }, firstContactedAt: null }] }),
+      this.activityStore.countFollowUps({ AND: [followUps, { status: FollowUpStatus.open, dueAt: { gte: now, lt: endOfToday } }] }),
+      this.activityStore.countFollowUps({ AND: [followUps, { status: FollowUpStatus.open, dueAt: { lt: now } }] }),
+      this.leads.countConversions({ organizationId, status: OfflineConversionStatus.reported }),
+      this.leads.countConversions({ organizationId, status: OfflineConversionStatus.verified, decidedAt: { gte: startOfDisplayMonth(now) } }),
+      this.attributions.countActive(organizationId, now),
+    ]);
+    return { leads: { offered: offers, active, firstContactDue }, followUps: { dueToday, overdue }, conversions: { pending: conversionsPending, wonThisMonth }, referrals: { protected: protectedReferrals }, at: now.toISOString() };
+  }
 
   @Transactional()
   async refer(input: PartnerReferralDto, actor: UserActor, locale: Locale) {
