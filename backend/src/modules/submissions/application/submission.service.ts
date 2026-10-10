@@ -387,7 +387,7 @@ export class SubmissionService {
   private async settle(applicationId: string) {
     const statuses = await this.submissions.statuses(applicationId);
     if (statuses.includes(SubmissionStatus.disbursed)) await this.applications.closeFromSubmissions(applicationId, true, SubmissionCloseReason.Disbursed);
-    else if (statuses.length > 0 && statuses.every((status) => CLOSED.includes(status))) await this.applications.closeFromSubmissions(applicationId, false, SubmissionCloseReason.AllLendersDeclined);
+    else if (statuses.length > 0 && statuses.every((status) => status === SubmissionStatus.rejected)) await this.applications.closeFromSubmissions(applicationId, false, SubmissionCloseReason.AllLendersDeclined);
   }
 
   private payloadOf(submission: LenderSubmission, application: ApplicationSubject, extra: Record<string, unknown>) {

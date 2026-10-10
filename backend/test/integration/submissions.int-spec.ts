@@ -190,6 +190,18 @@ describe('lender submissions, document requests and lender decisions', () => {
     await as(sharer).post(`/applications/${application.id}/submissions`, { matchResultId: application.results.get(second.id), shareWithLender: false }).expect(400);
   });
 
+  it('keeps the case open when the borrower takes back their only file', async () => {
+    const owner = await otpLogin(t, randomMobile(), LoginAs.borrower);
+    const application = await assessedApplication('Mehta Foods', owner);
+    const requested = await as(owner).post(`/applications/${application.id}/submissions`, { matchResultId: application.results.get(first.id), shareWithLender: true }).expect(201);
+    await upload(owner, { applicationId: application.id }, 'udyam_certificate');
+    await upload(owner, { applicationId: application.id }, 'bank_statement');
+    await as(ops).post(`/ops/submissions/${requested.body.id}/approve`).expect(200);
+    expect(await deliver(requested.body.id)).toMatchObject({ delivered: true });
+    await as(owner).post(`/applications/${application.id}/submissions/${requested.body.id}/withdraw`, { reason: 'Chose another lender' }).expect(200);
+    expect((await as(owner).get(`/applications/${application.id}`).expect(200)).body).toMatchObject({ status: 'submitted', closeReason: null });
+  });
+
   it('closes the application as lost when every lender declines, withdraws on application withdrawal and assigns cases', async () => {
     const application = await assessedApplication('Mehta Exports');
     await as(borrower).post(`/applications/${application.id}/consents`, { templateVersionId, items: [{ purpose: 'lender_sharing', granted: true, organizationIds: [first.organizationId, second.organizationId] }] }).expect(200);
