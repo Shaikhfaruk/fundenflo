@@ -2,6 +2,8 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import { EventName } from '../../src/common/events/event-names.js';
 import { LoginAs } from '../../src/common/enums/db.enums.js';
+import { RATE_LIMIT_KEY_PREFIX } from '../../src/infrastructure/rate-limit/rate-limit.constants.js';
+import { OtpLimit, RateLimitRules } from '../../src/modules/auth/domain/auth.constants.js';
 import { bearer, otpLogin, randomMobile } from './support/fixtures.js';
 import { startTestApp, type TestApp } from './support/test-app.js';
 import { TEST_OTP_CODE } from './support/test.constants.js';
@@ -49,6 +51,35 @@ describe('OTP sign-in and multiple logins', () => {
     expect(locked.body.code).toBe('OTP_LOCKED');
     const afterLock = await t.api().post('/v1/auth/otp/verify').send({ mobile, countryCode: '+91', otp: TEST_OTP_CODE }).expect(429);
     expect(afterLock.body.code).toBe('OTP_LOCKED');
+  });
+
+  it('does not count requests refused by the cooldown against the hourly allowance', async () => {
+    const mobile = randomMobile();
+    const request = () => t.api().post('/v1/auth/otp/request').send({ mobile, countryCode: '+91', loginAs: LoginAs.borrower });
+    const openResend = (challengeId: string) => t.prisma.otpChallenge.update({ where: { id: challengeId }, data: { resendAvailableAt: new Date(Date.now() - 1_000) } });
+    for (let sent = 1; sent <= OtpLimit.requestsPerIdentifier.limit; sent += 1) {
+      const issued = await request().expect(200);
+      for (let refused = 0; refused < 3; refused += 1) expect((await request().expect(429)).body.code).toBe('OTP_COOLDOWN');
+      await openResend(issued.body.challengeId);
+    }
+    expect((await request().expect(429)).body.code).toBe('OTP_RATE_LIMITED');
+    const ipKeys = await t.redis.keys(`${RATE_LIMIT_KEY_PREFIX}${RateLimitRules.otpRequest.name}:ip:*`);
+    if (ipKeys.length > 0) await t.redis.del(...ipKeys);
+  });
+
+  it('sends a fresh code when the person changes the role or referral code inside the cooldown', async () => {
+    const mobile = randomMobile();
+    const borrower = await t.api().post('/v1/auth/otp/request').send({ mobile, countryCode: '+91', loginAs: LoginAs.borrower }).expect(200);
+    const dsa = await t.api().post('/v1/auth/otp/request').send({ mobile, countryCode: '+91', loginAs: LoginAs.dsa }).expect(200);
+    expect(dsa.body.challengeId).not.toBe(borrower.body.challengeId);
+    expect((await t.api().post('/v1/auth/otp/request').send({ mobile, countryCode: '+91', loginAs: LoginAs.dsa }).expect(429)).body.code).toBe('OTP_COOLDOWN');
+    const referred = await t.api().post('/v1/auth/otp/request').send({ mobile, countryCode: '+91', loginAs: LoginAs.dsa, referralCode: 'ff-ca-77120' }).expect(200);
+
+    expect((await t.api().post('/v1/auth/otp/verify').send({ mobile, countryCode: '+91', otp: TEST_OTP_CODE, challengeId: borrower.body.challengeId }).expect(410)).body.code).toBe('OTP_EXPIRED');
+    const verified = await t.api().post('/v1/auth/otp/verify').send({ mobile, countryCode: '+91', otp: TEST_OTP_CODE, challengeId: referred.body.challengeId }).expect(200);
+    expect(verified.body.nextAction?.code).toBe('PARTNER_NOT_ONBOARDED');
+    const user = await t.prisma.user.findUniqueOrThrow({ where: { id: verified.body.user.id } });
+    expect(user.signupReferralCode).toBe('FF-CA-77120');
   });
 
   it('lets one person sign in as a partner, get a next action, and switch to borrower in the same session', async () => {

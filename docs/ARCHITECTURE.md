@@ -213,7 +213,12 @@ sequenceDiagram
   participant M as access (memberships)
   participant S as sessions
   C->>A: POST /auth/otp/request {mobile | email, loginAs, referralCode?}
-  A-->>C: {resendIn}
+  alt open code with the same loginAs and referral, inside the 30 s cooldown
+    A-->>C: 429 OTP_COOLDOWN {retryAfterSeconds} (not counted; the client opens the code step)
+  else no open code, cooldown over, or a different loginAs / referral
+    A->>A: count against 5 per hour, supersede the open code
+    A-->>C: {challengeId, resendIn}
+  end
   C->>A: POST /auth/otp/verify {mobile | email, otp, device?}
   A->>P: resolve person party by mobile blind index
   P-->>A: existing party (e.g. a lead) or new party

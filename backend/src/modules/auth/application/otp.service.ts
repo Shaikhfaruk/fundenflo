@@ -1,3 +1,5 @@
+import { isDeepStrictEqual } from 'node:util';
+
 import { Injectable } from '@nestjs/common';
 
 import { RequestContext } from '../../../common/context/request-context.service.js';
@@ -60,19 +62,19 @@ export class OtpService {
   }
 
   async issue(input: OtpIssueInput): Promise<OtpIssued> {
+    const latest = await this.challenges.findLatestOpen(input.purpose, input.identifierHash);
+    const now = Date.now();
+    if (latest && latest.resendAvailableAt.getTime() > now && latest.expiresAt.getTime() > now && this.sameIntent(latest, input)) {
+      const retryAfterSeconds = Math.ceil((latest.resendAvailableAt.getTime() - now) / 1000);
+      throw new AppError(ErrorCode.OTP_COOLDOWN, { retryAfterSeconds, details: { retryAfterSeconds } });
+    }
+
     const quota = await this.limiter.consume(
       RateLimitKey.otpRequests(input.purpose, input.identifierHash),
       OtpLimit.requestsPerIdentifier.limit,
       OtpLimit.requestsPerIdentifier.windowSeconds,
     );
     if (!quota.allowed) throw new AppError(ErrorCode.OTP_RATE_LIMITED, { retryAfterSeconds: quota.retryAfterSeconds });
-
-    const latest = await this.challenges.findLatestOpen(input.purpose, input.identifierHash);
-    const now = Date.now();
-    if (latest && latest.resendAvailableAt.getTime() > now && latest.expiresAt.getTime() > now) {
-      const retryAfterSeconds = Math.ceil((latest.resendAvailableAt.getTime() - now) / 1000);
-      throw new AppError(ErrorCode.OTP_COOLDOWN, { retryAfterSeconds, details: { retryAfterSeconds } });
-    }
 
     await this.challenges.supersedeOpen(input.purpose, input.identifierHash);
     const id = uuidv7();
@@ -139,9 +141,16 @@ export class OtpService {
     if (consumed.count === 0) throw new AppError(ErrorCode.OTP_EXPIRED);
     await this.limiter.reset(RateLimitKey.otpFailures(challenge.identifierHash));
 
+    return { challenge, payload: this.payloadOf<P>(challenge) };
+  }
+
+  private sameIntent(challenge: OtpChallenge, input: OtpIssueInput): boolean {
+    return (challenge.loginAs ?? null) === (input.loginAs ?? null) && isDeepStrictEqual(this.payloadOf(challenge), input.payload ?? null);
+  }
+
+  private payloadOf<P = Record<string, unknown>>(challenge: OtpChallenge): P | null {
     const stored = challenge.payload as { enc?: string } | null;
-    const payload = stored?.enc ? this.cipher.decryptJson<P>(stored.enc, CipherPurpose.OtpChallengePayload) : null;
-    return { challenge, payload };
+    return stored?.enc ? this.cipher.decryptJson<P>(stored.enc, CipherPurpose.OtpChallengePayload) : null;
   }
 
   private hashCode(challengeId: string, code: string): string {

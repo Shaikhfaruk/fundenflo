@@ -19,7 +19,7 @@
         "request"
       ]
     },
-    "description": "Starts sign-in for borrowers, CAs, DSAs and lender users. Send exactly one of `mobile` (with optional `countryCode`) or `email`.\n\n`loginAs` is `borrower | ca | dsa | lender` (default `borrower`) and decides which membership the session opens with. Optional `referralCode` (4-24 letters, numbers or hyphens) is stored on the user at signup.\n\nEmail codes are only delivered to emails already linked to an account or holding a pending invitation; the response is identical either way.\n\nLimits: 30-second resend cooldown, 5 codes per identifier per hour, 30 requests per IP per hour.",
+    "description": "Starts sign-in for borrowers, CAs, DSAs and lender users. Send exactly one of `mobile` (with optional `countryCode`) or `email`.\n\n`loginAs` is `borrower | ca | dsa | lender` (default `borrower`) and decides which membership the session opens with. Optional `referralCode` (4-24 letters, numbers or hyphens) is stored on the user at signup.\n\nEmail codes are only delivered to emails already linked to an account or holding a pending invitation; the response is identical either way.\n\nLimits: 30-second resend cooldown (`429 OTP_COOLDOWN` with `retryAfterSeconds`; the code already sent stays valid), 5 codes per identifier per hour (only requests that send a code count), 30 requests per IP per hour. A request with a different `loginAs` or `referralCode` than the open code skips the cooldown and replaces that code, so a person who picked the wrong role can switch straight away.",
     "auth": {
       "type": "noauth"
     },

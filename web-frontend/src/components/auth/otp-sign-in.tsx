@@ -55,7 +55,7 @@ const buildSchema = (t: (key: string) => string, tLogin: (key: string) => string
 
 type Values = z.infer<ReturnType<typeof buildSchema>>;
 
-type Challenge = { challengeId: string; resendIn: number; destination: string; values: Values };
+type Challenge = { challengeId: string | null; resendIn: number; destination: string; values: Values };
 
 const SWAP = { initial: { opacity: 0, x: 24 }, animate: { opacity: 1, x: 0 }, exit: { opacity: 0, x: -24 }, transition: { duration: Duration.Base, ease: EASE_OUT } } as const;
 
@@ -82,14 +82,21 @@ export function OtpSignIn() {
 
   const identifier = (values: Values) => (values.channel === 'mobile' ? { mobile: values.mobile, countryCode: DEFAULT_COUNTRY_CODE } : { email: values.email });
 
+  const openChallenge = (challengeId: string | null, resendIn: number, values: Values) => {
+    setCodeError(null);
+    setChallenge({ challengeId, resendIn, destination: values.channel === 'mobile' ? formatPhone(`${DEFAULT_COUNTRY_CODE}${values.mobile}`) : values.email, values });
+  };
+
   const send = useMutation({
     mutationFn: (values: Values) => requestOtp({ ...identifier(values), loginAs: values.loginAs, referralCode: values.referralCode || undefined }),
     meta: { handlesError: true },
-    onSuccess: (issued, values) => {
-      setCodeError(null);
-      setChallenge({ challengeId: issued.challengeId, resendIn: issued.resendIn, destination: values.channel === 'mobile' ? formatPhone(`${DEFAULT_COUNTRY_CODE}${values.mobile}`) : values.email, values });
-    },
-    onError: (error) => {
+    onSuccess: (issued, values) => openChallenge(issued.challengeId, issued.resendIn, values),
+    onError: (error, values) => {
+      if (error instanceof ApiError && error.code === ErrorCode.OtpCooldown && !challenge) {
+        openChallenge(null, error.retryAfterSeconds ?? 0, values);
+        toast.info(t('codeAlreadySent'));
+        return;
+      }
       if (!applyFieldErrors(error, form.setError, ['mobile', 'email', 'referralCode', 'loginAs'])) toastError(error);
     },
   });
@@ -97,7 +104,7 @@ export function OtpSignIn() {
   const verify = useMutation({
     mutationFn: (code: string) => {
       if (!challenge) throw new Error('No code requested');
-      return verifyOtp({ ...identifier(challenge.values), otp: code, challengeId: challenge.challengeId, device: currentDevice() });
+      return verifyOtp({ ...identifier(challenge.values), otp: code, challengeId: challenge.challengeId ?? undefined, device: currentDevice() });
     },
     meta: { handlesError: true },
     onSuccess: (payload) => router.replace(destinationAfterSignIn(payload, search.get(NEXT_PARAM))),
@@ -117,7 +124,7 @@ export function OtpSignIn() {
         {challenge ? (
           <motion.div key="code" {...SWAP} className="flex flex-1 flex-col">
             <OtpCodeStep
-              key={challenge.challengeId}
+              key={challenge.challengeId ?? challenge.destination}
               destination={challenge.destination}
               resendIn={challenge.resendIn}
               pending={verify.isPending}

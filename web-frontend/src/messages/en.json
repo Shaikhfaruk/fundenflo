@@ -233,7 +233,8 @@
       "teamLink": "FundenFlo Team?",
       "teamCta": "Sign In Here",
       "terms": "By continuing you agree to the Terms and Privacy Policy.",
-      "sent": "A new code is on its way."
+      "sent": "A new code is on its way.",
+      "codeAlreadySent": "We sent you a code a moment ago. Enter it below, or resend when the timer ends."
     },
     "otp": {
       "title": "Enter The 6-Digit Code",

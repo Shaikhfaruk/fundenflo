@@ -18,7 +18,8 @@ export class ApiError extends Error {
     this.code = body.code;
     this.details = body.details;
     this.requestId = body.requestId ?? null;
-    this.retryAfterSeconds = retryAfter ? Number(retryAfter) : null;
+    const detailed = (body.details as { retryAfterSeconds?: unknown } | null | undefined)?.retryAfterSeconds;
+    this.retryAfterSeconds = retryAfter ? Number(retryAfter) : typeof detailed === 'number' ? detailed : null;
   }
 
   get fieldIssues(): FieldIssue[] {
