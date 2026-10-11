@@ -49,3 +49,7 @@ export const FORWARDED_RESPONSE_HEADERS: readonly string[] = [
 export const SESSION_ISSUING_BACKEND_PATHS: readonly string[] = ['auth/otp/verify', 'auth/staff/mfa/verify', 'auth/switch-context', 'auth/token/refresh', 'auth/logout'];
 
 export const SAFE_METHODS: readonly string[] = ['GET', 'HEAD', 'OPTIONS'];
+
+export const OPTION_PAGE_SIZE = 100;
+
+export const OPTION_MAX_PAGES = 20;

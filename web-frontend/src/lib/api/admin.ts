@@ -5,7 +5,7 @@ import type { ResourceSpec } from '@/lib/constants/admin-resources.constants';
 import type { BackendRoute } from './backend-routes';
 import { apiRequest } from './client';
 import type { PathParams, QueryValue } from './endpoint';
-import { pagedQuery } from './paged';
+import { allPages, pagedQuery } from './paged';
 import type { AdminUser, AdminUserDetail, AuditEvent, AuditVerification, ImportBatch, ImportFields, ImportRow, Invitation } from './types/admin.types';
 import type { Page } from './types/common.types';
 import type { PartnerProfile } from './types/partner.types';
@@ -50,7 +50,7 @@ export const sendAdminRecord = (route: BackendRoute, params: PathParams, body: R
 export const removeAdminRecord = (route: BackendRoute, id: string) => apiRequest<unknown>(route, { params: { id } });
 
 export const adminOptionsQuery = (source: string, route: BackendRoute, scope: Record<string, QueryValue>) =>
-  queryOptions({ queryKey: adminKeys.options(source, JSON.stringify(scope)), queryFn: () => apiRequest<Page<AdminRecord>>(route, { query: { ...scope, limit: 100 } }), staleTime: 60_000 });
+  queryOptions({ queryKey: adminKeys.options(source, JSON.stringify(scope)), queryFn: () => allPages<AdminRecord>(route, scope), staleTime: 60_000 });
 
 export const adminUsersQuery = (filter: { q?: string; status?: string }) => pagedQuery<AdminUser>(adminKeys.users(filter), 'GET /admin/users', filter);
 
