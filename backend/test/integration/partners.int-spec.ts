@@ -138,6 +138,10 @@ describe('partner onboarding', () => {
 
     const verified = await t.api().get('/v1/admin/partners').query({ verificationStatus: 'verified', q: 'agarwal' }).set(bearer(opsLead.accessToken)).expect(200);
     expect(verified.body.items.map((item: { id: string }) => item.id)).toEqual([partnerId]);
+    const assignable = await t.api().get('/v1/admin/partners').query({ verificationStatus: 'verified', organizationStatus: 'active', q: 'agarwal' }).set(bearer(opsLead.accessToken)).expect(200);
+    expect(assignable.body.items.map((item: { id: string }) => item.id)).toEqual([partnerId]);
+    const closed = await t.api().get('/v1/admin/partners').query({ organizationStatus: 'closed', q: 'quick loans' }).set(bearer(opsLead.accessToken)).expect(200);
+    expect(closed.body.items.map((item: { id: string }) => item.id)).toEqual([created.body.id]);
     const borrower = await otpLogin(t, randomMobile());
     await t.api().get('/v1/admin/partners').set(bearer(borrower.accessToken)).expect(403);
   });

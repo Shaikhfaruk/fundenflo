@@ -2,7 +2,7 @@ import { randomInt } from 'node:crypto';
 
 import { expect, test } from '@playwright/test';
 
-import { caseWithDocuments, opsLeadPerson, randomMobile, requestDataCorrection } from './support/backend';
+import { caseWithDocuments, consentedLead, opsLeadPerson, randomMobile, requestDataCorrection, verifiedFirm } from './support/backend';
 import { pooledStaffToken } from './support/staff-pool';
 import { signInAsStaff } from './support/sign-in';
 
@@ -89,6 +89,25 @@ test('ops creates a lead, qualifies it, logs a call, reveals the contact and clo
   await followUp.getByRole('button', { name: 'Done' }).click();
   await page.getByRole('dialog').getByRole('button', { name: 'Done' }).click();
   await expect(page.getByText('Follow-up updated')).toBeVisible();
+});
+
+test('ops assigns a lead to a partner firm found by searching its name', async ({ page }, testInfo) => {
+  test.setTimeout(120_000);
+  const maker = await pooledStaffToken(`maker-${testInfo.project.name}`);
+  const checker = await pooledStaffToken(`checker-${testInfo.project.name}`);
+  const ops = await pooledStaffToken(`ops-${testInfo.project.name}`);
+  const firm = await verifiedFirm(maker, checker, `Deshmukh Tax Desk ${Date.now()}-${testInfo.project.name}`);
+  const leadId = await consentedLead(ops, `Meera Joshi ${randomInt(1_000, 9_999)}`, 'Joshi Foods');
+  await signInAsStaff(page, `ops-${testInfo.project.name}`);
+  await page.goto(`/ops/leads/${leadId}`);
+  await page.getByRole('button', { name: 'Assign Manually' }).click();
+  const dialog = page.getByRole('dialog');
+  const picker = dialog.getByRole('combobox', { name: 'Partner Firm' });
+  await picker.fill(firm.name);
+  await page.getByRole('option', { name: firm.name, exact: true }).click();
+  await expect(picker).toHaveValue(firm.name);
+  await dialog.getByRole('button', { name: 'Assign', exact: true }).click();
+  await expect(page.getByText('Lead assigned')).toBeVisible();
 });
 
 test('ops opens the risk, signals, reports, duplicates, merges, disputes and data request desks', async ({ page }, testInfo) => {

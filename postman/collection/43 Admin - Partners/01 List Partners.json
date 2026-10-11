@@ -23,7 +23,7 @@
         }
       ]
     },
-    "description": "Partner firms, newest first. Filters: `verificationStatus` (`pending`, `in_review`, `verified`, `rejected`), `kind`, `level`, `q` (firm name contains). Staff only. Reading needs partner read access (partner manager, ops lead, compliance, support); actions need partner update access (partner manager, ops lead, super admin). Every action is audited and published as an event."
+    "description": "Partner firms, newest first. Filters: `verificationStatus` (`pending`, `in_review`, `verified`, `rejected`), `organizationStatus` (`pending`, `active`, `suspended`, `closed`; the web assign and invite pickers send `verified` + `active`), `kind`, `level`, `q` (firm name contains, 2+ characters). Staff only. Reading needs partner read access (partner manager, ops lead, compliance, support); actions need partner update access (partner manager, ops lead, super admin). Every action is audited and published as an event."
   },
   "event": [
     {
@@ -62,7 +62,7 @@
             }
           ]
         },
-        "description": "Partner firms, newest first. Filters: `verificationStatus` (`pending`, `in_review`, `verified`, `rejected`), `kind`, `level`, `q` (firm name contains). Staff only. Reading needs partner read access (partner manager, ops lead, compliance, support); actions need partner update access (partner manager, ops lead, super admin). Every action is audited and published as an event."
+        "description": "Partner firms, newest first. Filters: `verificationStatus` (`pending`, `in_review`, `verified`, `rejected`), `organizationStatus` (`pending`, `active`, `suspended`, `closed`; the web assign and invite pickers send `verified` + `active`), `kind`, `level`, `q` (firm name contains, 2+ characters). Staff only. Reading needs partner read access (partner manager, ops lead, compliance, support); actions need partner update access (partner manager, ops lead, super admin). Every action is audited and published as an event."
       },
       "status": "OK",
       "code": 200,

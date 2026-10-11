@@ -3,9 +3,10 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { adminOptionsQuery } from '@/lib/api/admin';
+import { LenderStatus } from '@/lib/constants/lender.constants';
 import { textOf } from '@/lib/format/fact';
 
 export function useLenderOptions() {
-  const lenders = useQuery(adminOptionsQuery('lenders', 'GET /admin/lenders', { status: 'active' }));
+  const lenders = useQuery(adminOptionsQuery('lenders', 'GET /admin/lenders', { status: LenderStatus.Active }));
   return (lenders.data?.items ?? []).map((lender) => ({ id: textOf(lender.id), name: textOf(lender.name) }));
 }

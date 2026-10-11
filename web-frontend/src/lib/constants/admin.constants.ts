@@ -59,6 +59,8 @@ export const InvitationStatus = { Pending: 'pending' } as const;
 
 export const OrganizationType = { FundenFlo: 'fundenflo', Lender: 'lender', Partner: 'partner' } as const;
 
+export const OrganizationStatus = { Pending: 'pending', Active: 'active', Suspended: 'suspended', Closed: 'closed' } as const;
+
 export const ROLES_BY_ORGANIZATION: Record<string, readonly string[]> = {
   [OrganizationType.FundenFlo]: [Role.SuperAdmin, Role.OpsLead, Role.OpsReviewer, Role.CreditAnalyst, Role.LenderManager, Role.PartnerManager, Role.Finance, Role.ComplianceOfficer, Role.Support],
   [OrganizationType.Lender]: [Role.LenderAdmin, Role.LenderCreditOfficer, Role.LenderViewer],

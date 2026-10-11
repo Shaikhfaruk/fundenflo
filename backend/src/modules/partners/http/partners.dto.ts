@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { DisputeOutcome, DisputeStatus, MembershipStatus, PartnerKind, PartnerLevel, PartnerVerificationStatus, VerificationDecision } from '../../../common/enums/db.enums.js';
+import { DisputeOutcome, DisputeStatus, MembershipStatus, OrganizationStatus, PartnerKind, PartnerLevel, PartnerVerificationStatus, VerificationDecision } from '../../../common/enums/db.enums.js';
 import { pageQuerySchema } from '../../../common/listing/cursor-page.js';
 import {
   ATTRIBUTION_NOTE_MAX_LENGTH,
@@ -74,6 +74,7 @@ export type UpdateMemberDto = z.output<typeof updateMemberSchema>;
 
 export const listPartnersSchema = pageQuerySchema.extend({
   verificationStatus: z.enum(Object.values(PartnerVerificationStatus)).optional(),
+  organizationStatus: z.enum(Object.values(OrganizationStatus)).optional(),
   kind: z.enum(Object.values(PartnerKind)).optional(),
   level: z.enum(Object.values(PartnerLevel)).optional(),
   q: z.string().trim().min(2).max(FIRM_NAME_MAX_LENGTH).optional(),

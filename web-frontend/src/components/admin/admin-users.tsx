@@ -30,7 +30,7 @@ import { AppPath, RoutePath } from '@/lib/constants/routes.constants';
 import { REVIEW_STATUS_TONE, toneOf } from '@/lib/constants/status.constants';
 import { formatDateTime, formatRelative } from '@/lib/format/date';
 
-import { useOrganizationOptions } from './organization-options';
+import type { OrganizationOption } from './organization-options';
 import { OrganizationRoleFields } from './organization-role-fields';
 
 export function AdminUsers() {
@@ -68,11 +68,10 @@ function AddMembership({ user, open, onOpenChange }: { user: AdminUserDetail; op
   const t = useTranslations('admin.users');
   const queryClient = useQueryClient();
   const errorToast = useErrorToast();
-  const organizations = useOrganizationOptions(open);
-  const [organizationId, setOrganizationId] = useState<string | null>(null);
+  const [organization, setOrganization] = useState<OrganizationOption | null>(null);
   const [role, setRole] = useState<string | null>(null);
   const add = useMutation({
-    mutationFn: () => createMembership({ userId: user.id, organizationId: organizationId ?? '', role: role ?? '' }),
+    mutationFn: () => createMembership({ userId: user.id, organizationId: organization?.id ?? '', role: role ?? '' }),
     meta: { handlesError: true },
     onSuccess: () => {
       toast.success(t('membershipAdded'));
@@ -82,13 +81,13 @@ function AddMembership({ user, open, onOpenChange }: { user: AdminUserDetail; op
     onError: (failure) => errorToast(failure),
   });
   return (
-    <ConfirmDialog open={open} onOpenChange={onOpenChange} title={t('addMembership')} description={t('addMembershipBody')} confirmLabel={t('add')} pending={add.isPending} confirmDisabled={!organizationId || !role} onConfirm={() => add.mutate()}>
+    <ConfirmDialog open={open} onOpenChange={onOpenChange} title={t('addMembership')} description={t('addMembershipBody')} confirmLabel={t('add')} pending={add.isPending} confirmDisabled={!organization || !role} onConfirm={() => add.mutate()}>
       <OrganizationRoleFields
-        organizations={organizations}
-        organizationId={organizationId}
+        open={open}
+        organization={organization}
         role={role}
-        onOrganization={(id) => {
-          setOrganizationId(id);
+        onOrganization={(next) => {
+          setOrganization(next);
           setRole(null);
         }}
         onRole={setRole}

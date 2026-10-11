@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 
 import { useCategoryLabel } from '@/components/borrower/category-labels';
 import { ConfirmDialog } from '@/components/data/confirm-dialog';
+import type { SearchOption } from '@/components/data/search-select';
 import { KeyValues, Section } from '@/components/data/detail-section';
 import { ReasonDialog } from '@/components/data/reason-dialog';
 import { StatusBadge } from '@/components/data/status-badge';
@@ -15,6 +16,7 @@ import { ActivityForm } from '@/components/leads/activity-form';
 import { ActivityList } from '@/components/leads/activity-list';
 import { FollowUpDialog } from '@/components/leads/follow-up-dialog';
 import { LeadContacts } from '@/components/leads/lead-contacts';
+import { PartnerFirmField } from '@/components/ops/partner-firm-field';
 import { ScreenSkeleton } from '@/components/shell/screen-skeleton';
 import { PageHeader } from '@/components/shell/page-header';
 import { Button } from '@/components/ui/button';
@@ -23,7 +25,6 @@ import { ChoiceChip } from '@/components/ui/choice';
 import { Field, FieldLabel } from '@/components/ui/field';
 import { Icon } from '@/components/ui/icon';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { useErrorToast } from '@/hooks/use-error-toast';
 import { useEnumLabel } from '@/hooks/use-enum-label';
@@ -42,7 +43,6 @@ import {
   scheduleLeadFollowUp,
   sendLeadConsentRequest,
   updateOpsLead,
-  verifiedPartnersQuery,
 } from '@/lib/api/leads';
 import type { OpsLeadDetail } from '@/lib/api/types/lead.types';
 import type { LeadContact } from '@/lib/api/types/lead.types';
@@ -70,12 +70,10 @@ function AssignDialog({ leadId, open, onOpenChange }: { leadId: string; open: bo
   const errorToast = useErrorToast();
   const queryClient = useQueryClient();
   const noteId = useId();
-  const partners = useQuery({ ...verifiedPartnersQuery(), enabled: open });
-  const [organizationId, setOrganizationId] = useState<string | null>(null);
+  const [firm, setFirm] = useState<SearchOption | null>(null);
   const [note, setNote] = useState('');
-  const options = (partners.data?.items ?? []).filter((partner) => partner.organizationStatus === 'active');
   const assign = useMutation({
-    mutationFn: () => assignLead(leadId, organizationId ?? '', note.trim() || undefined),
+    mutationFn: () => assignLead(leadId, firm?.value ?? '', note.trim() || undefined),
     meta: { handlesError: true },
     onSuccess: () => {
       toast.success(t('assigned'));
@@ -85,23 +83,8 @@ function AssignDialog({ leadId, open, onOpenChange }: { leadId: string; open: bo
     onError: (failure) => errorToast(failure),
   });
   return (
-    <ConfirmDialog open={open} onOpenChange={onOpenChange} title={t('assignTitle')} description={t('assignBody')} confirmLabel={t('assign')} pending={assign.isPending} confirmDisabled={!organizationId || (note.trim().length > 0 && note.trim().length < LEAD_NOTE_MIN_LENGTH)} onConfirm={() => assign.mutate()}>
-      <Field>
-        <FieldLabel>{t('partnerFirm')}</FieldLabel>
-        <Select value={organizationId} onValueChange={(value) => setOrganizationId(String(value))}>
-          <SelectTrigger size="sm" className="h-11 w-full" aria-label={t('partnerFirm')}>
-            <SelectValue>{(current: string | null) => options.find((partner) => partner.organizationId === current)?.name ?? t('choosePartner')}</SelectValue>
-          </SelectTrigger>
-          <SelectContent>
-            {options.map((partner) => (
-              <SelectItem key={partner.organizationId} value={partner.organizationId}>
-                {partner.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        {options.length === 0 && !partners.isPending ? <p className="text-xs text-muted-foreground">{t('noPartners')}</p> : null}
-      </Field>
+    <ConfirmDialog open={open} onOpenChange={onOpenChange} title={t('assignTitle')} description={t('assignBody')} confirmLabel={t('assign')} pending={assign.isPending} confirmDisabled={!firm || (note.trim().length > 0 && note.trim().length < LEAD_NOTE_MIN_LENGTH)} onConfirm={() => assign.mutate()}>
+      <PartnerFirmField open={open} value={firm} onChange={setFirm} />
       <Field>
         <FieldLabel htmlFor={noteId}>{t('noteOptional')}</FieldLabel>
         <Textarea id={noteId} rows={2} value={note} maxLength={LEAD_NOTE_MAX_LENGTH} onChange={(event) => setNote(event.target.value)} />

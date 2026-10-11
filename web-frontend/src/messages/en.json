@@ -101,7 +101,11 @@
     "generic": "Something went wrong. Please try again.",
     "retryAfter": "Please wait {seconds} seconds and try again.",
     "reference": "Reference: {reference}",
-    "NETWORK_ERROR": "You appear to be offline. Check your connection and try again."
+    "NETWORK_ERROR": "You appear to be offline. Check your connection and try again.",
+    "issues": {
+      "risk_hold": "This case is on hold for a fraud review. Clear the review on the Risk desk first.",
+      "partner_unavailable": "This firm is not verified, active and taking leads right now. Choose another firm."
+    }
   },
   "pwa": {
     "updateReady": "A new version of FundenFlo is ready.",
@@ -1253,8 +1257,6 @@
       "bulkAssignTitle": "{count, plural, one {Assign # Lead} other {Assign # Leads}}",
       "bulkAssigned": "{count, plural, one {# lead assigned} other {# leads assigned}}",
       "assign": "Assign",
-      "partnerFirm": "Partner Firm",
-      "choosePartner": "Choose A Firm",
       "noteOptional": "Note (Optional)",
       "mergeTitle": "Merge Duplicate Leads",
       "mergeBody": "Pick the lead to keep. The others are merged into it.",
@@ -1317,9 +1319,6 @@
       "assignBody": "The firm gets the offer straight away.",
       "assign": "Assign",
       "assigned": "Lead assigned",
-      "partnerFirm": "Partner Firm",
-      "choosePartner": "Choose A Firm",
-      "noPartners": "No active partner firms yet.",
       "noteOptional": "Note (Optional)",
       "actionTitle": "{action} This Lead",
       "note": "Note",
@@ -1782,6 +1781,12 @@
       "merge": "Merge",
       "merged": "Records merged",
       "segment": "Question Set For"
+    },
+    "partnerFirm": {
+      "label": "Partner Firm",
+      "placeholder": "Search verified firms by name",
+      "empty": "No verified, active firm matches this name.",
+      "searching": "Searching firms…"
     }
   },
   "languages": {
@@ -3303,7 +3308,9 @@
     },
     "organizations": {
       "organization": "Organisation",
-      "chooseOrganization": "Choose an organisation",
+      "searchOrganization": "Search FundenFlo, lenders or verified firms",
+      "noOrganization": "No organisation matches this name.",
+      "searching": "Searching organisations…",
       "role": "Role",
       "chooseRole": "Choose a role"
     },

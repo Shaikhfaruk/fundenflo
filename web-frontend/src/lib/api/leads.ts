@@ -1,4 +1,7 @@
-import { queryOptions } from '@tanstack/react-query';
+import { keepPreviousData, queryOptions } from '@tanstack/react-query';
+
+import { OrganizationStatus } from '@/lib/constants/admin.constants';
+import { PartnerVerificationStatus } from '@/lib/constants/partner.constants';
 
 import { apiRequest } from './client';
 import { pagedQuery } from './paged';
@@ -16,7 +19,7 @@ export const opsLeadKeys = {
   conversions: (status: string) => [...opsLeadKeys.all, 'conversions', status] as const,
   funnel: (groupBy: string, from?: string, to?: string) => [...opsLeadKeys.all, 'reports', 'funnel', groupBy, from ?? '', to ?? ''] as const,
   performance: (from?: string, to?: string) => [...opsLeadKeys.all, 'reports', 'performance', from ?? '', to ?? ''] as const,
-  partners: () => ['admin', 'partners', 'verified'] as const,
+  partners: (q: string) => ['admin', 'partners', 'assignable', q] as const,
 };
 
 export const opsLeadsQuery = (filter: OpsLeadFilter) => pagedQuery<OpsLead>(opsLeadKeys.list(filter), 'GET /ops/leads', filter);
@@ -74,4 +77,10 @@ export const funnelReportQuery = (groupBy: string, from?: string, to?: string) =
 
 export const partnerPerformanceQuery = (from?: string, to?: string) => queryOptions({ queryKey: opsLeadKeys.performance(from, to), queryFn: () => apiRequest<PartnerPerformance>('GET /ops/reports/partners/performance', { query: { from, to } }) });
 
-export const verifiedPartnersQuery = () => queryOptions({ queryKey: opsLeadKeys.partners(), queryFn: () => apiRequest<Page<AdminPartner>>('GET /admin/partners', { query: { limit: 100 } }), staleTime: 60_000 });
+export const assignableFirmsQuery = (q?: string) =>
+  queryOptions({
+    queryKey: opsLeadKeys.partners(q ?? ''),
+    queryFn: () => apiRequest<Page<AdminPartner>>('GET /admin/partners', { query: { verificationStatus: PartnerVerificationStatus.Verified, organizationStatus: OrganizationStatus.Active, q } }),
+    staleTime: 60_000,
+    placeholderData: keepPreviousData,
+  });

@@ -2,7 +2,7 @@ import { TransactionHost } from '@nestjs-cls/transactional';
 import { Injectable } from '@nestjs/common';
 
 import type { UserActor } from '../../../common/context/actor.js';
-import { type PartnerKind, type PartnerLevel, PartnerVerificationStatus, VerificationDecision } from '../../../common/enums/db.enums.js';
+import { type OrganizationStatus, type PartnerKind, type PartnerLevel, PartnerVerificationStatus, VerificationDecision } from '../../../common/enums/db.enums.js';
 import { EventName } from '../../../common/events/event-names.js';
 import { AppError } from '../../../common/errors/app-error.js';
 import { ErrorCode } from '../../../common/errors/error-codes.js';
@@ -20,7 +20,7 @@ import { PartnerRepository } from '../infrastructure/partner.repository.js';
 import { toPartnerView } from './partner.views.js';
 import { PartnerKycService } from './partner-kyc.service.js';
 
-export type PartnerFilters = PageQuery & { verificationStatus?: PartnerVerificationStatus; kind?: PartnerKind; level?: PartnerLevel; q?: string };
+export type PartnerFilters = PageQuery & { verificationStatus?: PartnerVerificationStatus; organizationStatus?: OrganizationStatus; kind?: PartnerKind; level?: PartnerLevel; q?: string };
 
 @Injectable()
 export class PartnerAdminService {
@@ -40,7 +40,7 @@ export class PartnerAdminService {
       verificationStatus: filters.verificationStatus,
       kind: filters.kind,
       level: filters.level,
-      ...(filters.q ? { organization: { name: { contains: filters.q, mode: 'insensitive' } } } : {}),
+      organization: { status: filters.organizationStatus, ...(filters.q ? { name: { contains: filters.q, mode: 'insensitive' } } : {}) },
     };
     return toPage(await this.partners.list(where, window.take), filters.limit, toPartnerView);
   }

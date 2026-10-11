@@ -27,7 +27,7 @@ import { DEFAULT_COUNTRY_CODE, INDIAN_MOBILE_PATTERN } from '@/lib/constants/aut
 import { REVIEW_STATUS_TONE, toneOf } from '@/lib/constants/status.constants';
 import { formatRelative } from '@/lib/format/date';
 
-import { useOrganizationOptions } from './organization-options';
+import type { OrganizationOption } from './organization-options';
 import { OrganizationRoleFields } from './organization-role-fields';
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -36,16 +36,14 @@ function InviteDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (op
   const t = useTranslations('admin.invitations');
   const queryClient = useQueryClient();
   const errorToast = useErrorToast();
-  const organizations = useOrganizationOptions(open);
-  const [organizationId, setOrganizationId] = useState<string | null>(null);
+  const [organization, setOrganization] = useState<OrganizationOption | null>(null);
   const [role, setRole] = useState<string | null>(null);
   const [email, setEmail] = useState('');
   const [mobile, setMobile] = useState('');
-  const organization = organizations.find((item) => item.id === organizationId);
   const byMobile = organization?.type === OrganizationType.Partner;
   const contactValid = byMobile ? INDIAN_MOBILE_PATTERN.test(mobile) : EMAIL_PATTERN.test(email.trim());
   const invite = useMutation({
-    mutationFn: () => createInvitation({ organizationId: organizationId ?? '', role: role ?? '', ...(byMobile ? { mobile, countryCode: DEFAULT_COUNTRY_CODE } : { email: email.trim() }) }),
+    mutationFn: () => createInvitation({ organizationId: organization?.id ?? '', role: role ?? '', ...(byMobile ? { mobile, countryCode: DEFAULT_COUNTRY_CODE } : { email: email.trim() }) }),
     meta: { handlesError: true },
     onSuccess: (invitation) => {
       toast.success(t('sent', { recipient: invitation.recipient }));
@@ -55,13 +53,13 @@ function InviteDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (op
     onError: (failure) => errorToast(failure),
   });
   return (
-    <ConfirmDialog open={open} onOpenChange={onOpenChange} title={t('inviteTitle')} description={t('inviteBody')} confirmLabel={t('send')} pending={invite.isPending} confirmDisabled={!organizationId || !role || !contactValid} onConfirm={() => invite.mutate()}>
+    <ConfirmDialog open={open} onOpenChange={onOpenChange} title={t('inviteTitle')} description={t('inviteBody')} confirmLabel={t('send')} pending={invite.isPending} confirmDisabled={!organization || !role || !contactValid} onConfirm={() => invite.mutate()}>
       <OrganizationRoleFields
-        organizations={organizations}
-        organizationId={organizationId}
+        open={open}
+        organization={organization}
         role={role}
-        onOrganization={(id) => {
-          setOrganizationId(id);
+        onOrganization={(next) => {
+          setOrganization(next);
           setRole(null);
         }}
         onRole={setRole}

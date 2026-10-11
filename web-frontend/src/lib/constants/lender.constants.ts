@@ -1,3 +1,5 @@
+export const LenderStatus = { Onboarding: 'onboarding', Active: 'active', Paused: 'paused', Offboarded: 'offboarded' } as const;
+
 export const LENDER_INBOX_FILTERS = ['sent_to_lender', 'under_review', 'query_raised', 'sanctioned', 'disbursed', 'rejected'] as const;
 
 export const LenderAction = {

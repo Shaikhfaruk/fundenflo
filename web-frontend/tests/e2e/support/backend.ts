@@ -164,7 +164,7 @@ export async function verifiedFirm(maker: string, checker: string, name: string)
   return { mobile, organizationId: firm.organizationId, name, session };
 }
 
-export async function assignedLead(ops: string, organizationId: string, name: string, businessName: string) {
+export async function consentedLead(ops: string, name: string, businessName: string) {
   const lead = await api<{ id: string }>('POST', '/ops/leads', {
     name,
     mobile: randomMobile(),
@@ -176,8 +176,13 @@ export async function assignedLead(ops: string, organizationId: string, name: st
     amountText: '15 lakh',
     consent: { basis: 'consent', evidence: 'Agreed on the phone call', items: [{ purpose: 'contact', granted: true }, { purpose: 'partner_sharing', granted: true }] },
   }, ops);
-  await api('POST', `/ops/leads/${lead.id}/assign`, { organizationId }, ops);
   return lead.id;
+}
+
+export async function assignedLead(ops: string, organizationId: string, name: string, businessName: string) {
+  const leadId = await consentedLead(ops, name, businessName);
+  await api('POST', `/ops/leads/${leadId}/assign`, { organizationId }, ops);
+  return leadId;
 }
 
 export const approveAsOps = async (ops: string, submissionId: string) => {

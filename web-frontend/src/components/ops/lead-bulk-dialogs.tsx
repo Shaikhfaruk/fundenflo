@@ -1,21 +1,22 @@
 'use client';
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useId, useState } from 'react';
 import { toast } from 'sonner';
 
 import { ConfirmDialog } from '@/components/data/confirm-dialog';
+import type { SearchOption } from '@/components/data/search-select';
+import { PartnerFirmField } from '@/components/ops/partner-firm-field';
 import { ChoiceRow } from '@/components/ui/choice';
 import { Field, FieldDescription, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { MobileInput } from '@/components/ui/mobile-input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { useErrorToast } from '@/hooks/use-error-toast';
 import { useRouter } from '@/i18n/navigation';
-import { bulkAssignLeads, createOpsLead, mergeLeads, opsLeadKeys, verifiedPartnersQuery } from '@/lib/api/leads';
+import { bulkAssignLeads, createOpsLead, mergeLeads, opsLeadKeys } from '@/lib/api/leads';
 import type { OpsLead } from '@/lib/api/types/lead.types';
 import { DEFAULT_COUNTRY_CODE, INDIAN_MOBILE_PATTERN } from '@/lib/constants/auth.constants';
 import { NAME_MIN_LENGTH } from '@/lib/constants/kyc.constants';
@@ -30,12 +31,10 @@ export function BulkAssignDialog({ leadIds, open, onOpenChange, onDone }: { lead
   const errorToast = useErrorToast();
   const queryClient = useQueryClient();
   const noteId = useId();
-  const partners = useQuery({ ...verifiedPartnersQuery(), enabled: open });
-  const [organizationId, setOrganizationId] = useState<string | null>(null);
+  const [firm, setFirm] = useState<SearchOption | null>(null);
   const [note, setNote] = useState('');
-  const options = (partners.data?.items ?? []).filter((partner) => partner.organizationStatus === 'active');
   const assign = useMutation({
-    mutationFn: () => bulkAssignLeads(leadIds, organizationId ?? '', note.trim() || undefined),
+    mutationFn: () => bulkAssignLeads(leadIds, firm?.value ?? '', note.trim() || undefined),
     meta: { handlesError: true },
     onSuccess: () => {
       toast.success(t('bulkAssigned', { count: leadIds.length }));
@@ -45,22 +44,8 @@ export function BulkAssignDialog({ leadIds, open, onOpenChange, onDone }: { lead
     onError: (failure) => errorToast(failure),
   });
   return (
-    <ConfirmDialog open={open} onOpenChange={onOpenChange} title={t('bulkAssignTitle', { count: leadIds.length })} confirmLabel={t('assign')} pending={assign.isPending} confirmDisabled={!organizationId || (note.trim().length > 0 && note.trim().length < LEAD_NOTE_MIN_LENGTH)} onConfirm={() => assign.mutate()}>
-      <Field>
-        <FieldLabel>{t('partnerFirm')}</FieldLabel>
-        <Select value={organizationId} onValueChange={(value) => setOrganizationId(String(value))}>
-          <SelectTrigger size="sm" className="h-11 w-full" aria-label={t('partnerFirm')}>
-            <SelectValue>{(current: string | null) => options.find((partner) => partner.organizationId === current)?.name ?? t('choosePartner')}</SelectValue>
-          </SelectTrigger>
-          <SelectContent>
-            {options.map((partner) => (
-              <SelectItem key={partner.organizationId} value={partner.organizationId}>
-                {partner.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </Field>
+    <ConfirmDialog open={open} onOpenChange={onOpenChange} title={t('bulkAssignTitle', { count: leadIds.length })} confirmLabel={t('assign')} pending={assign.isPending} confirmDisabled={!firm || (note.trim().length > 0 && note.trim().length < LEAD_NOTE_MIN_LENGTH)} onConfirm={() => assign.mutate()}>
+      <PartnerFirmField open={open} value={firm} onChange={setFirm} />
       <Field>
         <FieldLabel htmlFor={noteId}>{t('noteOptional')}</FieldLabel>
         <Textarea id={noteId} rows={2} value={note} maxLength={LEAD_NOTE_MAX_LENGTH} onChange={(event) => setNote(event.target.value)} />
