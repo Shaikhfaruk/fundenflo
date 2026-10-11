@@ -94,7 +94,7 @@ export function AuthShell({ headline, subline, compact = false, children }: { he
           </div>
           <motion.div layout className="flex flex-col gap-4 lg:gap-4">
             <motion.div initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: Duration.Slow, ease: EASE_OUT }}>
-              <Logo inverse height={compact ? 44 : 62} priority className="-ml-1 transition-[height] duration-300 lg:h-[72px]!" />
+              <Logo inverse height={compact ? 44 : 62} priority className="-ml-1 transition-[height] duration-300 lg:h-[72px]! lg:w-auto!" />
             </motion.div>
             <AnimatePresence initial={false}>
               {compact ? null : (

@@ -16,4 +16,4 @@ export const BRAND_ASSET = {
   mark: '/brand/mark.png',
 } as const;
 
-export const LOGO_ASPECT = 1200 / 263;
+export const LOGO_ASPECT = { logo: 1200 / 263, logoWhite: 1200 / 264 } as const;
