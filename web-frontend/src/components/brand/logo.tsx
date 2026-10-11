@@ -20,5 +20,5 @@ export function Logo({ inverse = false, height = 32, priority = false, className
 }
 
 export function LogoMark({ size = 32, className }: { size?: number; className?: string }) {
-  return <Image src={BRAND_ASSET.mark} alt="" width={size} height={size} draggable={false} className={cn('shrink-0 select-none', className)} style={{ width: size, height: size }} />;
+  return <Image src={BRAND_ASSET.mark} alt="" width={size} height={size} loading="eager" draggable={false} className={cn('shrink-0 select-none', className)} style={{ width: size, height: size }} />;
 }
