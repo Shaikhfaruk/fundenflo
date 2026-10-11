@@ -3,6 +3,7 @@
 import { useId, useState } from 'react';
 
 import { ConfirmDialog } from '@/components/data/confirm-dialog';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ChipGroup } from '@/components/ui/chip-group';
 import { ChoiceChip } from '@/components/ui/choice';
 import { Field, FieldDescription, FieldLabel } from '@/components/ui/field';
@@ -26,10 +27,11 @@ type Props = {
   optionsLabel?: string;
   noteOptional?: boolean;
   noteRequiredFor?: readonly string[];
+  error?: string | null;
   onConfirm: (reason: string, choice: string | null) => void;
 };
 
-export function ReasonDialog({ open, onOpenChange, title, description, label, hint, confirmLabel, destructive, pending, minLength, maxLength, options, optionsLabel, noteOptional, noteRequiredFor, onConfirm }: Props) {
+export function ReasonDialog({ open, onOpenChange, title, description, label, hint, confirmLabel, destructive, pending, minLength, maxLength, options, optionsLabel, noteOptional, noteRequiredFor, error, onConfirm }: Props) {
   const id = useId();
   const [reason, setReason] = useState('');
   const [choice, setChoice] = useState<string | null>(null);
@@ -67,6 +69,11 @@ export function ReasonDialog({ open, onOpenChange, title, description, label, hi
         <Textarea id={id} value={reason} maxLength={maxLength} rows={3} onChange={(event) => setReason(event.target.value)} />
         {hint ? <FieldDescription>{hint}</FieldDescription> : null}
       </Field>
+      {error ? (
+        <Alert variant="destructive">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      ) : null}
     </ConfirmDialog>
   );
 }

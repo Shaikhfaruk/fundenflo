@@ -15,7 +15,7 @@ let lenderEmail: string;
 test.beforeAll(async ({ browserName: _browser }, testInfo) => {
   const maker = await pooledStaffToken(`maker-${testInfo.project.name}`);
   ops = await pooledStaffToken(`checker-${testInfo.project.name}`);
-  lender = await liveTestLender(`Sahyadri Finance ${testInfo.project.name.toUpperCase()} ${String(Date.now()).slice(-5)}`, maker, ops);
+  lender = await liveTestLender(`Sahyadri Finance ${testInfo.project.name.toUpperCase()} ${String(Date.now()).slice(-5)}${testInfo.workerIndex}`, maker, ops);
   lenderEmail = randomEmail('e2e.lender.desk');
   await inviteLenderUser(lenderEmail, lender.organizationId, maker);
 });
@@ -26,7 +26,7 @@ test.afterAll(async () => {
 
 test('a borrower uploads documents, gets a score, applies to a matched lender and follows the file', async ({ page, browser }, testInfo) => {
   test.setTimeout(240_000);
-  const stamp = `${Date.now()}-${testInfo.project.name}`;
+  const stamp = `${Date.now()}-${testInfo.project.name}-${testInfo.workerIndex}`;
   const statement = writePdf(testInfo.outputPath('bank-statement.pdf'), `Statement of account ${stamp}. Closing balance 125000.00`);
   const gstReturns = writePdf(testInfo.outputPath('gst-returns.pdf'), `GSTR-3B summary ${stamp}. Ten returns filed.`);
   const itr = writePdf(testInfo.outputPath('itr.pdf'), `ITR acknowledgement ${stamp}. Total income 18 lakh.`);

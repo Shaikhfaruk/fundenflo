@@ -8,7 +8,12 @@ const t = (key: string, values?: Record<string, string | number>) => (values ? `
 describe('errorMessage', () => {
   it('shows the first specific reason of a validation error as a sentence', () => {
     const error = new ApiError(400, { code: 'VALIDATION_FAILED', message: 'Some fields are missing or invalid.', details: [{ path: 'parties', code: 'two_logins', message: 'both parties have their own login' }] });
-    expect(errorMessage(error, t, () => true)).toBe('Both parties have their own login.');
+    expect(errorMessage(error, t, (key) => !key.startsWith('issues.'))).toBe('Both parties have their own login.');
+  });
+
+  it('prefers a translated message for a known validation issue code', () => {
+    const error = new ApiError(400, { code: 'VALIDATION_FAILED', message: 'Some fields are missing or invalid.', details: [{ path: 'risk', code: 'risk_hold', message: 'fraud review 01a1 must be cleared first' }] });
+    expect(errorMessage(error, t, (key) => key === 'issues.risk_hold')).toBe('issues.risk_hold');
   });
 
   it('falls back to the translated code, then the server message', () => {

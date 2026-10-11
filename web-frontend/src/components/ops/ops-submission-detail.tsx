@@ -14,7 +14,7 @@ import { ScreenSkeleton } from '@/components/shell/screen-skeleton';
 import { PageHeader } from '@/components/shell/page-header';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
-import { useErrorToast } from '@/hooks/use-error-toast';
+import { useErrorText } from '@/hooks/use-error-toast';
 import { useEnumLabel } from '@/hooks/use-enum-label';
 import { Link } from '@/i18n/navigation';
 import { approveSubmission, opsCaseKeys, opsSubmissionQuery, recordSubmissionEvent } from '@/lib/api/ops-cases';
@@ -47,7 +47,7 @@ function SubmissionView({ submission }: { submission: OpsSubmissionDetail }) {
   const actorLabel = useEnumLabel('actorContext');
   const locale = useLocale();
   const queryClient = useQueryClient();
-  const errorToast = useErrorToast();
+  const errorText = useErrorText();
   const [action, setAction] = useState<Action | null>(null);
   const [approveOpen, setApproveOpen] = useState(false);
   const refresh = () => queryClient.invalidateQueries({ queryKey: opsCaseKeys.all });
@@ -59,7 +59,6 @@ function SubmissionView({ submission }: { submission: OpsSubmissionDetail }) {
       setApproveOpen(false);
       void refresh();
     },
-    onError: (failure) => errorToast(failure),
   });
   const actions = ACTIONS_BY_STATUS[submission.status] ?? [SubmissionAction.Note];
   const packet = submission.packet?.content;
@@ -164,7 +163,10 @@ function SubmissionView({ submission }: { submission: OpsSubmissionDetail }) {
       </div>
       <ReasonDialog
         open={approveOpen}
-        onOpenChange={setApproveOpen}
+        onOpenChange={(open) => {
+          setApproveOpen(open);
+          if (!open) approve.reset();
+        }}
         title={t('approveTitle')}
         description={t('approveBody')}
         label={t('approveNote')}
@@ -173,6 +175,7 @@ function SubmissionView({ submission }: { submission: OpsSubmissionDetail }) {
         minLength={SUBMISSION_NOTE_MIN_LENGTH}
         maxLength={SUBMISSION_NOTE_MAX_LENGTH}
         noteOptional
+        error={approve.error ? errorText(approve.error) : null}
         onConfirm={(note) => approve.mutate(note)}
       />
       {action ? (

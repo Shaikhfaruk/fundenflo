@@ -68,7 +68,6 @@ function AnalysisRun({ applicationId, analysisId }: { applicationId: string; ana
   const errorText = useErrorText();
   const { data: me } = useMe();
   const analysis = useQuery(analysisQuery(applicationId, analysisId));
-  const nextStep = useQuery(nextStepQuery(applicationId));
   const [notified, setNotified] = useState(false);
   const [notifyError, setNotifyError] = useState<string | null>(null);
   const status = analysis.data?.status;
@@ -85,11 +84,15 @@ function AnalysisRun({ applicationId, analysisId }: { applicationId: string; ana
     meta: { handlesError: true },
     onSuccess: (next) => router.replace(`${paths.step(applicationId, JourneyScreen.Analysis)}?${ANALYSIS_RUN_PARAM}=${next.id}`),
   });
-  const continueTo = () => {
-    void queryClient.invalidateQueries({ queryKey: applicationKeys.detail(applicationId) });
-    const screen = screenForStage(nextStep.data?.stage, nextStep.data?.blockers[0]?.code);
-    router.push(paths.step(applicationId, screen === JourneyScreen.Verify ? JourneyScreen.Verify : JourneyScreen.Score));
-  };
+  const proceed = useMutation({
+    mutationFn: () => queryClient.fetchQuery({ ...nextStepQuery(applicationId), staleTime: 0 }),
+    meta: { handlesError: true },
+    onSuccess: (next) => {
+      void queryClient.invalidateQueries({ queryKey: applicationKeys.detail(applicationId) });
+      const screen = screenForStage(next.stage, next.blockers[0]?.code);
+      router.push(paths.step(applicationId, screen === JourneyScreen.Verify ? JourneyScreen.Verify : JourneyScreen.Score));
+    },
+  });
   if (analysis.isPending) return <ScreenSkeleton />;
   const mobile = me?.mobile ? formatPhone(me.mobile) : null;
   return (
@@ -138,7 +141,7 @@ function AnalysisRun({ applicationId, analysisId }: { applicationId: string; ana
         ) : null}
       </AnimatePresence>
       <div className="min-h-4 flex-1" />
-      {done ? <JourneyFooter label={t('continue')} onContinue={continueTo} note={t('private')} /> : null}
+      {done ? <JourneyFooter label={t('continue')} onContinue={() => proceed.mutate()} pending={proceed.isPending} error={proceed.error ? errorText(proceed.error) : null} note={t('private')} /> : null}
       {failed ? (
         <JourneyFooter
           label={t('retry')}

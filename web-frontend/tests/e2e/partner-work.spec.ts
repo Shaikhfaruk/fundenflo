@@ -21,7 +21,7 @@ test.beforeAll(async ({ browserName: _browser }, testInfo) => {
   maker = await pooledStaffToken(`maker-${testInfo.project.name}`);
   checker = await pooledStaffToken(`checker-${testInfo.project.name}`);
   ops = await pooledStaffToken(`ops-${testInfo.project.name}`);
-  lender = await liveTestLender(`Konkan Capital ${testInfo.project.name.toUpperCase()} ${String(Date.now()).slice(-5)}`, maker, checker);
+  lender = await liveTestLender(`Konkan Capital ${testInfo.project.name.toUpperCase()} ${String(Date.now()).slice(-5)}${testInfo.workerIndex}`, maker, checker);
 });
 
 test.afterAll(async () => {
@@ -105,7 +105,7 @@ test('a CA accepts an offered lead, calls, follows up, reports a loan and starts
 
 test('a CA adds a client, takes consent by SMS code and files the case with a matched lender', async ({ page }, testInfo) => {
   test.setTimeout(240_000);
-  const stamp = `${Date.now()}-${testInfo.project.name}`;
+  const stamp = `${Date.now()}-${testInfo.project.name}-${testInfo.workerIndex}`;
   const firm = await verifiedFirm(maker, checker, `Arora Tax Advisors ${stamp}`);
   const statement = writePdf(testInfo.outputPath('bank-statement.pdf'), `Statement of account ${stamp}. Closing balance 210000.00`);
   const gstReturns = writePdf(testInfo.outputPath('gst-returns.pdf'), `GSTR-3B summary ${stamp}. Eleven returns filed.`);
