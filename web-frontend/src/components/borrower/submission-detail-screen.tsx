@@ -97,7 +97,6 @@ function Detail({ applicationId, submission }: { applicationId: string; submissi
       toast.success(t('withdrawn'));
       void queryClient.invalidateQueries({ queryKey: applicationKeys.detail(applicationId) });
     },
-    onError: (failure) => toast.error(errorText(failure)),
   });
   const copy = async () => {
     await navigator.clipboard.writeText(submission.ref);
@@ -191,7 +190,10 @@ function Detail({ applicationId, submission }: { applicationId: string; submissi
       </p>
       <ReasonDialog
         open={withdrawOpen}
-        onOpenChange={setWithdrawOpen}
+        onOpenChange={(open) => {
+          setWithdrawOpen(open);
+          if (!open) withdraw.reset();
+        }}
         title={t('withdrawTitle', { lender })}
         description={t('withdrawBody')}
         label={t('withdrawReason')}
@@ -200,6 +202,7 @@ function Detail({ applicationId, submission }: { applicationId: string; submissi
         pending={withdraw.isPending}
         minLength={SUBMISSION_WITHDRAW_MIN_LENGTH}
         maxLength={SUBMISSION_WITHDRAW_MAX_LENGTH}
+        error={withdraw.error ? errorText(withdraw.error) : null}
         onConfirm={(reason) => withdraw.mutate(reason)}
       />
     </div>

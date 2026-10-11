@@ -17,3 +17,5 @@ export const SPRING = { type: 'spring', stiffness: 420, damping: 32, mass: 0.8 }
 export const SOFT_SPRING = { type: 'spring', stiffness: 260, damping: 28 } as const;
 
 export const MAX_STAGGERED_ITEMS = 12;
+
+export const ERROR_TOAST_DURATION_MS = 8_000;

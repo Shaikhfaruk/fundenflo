@@ -15,6 +15,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Spinner } from '@/components/ui/spinner';
 import { Textarea } from '@/components/ui/textarea';
+import { useErrorToast } from '@/hooks/use-error-toast';
 import { ApiError } from '@/lib/api/api-error';
 import { createDataRequest, dataExportUrl, DataRequestKind, myDataRequestsQuery, privacyKeys } from '@/lib/api/privacy';
 import { DATA_REQUEST_STATUS_TONE, toneOf } from '@/lib/constants/status.constants';
@@ -28,6 +29,7 @@ function NewRequest() {
   const [kind, setKind] = useState<DataRequestKind>(DataRequestKind.Access);
   const [details, setDetails] = useState('');
   const [detailsError, setDetailsError] = useState<string | null>(null);
+  const errorToast = useErrorToast();
   const create = useMutation({
     mutationFn: () => createDataRequest({ kind, details: details.trim() || undefined }),
     meta: { handlesError: true },
@@ -40,7 +42,7 @@ function NewRequest() {
     onError: (error) => {
       const issue = error instanceof ApiError ? error.fieldIssues.find((item) => item.path === 'details') : undefined;
       if (issue) setDetailsError(issue.message);
-      else toast.error(error.message);
+      else errorToast(error);
     },
   });
   return (

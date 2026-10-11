@@ -70,7 +70,6 @@ export function ApplicationActivity({ applicationId, open }: { applicationId: st
       toast.success(t('withdrawn'));
       void queryClient.invalidateQueries({ queryKey: applicationKeys.all });
     },
-    onError: (failure) => toast.error(errorText(failure)),
   });
   const events = (timeline.data?.items ?? []).slice(0, ACTIVITY_LIMIT);
   const applied = submissions.data?.items ?? [];
@@ -128,7 +127,10 @@ export function ApplicationActivity({ applicationId, open }: { applicationId: st
       ) : null}
       <ReasonDialog
         open={withdrawOpen}
-        onOpenChange={setWithdrawOpen}
+        onOpenChange={(next) => {
+          setWithdrawOpen(next);
+          if (!next) withdraw.reset();
+        }}
         title={t('withdrawTitle')}
         description={t('withdrawBody')}
         label={t('withdrawReason')}
@@ -137,6 +139,7 @@ export function ApplicationActivity({ applicationId, open }: { applicationId: st
         pending={withdraw.isPending}
         minLength={SUBMISSION_WITHDRAW_MIN_LENGTH}
         maxLength={APPLICATION_WITHDRAW_MAX_LENGTH}
+        error={withdraw.error ? errorText(withdraw.error) : null}
         onConfirm={(reason) => withdraw.mutate(reason)}
       />
     </>
