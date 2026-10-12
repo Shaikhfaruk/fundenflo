@@ -11,10 +11,10 @@ import { ContextualProcessor } from '../../../infrastructure/queue/contextual.pr
 import { QueueName } from '../../../infrastructure/queue/queue-names.js';
 import { type EmailSender, InjectEmailSender } from '../../../integrations/email/email.port.js';
 import { InjectPushSender, type PushSender, PushTokenRejectedError } from '../../../integrations/push/push.port.js';
-import { InjectSmsSender, type SmsSender } from '../../../integrations/sms/sms.port.js';
+import { InjectSmsSender, type SmsSender, SmsTemplateUnsupportedError } from '../../../integrations/sms/sms.port.js';
 import type { DispatchJob, DispatchPayload } from '../application/notification.service.js';
 import { DEFAULT_LOCALE } from '../../../common/i18n/locale.js';
-import { NOTIFICATION_DISPATCH_CONCURRENCY } from '../domain/notification.constants.js';
+import { NOTIFICATION_DISPATCH_CONCURRENCY, OTP_TEMPLATE_KEYS } from '../domain/notification.constants.js';
 import { MissingTemplateParamsError, renderTemplate } from '../domain/template-renderer.js';
 
 @Processor(QueueName.NotificationsDispatch, { concurrency: NOTIFICATION_DISPATCH_CONCURRENCY })
@@ -58,14 +58,15 @@ export class NotificationDispatchProcessor extends ContextualProcessor<DispatchJ
     }
 
     try {
-      const result = await this.deliver(delivery.channel, payload.recipient, subject, body, template.providerTemplateId);
+      const otp = OTP_TEMPLATE_KEYS.has(delivery.templateKey) && payload.params.code !== undefined ? String(payload.params.code) : null;
+      const result = await this.deliver(delivery.channel, payload.recipient, subject, body, template.providerTemplateId, otp);
       await this.prisma.notificationDelivery.update({
         where: { id: delivery.id },
         data: { status: DeliveryStatus.sent, provider: result.provider, providerMessageId: result.providerMessageId, sentAt: new Date(), error: null },
       });
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      if (error instanceof PushTokenRejectedError) {
+      if (error instanceof PushTokenRejectedError || error instanceof SmsTemplateUnsupportedError) {
         await this.fail(delivery.id, message);
         return;
       }
@@ -76,8 +77,8 @@ export class NotificationDispatchProcessor extends ContextualProcessor<DispatchJ
     }
   }
 
-  private deliver(channel: NotificationChannel, recipient: string, subject: string, body: string, providerTemplateId: string | null) {
-    if (channel === NotificationChannel.sms) return this.sms.send({ to: recipient, body, providerTemplateId });
+  private deliver(channel: NotificationChannel, recipient: string, subject: string, body: string, providerTemplateId: string | null, otp: string | null) {
+    if (channel === NotificationChannel.sms) return this.sms.send({ to: recipient, body, providerTemplateId, otp });
     if (channel === NotificationChannel.push) return this.push.send({ to: recipient, title: subject, body });
     return this.email.send({ to: recipient, subject, text: body });
   }

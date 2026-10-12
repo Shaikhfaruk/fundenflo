@@ -8,6 +8,7 @@ export type SmsMessage = {
   to: string;
   body: string;
   providerTemplateId: string | null;
+  otp: string | null;
 };
 
 export type SendResult = {
@@ -18,3 +19,5 @@ export type SendResult = {
 export interface SmsSender {
   send(message: SmsMessage): Promise<SendResult>;
 }
+
+export class SmsTemplateUnsupportedError extends Error {}

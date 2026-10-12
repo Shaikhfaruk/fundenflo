@@ -67,7 +67,8 @@ export const envSchema = z
 
     AUTH_OTP_STATIC_CODE: optional(z.string().regex(/^\d{6}$/, 'must be 6 digits')),
 
-    SMS_DRIVER: z.enum(['log']),
+    SMS_DRIVER: z.enum(['log', 'msg91']),
+    MSG91_OTP_TEMPLATE_ID: optional(z.string().regex(/^[a-f0-9]{24}$/i, 'must be the 24-character MSG91 OTP template ID')),
     SMS_API_KEY: optional(z.string().min(1)),
     SMS_SENDER_ID: optional(z.string().regex(/^[A-Za-z0-9]{3,11}$/, 'must be the 3-11 character sender header')),
     SMS_DLT_ENTITY_ID: optional(z.string().regex(/^\d{10,30}$/, 'must be the numeric DLT principal entity ID')),
@@ -131,6 +132,11 @@ export const envSchema = z
       if (!env.KEY_VAULT_KEY_ID) issue('KEY_VAULT_KEY_ID', 'required when CRYPTO_DRIVER=azure_key_vault');
       if (!env.CRYPTO_WRAPPED_KEYS) issue('CRYPTO_WRAPPED_KEYS', 'required when CRYPTO_DRIVER=azure_key_vault');
       else if (!env.CRYPTO_WRAPPED_KEYS[env.CRYPTO_ACTIVE_KEY_ID]) issue('CRYPTO_ACTIVE_KEY_ID', 'must be a key in CRYPTO_WRAPPED_KEYS');
+    }
+
+    if (env.SMS_DRIVER === 'msg91') {
+      if (!env.SMS_API_KEY) issue('SMS_API_KEY', 'required when SMS_DRIVER=msg91 (the MSG91 auth key)');
+      if (!env.MSG91_OTP_TEMPLATE_ID) issue('MSG91_OTP_TEMPLATE_ID', 'required when SMS_DRIVER=msg91');
     }
 
     if (env.EMAIL_DRIVER === 'smtp') {

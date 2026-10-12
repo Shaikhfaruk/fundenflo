@@ -26,6 +26,8 @@ export const TEMPLATE_PLACEHOLDER = /\{\{\s*([a-zA-Z][a-zA-Z0-9_]*)\s*\}\}/g;
 
 export const NOTIFICATION_DISPATCH_CONCURRENCY = 10;
 
+export const OTP_TEMPLATE_KEYS: ReadonlySet<string> = new Set([NotificationTemplateKey.AuthOtp, NotificationTemplateKey.ConsentOtp]);
+
 export const TEMPLATE_PARAMS: Record<NotificationTemplateKey, readonly string[]> = {
   [NotificationTemplateKey.AuthOtp]: ['code', 'minutes'],
   [NotificationTemplateKey.InvitationStaff]: ['expiresOn', 'role', 'token'],
