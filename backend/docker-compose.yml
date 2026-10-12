@@ -33,7 +33,6 @@ services:
       retries: 20
 
   web:
-    profiles: ["prod"]
     <<: *app
     build:
       context: ../web-frontend
@@ -48,7 +47,6 @@ services:
     depends_on: []
 
   api:
-    profiles: ["prod"]
     <<: *app
     build:
       context: .
@@ -66,7 +64,6 @@ services:
       start_period: 40s
 
   worker:
-    profiles: ["prod"]
     <<: *app
     image: fundenflo-api:latest
     command: ["node", "dist/worker.js"]
