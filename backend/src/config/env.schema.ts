@@ -68,7 +68,7 @@ export const envSchema = z
     AUTH_OTP_STATIC_CODE: optional(z.string().regex(/^\d{6}$/, 'must be 6 digits')),
 
     SMS_DRIVER: z.enum(['log', 'msg91']),
-    MSG91_OTP_TEMPLATE_ID: optional(z.string().regex(/^[a-f0-9]{24}$/i, 'must be the 24-character MSG91 OTP template ID')),
+    MSG91_OTP_TEMPLATE_ID: optional(z.string().regex(/^[a-f0-9]{24}$/i, 'must be the 24-character MSG91 Flow template ID')),
     SMS_API_KEY: optional(z.string().min(1)),
     SMS_SENDER_ID: optional(z.string().regex(/^[A-Za-z0-9]{3,11}$/, 'must be the 3-11 character sender header')),
     SMS_DLT_ENTITY_ID: optional(z.string().regex(/^\d{10,30}$/, 'must be the numeric DLT principal entity ID')),

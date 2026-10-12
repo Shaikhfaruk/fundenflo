@@ -2,7 +2,7 @@
 
 TRAI DLT rules require every SMS to use a registered sender (`SMS_SENDER_ID`), entity (`SMS_DLT_ENTITY_ID`) and template id.
 
-**Status:** two drivers, chosen by `SMS_DRIVER`. `log` writes the text to the API log (not allowed in production). `msg91` sends one-time codes (`auth.otp`, `consent.otp`) through the MSG91 OTP API (`POST https://control.msg91.com/api/v5/otp`, header `authkey` = `SMS_API_KEY`, `template_id` = `MSG91_OTP_TEMPLATE_ID`, our own code as `otp`); the MSG91 OTP template must contain `##OTP##` and carry the approved DLT template inside MSG91. Other SMS templates fail at once with a clear reason until MSG91 flow templates are added for them.
+**Status:** two drivers, chosen by `SMS_DRIVER`. `log` writes the text to the API log (not allowed in production). `msg91` sends one-time codes (`auth.otp`, `consent.otp`) through the MSG91 Flow API (`POST https://control.msg91.com/api/v5/flow`, header `authkey` = `SMS_API_KEY`, JSON `template_id` = `MSG91_OTP_TEMPLATE_ID`, `recipients: [{ mobiles, OTP }]`); the Flow template must define the case-sensitive variable `OTP` and carry the approved DLT template inside MSG91. `MSG91_OTP_TEMPLATE_ID` retains its existing configuration name but must contain the SMS/Flow template ID, not an OTP API template ID. Other SMS templates fail at once with a clear reason until MSG91 flow templates are added for them.
 
 ## Template ids
 

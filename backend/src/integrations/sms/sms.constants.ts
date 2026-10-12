@@ -1,4 +1,4 @@
-export const MSG91_OTP_URL = 'https://control.msg91.com/api/v5/otp';
+export const MSG91_FLOW_URL = 'https://control.msg91.com/api/v5/flow';
 
 export const MSG91_TIMEOUT_MS = 10_000;
 
