@@ -1,56 +1,87 @@
 name: fundenflo
 
+x-app: &app
+  env_file: ../.env
+  restart: unless-stopped
+  init: true
+  depends_on:
+    valkey:
+      condition: service_healthy
+  logging:
+    driver: json-file
+    options: { max-size: "10m", max-file: "3" }
+
 services:
-  postgres:
-    image: postgres:18
-    environment:
-      POSTGRES_USER: fundenflo
-      POSTGRES_PASSWORD: fundenflo
-      POSTGRES_DB: fundenflo
-    ports:
-      - "${FF_POSTGRES_PORT:-5432}:5432"
-    volumes:
-      - postgres-data:/var/lib/postgresql
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U fundenflo -d fundenflo"]
-      interval: 5s
-      timeout: 3s
-      retries: 20
-
-  valkey:
-    image: valkey/valkey:8
-    command: ["valkey-server", "--appendonly", "yes", "--maxmemory-policy", "noeviction"]
-    ports:
-      - "${FF_VALKEY_PORT:-6380}:6379"
-    volumes:
-      - valkey-data:/data
-    healthcheck:
-      test: ["CMD", "valkey-cli", "ping"]
-      interval: 5s
-      timeout: 3s
-      retries: 20
-
-  azurite:
-    image: mcr.microsoft.com/azure-storage/azurite
-    command: ["azurite-blob", "--blobHost", "0.0.0.0", "--location", "/data", "--loose", "--skipApiVersionCheck"]
-    ports:
-      - "${FF_AZURITE_PORT:-10000}:10000"
-    volumes:
-      - azurite-data:/data
-
-  mailpit:
-    image: axllent/mailpit
-    ports:
-      - "${FF_SMTP_PORT:-1025}:1025"
-      - "${FF_MAILPIT_UI_PORT:-8025}:8025"
-
   clamav:
     image: clamav/clamav:stable
     profiles: ["scan"]
     ports:
       - "${FF_CLAMAV_PORT:-3310}:3310"
 
+  valkey:
+    image: valkey/valkey:8
+    command: ["valkey-server", "--appendonly", "yes", "--maxmemory", "256mb", "--maxmemory-policy", "noeviction"]
+    ports:
+      - "127.0.0.1:${FF_VALKEY_PORT:-6380}:6379"
+    volumes:
+      - valkey-data:/data
+    mem_limit: 384m
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  web:
+    profiles: ["prod"]
+    <<: *app
+    build:
+      context: ../web-frontend
+      args:
+        APP_VERSION: ${APP_VERSION:-}
+    image: fundenflo-web:latest
+    ports: ["127.0.0.1:6001:3100"]
+    environment:
+      NODE_ENV: production
+      NODE_OPTIONS: --max-old-space-size=384
+    mem_limit: 512m
+    depends_on: []
+
+  api:
+    profiles: ["prod"]
+    <<: *app
+    build:
+      context: .
+      target: runtime
+    image: fundenflo-api:latest
+    command: ["node", "dist/main.js"]
+    ports: ["127.0.0.1:6000:3000"]
+    environment:
+      NODE_OPTIONS: --max-old-space-size=768
+    mem_limit: 1g
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000/health/live').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      start_period: 40s
+
+  worker:
+    profiles: ["prod"]
+    <<: *app
+    image: fundenflo-api:latest
+    command: ["node", "dist/worker.js"]
+    environment:
+      NODE_OPTIONS: --max-old-space-size=768
+    mem_limit: 1g
+
+  tools:
+    profiles: ["tools"]
+    build:
+      context: .
+      target: builder
+    image: fundenflo-tools:latest
+    env_file: ../.env
+    working_dir: /app
+
 volumes:
-  postgres-data:
   valkey-data:
-  azurite-data:

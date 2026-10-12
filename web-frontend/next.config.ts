@@ -14,6 +14,7 @@ const securityHeaders = [
 const appVersion = process.env.APP_VERSION ?? new Date().toISOString().replace(/\D/g, '').slice(0, 14);
 
 const nextConfig: NextConfig = {
+  output: 'standalone',
   poweredByHeader: false,
   env: { NEXT_PUBLIC_APP_VERSION: appVersion },
   cacheComponents: true,
