@@ -19,6 +19,8 @@ For local sign-in without an SMS provider, keep `SMS_DRIVER=log` (codes appear i
 
 First staff user: `pnpm staff:invite --email <address> --role super_admin`, then accept with `POST /v1/auth/staff/invitations/accept` and sign in with password + authenticator app.
 
+Demo data (after `pnpm db:seed` and a super admin exists): `pnpm demo:seed --admin-email <super admin email> --lender-email <lender user email>` prints the demo staff passwords, lenders and live products. On a Mac against a Docker-hosted Redis, prefix it with `REDIS_URL=redis://localhost:6380`.
+
 ## Checks
 
 | Command | Checks |

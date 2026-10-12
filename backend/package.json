@@ -29,6 +29,7 @@
     "keys:generate": "node dist/scripts/generate-keys.js",
     "keys:reencrypt": "node dist/scripts/reencrypt-keys.js",
     "staff:invite": "node dist/scripts/invite-staff.js",
+    "demo:seed": "node dist/scripts/demo-seed.js",
     "postman:build": "node ../postman/scripts/build.ts",
     "postman:split": "node ../postman/scripts/split.ts",
     "postman:coverage": "node ../postman/scripts/coverage.ts",
