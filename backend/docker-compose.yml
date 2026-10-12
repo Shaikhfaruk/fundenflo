@@ -42,6 +42,8 @@ services:
     ports: ["127.0.0.1:6001:3100"]
     environment:
       NODE_ENV: production
+      PORT: 3100
+      HOSTNAME: 0.0.0.0
       NODE_OPTIONS: --max-old-space-size=384
     mem_limit: 512m
     depends_on: []
